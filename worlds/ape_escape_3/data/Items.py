@@ -32,26 +32,34 @@ item_table = {
     # Accessories
     ae3_items.acc_morph_stock.value : address.items["acc_morph_stock"],
 
+    ae3_items.pellet_explosive.value : address.items["pellet_explosive"],
+    ae3_items.pellet_guided.value : address.items["pellet_guided"],
+
     ae3_items.chassis_twin.value : address.items["chassis_twin"],
     ae3_items.chassis_black.value : address.items["chassis_black"],
     ae3_items.chassis_pudding.value : address.items["chassis_puding"]
 }
 
 def create_item_groups():
-    # Equipment
-    for l in range(13):
-        item_group.setdefault("Equipment", []).append(item_table[l])
+    keys : List[str] = list(item_table)
 
     # Gadgets
     for l in range(7):
-        item_group.setdefault("Gadgets", []).append(item_table[l])
+        item_group.setdefault("Gadgets", []).append(keys[l])
     
     # Morphs
     for l in range(7, 13):
-        item_group.setdefault("Morphs", []).append(item_table[l])
+        item_group.setdefault("Morphs", []).append(keys[l])
     
-    # Accessories/Chassis
-    for l in range (15, 17):
-        item_group.setdefault("Chassis", []).append(item_table[l])
+    # Equipment
+    item_group.setdefault("Equipment", []).append(item_group["Gadgets"])
+    item_group.setdefault("Equipment", []).append(item_group["Morphs"])
+    
+    # Accessories
+    for l in range (15, 16):
+        item_group.setdefault("Pellets", []).append(keys[l])
+    
+    for l in range (17, 19):
+        item_group.setdefault("Chassis", []).append(keys[l])
 
 create_item_groups()

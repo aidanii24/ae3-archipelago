@@ -22,6 +22,9 @@ class ae3_items(Enum):
     # Accessories
     acc_morph_stock : "Morph Stock"
 
+    pellet_explosive : "Explosive Pellet"
+    pellet_guided : "Guided Pellet"
+
     chassis_twin : "Twin's Chassis"
     chassis_black : "Black Chassis"
     chassis_pudding : "Pudding Chassis"
