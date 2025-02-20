@@ -7,14 +7,15 @@ import array
 import dataclasses
 import struct
 
-from data.Addresses import Address
-from data.Items import Item
-from interface.pine import Pine
+from .data.Addresses import Address
+from .data.Items import Item
+from .interface.pine import Pine
 
 class ae_ps2_interface:
     ipc : Pine = Pine()
     status : connection_status = 0
     
+    sync_task = None
     logger : Logger
 
     addresses : Address = None
@@ -32,7 +33,7 @@ class ae_ps2_interface:
             if not self.ipc.is_connected:
                 return
             
-            self.logger.info("Connect to PCSX2.")
+            self.logger.info("Connected to PCSX2.")
     
     def disconnect_game(self):
         self.ipc.disconnect()
@@ -40,7 +41,7 @@ class ae_ps2_interface:
         
 
     # Game Manipulation
-    def unlock_equipment(self, ):
+    def unlock_equipment(self, address : int = 0):
         ipc.write_int32(Address.items.sky_flyer, 2)    # Test: unlocks Sky Flyer
 
         if self.will_auto_equip:
@@ -63,6 +64,7 @@ class ae_ps2_interface:
                 continue
             
             ipc.write_int32(button, 0)
+
 
 class connection_status(Enum):
     DISCONNECTED = 0
