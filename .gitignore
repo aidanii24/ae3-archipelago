@@ -1,8 +1,12 @@
 # Notes
-ae3-notes/*
+_ae3-notes/*
 
 # Caches
 **__pycache__
+
+# Tests/Binaries
+apworld/*
+_generate.sh
 
 # Archipelago Redundancies
 BaseClasses.py
