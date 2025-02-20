@@ -47,3 +47,14 @@ class ae3_locations(Enum):
     seaside_break_tomezo : "Tomezo - Seaside Resort"
     seaside_break_kamayan : "Kamayan - Seaside Resort"
     seaside_break_taizo : "Taizo - Seaside Resort"
+
+class ae3_stages(Enum):
+    # Menu/Hub
+    title_screen : "Menu"
+    char_select : "Character Select"
+    travel_station_a : "TV Station"
+    travel_station_b : "Shopping District"
+
+    # Channels
+    zero : "TV Station (Stage)"
+    seaside : "Seaside Resort"
