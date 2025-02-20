@@ -63,7 +63,6 @@ class ae_ps2_interface:
                 continue
             
             ipc.write_int32(button, 0)
-    
 
 class connection_status(Enum):
     DISCONNECTED = 0
