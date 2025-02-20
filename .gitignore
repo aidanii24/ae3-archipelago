@@ -1,0 +1,24 @@
+# Notes
+ae3-notes/*
+
+# Caches
+**__pycache__
+
+# Archipelago Redundancies
+BaseClasses.py
+CommonClient.py
+Fill.py
+Main.py
+ModuleUpdate.py
+MultiServer.py
+NetUtils.py
+Options.py
+settings.py
+Utils.py
+
+worlds/generic/*
+worlds/__init__.py
+AutoSNIClient.py
+AutoWorld.py
+Files.py
+LauncherComponents.py
