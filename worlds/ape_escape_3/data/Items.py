@@ -16,9 +16,10 @@ item_table = {
     ae3_items.monkey_net.value : address.items["monkey_net"],
     ae3_items.monkey_radar.value : address.items["monkey_radar"],
     ae3_items.super_hoop.value : address.items["super_hoop"],
+    ae3_items.water_net.value : address.items["water_net"],
+    ae3_items.slingback_shooter.value : address.items["slingback_shooter"],
     ae3_items.rc_car.value : address.items["rc_car"],
     ae3_items.sky_flyer.value : address.items["sky_flyer"],
-    ae3_items.water_net.value : address.items["water_net"],
 
     # Morphs
     ae3_items.morph_knight.value : address.items["morph_knight"],
@@ -44,11 +45,11 @@ def create_item_groups():
     keys : List[str] = list(item_table)
 
     # Gadgets
-    for l in range(7):
+    for l in range(8):
         item_group.setdefault("Gadgets", []).append(keys[l])
     
     # Morphs
-    for l in range(7, 13):
+    for l in range(8, 14):
         item_group.setdefault("Morphs", []).append(keys[l])
     
     # Equipment
@@ -56,10 +57,10 @@ def create_item_groups():
     item_group.setdefault("Equipment", []).append(item_group["Morphs"])
     
     # Accessories
-    for l in range (15, 16):
+    for l in range (16, 17):
         item_group.setdefault("Pellets", []).append(keys[l])
     
-    for l in range (17, 19):
+    for l in range (18, 20):
         item_group.setdefault("Chassis", []).append(keys[l])
 
 create_item_groups()

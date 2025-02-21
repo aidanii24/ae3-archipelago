@@ -8,6 +8,9 @@ _ae3-notes/*
 apworld/*
 _generate.sh
 
+test/*
+_testing.py
+
 # Archipelago Redundancies
 BaseClasses.py
 CommonClient.py

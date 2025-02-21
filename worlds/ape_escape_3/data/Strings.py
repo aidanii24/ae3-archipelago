@@ -6,9 +6,10 @@ class ae3_items(Enum):
     monkey_net : "Monkey Net"
     monkey_radar : "Monkey_Radar"
     super_hoop : "Super Hoop"
+    slingback_shooter : "Slingback Shooter"
+    water_net : "Water Net"
     rc_car : "RC Car"
     sky_flyer : "Sky Flyer"
-    water_net : "Water Net"
 
     # Morphs
     morph_knight : "Fantasy Knight"

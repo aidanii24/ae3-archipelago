@@ -45,7 +45,7 @@ class ae_ps2_interface:
         ipc.write_int32(Address.items.sky_flyer, 2)    # Test: unlocks Sky Flyer
 
         if self.will_auto_equip:
-            auto_equip(6)
+            auto_equip(7)
     
     def auto_equip(self, id : int):
         target : int = 0

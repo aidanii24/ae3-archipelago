@@ -6,10 +6,11 @@ class address:
         "stun_club" : 0x649950,
         "monkey_net" : 0x649954,
         "monkey_radar" : 0x649958,
-        "super_hoop" : 0x649960,
+        "super_hoop" : 0x64995c,
+        "slingback_shooter" : 0x649960,
+        "water_net" : 0x649978,
         "rc_car" : 0x649964,
         "sky_flyer" : 0x649968,
-        "water_net" : 0x649978,
 
         # Morphs
         "morph_knight" : 0x649930,

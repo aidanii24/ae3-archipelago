@@ -32,10 +32,11 @@ def create_regions(world : "Ape_Escape_3_World"):
     seaside = Region(ae3_stages.seaside, player, multiworld)
 
     # Monkeys
+    ukki_pan = Region(ae3_locations.zero_ukki_pan, player, multiworld)
+
     nessal = Region(ae3_loqcations.seaside_nessal, player, multiworld)
     ukki_pia = Region(ae3_locations.seaside_ukki_pia, player, multiworld)
     sarubo = Region(ae3_locations.seaside_sarubo, player, multiworld)
-    salurin = Region(ae3_locations.seaside_salurin, player, multiworld)
     salurin = Region(ae3_locations.seaside_salurin, player, multiworld)
     ukkitan = Region(ae3_locations.seaside_ukkitan, player, multiworld)
     morella = Region(ae3_locations.seaside_morella, player, multiworld)
@@ -46,3 +47,19 @@ def create_regions(world : "Ape_Escape_3_World"):
     tomzeo = Region(ae3_locations.seaside_break_tomezo, player, multiworld)
     kamayan = Region(ae3_locations.seaside_break_kamayan, player, multiworld)
     taizo = Region(ae3_locations.seaside_break_taizo, player, multiworld)
+
+    regions = [
+        menu, tv_station, shopping_district,
+        zero, 
+        ukki_pan,
+        seaside,
+        nessal, ukki_pia, sarubo, salurin, ukkitan, morella, ukki_ben, salurin,
+        kankichi, tomzeo, kamayan, taizo
+    ]
+
+    multiworld.regions.extend(regions)
+
+"""
+# TODO
+There should be a way to automate this rather than declare each region and location one by one.
+"""
