@@ -1,5 +1,10 @@
-class address:
+from .Strings import AE3Locations
+
+class Address:
+    """Container for all the relevant memory addresses in Ape Escape 3."""
     items = {
+        """Memory Addresses of the Items in Ape Escape 3."""
+        
         # <!> Values are on/off between 0x01 and 0x02 respectively unless commented otherwise.
 
         # Gadgets
@@ -37,23 +42,25 @@ class address:
         # <!> Values are on/off between 0x00 and 0x01 respectively unless commented otherwise.
 
         ## TV Station/Zero
-        "zero_ukki_pan" : 0x649b4e,
+        AE3Locations.zero_ukki_pan.value : 0x649b4e,
 
         ## Seaside Resort
-        "seaside_nessal" : 0x6499dd,
-        "seaside_ukki_pia" : 0x6499de,
-        "seaside_sarubo" : 0x6499df,
-        "seaside_salurin" : 0x6499e0,
-        "seaside_ukkitan" : 0x649b4f,
-        "seaside_morella" : 0x649b99,
-        "seaside_ukki_ben" : 0x6499e1,
-        "seaside_break_kankichi" : 0x649b5e,
-        "seaside_break_tomezo" : 0x649b5f,
-        "seaside_break_kamayan" : 0x649b60,
-        "seaside_break_taizo" : 0x649b61
+        AE3Locations.seaside_nessal.value : 0x6499dd,
+        AE3Locations.seaside_ukki_pia.value : 0x6499de,
+        AE3Locations.seaside_sarubo.value : 0x6499df,
+        AE3Locations.seaside_salurin.value : 0x6499e0,
+        AE3Locations.seaside_ukkitan.value : 0x649b4f,
+        AE3Locations.seaside_morella.value : 0x649b99,
+        AE3Locations.seaside_ukki_ben.value : 0x6499e1,
+        AE3Locations.seaside_break_kankichi.value : 0x649b5e,
+        AE3Locations.seaside_break_tomezo.value : 0x649b5f,
+        AE3Locations.seaside_break_kamayan.value : 0x649b60,
+        AE3Locations.seaside_break_taizo.value : 0x649b61
     }
 
     player = {
+        """Memory Addresses of variables relating to the player in Ape Escape 3. This includes their cookies, 
+        morph gauge status, and what gadget and or accessory they have equipped."""
         # Status
         "state" : 0x8519e4,             # int32 (0x00 - 0x04)
         "character" : 0x649910,         # int32 (0x00 - 0x01)

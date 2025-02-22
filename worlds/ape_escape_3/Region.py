@@ -1,61 +1,75 @@
-from typing import TYPE_CHECKING
+from typing import List
 
-from BaseClasses import Region, Entrance
+from BaseClasses import Region
 
-from .data.Locations import Location, ae3_location
-from .data.Strings import ae3_stages, ae3_locations
+from .data.Strings import AE3Stages, AE3Locations
+from .data.Locations import AE3Location
+from .data.Addresses import Address
+from . import AE3World
 
-class ae3_stage:
-    def __init__(self, name : str, original_index : int):
+
+class AE3Stage:
+    """
+        Defines a Stage in Ape Escape 3. This refers to any area or room in the game, most commonly, the levels, or
+        "channels", but also includes the title screen and hub world.
+    """
+
+    def __init__(self, name : str, stage_id : int, original_index : int):
         self.name : str = name
         self.name_as_bytes : List[bytes] = []
+        self.stage_id = stage_id
 
-        self.keys : int = -1
+        self.keys: int = -1
         self.original_index : int = original_index
-        self.index = -1
+        self.index : int = -1
 
     def _compare_index(self, stage):
-        return self.original_index < index.original_index
+        return self.original_index < stage.original_index
 
-def create_regions(world : "Ape_Escape_3_World"):
+def create_regions(world : AE3World):
     player = world.player
     multiworld = world.multiworld
     options = world.options
 
     # Menu
-    menu = Region(ae3_stages.title_screen, player, multiworld)
-    tv_station = Region(ae3_stages.travel_station_a, player, multiworld)
-    shopping_district = Region(ae3_stages.travel_station_b, player, multiworld)
+    menu = Region(AE3Stages.title_screen.value, player, multiworld)
+    tv_station = Region(AE3Stages.travel_station_a.value, player, multiworld)
+    shopping_district = Region(AE3Stages.travel_station_b.value, player, multiworld)
 
     # Channels
-    zero = Region(ae3_stages.zero, player, multiworld)
-    seaside = Region(ae3_stages.seaside, player, multiworld)
+    zero = Region(AE3Stages.zero.value, player, multiworld)
+    seaside = Region(AE3Stages.seaside.value, player, multiworld)
 
     # Monkeys
-    ukki_pan = Region(ae3_locations.zero_ukki_pan, player, multiworld)
+    zero_ukki_pan = Region(AE3Locations.zero_ukki_pan.value, player, multiworld)
 
-    nessal = Region(ae3_loqcations.seaside_nessal, player, multiworld)
-    ukki_pia = Region(ae3_locations.seaside_ukki_pia, player, multiworld)
-    sarubo = Region(ae3_locations.seaside_sarubo, player, multiworld)
-    salurin = Region(ae3_locations.seaside_salurin, player, multiworld)
-    ukkitan = Region(ae3_locations.seaside_ukkitan, player, multiworld)
-    morella = Region(ae3_locations.seaside_morella, player, multiworld)
-    ukki_ben = Region(ae3_locations.seaside_ukki_ben, player, multiworld)
-    salurin = Region(ae3_locations.seaside_salurin, player, multiworld)
+    seaside_nessal = Region(AE3Locations.seaside_nessal.value, player, multiworld)
+    seaside_ukki_pia = Region(AE3Locations.seaside_ukki_pia.value, player, multiworld)
+    seaside_sarubo = Region(AE3Locations.seaside_sarubo.value, player, multiworld)
+    seaside_salurin = Region(AE3Locations.seaside_salurin.value, player, multiworld)
+    seaside_ukkitan = Region(AE3Locations.seaside_ukkitan.value, player, multiworld)
+    seaside_morella = Region(AE3Locations.seaside_morella.value, player, multiworld)
+    seaside_ukki_ben = Region(AE3Locations.seaside_ukki_ben.value, player, multiworld)
 
-    kankichi = Region(ae3_locations.seaside_break_kankichi, player, multiworld)
-    tomzeo = Region(ae3_locations.seaside_break_tomezo, player, multiworld)
-    kamayan = Region(ae3_locations.seaside_break_kamayan, player, multiworld)
-    taizo = Region(ae3_locations.seaside_break_taizo, player, multiworld)
+    seaside_break_kankichi = Region(AE3Locations.seaside_break_kankichi.value, player, multiworld)
+    seaside_break_tomzeo = Region(AE3Locations.seaside_break_tomezo.value, player, multiworld)
+    seaside_break_kamayan = Region(AE3Locations.seaside_break_kamayan.value, player, multiworld)
+    seaside_break_taizo = Region(AE3Locations.seaside_break_taizo.value, player, multiworld)
 
     regions = [
         menu, tv_station, shopping_district,
         zero, 
-        ukki_pan,
+        zero_ukki_pan,
         seaside,
-        nessal, ukki_pia, sarubo, salurin, ukkitan, morella, ukki_ben, salurin,
-        kankichi, tomzeo, kamayan, taizo
+        seaside_nessal, seaside_ukki_pia, seaside_sarubo, seaside_salurin, seaside_ukkitan, seaside_morella,
+        seaside_ukki_ben, seaside_salurin,
+        seaside_break_kankichi, seaside_break_tomzeo, seaside_break_kamayan, seaside_break_taizo
     ]
+
+    region : Region
+    for region in regions:
+        if region.name in AE3Locations:
+            region.locations.append(AE3Location(player, region.name, Address.locations[region.name], region))
 
     multiworld.regions.extend(regions)
 

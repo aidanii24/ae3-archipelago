@@ -29,3 +29,6 @@ AutoSNIClient.py
 AutoWorld.py
 Files.py
 LauncherComponents.py
+
+# IDE files
+.idea/*

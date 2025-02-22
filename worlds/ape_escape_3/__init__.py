@@ -1,15 +1,14 @@
-import os
-import typing
+from typing import ClassVar, List
 
-from BaseClasses import Item, Tutorial, ItemClassification
+from BaseClasses import MultiWorld, Tutorial, ItemClassification
 from worlds.AutoWorld import World, WebWorld
 
-from .Options import ae3_options
-from .Region import create_regions, ae3_stage
-from .data.Strings import ae3_item, ae3_items, ae3_locations
-from .data.Items import item_table, item_group
+from .Options import AE3Options
+from .Region import create_regions, AE3Stage
+from .data.Items import AE3Item, item_table, item_group
+from .data.Strings import AE3Items, AE3Locations
 
-class ae3_web(WebWorld):
+class AE3Web(WebWorld):
     theme = "ocean"
 
     tutorials = [Tutorial(
@@ -21,10 +20,10 @@ class ae3_web(WebWorld):
         ["aidanii"]
     )]
 
-class ae3_runtime_options(self):
+class AE3RuntimeOptions():
     auto_equip : bool = False
 
-class ae3_world(World):
+class AE3World(World):
     """
     Ape Escape 3 is a 3D platformer published and developed by Sony Computer Entertainment, released 
     in 2005 for the Sony Playstation 2. Specter for the third time has escaped again, and this time,
@@ -34,74 +33,82 @@ class ae3_world(World):
     """
 
     game : str = "Ape Escape"
-    web : ClassVar[WebWorld] = ae3_web()
+    web : ClassVar[WebWorld] = AE3Web()
     topology_present = True
 
-    options_dataclass = ae3_options
-    options = ae3_options
+    options_dataclass = AE3Options
+    options = AE3Options
+
+    def __init__(self, multiworld : MultiWorld, player : int):
+        self.auto_equip : bool = False
+
+        self.item_pool : List[AE3Item] = []
+
+        super(AE3World, self).__init__(multiworld, player)
 
     def generate_early(self):
         self.auto_equip = self.options.option_auto_equip
 
-        self.itempool = []
+        self.item_pool = []
     
     def create_regions(self):
         create_regions(self)
     
     # Classify Items for the Randomizer. 
     # Mark Important accordingly using the enums available in *Item Classification*
-    def create_item(self, name : str):
+    def create_item(self, name : str) -> AE3Item:
         item_id = item_table["name"]
         classification = ItemClassification.progression
 
         if name in item_group["Equipment"]:
             classification = ItemClassification.filler
         
-        item = ae3_item(name, classification, item_id, self.player)
+        item = AE3Item(name, classification, item_id, self.player)
         return item
 
-    def create_items():
+    def create_items(self):
         reserved_locations : int = 0
 
         # Could automate this in a loop; the variable name most likely isn't important...?
 
-        stun_club = create_item(ae3_items.stun_club)
-        monkey_net = create_item(ae3_items.monkey_net)
-        monkey_radar = create_item(ae3_items.monkey_radar)
-        super_hoop = create_item(ae3_items.super_hoop)
-        rc_car = create_item(ae3_items.rc_car)
-        sky_flyer = create_item(ae3_item.sky_flyer)
+        stun_club = self.create_item(AE3Items.stun_club.value)
+        monkey_net = self.create_item(AE3Items.monkey_net.value)
+        monkey_radar = self.create_item(AE3Items.monkey_radar.value)
+        super_hoop = self.create_item(AE3Items.super_hoop.value)
+        slingback_shooter = self.create_item(AE3Items.slingback_shooter.value)
+        water_net = self.create_item(AE3Items.water_net.value)
+        rc_car = self.create_item(AE3Items.rc_car.value)
+        sky_flyer = self.create_item(AE3Items.sky_flyer.value)
 
-        knight = create_item(ae3_items.morph_knight)
-        cowboy = create_item(ae3_item.morph_cowboy)
-        ninja = create_item(ae3_item.morph_ninja)
-        magician = create_item(ae3_item.morph_magician)
-        kungfu = create_item(ae3_item.morph_kungfu)
-        hero = create_item(ae3_item.morph_hero)
-        monkey = create_item(ae3_item.morph_monkey)
+        knight = self.create_item(AE3Items.morph_knight.value)
+        cowboy = self.create_item(AE3Items.morph_cowboy.value)
+        ninja = self.create_item(AE3Items.morph_ninja.value)
+        magician = self.create_item(AE3Items.morph_magician.value)
+        kungfu = self.create_item(AE3Items.morph_kungfu.value)
+        hero = self.create_item(AE3Items.morph_hero.value)
+        monkey = self.create_item(AE3Items.morph_monkey.value)
 
-        gadgets : List[ae3_item] = [monkey_net, stun_club, monkey_radar, super_hoop, rc_car, sky_flyer]
+        gadgets : List[AE3Item] = [stun_club, monkey_radar, super_hoop, slingback_shooter, water_net, rc_car,
+                                   sky_flyer]
+
+        if self.options.option_starting_gadget > 0:
+            del gadgets[self.option.option_starting_gadget - 1]
         
-        if self.option.option_starting_gadget > 0:
-            del gadgets[self.option.option_starting_gadget]
-        
-        if self.option.shuffle_monkey_net:
-            del gadgets[0]
+        if not self.option.shuffle_monkey_net:
+            gadgets.append(monkey_net)
 
-        starting_gadget : int = self.option.option_starting_gadget
-
-        self.itempool += gadgets
-        self.itempool += [knight, cowboy, ninja, magician, kungfu, hero, monkey]
+        self.item_pool += gadgets
+        self.item_pool += [knight, cowboy, ninja, magician, kungfu, hero, monkey]
         
         if self.option.option_shuffle_chassis:
-            chassis_twin = create_item(ae3_item.chassis_twin)
-            chassis_black = create_item(ae3_item.chassis_black)
-            chassis_pudding = create_item(ae3_item.chassis_pudding)
+            chassis_twin = self.create_item(AE3Items.chassis_twin.value)
+            chassis_black = self.create_item(AE3Items.chassis_black.value)
+            chassis_pudding = self.create_item(AE3Items.chassis_pudding.value)
 
-            self.itempool += [chassis_twin, chassis_pudding, chassis_black]
+            self.item_pool += [chassis_twin, chassis_pudding, chassis_black]
 
         # <!> Add Items to ItemPool
-        self.multiworld.itempool = self.itempool
+        self.multiworld.itempool = self.item_pool
     
     def fill_slot_data(self):
         return {

@@ -1,44 +1,49 @@
-from typing import Optional, Dict, Set
+from typing import Dict, Set, List
 
 from BaseClasses import ItemClassification, Item
 
-from Addresses import address
-from Strings import ae3_items
+from Addresses import Address
+from Strings import AE3Items
 
-class ae3_item(Item):
+class AE3Item(Item):
+    """
+    Defines an Item in Ape Escape 3. These include but are not limited to the Gadgets, Morphs and select buyable items
+    in the Shopping District.
+    """
+
     game : str = "Ape Escape 3"
 
 item_group : Dict[str, Set[str]] = {}
 
 item_table = {
     # Gadgets
-    ae3_items.stun_club.value : address.items["stun_club"],
-    ae3_items.monkey_net.value : address.items["monkey_net"],
-    ae3_items.monkey_radar.value : address.items["monkey_radar"],
-    ae3_items.super_hoop.value : address.items["super_hoop"],
-    ae3_items.water_net.value : address.items["water_net"],
-    ae3_items.slingback_shooter.value : address.items["slingback_shooter"],
-    ae3_items.rc_car.value : address.items["rc_car"],
-    ae3_items.sky_flyer.value : address.items["sky_flyer"],
+    AE3Items.stun_club.value : Address.items["stun_club"],
+    AE3Items.monkey_net.value : Address.items["monkey_net"],
+    AE3Items.monkey_radar.value : Address.items["monkey_radar"],
+    AE3Items.super_hoop.value : Address.items["super_hoop"],
+    AE3Items.water_net.value : Address.items["water_net"],
+    AE3Items.slingback_shooter.value : Address.items["slingback_shooter"],
+    AE3Items.rc_car.value : Address.items["rc_car"],
+    AE3Items.sky_flyer.value : Address.items["sky_flyer"],
 
     # Morphs
-    ae3_items.morph_knight.value : address.items["morph_knight"],
-    ae3_items.morph_cowboy.value : address.items["morph_cowboy"],
-    ae3_items.morph_ninja.value : address.items["morph_ninja"],
-    ae3_items.morph_magician.value : address.items["morph_magician"],
-    ae3_items.morph_kungfu.value : address.items["morph_kungfu"],
-    ae3_items.morph_hero.value : address.items["morph_hero"],
-    ae3_items.morph_monkey.value : address.items["morph_monkey"],
+    AE3Items.morph_knight.value : Address.items["morph_knight"],
+    AE3Items.morph_cowboy.value : Address.items["morph_cowboy"],
+    AE3Items.morph_ninja.value : Address.items["morph_ninja"],
+    AE3Items.morph_magician.value : Address.items["morph_magician"],
+    AE3Items.morph_kungfu.value : Address.items["morph_kungfu"],
+    AE3Items.morph_hero.value : Address.items["morph_hero"],
+    AE3Items.morph_monkey.value : Address.items["morph_monkey"],
 
     # Accessories
-    ae3_items.acc_morph_stock.value : address.items["acc_morph_stock"],
+    AE3Items.acc_morph_stock.value : Address.items["acc_morph_stock"],
 
-    ae3_items.pellet_explosive.value : address.items["pellet_explosive"],
-    ae3_items.pellet_guided.value : address.items["pellet_guided"],
+    AE3Items.pellet_explosive.value : Address.items["pellet_explosive"],
+    AE3Items.pellet_guided.value : Address.items["pellet_guided"],
 
-    ae3_items.chassis_twin.value : address.items["chassis_twin"],
-    ae3_items.chassis_black.value : address.items["chassis_black"],
-    ae3_items.chassis_pudding.value : address.items["chassis_puding"]
+    AE3Items.chassis_twin.value : Address.items["chassis_twin"],
+    AE3Items.chassis_black.value : Address.items["chassis_black"],
+    AE3Items.chassis_pudding.value : Address.items["chassis_puding"]
 }
 
 def create_item_groups():
