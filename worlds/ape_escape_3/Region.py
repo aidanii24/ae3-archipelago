@@ -1,6 +1,6 @@
 from typing import List
 
-from BaseClasses import Region
+from BaseClasses import Region, Entrance
 
 from .data.Strings import AE3Stages, AE3Locations
 from .data.Locations import AE3Location
@@ -14,12 +14,13 @@ class AE3Stage:
         "channels", but also includes the title screen and hub world.
     """
 
-    def __init__(self, name : str, stage_id : int, original_index : int):
+    def __init__(self, name : str, entrance : Entrance, original_index : int):
         self.name : str = name
         self.name_as_bytes : List[bytes] = []
-        self.stage_id = stage_id
 
+        self.entrance : Entrance = entrance
         self.keys: int = -1
+
         self.original_index : int = original_index
         self.index : int = -1
 
@@ -56,6 +57,11 @@ def create_regions(world : AE3World):
     seaside_break_kamayan = Region(AE3Locations.seaside_break_kamayan.value, player, multiworld)
     seaside_break_taizo = Region(AE3Locations.seaside_break_taizo.value, player, multiworld)
 
+    # Establish Basic Region Connections
+    ## Connect Regions that will always be fixed (The Tutorial level and Hub World rooms)
+    tv_station.connect(shopping_district)
+    zero.add_exits(tv_station.name)
+
     regions = [
         menu, tv_station, shopping_district,
         zero, 
@@ -66,6 +72,7 @@ def create_regions(world : AE3World):
         seaside_break_kankichi, seaside_break_tomzeo, seaside_break_kamayan, seaside_break_taizo
     ]
 
+    # Add Locations to the Regions
     region : Region
     for region in regions:
         if region.name in AE3Locations:

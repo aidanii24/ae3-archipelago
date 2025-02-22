@@ -1,6 +1,7 @@
 from typing import ClassVar, List
 
 from BaseClasses import MultiWorld, Tutorial, ItemClassification
+from test.worlds.ape_escape_3.data.Locations import location_table
 from worlds.AutoWorld import World, WebWorld
 
 from .Options import AE3Options
@@ -20,9 +21,6 @@ class AE3Web(WebWorld):
         ["aidanii"]
     )]
 
-class AE3RuntimeOptions():
-    auto_equip : bool = False
-
 class AE3World(World):
     """
     Ape Escape 3 is a 3D platformer published and developed by Sony Computer Entertainment, released 
@@ -32,12 +30,20 @@ class AE3World(World):
     and Yumi to save the world from the control of Specter.
     """
 
+    # Define Basic Game Parameters
     game = "Ape Escape"
     web : ClassVar[WebWorld] = AE3Web()
     topology_present = True
 
+    # Initialize Randomizer Options
     options_dataclass = AE3Options
-    options = AE3Options
+    options = AE3Options                    # Purely for Type Hints; not logically significant
+
+    # Define the Items and Locations to/for Archipelago
+    item_name_to_id = item_table
+    location_name_to_id = location_table
+
+    item_name_groups = item_group
 
     def __init__(self, multiworld : MultiWorld, player : int):
         self.auto_equip : bool = False
@@ -92,9 +98,11 @@ class AE3World(World):
                                    sky_flyer]
 
         if self.options.option_starting_gadget > 0:
+            self.multiworld.push_precollected(gadgets[self.option.option_starting_gadget - 1])
             del gadgets[self.option.option_starting_gadget - 1]
         
         if not self.option.shuffle_monkey_net:
+            self.multiworld.push_precollected(monkey_net)
             gadgets.append(monkey_net)
 
         self.item_pool += gadgets

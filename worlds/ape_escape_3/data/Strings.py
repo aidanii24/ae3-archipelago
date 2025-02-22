@@ -63,7 +63,7 @@ class AE3Stages(Enum):
     """Strings for the various stages of Ape Escape 3. This refers to the names of all the rooms in the game."""
 
     # Menu/Hub
-    title_screen = "Main Menu"
+    title_screen = "Menu"
     char_select = "Character Select"
     travel_station_a = "TV Station"
     travel_station_b = "Shopping District"
