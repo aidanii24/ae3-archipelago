@@ -5,7 +5,7 @@ import Utils
 
 from .AE3_Interface import AEPS2Interface, ConnectionStatus
 
-class ae3_command_processor(ClientCommandProcessor):
+class AE3CommandProcessor(ClientCommandProcessor):
     def __init__(self, ctx : CommonContext):
         super().__init__(ctx)
 

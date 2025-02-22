@@ -32,7 +32,7 @@ class AE3World(World):
     and Yumi to save the world from the control of Specter.
     """
 
-    game : str = "Ape Escape"
+    game = "Ape Escape"
     web : ClassVar[WebWorld] = AE3Web()
     topology_present = True
 

@@ -2,8 +2,8 @@ from typing import Dict, Set, List
 
 from BaseClasses import ItemClassification, Item
 
-from Addresses import Address
-from Strings import AE3Items
+from .Addresses import Address
+from .Strings import AE3Items
 
 class AE3Item(Item):
     """
