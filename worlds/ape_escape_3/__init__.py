@@ -63,10 +63,10 @@ class AE3World(World):
     # Classify Items for the Randomizer. 
     # Mark Important accordingly using the enums available in *Item Classification*
     def create_item(self, name : str) -> AE3Item:
-        item_id = item_table["name"]
+        item_id = item_table[name]
         classification = ItemClassification.progression
 
-        if name in item_group["Equipment"]:
+        if name not in item_group["Equipment"]:
             classification = ItemClassification.filler
         
         item = AE3Item(name, classification, item_id, self.player)
@@ -98,17 +98,17 @@ class AE3World(World):
                                    sky_flyer]
 
         if self.options.option_starting_gadget > 0:
-            self.multiworld.push_precollected(gadgets[self.option.option_starting_gadget - 1])
-            del gadgets[self.option.option_starting_gadget - 1]
+            self.multiworld.push_precollected(gadgets[self.options.option_starting_gadget - 1])
+            del gadgets[self.options.option_starting_gadget - 1]
         
-        if not self.option.shuffle_monkey_net:
+        if not self.options.option_shuffle_net:
             self.multiworld.push_precollected(monkey_net)
             gadgets.append(monkey_net)
 
         self.item_pool += gadgets
         self.item_pool += [knight, cowboy, ninja, magician, kungfu, hero, monkey]
         
-        if self.option.option_shuffle_chassis:
+        if self.options.option_shuffle_chassis:
             chassis_twin = self.create_item(AE3Items.chassis_twin.value)
             chassis_black = self.create_item(AE3Items.chassis_black.value)
             chassis_pudding = self.create_item(AE3Items.chassis_pudding.value)

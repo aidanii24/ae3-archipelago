@@ -75,7 +75,6 @@ def create_regions(world : "AE3World"):
     seaside_b = Region(AE3Stages.seaside_b.value, player, multiworld)
     seaside_c = Region(AE3Stages.seaside_c.value, player, multiworld)
 
-
     ## Monkeys
     zero_ukki_pan = Region(AE3Locations.zero_ukki_pan.value, player, multiworld)
 
@@ -96,9 +95,6 @@ def create_regions(world : "AE3World"):
     ## Hub
     shopping_district.connect(tv_station)
 
-    ## Zero
-    zero.add_exits(tv_station.name)
-
     ## Seaside Resort
     seaside_a.connect(seaside_b)
     seaside_a.connect(seaside_c, None, lambda state : Logic.can_use_monkey(state, player))
@@ -110,7 +106,7 @@ def create_regions(world : "AE3World"):
         zero_ukki_pan,
         seaside_a, seaside_b, seaside_c,
         seaside_nessal, seaside_ukki_pia, seaside_sarubo, seaside_salurin, seaside_ukkitan, seaside_morella,
-        seaside_ukki_ben, seaside_salurin,
+        seaside_ukki_ben,
         seaside_break_kankichi, seaside_break_tomzeo, seaside_break_kamayan, seaside_break_taizo
     ]
 
@@ -132,6 +128,9 @@ def create_regions(world : "AE3World"):
 
     multiworld.regions.extend(regions)
 
+    # Add Regions
+    ## Zero
+    world.get_region(AE3Stages.zero.value).add_exits(AE3Stages.travel_station_a.value)
 """
 # TODO
 There should be a way to automate this rather than declare each region and location one by one.
