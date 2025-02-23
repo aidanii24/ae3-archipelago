@@ -1,10 +1,8 @@
-from dataclasses import dataclass
-from enum import Enum
+from typing import Set, Callable
 
 from BaseClasses import CollectionState
 
 from .Strings import AE3Items
-from .. import AE3World
 
 # General Checks
 ## Check if Player can Catch Monkeys
@@ -45,27 +43,44 @@ def can_use_genie(state : CollectionState, player : int):
 def can_use_monkey(state : CollectionState, player : int):
     return state.has(AE3Items.morph_monkey.value, player)
 
-
-# Randomizer Logic Helper Classes
-class Prerequisite(Enum):
+class AccessRules:
     """
-    Defines required states for the player to achieve in order for an item to be considered "reachable".
+        Defines required states for the player to achieve in order for an item to be considered "reachable".
     """
 
     # General
-    catch = 0                   # Net Unlocked (if Shuffled) or has any morph (If Gadget Association is disabled)
-    morph = 1
-    shoot = 2                   # Slingback Shooter unlocked or has any morph with long range attacks
-    fly = 3                     # Sky Flyer unlocked or has any morph that can fly/glide
+    CATCH = can_catch               # Net Unlocked (if Shuffled) or has any morph (If Gadget Association is disabled)
+    MORPH = can_morph
+    SHOOT = can_shoot               # Slingback Shooter unlocked or has any morph with long range attacks
+    FLY = can_fly                   # Sky Flyer unlocked or has any morph that can fly/glide
 
     # Gadget
-    shoot_free = 10             # Slingback Shooter specifically unlocked
-    rc_car = 11                 # RC Car Unlocked
+    SHOOT_FREE = can_shoot_free     # Slingback Shooter specifically unlocked
+    RC_CAR = can_use_rc_car
 
     # Morph
-    genie = 30                  # Genie Dancer is unlocked
-    monkey = 31                 # Super Monkey is unlocked
+    GENIE = can_use_genie
+    MONKEY = can_use_monkey
 
     # Glitches
-    glitch_fly = -1             # Has any combination of gadget/morph for flying/gliding
-    glitch_float = -2           # Has any combination of gadget for floating
+    GLITCH_FLY = 0
+    GLITCH_FLOAT = 0
+
+class LocationRules:
+    """
+    Helper for Storing and Managing Access Rules of Locations.
+
+    Attributes:
+        Critical : Set of AccessRules that must always be true for a Location to be reachable.
+        Rules : Normal Sets of AccessRules. In addition to adhering to AccessRules set in Critical,
+        at least one set of AccessRules must also be adhered to.
+    """
+    Critical : Set[Callable] = None
+    Rules : Set[Set[Callable]] = None
+
+    def __init__(self, critical : Set[Callable] = None, rules : Set[Set[Callable]] = None):
+        if critical is not None:
+            self.Critical = critical
+
+        if rules is not None:
+            self.Rules = rules

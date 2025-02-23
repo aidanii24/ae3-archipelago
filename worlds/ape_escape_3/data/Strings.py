@@ -43,31 +43,34 @@ class AE3Locations(Enum):
     """
     # Monkeys
     ## TV Station/Zero
-    zero_ukki_pan = "Ukki Pan - TV Station"
+    zero_ukki_pan               = "Ukki Pan - TV Station"
 
     ## Seaside Resort
-    seaside_nessal = "Nessal - Seaside Resort"
-    seaside_ukki_pia = "Ukki Pia - Seaside Resort"
-    seaside_sarubo = "Sarubo - Seaside Resort"
-    seaside_salurin = "Salurin - Seaside Resort"
-    seaside_ukkitan = "Ukkitan - Seaside Resort"
-    seaside_morella = "Morella - Seaside Resort"
-    seaside_ukki_ben = "Ukki Ben - Seaside Resort"
-    seaside_break_kankichi = "Kankichi - Seaside Resort"
-    seaside_break_tomezo = "Tomezo - Seaside Resort"
-    seaside_break_kamayan = "Kamayan - Seaside Resort"
-    seaside_break_taizo = "Taizo - Seaside Resort"
+    seaside_nessal              = "Nessal - Seaside Resort"
+    seaside_ukki_pia            = "Ukki Pia - Seaside Resort"
+    seaside_sarubo              = "Sarubo - Seaside Resort"
+    seaside_salurin             = "Salurin - Seaside Resort"
+    seaside_ukkitan             = "Ukkitan - Seaside Resort"
+    seaside_morella             = "Morella - Seaside Resort"
+    seaside_ukki_ben            = "Ukki Ben - Seaside Resort"
+    seaside_break_kankichi      = "Kankichi - Seaside Resort"
+    seaside_break_tomezo        = "Tomezo - Seaside Resort"
+    seaside_break_kamayan       = "Kamayan - Seaside Resort"
+    seaside_break_taizo         = "Taizo - Seaside Resort"
 
 
 class AE3Stages(Enum):
     """Strings for the various stages of Ape Escape 3. This refers to the names of all the rooms in the game."""
 
     # Menu/Hub
-    title_screen = "Menu"
-    char_select = "Character Select"
-    travel_station_a = "TV Station"
-    travel_station_b = "Shopping District"
+    title_screen                = "Menu"
+    char_select                 = "Character Select"
+    travel_station_a            = "TV Station"
+    travel_station_b            = "Shopping District"
 
     # Channels
-    zero = "TV Station (Stage)"
-    seaside = "Seaside Resort"
+    zero                        = "TV Station (Stage)"
+    seaside                     = "Seaside Resort"
+    seaside_a                   = "Seaside Resort"
+    seaside_b                   = "Seaside Resort - Chapel"
+    seaside_c                   = "Seaside Resort - Break Room"

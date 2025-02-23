@@ -1,9 +1,11 @@
+from typing import Callable
 from typing import List
 
-from BaseClasses import Region, Entrance
+from BaseClasses import Region, Entrance, CollectionState
 
+from .data import Logic
 from .data.Strings import AE3Stages, AE3Locations
-from .data.Locations import AE3Location
+from .data.Locations import AE3Location, location_table
 from .data.Addresses import Address
 from . import AE3World
 
@@ -32,16 +34,48 @@ def create_regions(world : AE3World):
     multiworld = world.multiworld
     options = world.options
 
-    # Menu
+    # Generate AccessRules for Locations
+    def generate_access_rules(loc : AE3Location) -> Callable[[CollectionState], bool]:
+        def access_rule(state : CollectionState) -> bool:
+            ## No rules mean there is no prerequisite for access; Return true
+            if loc.rules.Critical is None and loc.rules.Rules is None:
+                return True
+
+            ## Any Critical Rules that return False should immediately mark the item as inaccessible with
+            ## the current state
+            for rule in loc.rules.Critical:
+                if not rule(state, player):
+                    return False
+
+            ## At least one set of normal rules (if any) must return true to mark the item as reachable
+            reachable: bool = False
+
+            for ruleset in loc.rules.Rules:
+                set_reachable: bool = False
+
+                for rule in ruleset:
+                    rule(state, player)
+
+                reachable = reachable or set_reachable
+
+            return reachable
+        return access_rule
+
+    #Create Regions
+    ## Menu
     menu = Region(AE3Stages.title_screen.value, player, multiworld)
     tv_station = Region(AE3Stages.travel_station_a.value, player, multiworld)
     shopping_district = Region(AE3Stages.travel_station_b.value, player, multiworld)
 
-    # Channels
+    ## Channels
     zero = Region(AE3Stages.zero.value, player, multiworld)
-    seaside = Region(AE3Stages.seaside.value, player, multiworld)
 
-    # Monkeys
+    seaside_a = Region(AE3Stages.seaside_a.value, player, multiworld)
+    seaside_b = Region(AE3Stages.seaside_b.value, player, multiworld)
+    seaside_c = Region(AE3Stages.seaside_c.value, player, multiworld)
+
+
+    ## Monkeys
     zero_ukki_pan = Region(AE3Locations.zero_ukki_pan.value, player, multiworld)
 
     seaside_nessal = Region(AE3Locations.seaside_nessal.value, player, multiworld)
@@ -57,26 +91,43 @@ def create_regions(world : AE3World):
     seaside_break_kamayan = Region(AE3Locations.seaside_break_kamayan.value, player, multiworld)
     seaside_break_taizo = Region(AE3Locations.seaside_break_taizo.value, player, multiworld)
 
-    # Establish Basic Region Connections
-    ## Connect Regions that will always be fixed (The Tutorial level and Hub World rooms)
-    tv_station.connect(shopping_district)
+    # Establish Specific Region Connections
+    ## Hub
+    shopping_district.connect(tv_station)
+
+    ## Zero
     zero.add_exits(tv_station.name)
 
+    ## Seaside Resort
+    seaside_a.connect(seaside_b)
+    seaside_a.connect(seaside_c, None, lambda state : Logic.can_use_monkey(state, player))
+
     regions = [
-        menu, tv_station, shopping_district,
+        menu,
+        tv_station, shopping_district,
         zero, 
         zero_ukki_pan,
-        seaside,
+        seaside_a, seaside_b, seaside_c,
         seaside_nessal, seaside_ukki_pia, seaside_sarubo, seaside_salurin, seaside_ukkitan, seaside_morella,
         seaside_ukki_ben, seaside_salurin,
         seaside_break_kankichi, seaside_break_tomzeo, seaside_break_kamayan, seaside_break_taizo
     ]
 
-    # Add Locations to the Regions
+    # Check Regions
     region : Region
     for region in regions:
+        ## Connect TV Station to all starting areas
+        if region.name.endswith("_a"):
+            region.connect(tv_station)
+
+        ## Confirm Location
         if region.name in AE3Locations:
-            region.locations.append(AE3Location(player, region.name, Address.locations[region.name], region))
+            location : AE3Location = AE3Location(player, region.name, Address.locations[region.name], region)
+
+            ## Add Locations to their dedicated Region and confirm their AccessRules
+            if region.name in location_table:
+                location.access_rule = generate_access_rules(location)
+                region.locations.append(location)
 
     multiworld.regions.extend(regions)
 

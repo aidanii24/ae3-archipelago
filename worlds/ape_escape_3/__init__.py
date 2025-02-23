@@ -75,7 +75,7 @@ class AE3World(World):
     def create_items(self):
         reserved_locations : int = 0
 
-        # Could automate this in a loop; the variable name most likely isn't important...?
+        # TODO - Could automate this in a loop; the variable name most likely isn't important...?
 
         stun_club = self.create_item(AE3Items.stun_club.value)
         monkey_net = self.create_item(AE3Items.monkey_net.value)
