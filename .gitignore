@@ -10,6 +10,7 @@ _generate.sh
 
 test/*
 _testing.py
+worlds/ape_escape_3/test/*
 
 # Archipelago Redundancies
 BaseClasses.py
