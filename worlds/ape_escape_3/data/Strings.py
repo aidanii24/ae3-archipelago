@@ -71,6 +71,6 @@ class AE3Stages(Enum):
     # Channels
     zero                        = "TV Station (Stage)"
     seaside                     = "Seaside Resort"
-    seaside_a                   = "Seaside Resort"
+    seaside_a                   = "Seaside Resort - Outside"
     seaside_b                   = "Seaside Resort - Chapel"
     seaside_c                   = "Seaside Resort - Break Room"
