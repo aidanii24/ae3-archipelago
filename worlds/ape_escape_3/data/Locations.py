@@ -65,17 +65,17 @@ rules_table = {
     AE3Locations.seaside_salurin.value              : LocationRules( {AccessRules.CATCH} ),
     AE3Locations.seaside_ukkitan.value              : LocationRules( {AccessRules.CATCH} ),
     AE3Locations.seaside_morella.value              : LocationRules( {AccessRules.CATCH},
-                                                                     {{AccessRules.SHOOT_FREE}}),
+                                                                     {frozenset({AccessRules.SHOOT_FREE})}),
     AE3Locations.seaside_ukki_ben.value             : LocationRules( {AccessRules.CATCH} ),
 
     AE3Locations.seaside_break_kankichi.value       : LocationRules( {AccessRules.CATCH},
-                                                                     {{AccessRules.MONKEY}}),
+                                                                     {frozenset({AccessRules.SHOOT_FREE})}),
     AE3Locations.seaside_break_tomezo.value         : LocationRules( {AccessRules.CATCH},
-                                                                     {{AccessRules.MONKEY}}),
+                                                                     {frozenset({AccessRules.SHOOT_FREE})}),
     AE3Locations.seaside_break_kamayan.value        : LocationRules( {AccessRules.CATCH},
-                                                                     {{AccessRules.MONKEY}}),
+                                                                     {frozenset({AccessRules.SHOOT_FREE})}),
     AE3Locations.seaside_break_taizo.value          : LocationRules( {AccessRules.CATCH},
-                                                                     {{AccessRules.MONKEY}})
+                                                                     {frozenset({AccessRules.SHOOT_FREE})}),
 }
 
 location_group : Dict[str, Set[str]] = {}
