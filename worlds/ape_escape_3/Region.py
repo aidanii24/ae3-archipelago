@@ -1,5 +1,4 @@
-from typing import Callable
-from typing import List
+from typing import Callable, List, TYPE_CHECKING
 
 from BaseClasses import Region, Entrance, CollectionState
 
@@ -7,7 +6,9 @@ from .data import Logic
 from .data.Strings import AE3Stages, AE3Locations
 from .data.Locations import AE3Location, location_table
 from .data.Addresses import Address
-from . import AE3World
+
+if TYPE_CHECKING:
+    from . import AE3World
 
 
 class AE3Stage:
@@ -29,7 +30,7 @@ class AE3Stage:
     def _compare_index(self, stage):
         return self.original_index < stage.original_index
 
-def create_regions(world : AE3World):
+def create_regions(world : "AE3World"):
     player = world.player
     multiworld = world.multiworld
     options = world.options

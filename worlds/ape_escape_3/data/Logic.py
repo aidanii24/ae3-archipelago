@@ -76,9 +76,9 @@ class LocationRules:
         at least one set of AccessRules must also be adhered to.
     """
     Critical : Set[Callable] = None
-    Rules : Set[Set[Callable]] = None
+    Rules : Set[frozenset[Callable]] = None
 
-    def __init__(self, critical : Set[Callable] = None, rules : Set[Set[Callable]] = None):
+    def __init__(self, critical : Set[Callable] = None, rules : Set[frozenset[Callable]] = None):
         if critical is not None:
             self.Critical = critical
 

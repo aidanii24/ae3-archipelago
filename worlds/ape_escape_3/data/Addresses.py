@@ -1,10 +1,15 @@
 from .Strings import AE3Locations
 
 class Address:
-    """Container for all the relevant memory addresses in Ape Escape 3."""
+    """
+    Container for all the relevant memory addresses in Ape Escape 3.
+
+    Attributes:
+        items : Item Strings of the Game
+        locations : Location Strings of the Game
+        player : Strings related to status and resources of the player
+    """
     items = {
-        """Memory Addresses of the Items in Ape Escape 3."""
-        
         # <!> Values are on/off between 0x01 and 0x02 respectively unless commented otherwise.
 
         # Gadgets
@@ -59,8 +64,6 @@ class Address:
     }
 
     player = {
-        """Memory Addresses of variables relating to the player in Ape Escape 3. This includes their cookies, 
-        morph gauge status, and what gadget and or accessory they have equipped."""
         # Status
         "state" : 0x8519e4,             # int32 (0x00 - 0x04)
         "character" : 0x649910,         # int32 (0x00 - 0x01)

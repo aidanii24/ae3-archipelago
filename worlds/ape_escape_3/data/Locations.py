@@ -50,7 +50,7 @@ location_table = {
 
 # Pre-list Prerequisite of Locations
 ## TODO - Could Move these to Rules.py
-rules_table : Dict[str : Set[Callable[[CollectionState, int], bool]]] = {
+rules_table = {
     # Name
 
     # Monkeys
