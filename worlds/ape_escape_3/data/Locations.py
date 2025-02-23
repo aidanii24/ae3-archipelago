@@ -21,7 +21,7 @@ class AE3Location(Location):
     """
 
     game: str = "Ape Escape 3"
-    rules: LocationRules
+    rules: LocationRules = None
 
     def __init__(self, player : int, name : str, address : int, parent_region : Region ):
         self.rules = rules_table[name]

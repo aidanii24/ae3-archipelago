@@ -44,11 +44,15 @@ def create_regions(world : "AE3World"):
 
             ## Any Critical Rules that return False should immediately mark the item as inaccessible with
             ## the current state
-            for rule in loc.rules.Critical:
-                if not rule(state, player):
-                    return False
+            if loc.rules.Critical:
+                for rule in loc.rules.Critical:
+                    if not rule(state, player):
+                        return False
 
             ## At least one set of normal rules (if any) must return true to mark the item as reachable
+            if not loc.rules.Rules:
+                return None
+
             reachable: bool = False
 
             for ruleset in loc.rules.Rules:
@@ -76,8 +80,6 @@ def create_regions(world : "AE3World"):
     seaside_c = Region(AE3Stages.seaside_c.value, player, multiworld)
 
     ## Monkeys
-    zero_ukki_pan = Region(AE3Locations.zero_ukki_pan.value, player, multiworld)
-
     seaside_nessal = Region(AE3Locations.seaside_nessal.value, player, multiworld)
     seaside_ukki_pia = Region(AE3Locations.seaside_ukki_pia.value, player, multiworld)
     seaside_sarubo = Region(AE3Locations.seaside_sarubo.value, player, multiworld)
@@ -102,8 +104,13 @@ def create_regions(world : "AE3World"):
     regions = [
         menu,
         tv_station, shopping_district,
-        zero, 
-        zero_ukki_pan,
+    ]
+
+    if not world.options.option_shuffle_net:
+        zero_ukki_pan = Region(AE3Locations.zero_ukki_pan.value, player, multiworld)
+        regions += [zero_ukki_pan]
+
+    regions += [
         seaside_a, seaside_b, seaside_c,
         seaside_nessal, seaside_ukki_pia, seaside_sarubo, seaside_salurin, seaside_ukkitan, seaside_morella,
         seaside_ukki_ben,
@@ -123,7 +130,8 @@ def create_regions(world : "AE3World"):
 
             ## Add Locations to their dedicated Region and confirm their AccessRules
             if region.name in location_table:
-                location.access_rule = generate_access_rules(location)
+                if location.rules:
+                    location.access_rule = generate_access_rules(location)
                 region.locations.append(location)
 
     multiworld.regions.extend(regions)
