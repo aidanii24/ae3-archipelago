@@ -31,7 +31,7 @@ class AE3World(World):
     """
 
     # Define Basic Game Parameters
-    game = "Ape Escape"
+    game = "Ape Escape 3"
     web : ClassVar[WebWorld] = AE3Web()
     topology_present = True
 
