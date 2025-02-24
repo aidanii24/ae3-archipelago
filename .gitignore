@@ -36,7 +36,7 @@ meta.yaml
 setup.py
 WebHost.py
 SNIClient.py
-
+Patch.py
 
 worlds/generic/*
 worlds/__init__.py
@@ -44,6 +44,8 @@ data/*
 logs/*
 typings/*
 WebHostLib/*
+.run/*
+.venv/*
 
 AutoSNIClient.py
 AutoWorld.py
