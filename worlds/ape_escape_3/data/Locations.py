@@ -1,4 +1,3 @@
-from collections.abc import Callable
 from typing import Dict, Set, List
 
 from BaseClasses import CollectionState, Location, Region
@@ -56,7 +55,7 @@ rules_table = {
     # Monkeys
 
     ## TV Station/Zero
-    AE3Locations.zero_ukki_pan.value                : LocationRules( {AccessRules.CATCH}, ),
+    AE3Locations.zero_ukki_pan.value                : LocationRules( {AccessRules.CATCH} ),
 
     ## Seaside Resort
     AE3Locations.seaside_nessal.value               : LocationRules( {AccessRules.CATCH} ),
@@ -75,7 +74,7 @@ rules_table = {
     AE3Locations.seaside_break_kamayan.value        : LocationRules( {AccessRules.CATCH},
                                                                      {frozenset({AccessRules.SHOOT_FREE})}),
     AE3Locations.seaside_break_taizo.value          : LocationRules( {AccessRules.CATCH},
-                                                                     {frozenset({AccessRules.SHOOT_FREE})}),
+                                                                     {frozenset({AccessRules.SHOOT_FREE})})
 }
 
 location_group : Dict[str, Set[str]] = {}

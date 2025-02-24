@@ -30,6 +30,15 @@ class AE3Stage:
     def _compare_index(self, stage):
         return self.original_index < stage.original_index
 
+def connect_regions(player : int, start : Region, dest : Region, rule = None):
+    connection : Entrance = Entrance(player, start.name + " <> " + dest.name)
+
+    if rule:
+        connection.access_rule = rule
+
+    start.exits.append(connection)
+    connection.connect(dest)
+
 def create_regions(world : "AE3World"):
     player = world.player
     multiworld = world.multiworld
@@ -94,12 +103,39 @@ def create_regions(world : "AE3World"):
     seaside_break_taizo = Region(AE3Locations.seaside_break_taizo.value, player, multiworld)
 
     # Establish Specific Region Connections
+    ## Menu
+    menu.connect(tv_station)
+
     ## Hub
-    shopping_district.connect(tv_station)
+    connect_regions(player, tv_station, shopping_district)
 
     ## Seaside Resort
-    seaside_a.connect(seaside_b)
-    seaside_a.connect(seaside_c, None, lambda state : Logic.can_use_monkey(state, player))
+    connect_regions(player, tv_station, seaside_a)
+    connect_regions(player, seaside_a, seaside_b)
+    connect_regions(player, seaside_a, seaside_c, lambda state : Logic.can_use_monkey(state, player))
+
+    connect_regions(player, seaside_a, seaside_nessal, lambda state : Logic.can_catch(state, player))
+    connect_regions(player, seaside_a, seaside_ukki_pia, lambda state : Logic.can_catch(state, player))
+    connect_regions(player, seaside_a, seaside_sarubo, lambda state : Logic.can_catch(state, player))
+    connect_regions(player, seaside_a, seaside_salurin, lambda state : Logic.can_catch(state, player))
+    connect_regions(player, seaside_a, seaside_ukkitan, lambda state : Logic.can_catch(state, player))
+    connect_regions(player, seaside_a, seaside_morella, lambda state :
+                                                        Logic.can_catch(state, player) and
+                                                        Logic.can_shoot_free(state, player))
+    connect_regions(player, seaside_b, seaside_ukki_ben, lambda state : Logic.can_catch(state, player))
+
+    connect_regions(player, seaside_c, seaside_break_kankichi, lambda state :
+                                                        Logic.can_catch(state, player) and
+                                                        Logic.can_use_monkey(state, player))
+    connect_regions(player, seaside_c, seaside_break_tomzeo, lambda state:
+                                                        Logic.can_catch(state, player) and
+                                                        Logic.can_use_monkey(state, player))
+    connect_regions(player, seaside_c, seaside_break_kamayan, lambda state:
+                                                        Logic.can_catch(state, player) and
+                                                        Logic.can_use_monkey(state, player))
+    connect_regions(player, seaside_c, seaside_break_taizo, lambda state:
+                                                        Logic.can_catch(state, player) and
+                                                        Logic.can_use_monkey(state, player))
 
     regions = [
         menu,
@@ -108,6 +144,10 @@ def create_regions(world : "AE3World"):
 
     if not world.options.option_shuffle_net:
         zero_ukki_pan = Region(AE3Locations.zero_ukki_pan.value, player, multiworld)
+
+        connect_regions(player, menu, zero_ukki_pan)
+        connect_regions(player, zero_ukki_pan, tv_station)
+
         regions += [zero_ukki_pan]
 
     regions += [
@@ -121,7 +161,7 @@ def create_regions(world : "AE3World"):
     region : Region
     for region in regions:
         ## Connect TV Station to all starting areas
-        if region.name.endswith("_a"):
+        if "Outside" in region.name:
             region.connect(tv_station)
 
         ## Confirm Location
@@ -136,9 +176,10 @@ def create_regions(world : "AE3World"):
 
     multiworld.regions.extend(regions)
 
-    # Add Regions
-    ## Zero
-    world.get_region(AE3Stages.zero.value).add_exits(AE3Stages.travel_station_a.value)
+    # Connection Diagrams
+    from Utils import visualize_regions
+    visualize_regions(multiworld.get_region("Menu", player), "my_world.puml")
+
 """
 # TODO
 There should be a way to automate this rather than declare each region and location one by one.
