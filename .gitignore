@@ -12,7 +12,7 @@ test/*
 _testing.py
 worlds/ape_escape_3/test/*
 
-# Archipelago Redundancies
+# Archipelago Specific
 BaseClasses.py
 CommonClient.py
 Fill.py
@@ -23,9 +23,28 @@ NetUtils.py
 Options.py
 settings.py
 Utils.py
+_speedups*
+ChecksFinderClient.py
+entrance_rando.py
+Generate.py
+inno_setup.iss
+intset.h
+kvui.py
+Launcher.py
+Main.py
+meta.yaml
+setup.py
+WebHost.py
+SNIClient.py
+
 
 worlds/generic/*
 worlds/__init__.py
+data/*
+logs/*
+typings/*
+WebHostLib/*
+
 AutoSNIClient.py
 AutoWorld.py
 Files.py
