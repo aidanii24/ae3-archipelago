@@ -36,7 +36,11 @@ def connect_regions(player : int, start : Region, dest : Region, rule = None):
     if rule:
         connection.access_rule = rule
 
+    # Establish exit for the start region
     start.exits.append(connection)
+    connection.parent_region = start
+
+    # Establish entrance for the destination region
     connection.connect(dest)
 
 def create_regions(world : "AE3World"):
@@ -60,7 +64,7 @@ def create_regions(world : "AE3World"):
 
             ## At least one set of normal rules (if any) must return true to mark the item as reachable
             if not loc.rules.Rules:
-                return None
+                return True
 
             reachable: bool = False
 
@@ -136,6 +140,12 @@ def create_regions(world : "AE3World"):
     connect_regions(player, seaside_c, seaside_break_taizo, lambda state:
                                                         Logic.can_catch(state, player) and
                                                         Logic.can_use_monkey(state, player))
+
+    # <!> Test
+    # nessal_location : AE3Location = AE3Location(player, seaside_nessal.name, Address.locations[seaside_nessal.name],
+    #                                  seaside_nessal)
+    # nessal_location.access_rule = generate_access_rules(nessal_location)
+    # seaside_nessal.locations.append(nessal_location)
 
     regions = [
         menu,

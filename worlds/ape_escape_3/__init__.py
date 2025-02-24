@@ -42,6 +42,7 @@ class AE3World(World):
     options = AE3Options  # Purely for Type Hints; not logically significant
 
     # Define the Items and Locations to/for Archipelago
+
     item_name_to_id = item_table
     location_name_to_id = location_table
 
@@ -103,9 +104,10 @@ class AE3World(World):
             self.multiworld.push_precollected(gadgets[self.options.option_starting_gadget - 1])
             del gadgets[self.options.option_starting_gadget - 1]
 
-        if not self.options.option_shuffle_net:
-            self.multiworld.push_precollected(monkey_net)
+        if self.options.option_shuffle_net:
             gadgets.append(monkey_net)
+        else:
+            self.multiworld.push_precollected(monkey_net)
 
         self.item_pool += gadgets
         self.item_pool += [knight, cowboy, ninja, magician, kungfu, hero, monkey]
