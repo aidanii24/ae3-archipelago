@@ -39,6 +39,7 @@ SNIClient.py
 Patch.py
 
 worlds/generic/*
+worlds/alttp/*
 worlds/__init__.py
 data/*
 logs/*
@@ -51,6 +52,9 @@ AutoSNIClient.py
 AutoWorld.py
 Files.py
 LauncherComponents.py
+/requirements.txt
+
+_region_diagram.puml
 
 # IDE files
 .idea/*

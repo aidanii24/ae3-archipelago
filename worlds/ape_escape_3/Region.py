@@ -178,7 +178,7 @@ def create_regions(world : "AE3World"):
 
     # Connection Diagrams
     from Utils import visualize_regions
-    visualize_regions(multiworld.get_region("Menu", player), "my_world.puml")
+    visualize_regions(multiworld.get_region("Menu", player), "_region_diagram.puml")
 
 """
 # TODO
