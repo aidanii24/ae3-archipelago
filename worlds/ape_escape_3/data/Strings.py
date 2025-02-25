@@ -1,5 +1,16 @@
 from enum import Enum
 
+class APItems(Enum):
+    """
+        Strings for all the Items created to assist with logic and progression for Archipelago.
+    """
+
+    # Progression
+    channel_key = "Channel Key"
+    victory = "Victory"
+
+    # Special
+    morph_gauge_extension = "Morph Gauge Extension"
 
 class AE3Items(Enum):
     """

@@ -3,7 +3,8 @@ from typing import Dict, Set, List
 from BaseClasses import Item
 
 from .Addresses import Address
-from .Strings import AE3Items
+from .Strings import AE3Items, APItems
+
 
 class AE3Item(Item):
     """
@@ -17,6 +18,10 @@ item_group : Dict[str, Set[str]] = {}
 
 item_table = {
     # String (Name)                     # AP ItemID/Memory Address
+
+    # Archipelago Progression
+    APItems.channel_key.value           : 0x300,
+    APItems.victory.value               : 0x301,
 
     # Gadgets
     AE3Items.stun_club.value            : Address.items["stun_club"],
@@ -52,22 +57,22 @@ def create_item_groups():
     keys : List[str] = list(item_table)
 
     # Gadgets
-    for l in range(8):
+    for l in range(2, 10):
         item_group.setdefault("Gadgets", set()).add(keys[l])
     
     # Morphs
-    for l in range(8, 14):
+    for l in range(10, 17):
         item_group.setdefault("Morphs", set()).add(keys[l])
-    
+
     # Equipment
     item_group.setdefault("Equipment", set()).update(item_group["Gadgets"])
     item_group.setdefault("Equipment", set()).update(item_group["Morphs"])
-    
+
     # Accessories
-    for l in range (16, 17):
+    for l in range (18, 20):
         item_group.setdefault("Pellets", set()).add(keys[l])
     
-    for l in range (18, 20):
+    for l in range (20, 23):
         item_group.setdefault("Chassis", set()).add(keys[l])
 
 create_item_groups()
