@@ -1,6 +1,21 @@
-from enum import Enum
+from enum import Enum, EnumMeta
 
-class APItems(Enum):
+
+# Helper Enum Types
+class MetaEnum(EnumMeta):
+    def __contains__(cls, item):
+        try:
+            cls(item)
+        except ValueError:
+            return False
+
+        return True
+
+class BaseEnum(Enum, metaclass=MetaEnum):
+    pass
+
+# Strings
+class APItems(BaseEnum):
     """
         Strings for all the Items created to assist with logic and progression for Archipelago.
     """
@@ -12,7 +27,7 @@ class APItems(Enum):
     # Special
     morph_gauge_extension = "Morph Gauge Extension"
 
-class AE3Items(Enum):
+class AE3Items(BaseEnum):
     """
     Strings for all the Items of Ape Escape 3. This includes Gadgets, Morphs and select items
     from the Shopping district
@@ -48,7 +63,7 @@ class AE3Items(Enum):
     chassis_pudding = "Pudding Chassis"
 
 
-class AE3Locations(Enum):
+class AE3Locations(BaseEnum):
     """
     Strings for all the Locations of Ape Escape 3. This includes Monkeys, Cellphones, Cameras, and Points of Interest.
     """
@@ -70,7 +85,7 @@ class AE3Locations(Enum):
     seaside_break_taizo         = "Taizo - Seaside Resort"
 
 
-class AE3Stages(Enum):
+class AE3Stages(BaseEnum):
     """Strings for the various stages of Ape Escape 3. This refers to the names of all the rooms in the game."""
 
     # Menu/Hub

@@ -124,10 +124,10 @@ class AE3World(World):
 
     def fill_slot_data(self):
         return {
-            "Starting Gadget" : self.option.option_starting_gadget.value,
-            "Shuffle Net" : self.option.option_shuffle_net.value,
-            "Include RC Car Chassis in Randomizer" : self.option.option_shuffle_chassis,
-            "Auto-equip Gadgets when obtained" : self.option.option_auto_equip
+            "Starting Gadget" : self.options.option_starting_gadget.value,
+            "Shuffle Net" : self.options.option_shuffle_net.value,
+            "Include RC Car Chassis in Randomizer" : self.options.option_shuffle_chassis,
+            "Auto-equip Gadgets when obtained" : self.options.option_auto_equip
         }
 
     def generate_output(self, dir : str):
