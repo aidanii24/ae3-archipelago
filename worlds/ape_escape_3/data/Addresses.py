@@ -66,7 +66,7 @@ class Address:
     player = {
         # Status
         "state"                     : 0x8519e4,             # int32 (0x00 - 0x04)
-        "character"                 : 0x649910,         # int32 (0x00 - 0x01)
+        "character"                 : 0x649910,             # int32 (0x00 - 0x01)
         "lives"                     : 0x649914,
         "cookies"                   : 0x649918,
         "status_morph_recharge"     : 0x649924,
