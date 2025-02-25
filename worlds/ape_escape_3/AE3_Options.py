@@ -4,7 +4,10 @@ from Options import Toggle, Choice, PerGameCommonOptions
 
 # Item Options
 class StartingGadget(Choice):
-    """Choose a Gadget to start the game with along with the Monkey Net"""
+    """
+    Choose a Gadget to start the game with along with the Monkey Net. Choose None if you want to start with
+    only the Monkey Net.
+    """
     display_name : str = "Starting Gadget"
     default = 1
 
