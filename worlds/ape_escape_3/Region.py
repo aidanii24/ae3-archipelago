@@ -51,6 +51,10 @@ def create_regions(world : "AE3World"):
     # Generate AccessRules for Locations
     def generate_access_rules(loc : AE3Location) -> Callable[[CollectionState], bool]:
         def access_rule(state : CollectionState) -> bool:
+            ## No rules mean there is no prerequisite for access; Return true
+            if loc.rules.Critical is None and loc.rules.Rules is None:
+                return True
+
             ## Any Critical Rules that return False should immediately mark the item as inaccessible with
             ## the current state
             if loc.rules.Critical:
@@ -65,11 +69,12 @@ def create_regions(world : "AE3World"):
             reachable: bool = False
 
             for ruleset in loc.rules.Rules:
-                for rule in ruleset:
-                    if not rule(state, player):
-                        continue
+                set_reachable: bool = False
 
-                reachable = True
+                for rule in ruleset:
+                    rule(state, player)
+
+                reachable = reachable or set_reachable
 
             return reachable
         return access_rule
@@ -97,7 +102,7 @@ def create_regions(world : "AE3World"):
     seaside_ukki_ben = Region(AE3Locations.seaside_ukki_ben.value, player, multiworld)
 
     seaside_break_kankichi = Region(AE3Locations.seaside_break_kankichi.value, player, multiworld)
-    seaside_break_tomezo = Region(AE3Locations.seaside_break_tomezo.value, player, multiworld)
+    seaside_break_tomzeo = Region(AE3Locations.seaside_break_tomezo.value, player, multiworld)
     seaside_break_kamayan = Region(AE3Locations.seaside_break_kamayan.value, player, multiworld)
     seaside_break_taizo = Region(AE3Locations.seaside_break_taizo.value, player, multiworld)
 
@@ -126,7 +131,7 @@ def create_regions(world : "AE3World"):
     connect_regions(player, seaside_c, seaside_break_kankichi, lambda state :
                                                         Logic.can_catch(state, player) and
                                                         Logic.can_use_monkey(state, player))
-    connect_regions(player, seaside_c, seaside_break_tomezo, lambda state:
+    connect_regions(player, seaside_c, seaside_break_tomzeo, lambda state:
                                                         Logic.can_catch(state, player) and
                                                         Logic.can_use_monkey(state, player))
     connect_regions(player, seaside_c, seaside_break_kamayan, lambda state:
@@ -135,6 +140,12 @@ def create_regions(world : "AE3World"):
     connect_regions(player, seaside_c, seaside_break_taizo, lambda state:
                                                         Logic.can_catch(state, player) and
                                                         Logic.can_use_monkey(state, player))
+
+    # <!> Test
+    # nessal_location : AE3Location = AE3Location(player, seaside_nessal.name, Address.locations[seaside_nessal.name],
+    #                                  seaside_nessal)
+    # nessal_location.access_rule = generate_access_rules(nessal_location)
+    # seaside_nessal.locations.append(nessal_location)
 
     regions = [
         menu,
@@ -153,7 +164,7 @@ def create_regions(world : "AE3World"):
         seaside_a, seaside_b, seaside_c,
         seaside_nessal, seaside_ukki_pia, seaside_sarubo, seaside_salurin, seaside_ukkitan, seaside_morella,
         seaside_ukki_ben,
-        seaside_break_kankichi, seaside_break_tomezo, seaside_break_kamayan, seaside_break_taizo
+        seaside_break_kankichi, seaside_break_tomzeo, seaside_break_kamayan, seaside_break_taizo
     ]
 
     # Check Regions
@@ -168,10 +179,10 @@ def create_regions(world : "AE3World"):
             location : AE3Location = AE3Location(player, region.name, Address.locations[region.name], region)
 
             ## Add Locations to their dedicated Region and confirm their AccessRules
-            if location.rules:
-                location.access_rule = generate_access_rules(location)
-
-            region.locations.append(location)
+            if region.name in location_table:
+                if location.rules:
+                    location.access_rule = generate_access_rules(location)
+                region.locations.append(location)
 
     multiworld.regions.extend(regions)
 

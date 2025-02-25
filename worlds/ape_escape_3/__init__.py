@@ -110,7 +110,7 @@ class AE3World(World):
             self.multiworld.push_precollected(monkey_net)
 
         self.item_pool += gadgets
-        self.item_pool += [cowboy, ninja, magician, kungfu, hero, monkey]
+        self.item_pool += [knight, cowboy, ninja, magician, kungfu, hero, monkey]
 
         if self.options.option_shuffle_chassis:
             chassis_twin = self.create_item(AE3Items.chassis_twin.value)
