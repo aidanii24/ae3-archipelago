@@ -36,12 +36,12 @@ class AEPS2Interface:
             self.ipc.connect()
 
             if not self.ipc.is_connected():
-                print("[Debug] Reconnection Failed")
                 return
 
             self.logger.info("Connected to PCSX2.")
 
         try:
+            self.logger.info("Finding Game...")
             game_id : str = self.ipc.get_game_id()
 
             self.loaded_game = None
