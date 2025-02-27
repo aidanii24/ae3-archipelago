@@ -60,17 +60,20 @@ class AEPS2Interface:
 
     # Game Manipulation
     def unlock_equipment(self, addr: int = 0):
-        self.ipc.write_int32(Address.items["sky_flyer"], 2)  # Test: unlocks Sky Flyer
+        self.ipc.write_int32(addr, 2)  # Test: unlocks Sky Flyer
 
         if self.will_auto_equip:
-            self.auto_equip(7)
+            self.auto_equip(list(Address.items.values()).index(addr))
 
-    def auto_equip(self, btn_id: int):
+    def auto_equip(self, gadget_id: int):
+        button_id : int = 0x0
+
         for button in self.buttons:
-            if button != 0:
+            button_id = self.ipc.read_int32(button)
+            if button != 0x0:
                 continue
 
-            self.ipc.write_int32(button, btn_id)
+            self.ipc.write_int32(button_id, gadget_id)
 
     def steal_equipment(self):
         self.ipc.write_int32(Address.items.sky_flyer, 1)

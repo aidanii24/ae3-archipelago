@@ -16,6 +16,10 @@ class AE3Item(Item):
 
 item_group : Dict[str, Set[str]] = {}
 
+# TODO - On refactor, initialize items first by category, in format of { id : name }, then when creating
+#  the master table, format them as { name : id } there instead. This allows for easy generation while making ID
+#  checking by group easy and fast as well.
+
 item_table = {
     # String (Name)                     # AP ItemID/Memory Address
 
@@ -52,6 +56,14 @@ item_table = {
     AE3Items.chassis_black.value        : Address.items["chassis_black"],
     AE3Items.chassis_pudding.value      : Address.items["chassis_pudding"]
 }
+
+def from_id(item_id : int) -> int:
+    ids : List[int] = list(item_table.values())
+
+    if item_id in ids:
+        return list(item_table.keys())[ids.index(item_id)]
+    else:
+        return 0
 
 def create_item_groups():
     keys : List[str] = list(item_table)

@@ -7,6 +7,7 @@ from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser,
 import Utils
 
 from .AE3_Interface import AEPS2Interface
+from .Checker import check_locations, check_items
 
 
 class AE3CommandProcessor(ClientCommandProcessor):
@@ -113,7 +114,8 @@ async def check_game(ctx : AE3Context):
             return
 
         # Check Progression
-
+        await check_items(ctx)
+        await check_locations(ctx)
     else:
         message : str = "Waiting for player to connect to server..."
         if ctx.last_error_message is not message:
@@ -126,7 +128,7 @@ async def reconnect_game(ctx : AE3Context):
     ctx.ipc.connect_game()
     await asyncio.sleep(3)
 
-def start():
+def launch():
     async def main():
         # Parse Command Line
         parser : ArgumentParser = get_base_parser()
@@ -145,13 +147,13 @@ def start():
             ctx.run_gui()
         ctx.run_cli()
 
-        # Create Task where Client can check for statuses continuously
+        # Create Main Loop
         ctx.interface_sync_task = asyncio.create_task(interface_sync_task(ctx), name="PCSX2 Sync")
 
         await ctx.exit_event.wait()
         ctx.server_address = None
 
-        # Call Main Client Function
+        # Call Main Client Loop
         if ctx.interface_sync_task:
             await asyncio.sleep(3)
             await ctx.interface_sync_task
@@ -165,4 +167,4 @@ def start():
 
 
 if __name__ == '__main__':
-    start()
+    launch()

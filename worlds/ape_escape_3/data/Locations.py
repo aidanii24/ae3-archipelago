@@ -1,13 +1,11 @@
-from typing import Dict, Set, List
+from typing import Dict, Set
 
-from BaseClasses import CollectionState, Location, Region
+from BaseClasses import Location, Region
 
 from .Strings import AE3Locations
 from .Logic import AccessRules, LocationRules
 
-
-# TODO
-# Create Location() objects directly instead of making Tables of its data first
+# TODO - Create Tables by category first, then add them all to a master table
 
 class AE3Location(Location):
     """
@@ -80,8 +78,6 @@ rules_table = {
 location_group : Dict[str, Set[str]] = {}
 
 def create_location_groups():
-    keys : List[str] = list(location_table)
-
     # Monkeys
     for location in location_table:
         location_group.setdefault("Monkeys", set()).add(location)
