@@ -134,8 +134,8 @@ class AE3World(World):
         return {
             "Starting Gadget" : self.options.option_starting_gadget.value,
             "Shuffle Net" : self.options.option_shuffle_net.value,
-            "Include RC Car Chassis in Randomizer" : self.options.option_shuffle_chassis,
-            "Auto-equip Gadgets when obtained" : self.options.option_auto_equip
+            "Include RC Car Chassis in Randomizer" : self.options.option_shuffle_chassis.value,
+            "Auto-equip Gadgets when obtained" : self.options.option_auto_equip.value
         }
 
     def generate_output(self, dir : str):

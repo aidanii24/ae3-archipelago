@@ -31,13 +31,17 @@ class ShuffleMonkeyNet(Toggle):
     display_name : str = "Shuffle Monkey Net"
 
 class ShuffleRCCarChassis(Toggle):
-    """Choose if the various RC Car Chassis should also be included in the pool. Unlocking any chassis will 
-    automatically unlock the RC Car Gadget if it hasn't yet."""
+    """
+    Choose if the various RC Car Chassis should also be included in the pool. Unlocking any chassis will
+    automatically unlock the RC Car Gadget if it hasn't yet.
+    """
     display_name : str = "Include RC Car Chassis in Randomizer"
 
 # QoL/Bonus Options
 class AutoEquipOnUnlock(Toggle):
-    """Choose if Gadgets should be automatically equipped on unset buttons when unlocked."""
+    """
+    Choose if Gadgets should be automatically equipped on unset buttons when unlocked.
+    """
     display_name : str = "Auto Equip Gadgets when obtained"
 
 @dataclass

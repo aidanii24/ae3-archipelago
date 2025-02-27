@@ -26,6 +26,8 @@ class AE3Context(CommonContext):
     game: str = "Ape Escape 3"
     platform: str = "PS2"
 
+    items_handling = 0xb111
+
     ipc : AEPS2Interface = AEPS2Interface
     is_connected : bool = ConnectionStatus.DISCONNECTED
     interface_sync_task : asyncio.tasks = None
@@ -37,7 +39,6 @@ class AE3Context(CommonContext):
     auto_equip : bool = False
 
     def __init__(self, address, password):
-        super().__init__(address, password)
         super().__init__(address, password)
         Utils.init_logging("Ape Escape 3 Archipelago Client" + self.client_version)
 
