@@ -19,7 +19,7 @@ async def check_items(ctx : 'AE3Context'):
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
 
-    for key, value in Address.locations:
+    for key, value in Address.locations.items():
         if ctx.ipc.ipc.read_int8(value) == 0x01:
             cleared.add(value)
 
