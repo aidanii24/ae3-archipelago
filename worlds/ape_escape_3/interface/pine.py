@@ -82,15 +82,6 @@ class Pine:
             socket_name = os.environ.get("XDG_RUNTIME_DIR", "/tmp")
             socket_name += "/pcsx2.sock"
 
-            print("[Debug] Checking for initial socket at " + socket_name)
-
-            # Flatpak Sock Path (XDG_RUNTIME_DIR/.flatpak/net.pcsx2.PCSX2/xdg_run)
-            # if not os.path.isfile(socket_name):
-            #     print("[Debug] Initial socket check failed. Using Flatpak Socket.")
-            #     socket_name = os.environ.get("XDG_RUNTIME_DIR")
-            #     socket_name += "/.flatpak/net.pcsx2.PCSX2/xdg-run"
-            #     socket_name += "/pcsx2.sock"
-
         elif system() == "Darwin":
             socket_family = socket.AF_UNIX
             socket_name = os.environ.get("TMPDIR", "/tmp")
@@ -99,18 +90,30 @@ class Pine:
             socket_family = socket.AF_UNIX
             socket_name = "/tmp/pcsx2.sock"
 
-        print("[Debug] Connecting to Socket in " + socket_name)
-
         try:
             self._sock = socket.socket(socket_family, socket.SOCK_STREAM)
             self._sock.settimeout(5.0)
             self._sock.connect(socket_name)
+        except FileNotFoundError:
+            # Flatpak Sock Path
+            if system() == "Linux":
+                print("Original Socket not found. Trying for Flatpak version")
+
+                socket_name = os.environ.get("XDG_RUNTIME_DIR")
+                socket_name += "/.flatpak/net.pcsx2.PCSX2/xdg-run"
+                socket_name += "./pcsx2.sock"
+
+                try:
+                    self._sock = socket.socket(socket_family, socket.SOCK_STREAM)
+                    self._sock.settimeout(5.0)
+                    self._sock.connect(socket_name)
+                except socket.error:
+                    self._sock.close()
+                    self._sock_state = False
+                    return
+            pass
         except socket.error:
             self._sock.close()
-            self._sock_state = False
-            return
-        except:
-            print("Error")
             self._sock_state = False
             return
 
