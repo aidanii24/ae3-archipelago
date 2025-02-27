@@ -35,20 +35,36 @@ class AEPS2Interface:
         if not self.ipc.is_connected():
             self.ipc.connect()
 
-            if not self.ipc.is_connected:
+            if not self.ipc.is_connected():
+                print("[Debug] Reconnection Failed")
                 return
 
             self.logger.info("Connected to PCSX2.")
 
+        try:
+            game_id : str = self.ipc.get_game_id()
+
+            self.loaded_game = None
+            if game_id == "SCUS-97501":
+                self.loaded_game = game_id
+            else:
+                self.logger.warning("Unsupported or Wrong Game connected. Please load the NTSC-U version of "
+                                    "Ape Escape 3")
+        except RuntimeError:
+            pass
+        except ConnectionError:
+            pass
+
     def disconnect_game(self):
         self.ipc.disconnect()
+        self.loaded_game = None
         self.logger.info("Disconnected from PCSX2")
 
     def get_connection_state(self) -> bool:
         try:
             connected : bool = self.ipc.is_connected()
 
-            return not connected or self.loaded_game is None
+            return not (not connected or self.loaded_game is None)
         except RuntimeError:
             return False
 

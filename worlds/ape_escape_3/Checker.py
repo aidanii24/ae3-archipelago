@@ -5,9 +5,9 @@ from .data.Addresses import Address
 from .data.Items import item_group
 
 if TYPE_CHECKING:
-    from AE3_Client import AE3Context
+    from .AE3_Client import AE3Context
 
-async def check_items(ctx : AE3Context):
+async def check_items(ctx : 'AE3Context'):
     # Get Items from server
     for server_item in ctx.items_received:
         item = Items.from_id(server_item.item)
@@ -16,7 +16,7 @@ async def check_items(ctx : AE3Context):
         if item in item_group["Equipment"]:
             ctx.ipc.unlock_equipment(server_item.item)
 
-async def check_locations(ctx : AE3Context):
+async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
 
     for key, value in Address.locations:

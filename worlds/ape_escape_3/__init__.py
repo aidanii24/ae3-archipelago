@@ -10,7 +10,7 @@ from .data.Locations import location_table
 from .data.Strings import AE3Items, AE3Locations
 from ..LauncherComponents import Component, components, launch_subprocess, Type
 
-# Run Client
+# Identifier for Archipelago to recognize and run the client
 def run_client(_url : Optional[str] = None):
     from .AE3_Client import launch
     launch_subprocess(launch, name="AE3Client")

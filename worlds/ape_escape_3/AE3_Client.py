@@ -1,3 +1,4 @@
+import multiprocessing
 from typing import Optional
 from argparse import ArgumentParser, Namespace
 import asyncio
@@ -6,7 +7,7 @@ import traceback
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled
 import Utils
 
-from .AE3_Interface import AEPS2Interface
+from .AE3_Interface import AEPS2Interface, ConnectionStatus
 from .Checker import check_locations, check_items
 
 
@@ -26,7 +27,7 @@ class AE3Context(CommonContext):
     platform: str = "PS2"
 
     ipc : AEPS2Interface = AEPS2Interface
-    is_connected : bool = False
+    is_connected : bool = ConnectionStatus.DISCONNECTED
     interface_sync_task : asyncio.tasks = None
     last_error_message : Optional[str] = None
 
@@ -37,7 +38,10 @@ class AE3Context(CommonContext):
 
     def __init__(self, address, password):
         super().__init__(address, password)
+        super().__init__(address, password)
         Utils.init_logging("Ape Escape 3 Archipelago Client" + self.client_version)
+
+        self.ipc = AEPS2Interface(logger)
 
     # Archipelago Server Authentication
     async def server_auth(self, password_requested : bool = False):
@@ -83,7 +87,6 @@ async def interface_sync_task(ctx : AE3Context):
                 await check_game(ctx)
             else:
                 await reconnect_game(ctx)
-
         except ConnectionError:
             ctx.ipc.disconnect_game()
         except Exception as e:
@@ -99,8 +102,10 @@ async def check_game(ctx : AE3Context):
     # Check if Game State is safe for Checking
     if ctx.player_control:
         if not ctx.ipc.get_player_state():
-            ctx.player_state = ctx.ipc.get_player_state()
+            ctx.player_control = False
             await asyncio.sleep(1)
+
+        await asyncio.sleep(0.5)
         return
     elif ctx.ipc.get_player_state():
         ctx.player_control = True
@@ -130,6 +135,8 @@ async def reconnect_game(ctx : AE3Context):
 
 def launch():
     async def main():
+        multiprocessing.freeze_support()
+
         # Parse Command Line
         parser : ArgumentParser = get_base_parser()
         parser.add_argument("AE3AP_file", default="", type=str, nargs="?",
@@ -152,6 +159,8 @@ def launch():
 
         await ctx.exit_event.wait()
         ctx.server_address = None
+
+        await ctx.shutdown()
 
         # Call Main Client Loop
         if ctx.interface_sync_task:
