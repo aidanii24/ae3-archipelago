@@ -1,4 +1,4 @@
-from typing import ClassVar, List
+from typing import ClassVar, List, Optional
 
 from BaseClasses import MultiWorld, Tutorial, ItemClassification
 from worlds.AutoWorld import World, WebWorld
@@ -8,7 +8,15 @@ from .Region import create_regions, AE3Stage
 from .data.Items import AE3Item, item_table, item_group
 from .data.Locations import location_table
 from .data.Strings import AE3Items, AE3Locations
+from ..LauncherComponents import Component, components, launch_subprocess, Type
 
+# Run Client
+def run_client(_url : Optional[str] = None):
+    from .AE3_Client import launch
+    launch_subprocess(launch, name="AE3Client")
+
+components.append(
+    Component("Ape Escape 3 Client", func = run_client, component_type = Type.CLIENT))
 
 class AE3Web(WebWorld):
     theme = "ocean"
