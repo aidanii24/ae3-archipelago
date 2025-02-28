@@ -28,4 +28,4 @@ async def check_locations(ctx : 'AE3Context'):
     cleared = cleared.difference(ctx.checked_locations)
 
     # Send newly checked locations to server
-    await ctx.send_msgs([{"cmd" : 'LocationChecks', "locations" : cleared}])
+    await ctx.send_msgs([{"cmd" : "LocationChecks", "locations" : cleared}])

@@ -27,7 +27,7 @@ class AE3Context(CommonContext):
     platform: str = "PS2"
 
     command_processor = AE3CommandProcessor
-    items_handling = 0xb111
+    items_handling = 0b111
 
     ipc : AEPS2Interface = AEPS2Interface
     is_connected : bool = ConnectionStatus.DISCONNECTED
