@@ -50,7 +50,6 @@ class AE3World(World):
     options = AE3Options  # Purely for Type Hints; not logically significant
 
     # Define the Items and Locations to/for Archipelago
-
     item_name_to_id = item_table
     location_name_to_id = location_table
 

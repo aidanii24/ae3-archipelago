@@ -8,7 +8,6 @@ if TYPE_CHECKING:
     from .AE3_Client import AE3Context
 
 async def check_items(ctx : 'AE3Context'):
-    print("[Debug] Checking Items...")
     # Get Items from server
     print(list(ctx.items_received))
     for server_item in ctx.items_received:
@@ -29,4 +28,4 @@ async def check_locations(ctx : 'AE3Context'):
     cleared = cleared.difference(ctx.checked_locations)
 
     # Send newly checked locations to server
-    await ctx.send_msgs([{"cmd" : "LocationChecks", "locations" : cleared}])
+    await ctx.send_msgs([{"cmd" : 'LocationChecks', "locations" : cleared}])

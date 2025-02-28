@@ -1,6 +1,6 @@
-import multiprocessing
-from typing import Optional
+from typing import Optional, Dict, Set
 from argparse import ArgumentParser, Namespace
+import multiprocessing
 import asyncio
 import traceback
 
@@ -26,13 +26,16 @@ class AE3Context(CommonContext):
     game: str = "Ape Escape 3"
     platform: str = "PS2"
 
-    items_handling = 0xb111
     command_processor = AE3CommandProcessor
+    items_handling = 0xb111
 
     ipc : AEPS2Interface = AEPS2Interface
     is_connected : bool = ConnectionStatus.DISCONNECTED
     interface_sync_task : asyncio.tasks = None
     last_error_message : Optional[str] = None
+
+    cached_locations_checked : Set[int]
+    cached_received_items : Dict[str, bool]
 
     player_control : bool = True
     current_stage = None
@@ -44,6 +47,9 @@ class AE3Context(CommonContext):
         Utils.init_logging("Ape Escape 3 Archipelago Client" + self.client_version)
 
         self.ipc = AEPS2Interface(logger)
+
+        self.cached_locations_checked = set()
+        self.cached_received_items = {}
 
     # Archipelago Server Authentication
     async def server_auth(self, password_requested : bool = False):

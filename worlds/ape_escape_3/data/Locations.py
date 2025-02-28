@@ -4,6 +4,7 @@ from BaseClasses import Location, Region
 
 from .Strings import AE3Locations
 from .Logic import AccessRules, LocationRules
+from .Addresses import Address
 
 # TODO - Create Tables by category first, then add them all to a master table
 
@@ -29,20 +30,20 @@ location_table = {
     # Monkeys
 
     ## TV Station/Zero
-    AE3Locations.zero_ukki_pan.value : 0,
+    AE3Locations.zero_ukki_pan.value :                  Address.locations[AE3Locations.zero_ukki_pan.value],
 
     ## Seaside Resort
-    AE3Locations.seaside_nessal.value : 1,
-    AE3Locations.seaside_ukki_pia.value : 2,
-    AE3Locations.seaside_sarubo.value : 3,
-    AE3Locations.seaside_salurin.value : 4,
-    AE3Locations.seaside_ukkitan.value : 5,
-    AE3Locations.seaside_morella.value : 6,
-    AE3Locations.seaside_ukki_ben.value : 7,
-    AE3Locations.seaside_break_kankichi.value : 8,
-    AE3Locations.seaside_break_tomezo.value : 9,
-    AE3Locations.seaside_break_kamayan.value : 10,
-    AE3Locations.seaside_break_taizo.value : 11
+    AE3Locations.seaside_nessal.value :                 Address.locations[AE3Locations.seaside_nessal.value],
+    AE3Locations.seaside_ukki_pia.value :               Address.locations[AE3Locations.seaside_ukki_pia.value],
+    AE3Locations.seaside_sarubo.value :                 Address.locations[AE3Locations.seaside_sarubo.value],
+    AE3Locations.seaside_salurin.value :                Address.locations[AE3Locations.seaside_salurin.value],
+    AE3Locations.seaside_ukkitan.value :                Address.locations[AE3Locations.seaside_ukkitan.value],
+    AE3Locations.seaside_morella.value :                Address.locations[AE3Locations.seaside_morella.value],
+    AE3Locations.seaside_ukki_ben.value :               Address.locations[AE3Locations.seaside_ukki_ben.value],
+    AE3Locations.seaside_break_kankichi.value :         Address.locations[AE3Locations.seaside_break_kankichi.value],
+    AE3Locations.seaside_break_tomezo.value :           Address.locations[AE3Locations.seaside_break_tomezo.value],
+    AE3Locations.seaside_break_kamayan.value :          Address.locations[AE3Locations.seaside_break_kamayan.value],
+    AE3Locations.seaside_break_taizo.value :            Address.locations[AE3Locations.seaside_break_taizo.value]
 }
 
 # Pre-list Prerequisite of Locations
@@ -79,5 +80,5 @@ location_group : Dict[str, Set[str]] = {}
 
 def create_location_groups():
     # Monkeys
-    for location in location_table:
+    for location in location_table.keys():
         location_group.setdefault("Monkeys", set()).add(location)
