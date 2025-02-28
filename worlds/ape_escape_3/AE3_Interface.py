@@ -76,6 +76,7 @@ class AEPS2Interface:
 
     # Game Manipulation
     def unlock_equipment(self, addr: int = 0):
+        print("[Debug] Attempting unlocking equipment of Address", addr)
         self.ipc.write_int32(addr, 2)  # Test: unlocks Sky Flyer
 
         if self.will_auto_equip:

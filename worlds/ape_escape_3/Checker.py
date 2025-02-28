@@ -8,10 +8,12 @@ if TYPE_CHECKING:
     from .AE3_Client import AE3Context
 
 async def check_items(ctx : 'AE3Context'):
+    print("[Debug] Checking Items...")
     # Get Items from server
+    print(list(ctx.items_received))
     for server_item in ctx.items_received:
         item = Items.from_id(server_item.item)
-
+        print("item:", item, "id:", server_item)
         # Check for new Gadgets/Morphs
         if item in item_group["Equipment"]:
             ctx.ipc.unlock_equipment(server_item.item)

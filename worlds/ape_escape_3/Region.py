@@ -4,7 +4,7 @@ from BaseClasses import Region, Entrance, CollectionState
 
 from .data import Logic
 from .data.Strings import AE3Stages, AE3Locations
-from .data.Locations import AE3Location, location_table
+from .data.Locations import AE3Location
 from .data.Addresses import Address
 
 if TYPE_CHECKING:
