@@ -71,12 +71,10 @@ class AEPS2Interface:
     # Game Check
     def get_player_state(self) -> bool:
         value : int = self.ipc.read_int32(Address.player["state"])
-
         return value == 0x0 or value == 0x02
 
     # Game Manipulation
     def unlock_equipment(self, addr: int = 0):
-        print("[Debug] Attempting unlocking equipment of Address", addr)
         self.ipc.write_int32(addr, 2)  # Test: unlocks Sky Flyer
 
         if self.will_auto_equip:

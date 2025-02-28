@@ -1,4 +1,4 @@
-from typing import Optional, Dict, Set
+from typing import Optional, Set
 from argparse import ArgumentParser, Namespace
 import multiprocessing
 import asyncio
@@ -35,7 +35,7 @@ class AE3Context(CommonContext):
     last_error_message : Optional[str] = None
 
     cached_locations_checked : Set[int]
-    cached_received_items : Dict[str, bool]
+    cached_received_items : Set[int]
 
     player_control : bool = True
     current_stage = None
@@ -49,7 +49,7 @@ class AE3Context(CommonContext):
         self.ipc = AEPS2Interface(logger)
 
         self.cached_locations_checked = set()
-        self.cached_received_items = {}
+        self.cached_received_items = set()
 
     # Archipelago Server Authentication
     async def server_auth(self, password_requested : bool = False):
