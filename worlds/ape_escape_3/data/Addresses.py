@@ -32,14 +32,14 @@ class Address:
         "morph_monkey"              : 0x649948,
 
         # Accessories
-        "acc_morph_stock"           : 0x649928,   # float (0000C842 - 00808944)
+        "acc_morph_stock"           : 0x649928,     # float (0000C842 - 00808944)
 
-        "pellet_explosive"          : 0x649998,  # int32
+        "pellet_explosive"          : 0x649998,     # int32
         "pellet_guided"             : 0x64999c,     # int32
 
-        "chassis_twin"              : 0x649c98,      # boolean (0x00 - 0x01)
+        "chassis_twin"              : 0x649c98,     # boolean (0x00 - 0x01)
         "chassis_black"             : 0x649c99,     # boolean (0x00 - 0x01)
-        "chassis_pudding"           : 0x649c9a,   # boolean (0x00 - 0x01)
+        "chassis_pudding"           : 0x649c9a,     # boolean (0x00 - 0x01)
     }
 
     locations = {
@@ -57,6 +57,7 @@ class Address:
         AE3Locations.seaside_ukkitan.value                  : 0x649b4f,
         AE3Locations.seaside_morella.value                  : 0x649b99,
         AE3Locations.seaside_ukki_ben.value                 : 0x6499e1,
+
         AE3Locations.seaside_break_kankichi.value           : 0x649b5e,
         AE3Locations.seaside_break_tomezo.value             : 0x649b5f,
         AE3Locations.seaside_break_kamayan.value            : 0x649b60,

@@ -17,7 +17,7 @@ async def check_items(ctx : 'AE3Context'):
             ctx.ipc.unlock_equipment(server_item.item)
             ctx.cached_received_items.add(server_item.item)
 
-async def check_locations(ctx : 'AE3Context'):
+async def check_locations(ctx : 'AE3Context') -> bool:
     cleared : Set[int] = set()
 
     for value in Address.locations.values():
@@ -25,7 +25,11 @@ async def check_locations(ctx : 'AE3Context'):
             cleared.add(value)
 
     # Get newly checked locations
-    cleared = cleared.difference(ctx.checked_locations)             # Against Server-side
+    cleared = cleared.difference(ctx.checked_locations)
 
     # Send newly checked locations to server
-    await ctx.send_msgs([{"cmd" : "LocationChecks", "locations" : cleared}])
+    if cleared:
+        await ctx.send_msgs([{"cmd" : "LocationChecks", "locations" : cleared}])
+        ctx.cached_locations_checked.update(cleared)
+        return True
+    return False

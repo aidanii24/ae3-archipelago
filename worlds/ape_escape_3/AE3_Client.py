@@ -128,7 +128,10 @@ async def check_game(ctx : AE3Context):
 
         # Check Progression
         await check_items(ctx)
-        await check_locations(ctx)
+
+        if await check_locations(ctx):
+            await asyncio.sleep(1)
+
     else:
         message : str = "Waiting for player to connect to server..."
         if ctx.last_error_message is not message:
