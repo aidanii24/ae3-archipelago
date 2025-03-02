@@ -136,7 +136,7 @@ EQUIPMENT : Sequence[EquipmentItem] = [
 ]
 
 ACCESSORIES : Sequence[EquipmentItem] = [
-    Chassis_Twin, Chassis_Black, Chassis_Twin
+    Chassis_Twin, Chassis_Black, Chassis_Pudding
 ]
 
 UPGRADEABLES : Sequence[UpgradeableItem] = [
