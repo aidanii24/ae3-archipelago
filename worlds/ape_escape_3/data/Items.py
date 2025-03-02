@@ -154,11 +154,11 @@ INDEX : Sequence[Sequence] = [
 ]
 
 ### [< --- METHODS --- >]
-def from_id(id = int, category : int = 0) -> AE3ItemMeta:
+def from_id(item_id = int, category : int = 0) -> AE3ItemMeta:
     """Get Item by its ID"""
     ref : Sequence = INDEX[category]
 
-    i : AE3ItemMeta = next((i for i in ref if i.item_id == id), None)
+    i : AE3ItemMeta = next((i for i in ref if i.item_id == item_id), None)
     return i
 
 def from_name(name = str, category : int = 0) -> AE3ItemMeta:
