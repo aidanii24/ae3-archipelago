@@ -104,6 +104,8 @@ Chassis_Pudding = EquipmentItem(Itm.chassis_pudding.value)
 Acc_Morph_Stock = UpgradeableItem(Itm.acc_morph_stock.value, Items[Game.morph_stocks.value].value, 10)
 
 # Collectables
+Nothing = CollectableItem(Itm.nothing.value, Items[Itm.nothing.value].value, 0, 0.0)
+
 Cookie = CollectableItem(Itm.cookie.value, GameStates[Game.cookies.value].value, 5, 0.4)
 Cookie_Giant = CollectableItem(Itm.cookie_giant.value, GameStates[Game.cookies.value].value, 5, 0.15,
                                0x01)
@@ -142,7 +144,7 @@ UPGRADEABLES : Sequence[UpgradeableItem] = [
 ]
 
 COLLECTABLES : Sequence[CollectableItem] = [
-    Cookie, Cookie_Giant, Jacket, Chip_1x, Chip_5x, Chip_10x, Energy, Energy_Mega, Ammo_Boom, Ammo_Homing
+    Nothing, Cookie, Cookie_Giant, Jacket, Chip_1x, Chip_5x, Chip_10x, Energy, Energy_Mega, Ammo_Boom, Ammo_Homing
 ]
 
 MASTER : Sequence[AE3ItemMeta] = [

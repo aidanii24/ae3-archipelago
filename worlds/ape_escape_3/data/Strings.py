@@ -46,6 +46,7 @@ class Itm(BaseEnum):
     chassis_pudding =   "Pudding Chassis"
 
     # Collectables
+    nothing =           "Nothing"
     jacket =            "Jacket"
     cookie =            "Cookies"
     cookie_giant =      "Giant Cookie"

@@ -29,9 +29,12 @@ class Items(Enum):
     Itm.morph_monkey.value =        0x649948,
 
     # Accessories
-    Itm.chassis_twin.value =        0x649c98,  # boolean (0x00 - 0x01)
-    Itm.chassis_black.value =       0x649c99,  # boolean (0x00 - 0x01)
-    Itm.chassis_pudding.value =     0x649c9a,  # boolean (0x00 - 0x01)
+    Itm.chassis_twin.value =        0x649c98,   # boolean (0x00 - 0x01)
+    Itm.chassis_black.value =       0x649c99,   # boolean (0x00 - 0x01)
+    Itm.chassis_pudding.value =     0x649c9a,   # boolean (0x00 - 0x01)
+
+    # Collectables
+    Itm.nothing.value =             0x200000,   # Arbitrary Number
 
 class GameStates(Enum):
     # Status
