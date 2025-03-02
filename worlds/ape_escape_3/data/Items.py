@@ -53,7 +53,7 @@ class CollectableItem(AE3ItemMeta):
     def __init__(self, name : str, address : int, capacity : int, weight : float, id_offset : int = 0):
         self.name = name
         self.item_id = address + id_offset
-        self.address = self.item_id
+        self.address = address
 
         self.capacity = capacity
         self.weight = weight
@@ -71,7 +71,7 @@ class UpgradeableItem(AE3ItemMeta):
     def __init__(self, name : str, address : int, limit : int, id_offset : int = 0):
         self.name = name
         self.item_id = address + id_offset
-        self.address = self.item_id
+        self.address = address
 
         self.limit = limit
 
