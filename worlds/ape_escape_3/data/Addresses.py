@@ -1,85 +1,146 @@
-from .Strings import AE3Locations
+from typing import Dict, List
+from enum import Enum
+
+from .Strings import Itm, Loc, Game
+
+class Items(Enum):
+    """
+    Contains all relevant Memory Addresses associated with Items in the game.
+    """
+    # <!> Values are on/off between 0x01 and 0x02 respectively unless commented otherwise.
+
+    # Gadgets
+    Itm.gadget_club.value =         0x649950,
+    Itm.gadget_net.value =          0x649954,
+    Itm.gadget_radar.value =        0x649958,
+    Itm.gadget_hoop.value =         0x64995c,
+    Itm.gadget_sling.value =        0x649960,
+    Itm.gadget_swim.value =         0x649978,
+    Itm.gadget_rcc.value =          0x649964,
+    Itm.gadget_fly.value =          0x649968,
+
+    # Morphs
+    Itm.morph_knight.value =        0x649930,
+    Itm.morph_cowboy.value =        0x649934,
+    Itm.morph_ninja.value =         0x649938,
+    Itm.morph_magician.value =      0x64993c,
+    Itm.morph_kungfu.value =        0x649940,
+    Itm.morph_hero.value =          0x649944,
+    Itm.morph_monkey.value =        0x649948,
+
+    # Accessories
+    Itm.chassis_twin.value =        0x649c98,  # boolean (0x00 - 0x01)
+    Itm.chassis_black.value =       0x649c99,  # boolean (0x00 - 0x01)
+    Itm.chassis_pudding.value =     0x649c9a,  # boolean (0x00 - 0x01)
+
+class GameStates(Enum):
+    # Status
+    Game.state.value =                      0x8519e4,  # int32 (0x00 - 0x04)
+    Game.character.value =                  0x649910,  # int32 (0x00 - 0x01)
+
+    # Resources
+    Game.jackets.value =                    0x649914,
+    Game.cookies.value =                    0x649918,
+    Game.chips.value =                      0x6499d4,
+    Game.morph_gauge_active.value =         0x649920,
+    Game.morph_gauge_recharge.value =       0x649924,
+    Game.morph_stocks.value =               0x649928,  # float (0000C842 - 00808944)
+    Game.ammo_boom.value =                  0x649998,  # int32
+    Game.ammo_homing.value =                0x64999c,  # int32
+
+    # Equipment
+    Game.equip_circle.value =               0x64997c,
+    Game.equip_cross.value =                0x649980,
+    Game.equip_square.value =               0x649984,
+    Game.equip_triangle.value =             0x649988,
+    Game.equip_active.value =               0x64998c,
+    Game.equip_pellet_active.value =        0x649990,
+    Game.equip_chassis_active.value =       0x6499ac,
+    Game.equip_quick_morph.value =          0x7954b0,
+    Game.equip_morph_target.value =         0x692018,
 
 class Address:
     """
     Container for all the relevant memory addresses in Ape Escape 3.
 
     Attributes:
-        items : Item Strings of the Game
-        locations : Location Strings of the Game
-        player : Strings related to status and resources of the player
+        itm : Item Strings of the Game
+        loc : Location Strings of the Game
+        game : Strings related to the overall game
     """
-    items = {
+    itm : Dict[str : int | List[int] ]= {
         # <!> Values are on/off between 0x01 and 0x02 respectively unless commented otherwise.
 
         # Gadgets
-        "stun_club"                 : 0x649950,
-        "monkey_net"                : 0x649954,
-        "monkey_radar"              : 0x649958,
-        "super_hoop"                : 0x64995c,
-        "slingback_shooter"         : 0x649960,
-        "water_net"                 : 0x649978,
-        "rc_car"                    : 0x649964,
-        "sky_flyer"                 : 0x649968,
+        Itm.gadget_club.name            : 0x649950,
+        Itm.gadget_net.name             : 0x649954,
+        Itm.gadget_radar.name           : 0x649958,
+        Itm.gadget_hoop.name            : 0x64995c,
+        Itm.gadget_sling.name           : 0x649960,
+        Itm.gadget_swim.name            : 0x649978,
+        Itm.gadget_rcc.name             : 0x649964,
+        Itm.gadget_fly.name             : 0x649968,
 
         # Morphs
-        "morph_knight"              : 0x649930,
-        "morph_cowboy"              : 0x649934,
-        "morph_ninja"               : 0x649938,
-        "morph_magician"            : 0x64993c,
-        "morph_kungfu"              : 0x649940,
-        "morph_hero"                : 0x649944,
-        "morph_monkey"              : 0x649948,
+        Itm.morph_knight.name           : 0x649930,
+        Itm.morph_cowboy.name           : 0x649934,
+        Itm.morph_ninja.name            : 0x649938,
+        Itm.morph_magician.name         : 0x64993c,
+        Itm.morph_kungfu.name           : 0x649940,
+        Itm.morph_hero.name             : 0x649944,
+        Itm.morph_monkey.name           : 0x649948,
 
         # Accessories
-        "acc_morph_stock"           : 0x649928,     # float (0000C842 - 00808944)
+        Itm.acc_morph_stock.name        : 0x649928, # float (0000C842 - 00808944)
 
-        "pellet_explosive"          : 0x649998,     # int32
-        "pellet_guided"             : 0x64999c,     # int32
+        Itm.ammo_boom.name              : 0x649998, # int32
+        Itm.ammo_homing.name            : 0x64999c, # int32
 
-        "chassis_twin"              : 0x649c98,     # boolean (0x00 - 0x01)
-        "chassis_black"             : 0x649c99,     # boolean (0x00 - 0x01)
-        "chassis_pudding"           : 0x649c9a,     # boolean (0x00 - 0x01)
+        Itm.chassis_twin.name           : 0x649c98, # boolean (0x00 - 0x01)
+        Itm.chassis_black.name          : 0x649c99, # boolean (0x00 - 0x01)
+        Itm.chassis_pudding.name        : 0x649c9a, # boolean (0x00 - 0x01)
     }
 
-    locations = {
+    loc = {
         # Monkeys
         # <!> Values are on/off between 0x00 and 0x01 respectively unless commented otherwise.
 
         ## TV Station/Zero
-        AE3Locations.zero_ukki_pan.value                    : 0x649b4e,
+        Loc.zero_ukki_pan.name          : 0x649b4e,
 
         ## Seaside Resort
-        AE3Locations.seaside_nessal.value                   : 0x6499dd,
-        AE3Locations.seaside_ukki_pia.value                 : 0x6499de,
-        AE3Locations.seaside_sarubo.value                   : 0x6499df,
-        AE3Locations.seaside_salurin.value                  : 0x6499e0,
-        AE3Locations.seaside_ukkitan.value                  : 0x649b4f,
-        AE3Locations.seaside_morella.value                  : 0x649b99,
-        AE3Locations.seaside_ukki_ben.value                 : 0x6499e1,
-
-        AE3Locations.seaside_break_kankichi.value           : 0x649b5e,
-        AE3Locations.seaside_break_tomezo.value             : 0x649b5f,
-        AE3Locations.seaside_break_kamayan.value            : 0x649b60,
-        AE3Locations.seaside_break_taizo.value              : 0x649b61
+        Loc.seaside_nessal.name         : 0x6499dd,
+        Loc.seaside_ukki_pia.name       : 0x6499de,
+        Loc.seaside_sarubo.name         : 0x6499df,
+        Loc.seaside_salurin.name        : 0x6499e0,
+        Loc.seaside_ukkitan.name        : 0x649b4f,
+        Loc.seaside_morella.name        : 0x649b99,
+        Loc.seaside_ukki_ben.name       : 0x6499e1,
+        Loc.seaside_kankichi.name       : 0x649b5e,
+        Loc.seaside_tomezo.name         : 0x649b5f,
+        Loc.seaside_kamayan.name        : 0x649b60,
+        Loc.seaside_taizo.name          : 0x649b61
     }
 
-    player = {
+    game = {
         # Status
-        "state"                     : 0x8519e4,             # int32 (0x00 - 0x04)
-        "character"                 : 0x649910,             # int32 (0x00 - 0x01)
-        "lives"                     : 0x649914,
-        "cookies"                   : 0x649918,
-        "status_morph_recharge"     : 0x649924,
+        Game.state.name                     : 0x8519e4, # int32 (0x00 - 0x04)
+        Game.character.name                 : 0x649910, # int32 (0x00 - 0x01)
+
+        # Resources
+        Game.jackets.name                   : 0x649914,
+        Game.cookies.name                   : 0x649918,
+        Game.morph_gauge_active.name        : 0x649920,
+        Game.morph_gauge_recharge.name      : 0x649924,
 
         # Equipment
-        "equip_circle"              : 0x64997c,
-        "equip_cross"               : 0x649980,
-        "equip_square"              : 0x649984,
-        "equip_triangle"            : 0x649988,
-        "equip_active"              : 0x64998c,
-        "equip_pellet_active"       : 0x649990,
-        "equip_chassis_active"      : 0x6499ac,
-        "equip_morph_quick"         : 0x7954b0,
-        "equip_morph_target"        : 0x692018,
+        Game.equip_circle.name              : 0x64997c,
+        Game.equip_cross.name               : 0x649980,
+        Game.equip_square.name              : 0x649984,
+        Game.equip_triangle.name            : 0x649988,
+        Game.equip_active.name              : 0x64998c,
+        Game.equip_pellet_active            : 0x649990,
+        Game.equip_chassis_active           : 0x6499ac,
+        Game.equip_quick_morph              : 0x7954b0,
+        Game.equip_morph_target             : 0x692018,
     }

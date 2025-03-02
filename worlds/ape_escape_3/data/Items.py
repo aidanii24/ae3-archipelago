@@ -1,90 +1,169 @@
-from typing import Dict, Set, List
+from collections.abc import Sequence
+from dataclasses import dataclass
+from abc import ABC
 
 from BaseClasses import Item
 
-from .Addresses import Address
-from .Strings import AE3Items, APItems
+from .Addresses import Items, GameStates
+from .Strings import Itm, Game, Meta
 
-
+### [< --- HELPERS --- >]
 class AE3Item(Item):
     """
     Defines an Item in Ape Escape 3. These include but are not limited to the Gadgets, Morphs and select buyable items
     in the Shopping District.
     """
 
-    game : str = "Ape Escape 3"
+    game : str = Meta.game.value
 
-item_group : Dict[str, Set[str]] = {}
+@dataclass
+class AE3ItemMeta(ABC):
+    """
+    Base Class for all Items in Ape Escape 3. Used to manage objects Clientside and should not be used Serverside.
+    """
+    name : str
+    item_id : int
+    address : int
 
-# TODO - On refactor, initialize items first by category, in format of { id : name }, then when creating
-#  the master table, format them as { name : id } there instead. This allows for easy generation while making ID
-#  checking by group easy and fast as well.
+@dataclass
+class EquipmentItem(AE3ItemMeta):
+    """
+    Base Class for any Item that the player can only have one of. They can only be either locked or unlocked.
+    """
 
-item_table = {
-    # String (Name)                     # AP ItemID/Memory Address
+    def __init__(self, name : str):
+        self.name = name
+        self.item_id = Items[name].value    # Equipment can be assumed to always be in Addresses.Items.
+        self.address = self.item_id
 
-    # Archipelago Progression
-    APItems.channel_key.value           : 0x300,
-    APItems.victory.value               : 0x301,
+@dataclass
+class CollectableItem(AE3ItemMeta):
+    """
+    Base Class for any Item that the player can obtain multiples of continuously regardless of whether the player is
+    allowed to collect more.
 
-    # Gadgets
-    AE3Items.stun_club.value            : Address.items["stun_club"],
-    AE3Items.monkey_net.value           : Address.items["monkey_net"],
-    AE3Items.monkey_radar.value         : Address.items["monkey_radar"],
-    AE3Items.super_hoop.value           : Address.items["super_hoop"],
-    AE3Items.water_net.value            : Address.items["water_net"],
-    AE3Items.slingback_shooter.value    : Address.items["slingback_shooter"],
-    AE3Items.rc_car.value               : Address.items["rc_car"],
-    AE3Items.sky_flyer.value            : Address.items["sky_flyer"],
+    Attributes:
+        capacity : Maximum amount of the item the player can hold
+        weight : How often to be chosen to fill a location
+    """
 
-    # Morphs
-    AE3Items.morph_knight.value         : Address.items["morph_knight"],
-    AE3Items.morph_cowboy.value         : Address.items["morph_cowboy"],
-    AE3Items.morph_ninja.value          : Address.items["morph_ninja"],
-    AE3Items.morph_magician.value       : Address.items["morph_magician"],
-    AE3Items.morph_kungfu.value         : Address.items["morph_kungfu"],
-    AE3Items.morph_hero.value           : Address.items["morph_hero"],
-    AE3Items.morph_monkey.value         : Address.items["morph_monkey"],
+    capacity : int
+    weight : float
 
-    # Accessories
-    AE3Items.acc_morph_stock.value      : Address.items["acc_morph_stock"],
+    def __init__(self, name : str, address : int, capacity : int, weight : float, id_offset : int = 0):
+        self.name = name
+        self.item_id = address + id_offset
+        self.address = self.item_id
 
-    AE3Items.pellet_explosive.value     : Address.items["pellet_explosive"],
-    AE3Items.pellet_guided.value        : Address.items["pellet_guided"],
+        self.capacity = capacity
+        self.weight = weight
 
-    AE3Items.chassis_twin.value         : Address.items["chassis_twin"],
-    AE3Items.chassis_black.value        : Address.items["chassis_black"],
-    AE3Items.chassis_pudding.value      : Address.items["chassis_pudding"]
-}
+class UpgradeableItem(AE3ItemMeta):
+    """
+    Base class for any item the player can obtain multiples of but only exists in specific amounts.
 
-def from_id(item_id : int) -> int:
-    ids : List[int] = list(item_table.values())
+    Attributes:
+        limit : Maximum amount of the item that is expected to exist in the game
+    """
 
-    if item_id in ids:
-        return list(item_table.keys())[ids.index(item_id)]
-    else:
-        return 0
+    limit : int
 
-def create_item_groups():
-    keys : List[str] = list(item_table)
+    def __init__(self, name : str, address : int, limit : int, id_offset : int = 0):
+        self.name = name
+        self.item_id = address + id_offset
+        self.address = self.item_id
 
-    # Gadgets
-    for l in range(2, 10):
-        item_group.setdefault("Gadgets", set()).add(keys[l])
-    
-    # Morphs
-    for l in range(10, 17):
-        item_group.setdefault("Morphs", set()).add(keys[l])
+        self.limit = limit
 
-    # Equipment
-    item_group.setdefault("Equipment", set()).update(item_group["Gadgets"])
-    item_group.setdefault("Equipment", set()).update(item_group["Morphs"])
+### [< --- ITEMS --- >]
+# Gadgets
+Gadget_Club = EquipmentItem(Itm.gadget_club.value)
+Gadget_Net = EquipmentItem(Itm.gadget_net.value)
+Gadget_Radar = EquipmentItem(Itm.gadget_radar.value)
+Gadget_Hoop = EquipmentItem(Itm.gadget_hoop.value)
+Gadget_Sling = EquipmentItem(Itm.gadget_sling.value)
+Gadget_Swim = EquipmentItem(Itm.gadget_swim.value)
+Gadget_RCC = EquipmentItem(Itm.gadget_rcc.value)
+Gadget_Fly = EquipmentItem(Itm.gadget_fly.value)
 
-    # Accessories
-    for l in range (18, 20):
-        item_group.setdefault("Pellets", set()).add(keys[l])
-    
-    for l in range (20, 23):
-        item_group.setdefault("Chassis", set()).add(keys[l])
+# Morphs
+Morph_Knight = EquipmentItem(Itm.morph_knight.value)
+Morph_Cowboy = EquipmentItem(Itm.morph_cowboy.value)
+Morph_Ninja = EquipmentItem(Itm.morph_ninja.value)
+Morph_Magician = EquipmentItem(Itm.morph_magician.value)
+Morph_Kungfu = EquipmentItem(Itm.morph_kungfu.value)
+Morph_Hero = EquipmentItem(Itm.morph_hero.value)
+Morph_Monkey = EquipmentItem(Itm.morph_monkey.value)
 
-create_item_groups()
+# Accessories
+Chassis_Twin = EquipmentItem(Itm.chassis_twin.value)
+Chassis_Black = EquipmentItem(Itm.chassis_black.value)
+Chassis_Pudding = EquipmentItem(Itm.chassis_pudding.value)
+
+# Upgradeables
+Acc_Morph_Stock = UpgradeableItem(Game.morph_stocks.value, Items[Itm.acc_morph_stock.value].value, 10)
+
+# Collectables
+Cookie = CollectableItem(Itm.cookie.value, GameStates[Game.cookies.value].value, 5, 0.4)
+Cookie_Giant = CollectableItem(Itm.cookie_giant.value, GameStates[Game.cookies.value].value, 5, 0.15,
+                               0x01)
+Jacket = CollectableItem(Itm.jacket.value, GameStates[Game.jackets.value].value, 99, 0.1)
+Chip_1x = CollectableItem(Itm.chip_1x.value, GameStates[Game.chips.value].value, 9999, 0.5)
+Chip_5x = CollectableItem(Itm.chip_5x.value, GameStates[Game.chips.value].value, 9999, 0.45,
+                          0x01)
+Chip_10x = CollectableItem(Itm.chip_10x.value, GameStates[Game.chips.value].value, 9999, 0.4,
+                            0x02)
+Energy = CollectableItem(Itm.energy.value, GameStates[Game.morph_gauge_active.value].value, 30, 0.35,)
+Energy_Mega = CollectableItem(Itm.energy_mega.value, GameStates[Game.morph_gauge_recharge.value].value, 3,
+                            0.25)
+
+Ammo_Boom = CollectableItem(Itm.ammo_boom.value, Items[Game.ammo_boom.value].value, 9, 0.3)
+Ammo_Homing = CollectableItem(Itm.ammo_homing.value, Items[Game.ammo_homing.value].value, 9, 0.3)
+
+### [< --- ITEM GROUPS --- >]
+GADGETS : Sequence[EquipmentItem] = [
+    Gadget_Swim, Gadget_Club, Gadget_Net, Gadget_Radar, Gadget_Hoop, Gadget_Sling, Gadget_RCC, Gadget_Fly
+]
+
+MORPHS : Sequence[EquipmentItem] = [
+    Morph_Knight, Morph_Cowboy, Morph_Ninja, Morph_Magician, Morph_Kungfu, Morph_Hero, Morph_Monkey
+]
+
+EQUIPMENT : Sequence[EquipmentItem] = [
+    *GADGETS, *MORPHS
+]
+
+ACCESSORIES : Sequence[EquipmentItem] = [
+    Chassis_Twin, Chassis_Black, Chassis_Twin
+]
+
+UPGRADEABLES : Sequence[UpgradeableItem] = [
+    Acc_Morph_Stock
+]
+
+COLLECTABLES : Sequence[CollectableItem] = [
+    Cookie, Cookie_Giant, Jacket, Chip_1x, Chip_5x, Chip_10x, Energy, Energy_Mega, Ammo_Boom, Ammo_Homing
+]
+
+MASTER : Sequence[AE3ItemMeta] = [
+    *GADGETS, *MORPHS, *ACCESSORIES, *UPGRADEABLES, *COLLECTABLES
+]
+
+INDEX : Sequence[Sequence] = [
+    MASTER, GADGETS, MORPHS, EQUIPMENT, ACCESSORIES, UPGRADEABLES, COLLECTABLES
+]
+
+### [< --- METHODS --- >]
+def from_id(id = int, category : int = 0) -> AE3ItemMeta:
+    """Get Item by its ID"""
+    ref : Sequence = INDEX[category]
+
+    i : AE3ItemMeta = next((i for i in ref if i.item_id == id), None)
+    return i
+
+def from_name(name = str, category : int = 0) -> AE3ItemMeta:
+    """Get Item by its Name"""
+    ref : Sequence = INDEX[category]
+
+    i : AE3ItemMeta = next((i for i in ref if i.name == name), None)
+    return i
