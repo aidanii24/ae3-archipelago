@@ -101,7 +101,7 @@ Chassis_Black = EquipmentItem(Itm.chassis_black.value)
 Chassis_Pudding = EquipmentItem(Itm.chassis_pudding.value)
 
 # Upgradeables
-Acc_Morph_Stock = UpgradeableItem(Game.morph_stocks.value, Items[Itm.acc_morph_stock.value].value, 10)
+Acc_Morph_Stock = UpgradeableItem(Itm.acc_morph_stock.value, Items[Game.morph_stocks.value].value, 10)
 
 # Collectables
 Cookie = CollectableItem(Itm.cookie.value, GameStates[Game.cookies.value].value, 5, 0.4)
