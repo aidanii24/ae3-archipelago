@@ -3,6 +3,7 @@ from enum import Enum
 
 from .Strings import Itm, Loc, Game
 
+
 class Items(Enum):
     """
     Contains all relevant Memory Addresses associated with Items in the game.
@@ -36,7 +37,29 @@ class Items(Enum):
     # Collectables
     Itm.nothing.value =             0x200000,   # Arbitrary Number
 
+class Locations(Enum):
+    """Contains all relevant Memory Addresses associated with Locations in the game."""
+    # Monkeys
+    # <!> Values are on/off between 0x00 and 0x01 respectively unless commented otherwise.
+
+    ## TV Station/Zero
+    Loc.zero_ukki_pan.name =        0x649b4e,
+
+    ## Seaside Resort
+    Loc.seaside_nessal.name =       0x6499dd,
+    Loc.seaside_ukki_pia.name =     0x6499de,
+    Loc.seaside_sarubo.name =       0x6499df,
+    Loc.seaside_salurin.name =      0x6499e0,
+    Loc.seaside_ukkitan.name =      0x649b4f,
+    Loc.seaside_morella.name =      0x649b99,
+    Loc.seaside_ukki_ben.name =     0x6499e1,
+    Loc.seaside_kankichi.name =     0x649b5e,
+    Loc.seaside_tomezo.name =       0x649b5f,
+    Loc.seaside_kamayan.name =      0x649b60,
+    Loc.seaside_taizo.name =        0x649b61
+
 class GameStates(Enum):
+    """Contains all relevant Memory Addresses associated with the general game."""
     # Status
     Game.state.value =                      0x8519e4,  # int32 (0x00 - 0x04)
     Game.character.value =                  0x649910,  # int32 (0x00 - 0x01)
@@ -62,6 +85,9 @@ class GameStates(Enum):
     Game.equip_quick_morph.value =          0x7954b0,
     Game.equip_morph_target.value =         0x692018,
 
+
+
+@DeprecationWarning
 class Address:
     """
     Container for all the relevant memory addresses in Ape Escape 3.

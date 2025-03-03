@@ -1,11 +1,12 @@
 from collections.abc import Sequence
 from dataclasses import dataclass
+from typing import List
 from abc import ABC
 
 from BaseClasses import Item
 
+from .Strings import Itm, Game, Meta, APHelper
 from .Addresses import Items, GameStates
-from .Strings import Itm, Game, Meta
 
 ### [< --- HELPERS --- >]
 class AE3Item(Item):
@@ -169,3 +170,32 @@ def from_name(name = str, category : int = 0) -> AE3ItemMeta:
 
     i : AE3ItemMeta = next((i for i in ref if i.name == name), None)
     return i
+
+def generate_name_to_id() -> dict[str : int]:
+    """Get a Dictionary of all Items in Name-ID pairs"""
+    i : AE3ItemMeta
+    return {i.name : i.item_id for i in MASTER}
+
+def generate_id_to_name() -> dict[int : str]:
+    """Get a Dictionary of all Items in ID-Name pairs"""
+    i : AE3ItemMeta
+    return {i.item_id : i.name for i in MASTER}
+
+def generate_item_groups() -> dict[str : List[str]]:
+    """Get a Dictionary of Item Groups"""
+    groups : dict[str : List[str]] = {}
+
+    i : AE3ItemMeta
+    for i in GADGETS:
+        groups.setdefault(APHelper.gadgets.value, []).append(i.name)
+
+    for i in MORPHS:
+        groups.setdefault(APHelper.morphs.value, []).append(i.name)
+
+        if i.name is not Itm.morph_monkey.value:
+            groups.setdefault(APHelper.morphs_no_monkey.value).append(i.name)
+
+    groups.setdefault(APHelper.equipment.value, []).append(groups[APHelper.gadgets.value])
+    groups.setdefault(APHelper.equipment.value, []).append(groups[APHelper.morphs.value])
+
+    return groups

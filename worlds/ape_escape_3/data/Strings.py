@@ -141,6 +141,12 @@ class APHelper(BaseEnum):
     # Special
     hlp_morph_ext =         "Morph Gauge Extension"
 
+    # Item Groups
+    gadgets =               "Gadgets"
+    morphs =                "Morphs"
+    morphs_no_monkey =        "Morphs (Not Super Monkey)"
+    equipment =             "Equipment"
+
 class APConsole:
     """
     Strings for all text to be used in the Archipelago Game Client
