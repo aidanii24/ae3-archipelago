@@ -1,16 +1,16 @@
-from typing import Callable, List, TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable, List
 
 from BaseClasses import Region, Entrance, CollectionState
 
-from .data import Logic
-from .data.Strings import AE3Stages, AE3Locations
 from .data.Locations import AE3Location
+from .data.Strings import Stage, Loc
 from .data.Addresses import Address
+from .data import Logic
 
 if TYPE_CHECKING:
     from . import AE3World
 
-
+@DeprecationWarning
 class AE3Stage:
     """
         Defines a Stage in Ape Escape 3. This refers to any area or room in the game, most commonly, the levels, or
@@ -30,6 +30,7 @@ class AE3Stage:
     def _compare_index(self, stage):
         return self.original_index < stage.original_index
 
+@DeprecationWarning
 def connect_regions(player : int, start : Region, dest : Region, rule = None):
     connection : Entrance = Entrance(player, start.name + " <> " + dest.name)
 
@@ -43,6 +44,7 @@ def connect_regions(player : int, start : Region, dest : Region, rule = None):
     # Establish entrance for the destination region
     connection.connect(dest)
 
+@DeprecationWarning
 def create_regions(world : "AE3World"):
     player = world.player
     multiworld = world.multiworld

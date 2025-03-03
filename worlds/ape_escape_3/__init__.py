@@ -4,7 +4,7 @@ from BaseClasses import MultiWorld, Tutorial, ItemClassification
 from worlds.AutoWorld import World, WebWorld
 
 from .AE3_Options import AE3Options
-from .Region import create_regions, AE3Stage
+from .Regions import create_regions, AE3Stage
 from .data.Items import AE3Item, item_table, item_group
 from .data.Locations import location_table
 from .data.Strings import AE3Items, AE3Locations
