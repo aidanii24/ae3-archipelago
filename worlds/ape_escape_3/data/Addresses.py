@@ -43,20 +43,20 @@ class Locations(Enum):
     # <!> Values are on/off between 0x00 and 0x01 respectively unless commented otherwise.
 
     ## TV Station/Zero
-    Loc.zero_ukki_pan.name =        0x649b4e,
+    Loc.zero_ukki_pan.value =           0x649b4e,
 
     ## Seaside Resort
-    Loc.seaside_nessal.name =       0x6499dd,
-    Loc.seaside_ukki_pia.name =     0x6499de,
-    Loc.seaside_sarubo.name =       0x6499df,
-    Loc.seaside_salurin.name =      0x6499e0,
-    Loc.seaside_ukkitan.name =      0x649b4f,
-    Loc.seaside_morella.name =      0x649b99,
-    Loc.seaside_ukki_ben.name =     0x6499e1,
-    Loc.seaside_kankichi.name =     0x649b5e,
-    Loc.seaside_tomezo.name =       0x649b5f,
-    Loc.seaside_kamayan.name =      0x649b60,
-    Loc.seaside_taizo.name =        0x649b61
+    Loc.seaside_nessal.value =          0x6499dd,
+    Loc.seaside_ukki_pia.value =        0x6499de,
+    Loc.seaside_sarubo.value =          0x6499df,
+    Loc.seaside_salurin.value =         0x6499e0,
+    Loc.seaside_ukkitan.value =         0x649b4f,
+    Loc.seaside_morella.value =         0x649b99,
+    Loc.seaside_ukki_ben.value =        0x6499e1,
+    Loc.seaside_kankichi.value =        0x649b5e,
+    Loc.seaside_tomezo.value =          0x649b5f,
+    Loc.seaside_kamayan.value =         0x649b60,
+    Loc.seaside_taizo.value =           0x649b61
 
 class GameStates(Enum):
     """Contains all relevant Memory Addresses associated with the general game."""

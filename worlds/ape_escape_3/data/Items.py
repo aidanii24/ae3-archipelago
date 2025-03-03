@@ -19,9 +19,7 @@ class AE3Item(Item):
 
 @dataclass
 class AE3ItemMeta(ABC):
-    """
-    Base Class for all Items in Ape Escape 3. Used to manage objects Clientside and should not be used Serverside.
-    """
+    """Base Data Class for all Items in Ape Escape 3."""
     name : str
     item_id : int
     address : int
@@ -29,7 +27,10 @@ class AE3ItemMeta(ABC):
 @dataclass
 class EquipmentItem(AE3ItemMeta):
     """
-    Base Class for any Item that the player can only have one of. They can only be either locked or unlocked.
+    Base Data Class for any Item that the player can only have one of. They can only be either locked or unlocked.
+
+    Parameters:
+        name : Name of Item from Strings.py
     """
 
     def __init__(self, name : str):
@@ -40,12 +41,15 @@ class EquipmentItem(AE3ItemMeta):
 @dataclass
 class CollectableItem(AE3ItemMeta):
     """
-    Base Class for any Item that the player can obtain multiples of continuously regardless of whether the player is
-    allowed to collect more.
+    Base Data Class for any Item that the player can obtain multiples of continuously regardless of whether the player
+    is allowed to collect more.
 
-    Attributes:
+    Parameters:
+        name : Name of Item from Strings.py
+        address : Memory Address of Item from Addresses.py
         capacity : Maximum amount of the item the player can hold
         weight : How often to be chosen to fill a location
+        id_offset : (default : 0) Added Offset to ID for Items that target the same Memory Address
     """
 
     capacity : int
@@ -63,8 +67,11 @@ class UpgradeableItem(AE3ItemMeta):
     """
     Base class for any item the player can obtain multiples of but only exists in specific amounts.
 
-    Attributes:
+    Parameters:
+        name : Name of Item from Strings.py
+        address : Memory Address of Item from Addresses.py
         limit : Maximum amount of the item that is expected to exist in the game
+        id_offset : (default : 0) Added Offset to ID for Items that target the same Memory Address
     """
 
     limit : int

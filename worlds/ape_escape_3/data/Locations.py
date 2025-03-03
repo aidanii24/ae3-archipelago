@@ -1,49 +1,111 @@
-from typing import Dict, Set
+from typing import Callable, Dict, List, Set
+from abc import ABC
 
 from BaseClasses import Location, Region
 
-from .Strings import AE3Locations
-from .Logic import AccessRules, LocationRules
-from .Addresses import Address
+from .Logic import AccessRule, Rulesets
+from .Addresses import Locations
+from .Strings import Loc, Meta
 
-# TODO - Create Tables by category first, then add them all to a master table
-
+### [< --- HELPERS --- >]
 class AE3Location(Location):
     """
-        Defines a Location in Ape Escape 3. This refers to points of interest for the randomizer, such as Monkeys,
-        Cellphones, Cameras and Points of Interests in the Hub.
+    Defines a Location in Ape Escape 3. This refers to points of interest for the randomizer, such as Monkeys,
+    Cellphones, Cameras and Points of Interests in the Hub.
 
-        Attributes:
-            game : Name of the Game
-            rules : Set of LocationRules to check if the Location is reachable
+    Attributes:
+        game : Name of the Game
+        rules : Sets of AccessRules to check if the Location is reachable
     """
 
-    game: str = "Ape Escape 3"
-    rules: LocationRules = None
+    game: str = Meta.game.value
+    rules: Rulesets = None
 
-    def __init__(self, player : int, name : str, address : int, parent_region : Region ):
-        self.rules = rules_table[name]
 
-        super().__init__(player, name, address, parent_region)
+class AE3LocationMeta(ABC):
+    """Base Data Class for all Locations in Ape Escape 3."""
 
+    name : str
+    loc_id : int
+    rules : Rulesets = None
+
+class MonkeyLocation(AE3LocationMeta):
+    """
+    Base Data Class for all Monkey Locations
+
+    Parameters:
+        name : Name of Location from Strings.py
+        rules : Sets of AccessRules for the Location. Can be an AccessRule, Set of AccessRule, or a full Ruleset.
+        Passing callables will add them as Normal Rules. To assign critical rules, pass a Ruleset instead.
+    """
+
+    def __init__(self, name : str, rules : Callable | Set[Callable] | Rulesets = None):
+        self.name = name
+        self.loc_id = Locations[name].value    # Equipment can be assumed to always be in Addresses.Items.
+        self.address = self.loc_id
+
+        if rules is Rulesets:
+            self.rules = rules
+        else:
+            self.rules = Rulesets()
+
+            if rules is Callable:
+                self.rules.Rules.add(frozenset(rules))
+            if rules is Set[Callable]:
+                self.rules.Rules.add(frozenset(rules))
+
+        # For Monkeys, always add CATCH as a Critical Rule
+        self.rules.Critical.add(AccessRule.CATCH)
+
+class CameraLocation(AE3LocationMeta):
+    """Base Data Class for all Camera Locations"""
+
+    ptrs : List[int]
+
+    def __init__(self, name : str):
+        self.name = name
+        self.loc_id = Locations[name].value    # Equipment can be assumed to always be in Addresses.Items.
+        self.address = self.loc_id
+        self.address = Locations[name + "_ptrs"].value
+
+### [< --- LOCATIONS --- >]
+# Zero
+Zero_Ukki_Pan = MonkeyLocation(Loc.zero_ukki_pan.value)
+
+# Seaside
+Seaside_Nessal = MonkeyLocation(Loc.seaside_nessal.value)
+Seaside_Ukki_Pia = MonkeyLocation(Loc.seaside_ukki_pia.value)
+Seaside_Sarubo = MonkeyLocation(Loc.seaside_sarubo.value)
+Seaside_Salurin = MonkeyLocation(Loc.seaside_salurin.value)
+Seaside_Ukkitan = MonkeyLocation(Loc.seaside_ukkitan.value)
+Seaside_Morella = MonkeyLocation(Loc.seaside_morella.value, AccessRule.SLING)
+Seaside_Ukki_Ben = MonkeyLocation(Loc.seaside_ukki_ben.value)
+Seaside_Kankichi = MonkeyLocation(Loc.seaside_kankichi.value, AccessRule.MONKEY)
+Seaside_Tomezo = MonkeyLocation(Loc.seaside_tomezo.value, AccessRule.MONKEY)
+Seaside_Kamayan = MonkeyLocation(Loc.seaside_kamayan.value, AccessRule.MONKEY)
+Seaside_Taizo = MonkeyLocation(Loc.seaside_taizo.value, AccessRule.MONKEY)
+
+
+
+# TODO - @Deprecated
 location_table = {
     # Monkeys
 
     ## TV Station/Zero
-    AE3Locations.zero_ukki_pan.value :                  Address.locations[AE3Locations.zero_ukki_pan.value],
+    Loc.zero_ukki_pan.value :                   Locations[Loc.zero_ukki_pan.value].value,
 
     ## Seaside Resort
-    AE3Locations.seaside_nessal.value :                 Address.locations[AE3Locations.seaside_nessal.value],
-    AE3Locations.seaside_ukki_pia.value :               Address.locations[AE3Locations.seaside_ukki_pia.value],
-    AE3Locations.seaside_sarubo.value :                 Address.locations[AE3Locations.seaside_sarubo.value],
-    AE3Locations.seaside_salurin.value :                Address.locations[AE3Locations.seaside_salurin.value],
-    AE3Locations.seaside_ukkitan.value :                Address.locations[AE3Locations.seaside_ukkitan.value],
-    AE3Locations.seaside_morella.value :                Address.locations[AE3Locations.seaside_morella.value],
-    AE3Locations.seaside_ukki_ben.value :               Address.locations[AE3Locations.seaside_ukki_ben.value],
-    AE3Locations.seaside_break_kankichi.value :         Address.locations[AE3Locations.seaside_break_kankichi.value],
-    AE3Locations.seaside_break_tomezo.value :           Address.locations[AE3Locations.seaside_break_tomezo.value],
-    AE3Locations.seaside_break_kamayan.value :          Address.locations[AE3Locations.seaside_break_kamayan.value],
-    AE3Locations.seaside_break_taizo.value :            Address.locations[AE3Locations.seaside_break_taizo.value]
+    Loc.seaside_nessal.value :                  Locations[Loc.seaside_nessal.value].value,
+    Loc.seaside_ukki_pia.value :                Locations[Loc.seaside_ukki_pia.value].value,
+    Loc.seaside_sarubo.value :                  Locations[Loc.seaside_sarubo.value].value,
+    Loc.seaside_salurin.value :                 Locations[Loc.seaside_salurin.value].value,
+    Loc.seaside_ukkitan.value :                 Locations[Loc.seaside_ukkitan.value].value,
+    Loc.seaside_morella.value :                 Locations[Loc.seaside_morella.value].value,
+    Loc.seaside_ukki_ben.value :                Locations[Loc.seaside_ukki_ben.value].value,
+    Loc.seaside_kankichi.value :                Locations[Loc.seaside_kankichi.value].value,
+    Loc.seaside_tomezo.value :                  Locations[Loc.seaside_tomezo.value].value,
+    Loc.seaside_kamayan.value :                 Locations[Loc.seaside_kamayan.value].value,
+    Loc.seaside_taizo.value :                   Locations[Loc.seaside_taizo.value].value
 }
 
 # Pre-list Prerequisite of Locations
@@ -54,26 +116,26 @@ rules_table = {
     # Monkeys
 
     ## TV Station/Zero
-    AE3Locations.zero_ukki_pan.value                : LocationRules( {AccessRules.CATCH} ),
+    Loc.zero_ukki_pan.value                 : Rulesets( {AccessRule.CATCH} ),
 
     ## Seaside Resort
-    AE3Locations.seaside_nessal.value               : LocationRules( {AccessRules.CATCH} ),
-    AE3Locations.seaside_ukki_pia.value             : LocationRules( {AccessRules.CATCH} ),
-    AE3Locations.seaside_sarubo.value               : LocationRules( {AccessRules.CATCH} ),
-    AE3Locations.seaside_salurin.value              : LocationRules( {AccessRules.CATCH} ),
-    AE3Locations.seaside_ukkitan.value              : LocationRules( {AccessRules.CATCH} ),
-    AE3Locations.seaside_morella.value              : LocationRules( {AccessRules.CATCH},
-                                                                     {frozenset({AccessRules.SHOOT_FREE})}),
-    AE3Locations.seaside_ukki_ben.value             : LocationRules( {AccessRules.CATCH} ),
+    Loc.seaside_nessal.value                : Rulesets( {AccessRule.CATCH} ),
+    Loc.seaside_ukki_pia.value              : Rulesets( {AccessRule.CATCH} ),
+    Loc.seaside_sarubo.value                : Rulesets( {AccessRule.CATCH} ),
+    Loc.seaside_salurin.value               : Rulesets( {AccessRule.CATCH} ),
+    Loc.seaside_ukkitan.value               : Rulesets( {AccessRule.CATCH} ),
+    Loc.seaside_morella.value               : Rulesets( {AccessRule.CATCH},
+                                                                     {frozenset({AccessRule.SLING})}),
+    Loc.seaside_ukki_ben.value              : Rulesets( {AccessRule.CATCH} ),
 
-    AE3Locations.seaside_break_kankichi.value       : LocationRules( {AccessRules.CATCH},
-                                                                     {frozenset({AccessRules.MONKEY})}),
-    AE3Locations.seaside_break_tomezo.value         : LocationRules( {AccessRules.CATCH},
-                                                                     {frozenset({AccessRules.MONKEY})}),
-    AE3Locations.seaside_break_kamayan.value        : LocationRules( {AccessRules.CATCH},
-                                                                     {frozenset({AccessRules.MONKEY})}),
-    AE3Locations.seaside_break_taizo.value          : LocationRules( {AccessRules.CATCH},
-                                                                     {frozenset({AccessRules.MONKEY})})
+    Loc.seaside_kankichi.value              : Rulesets( {AccessRule.CATCH},
+                                                                     {frozenset({AccessRule.MONKEY})}),
+    Loc.seaside_tomezo.value                : Rulesets( {AccessRule.CATCH},
+                                                                     {frozenset({AccessRule.MONKEY})}),
+    Loc.seaside_kamayan.value               : Rulesets( {AccessRule.CATCH},
+                                                                     {frozenset({AccessRule.MONKEY})}),
+    Loc.seaside_taizo.value                 : Rulesets( {AccessRule.CATCH},
+                                                                     {frozenset({AccessRule.MONKEY})})
 }
 
 location_group : Dict[str, Set[str]] = {}

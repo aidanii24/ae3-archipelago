@@ -4,7 +4,7 @@ from BaseClasses import CollectionState
 
 from .Strings import Itm, APHelper
 
-# General Checks
+### [< --- ACCESS RULES --- >]
 ## Check if Player can Catch Monkeys
 def can_catch(state : CollectionState, player : int):
     return can_net(state, player) or can_morph_not_monkey(state, player)
@@ -49,7 +49,8 @@ def can_genie(state : CollectionState, player : int):
 def can_monkey(state : CollectionState, player : int):
     return state.has(Itm.morph_monkey.value, player)
 
-class AccessRules:
+### [< --- WRAPPER SHORTHAND --- >]
+class AccessRule:
     """
         Defines required states for the player to achieve in order for an item to be considered "reachable".
     """
@@ -73,6 +74,7 @@ class AccessRules:
     GLITCH_FLY = 0
     GLITCH_FLOAT = 0
 
+### [< --- MANAGING CLASS --- >]
 class Rulesets:
     """
     Helper for Storing and Managing Access Rules of Locations.
