@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List, Set
+from typing import Callable, Dict, List, Sequence, Set
 from abc import ABC
 
 from BaseClasses import Location, Region
@@ -18,8 +18,8 @@ class AE3Location(Location):
         rules : Sets of AccessRules to check if the Location is reachable
     """
 
-    game: str = Meta.game.value
-    rules: Rulesets = None
+    game : str = Meta.game.value
+    rules : Rulesets = None
 
 
 class AE3LocationMeta(ABC):
@@ -27,6 +27,7 @@ class AE3LocationMeta(ABC):
 
     name : str
     loc_id : int
+    address : int
     rules : Rulesets = None
 
 class MonkeyLocation(AE3LocationMeta):
@@ -41,7 +42,7 @@ class MonkeyLocation(AE3LocationMeta):
 
     def __init__(self, name : str, rules : Callable | Set[Callable] | Rulesets = None):
         self.name = name
-        self.loc_id = Locations[name].value    # Equipment can be assumed to always be in Addresses.Items.
+        self.loc_id = Locations[name].value
         self.address = self.loc_id
 
         if rules is Rulesets:
@@ -66,7 +67,7 @@ class CameraLocation(AE3LocationMeta):
         self.name = name
         self.loc_id = Locations[name].value    # Equipment can be assumed to always be in Addresses.Items.
         self.address = self.loc_id
-        self.address = Locations[name + "_ptrs"].value
+        self.ptrs = Locations[name + "_ptrs"].value
 
 ### [< --- LOCATIONS --- >]
 # Zero
@@ -85,6 +86,23 @@ Seaside_Tomezo = MonkeyLocation(Loc.seaside_tomezo.value, AccessRule.MONKEY)
 Seaside_Kamayan = MonkeyLocation(Loc.seaside_kamayan.value, AccessRule.MONKEY)
 Seaside_Taizo = MonkeyLocation(Loc.seaside_taizo.value, AccessRule.MONKEY)
 
+### [< --- LOCATION GROUPS --- >]
+SEASIDE_MONKEYS : Sequence[MonkeyLocation] = [
+    Seaside_Nessal, Seaside_Ukki_Pia, Seaside_Sarubo, Seaside_Salurin, Seaside_Ukkitan, Seaside_Morella,
+    Seaside_Ukki_Ben, Seaside_Kankichi, Seaside_Tomezo, Seaside_Kamayan, Seaside_Taizo
+]
+
+MONKEYS : Sequence[MonkeyLocation] = [
+    Zero_Ukki_Pan, *SEASIDE_MONKEYS
+]
+
+MASTER : Sequence[AE3LocationMeta] = [
+    *MONKEYS
+]
+
+INDEX : Sequence[Sequence] = [
+    MASTER, MONKEYS, SEASIDE_MONKEYS
+]
 
 
 # TODO - @Deprecated

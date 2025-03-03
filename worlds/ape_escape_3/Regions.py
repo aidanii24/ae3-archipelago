@@ -1,17 +1,93 @@
-from typing import TYPE_CHECKING, Callable, List
+from typing import TYPE_CHECKING, Callable, Dict, List
 
-from BaseClasses import Region, Entrance, CollectionState
+from BaseClasses import CollectionState, Entrance, Location, Region
 
-from .data.Locations import AE3Location
-from .data.Strings import Stage, Loc
+from .data.Stages import AE3StageMeta, MASTER
+from .data.Locations import AE3Location, AE3LocationMeta
 from .data.Addresses import Address
+from .data.Logic import Rulesets
 from .data import Logic
 
 if TYPE_CHECKING:
     from . import AE3World
 
+def generate_access_rule(player : int, rulesets : Rulesets) -> Callable[[CollectionState], bool]:
+    def access_rule(state: CollectionState) -> bool:
+        # Any Critical Rules that return False should immediately mark the item as inaccessible with the current state
+        if rulesets:
+            for rule in rulesets.Critical:
+                if not rule(state, player):
+                    return False
+
+        # At least one set of normal rules (if any) must return true to mark the item as reachable
+        if not rulesets.Rules:
+            return True
+
+        reachable: bool = False
+
+        for ruleset in rulesets.Rules:
+            for rule in ruleset:
+                if not rule(state, player):
+                    continue
+
+            reachable = True
+            break
+
+        return reachable
+    return access_rule
+
+def establish_entrances(player : int, parent_region : Region, connections : Dict[Region : Rulesets]):
+    for destination, ruleset in connections:
+        entrance : Entrance = Entrance(player, parent_region.name + " <> " + destination.name)
+        entrance.parent_region = parent_region
+
+        if ruleset:
+            entrance.access_rule = generate_access_rule(player, ruleset)
+
+        parent_region.exits.append(entrance)
+        entrance.connect(destination)
+
+def create_regions(world : "AE3World"):
+    # Cache Data
+    meta_cache : Dict[str : AE3StageMeta] = { r.name : r for r in MASTER }
+    regions_dir : Dict[str : Region] = {}
+
+    # Initialize Regions
+    for stage in MASTER:
+        region : Region = Region(stage.name, world.player, world.multiworld)
+        regions_dir.setdefault(region.name, region)
+
+    # Define Regions
+    for region in regions_dir.values():
+        meta : AE3StageMeta = meta_cache[region.name]
+
+        # Connect Regions
+        connections : Dict[Region : Rulesets] = {}
+        for entrance in meta.entrances:
+            connections.setdefault(regions_dir[entrance.destination], entrance.rules)
+
+        establish_entrances(world.player, region, connections)
+
+        # Define Locations
+        for loc in meta.locations:
+            location : Location = AE3Location(world.player, loc.name, loc.address, region)
+
+            if loc.rules:
+                location.access_rule = generate_access_rule(world.player, loc.rules)
+
+            region.locations.append(location)
+
+    # Send Regions to Archipelago
+    world.multiworld.regions.extend(list(regions_dir.values()))
+
+    # <!> DEBUG
+    # Connection Diagrams
+    from Utils import visualize_regions
+    visualize_regions(world.multiworld.get_region("Menu", world.player), "_region_diagram.puml")
+
+
 @DeprecationWarning
-class AE3Stage:
+class DAE3Stage:
     """
         Defines a Stage in Ape Escape 3. This refers to any area or room in the game, most commonly, the levels, or
         "channels", but also includes the title screen and hub world.
@@ -31,7 +107,7 @@ class AE3Stage:
         return self.original_index < stage.original_index
 
 @DeprecationWarning
-def connect_regions(player : int, start : Region, dest : Region, rule = None):
+def Dconnect_regions(player : int, start : Region, dest : Region, rule = None):
     connection : Entrance = Entrance(player, start.name + " <> " + dest.name)
 
     if rule:
@@ -45,7 +121,7 @@ def connect_regions(player : int, start : Region, dest : Region, rule = None):
     connection.connect(dest)
 
 @DeprecationWarning
-def create_regions(world : "AE3World"):
+def Dcreate_regions(world : "AE3World"):
     player = world.player
     multiworld = world.multiworld
     options = world.options

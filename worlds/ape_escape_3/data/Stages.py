@@ -16,7 +16,7 @@ class StageEntranceMeta:
         rules : Sets of AccessRules for the Entrance. Can be an AccessRule, Set of AccessRule, or a full Ruleset.
         Passing callables will add them as Normal Rules. To assign critical rules, pass a Ruleset instead.
     """
-    destination: str
+    destination : str
     rules : Rulesets = None
 
     def __init__(self, destination : str, rules : Callable | Set[Callable] | Rulesets = None):
@@ -38,6 +38,7 @@ class AE3StageMeta(NamedTuple):
 
     Parameters:
         name : Name of Stage from Strings.py
+        entrances : List of Entrances (as defined by StageEntranceMeta) this stage has, excluding initial entrance.
         monkeys : List of Monkey Locations that this Stage contains.
         points_of_interest : List of other non-monkey Locations that this stage contains
     """
@@ -88,7 +89,8 @@ Title_Screen = AE3StageMeta(Stage.title_screen.value,
                             [To_Zero, To_Travel_Station_A])
 
 # Hub
-Travel_Station_A = AE3StageMeta(Stage.travel_station_a.value)
+Travel_Station_A = AE3StageMeta(Stage.travel_station_a.value,
+                                [To_Seaside_A])
 Travel_Station_B = AE3StageMeta(Stage.travel_station_b.value)
 
 # Zero
@@ -105,3 +107,20 @@ Seaside_B = AE3StageMeta(Stage.seaside_b.value,
                          [Seaside_Ukki_Ben])
 Seaside_C = AE3StageMeta(Stage.seaside_c.value,
                          [Seaside_Kankichi, Seaside_Tomezo, Seaside_Kamayan, Seaside_Taizo])
+
+### [< --- STAGE GROUPS --- >]
+HUB : Sequence[AE3StageMeta] = [
+    Travel_Station_A, Travel_Station_B
+]
+
+SEASIDE : Sequence[AE3StageMeta] = [
+    Seaside_A, Seaside_B, Seaside_C
+]
+
+MASTER : Sequence[AE3StageMeta] = [
+    Title_Screen, Zero, *HUB, *SEASIDE
+]
+
+INDEX : Sequence[Sequence] = [
+    MASTER, HUB, SEASIDE
+]
