@@ -51,7 +51,7 @@ class MonkeyLocation(AE3LocationMeta):
             self.rules = Rulesets()
 
             if rules is Callable:
-                self.rules.Rules.add(frozenset(rules))
+                self.rules.Rules.add(frozenset({rules}))
             if rules is Set[Callable]:
                 self.rules.Rules.add(frozenset(rules))
 
