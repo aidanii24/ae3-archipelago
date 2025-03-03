@@ -11,6 +11,7 @@ from .data import Logic
 if TYPE_CHECKING:
     from . import AE3World
 
+### [< --- HELPERS --- >]
 def generate_access_rule(player : int, rulesets : Rulesets) -> Callable[[CollectionState], bool]:
     def access_rule(state: CollectionState) -> bool:
         # Any Critical Rules that return False should immediately mark the item as inaccessible with the current state
@@ -47,6 +48,7 @@ def establish_entrances(player : int, parent_region : Region, connections : Dict
         parent_region.exits.append(entrance)
         entrance.connect(destination)
 
+### [< --- GENERATION --- >]
 def create_regions(world : "AE3World"):
     # Cache Data
     meta_cache : Dict[str : AE3StageMeta] = { r.name : r for r in MASTER }

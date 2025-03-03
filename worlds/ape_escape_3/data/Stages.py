@@ -103,9 +103,9 @@ Seaside_A = AE3StageMeta(Stage.seaside_a.value,
                          [To_Seaside_B, To_Seaside_C],
                          [Seaside_Nessal, Seaside_Ukki_Pia, Seaside_Sarubo, Seaside_Salurin, Seaside_Ukkitan,
                           Seaside_Morella])
-Seaside_B = AE3StageMeta(Stage.seaside_b.value,
+Seaside_B = AE3StageMeta(Stage.seaside_b.value, None,
                          [Seaside_Ukki_Ben])
-Seaside_C = AE3StageMeta(Stage.seaside_c.value,
+Seaside_C = AE3StageMeta(Stage.seaside_c.value, None,
                          [Seaside_Kankichi, Seaside_Tomezo, Seaside_Kamayan, Seaside_Taizo])
 
 ### [< --- STAGE GROUPS --- >]
