@@ -89,8 +89,8 @@ class Rulesets:
         Rules : Normal Sets of AccessRules. In addition to adhering to AccessRules set in Critical,
         at least one set of AccessRules must also be adhered to.
     """
-    Critical : Set[Callable] = None
-    Rules : Set[frozenset[Callable]] = None
+    Critical : Set[Callable] = set()
+    Rules : Set[frozenset[Callable]] = set()
 
     def __init__(self, critical : Set[Callable] = None, rules : Set[frozenset[Callable]] = None):
         if critical is not None:

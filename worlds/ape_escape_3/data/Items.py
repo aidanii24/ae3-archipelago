@@ -43,7 +43,7 @@ class EquipmentItem(AE3ItemMeta):
 
     def __init__(self, name : str):
         self.name = name
-        self.item_id = Items[name].value    # Equipment can be assumed to always be in Addresses.Items.
+        self.item_id = Items[name]    # Equipment can be assumed to always be in Addresses.Items.
         self.address = self.item_id
 
     def to_item(self, player : int, classification : ItemClassification = None) -> AE3Item:
@@ -85,7 +85,8 @@ class CollectableItem(AE3ItemMeta):
         self.capacity = capacity
         self.weight = weight
 
-        self.pointers = Pointers[address]
+        if address in Pointers:
+            self.pointers = Pointers[address]
 
 class UpgradeableItem(AE3ItemMeta):
     """
@@ -133,28 +134,28 @@ Chassis_Black = EquipmentItem(Itm.chassis_black.value)
 Chassis_Pudding = EquipmentItem(Itm.chassis_pudding.value)
 
 # Upgradeables
-Acc_Morph_Stock = UpgradeableItem(Game.morph_stocks.value, GameStates[Game.morph_stocks.value].value, 10)
+Acc_Morph_Stock = UpgradeableItem(Game.morph_stocks.value, GameStates[Game.morph_stocks.value], 10)
 
 # Collectables
-Nothing = CollectableItem(Itm.nothing.value, Items[Itm.nothing.value].value, 0,0, 0.0)
+Nothing = CollectableItem(Itm.nothing.value, Items[Itm.nothing.value], 0,0, 0.0)
 
-Cookie = CollectableItem(Itm.cookie.value, GameStates[Game.cookies.value].value, 20.0, 100, 0.4)
-Cookie_Giant = CollectableItem(Itm.cookie_giant.value, GameStates[Game.cookies.value].value, 100.0, 100,
+Cookie = CollectableItem(Itm.cookie.value, GameStates[Game.cookies.value], 20.0, 100, 0.4)
+Cookie_Giant = CollectableItem(Itm.cookie_giant.value, GameStates[Game.cookies.value], 100.0, 100,
                                0.15,0x01)
-Jacket = CollectableItem(Itm.jacket.value, GameStates[Game.jackets.value].value, 1.0, 0x63, 0.1)
-Chip_1x = CollectableItem(Itm.chip_1x.value, GameStates[Game.chips.value].value, 1, 0x270F, 0.5)
-Chip_5x = CollectableItem(Itm.chip_5x.value, GameStates[Game.chips.value].value, 5, 0x270F, 0.45,
+Jacket = CollectableItem(Itm.jacket.value, GameStates[Game.jackets.value], 1.0, 0x63, 0.1)
+Chip_1x = CollectableItem(Itm.chip_1x.value, GameStates[Game.chips.value], 1, 0x270F, 0.5)
+Chip_5x = CollectableItem(Itm.chip_5x.value, GameStates[Game.chips.value], 5, 0x270F, 0.45,
                           0x01)
-Chip_10x = CollectableItem(Itm.chip_10x.value, GameStates[Game.chips.value].value, 10, 0x270F, 0.4,
+Chip_10x = CollectableItem(Itm.chip_10x.value, GameStates[Game.chips.value], 10, 0x270F, 0.4,
                             0x02)
-Energy = CollectableItem(Itm.energy.value, GameStates[Game.morph_gauge_active.value].value, 3.0, 30,
+Energy = CollectableItem(Itm.energy.value, GameStates[Game.morph_gauge_active.value], 3.0, 30,
                          0.35, 0x0)
-Energy_Mega = CollectableItem(Itm.energy_mega.value, GameStates[Game.morph_gauge_active.value].value, 30.0,
+Energy_Mega = CollectableItem(Itm.energy_mega.value, GameStates[Game.morph_gauge_active.value], 30.0,
                               30, 0.25, 0x01)
 
-Ammo_Boom = CollectableItem(Itm.ammo_boom.value, GameStates[Game.ammo_boom.value].value, 1, 0x9,
+Ammo_Boom = CollectableItem(Itm.ammo_boom.value, GameStates[Game.ammo_boom.value], 1, 0x9,
                             0.3)
-Ammo_Homing = CollectableItem(Itm.ammo_homing.value, GameStates[Game.ammo_homing.value].value, 1, 0x9,
+Ammo_Homing = CollectableItem(Itm.ammo_homing.value, GameStates[Game.ammo_homing.value], 1, 0x9,
                               0.3)
 
 ### [< --- ITEM GROUPS --- >]
@@ -215,21 +216,21 @@ def generate_id_to_name() -> dict[int : str]:
     i : AE3ItemMeta
     return {i.item_id : i.name for i in MASTER}
 
-def generate_item_groups() -> dict[str : List[str]]:
+def generate_item_groups() -> dict[str : set[str]]:
     """Get a Dictionary of Item Groups"""
-    groups : dict[str : List[str]] = {}
+    groups : dict[str : set[str]] = {}
 
     i : AE3ItemMeta
     for i in GADGETS:
-        groups.setdefault(APHelper.gadgets.value, []).append(i.name)
+        groups.setdefault(APHelper.gadgets.value, set()).add(i.name)
 
     for i in MORPHS:
-        groups.setdefault(APHelper.morphs.value, []).append(i.name)
+        groups.setdefault(APHelper.morphs.value, set()).add(i.name)
 
         if i.name is not Itm.morph_monkey.value:
-            groups.setdefault(APHelper.morphs_no_monkey.value).append(i.name)
+            groups.setdefault(APHelper.morphs_no_monkey.value, set()).add(i.name)
 
-    groups.setdefault(APHelper.equipment.value, []).append(groups[APHelper.gadgets.value])
-    groups.setdefault(APHelper.equipment.value, []).append(groups[APHelper.morphs.value])
+    groups.setdefault(APHelper.equipment.value, set()).update(groups[APHelper.gadgets.value])
+    groups.setdefault(APHelper.equipment.value, set()).update(groups[APHelper.morphs.value])
 
     return groups

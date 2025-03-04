@@ -41,9 +41,9 @@ class MonkeyLocation(AE3LocationMeta):
         Only parameters of type RuleSet can set Critical Rules.
     """
 
-    def __init__(self, name : str, rules : Callable | Set[Callable] | Set[Set[Callable]] | Rulesets = None):
+    def __init__(self, name : str, rules : Callable | Set[Callable] | Set[frozenset[Callable]] | Rulesets = None):
         self.name = name
-        self.loc_id = Locations[name].value
+        self.loc_id = Locations[name]
         self.address = self.loc_id
 
         if rules is Rulesets:
@@ -56,10 +56,13 @@ class MonkeyLocation(AE3LocationMeta):
             elif rules is Set[Callable]:
                 self.rules.Rules.add(frozenset(rules))
             elif rules is Set[Set[Callable]]:
-                self.rules.Rules.update(frozenset(s) for s in rules)
+                self.rules.Rules.update(rules)
 
         # For Monkeys, always add CATCH as a Critical Rule
         self.rules.Critical.add(AccessRule.CATCH)
+
+    def add_rules(self, rules : Set[frozenset[Callable]]):
+        self.rules.Rules.update(frozenset(s) for s in rules)
 
 class CameraLocation(AE3LocationMeta):
     """Base Data Class for all Camera Locations"""
@@ -68,9 +71,11 @@ class CameraLocation(AE3LocationMeta):
 
     def __init__(self, name : str):
         self.name = name
-        self.loc_id = Locations[name].value    # Equipment can be assumed to always be in Addresses.Items.
+        self.loc_id = Locations[name]    # Equipment can be assumed to always be in Addresses.Items.
         self.address = self.loc_id
-        self.ptrs = Pointers[self.address]
+
+        if self.address in Pointers:
+            self.ptrs = Pointers[self.address]
 
 ### [< --- LOCATIONS --- >]
 # Zero
@@ -82,7 +87,8 @@ Seaside_Ukki_Pia = MonkeyLocation(Loc.seaside_ukki_pia.value)
 Seaside_Sarubo = MonkeyLocation(Loc.seaside_sarubo.value)
 Seaside_Salurin = MonkeyLocation(Loc.seaside_salurin.value)
 Seaside_Ukkitan = MonkeyLocation(Loc.seaside_ukkitan.value)
-Seaside_Morella = MonkeyLocation(Loc.seaside_morella.value, {{AccessRule.SLING}, {AccessRule.FLY}})
+Seaside_Morella = MonkeyLocation(Loc.seaside_morella.value,
+                                 {frozenset({AccessRule.SLING}), frozenset({AccessRule.FLY})})
 Seaside_Ukki_Ben = MonkeyLocation(Loc.seaside_ukki_ben.value)
 Seaside_Kankichi = MonkeyLocation(Loc.seaside_kankichi.value)
 Seaside_Tomezo = MonkeyLocation(Loc.seaside_tomezo.value)
@@ -108,7 +114,7 @@ INDEX : Sequence[Sequence] = [
 ]
 
 ### [< --- METHODS --- >]
-def generate_name_to_id() -> Dict[str : int]:
+def generate_name_to_id() -> Dict[str, int]:
     """Get a Dictionary of all Items in Name-ID pairs"""
     i: AE3LocationMeta
     return {i.name: i.loc_id for i in MASTER}

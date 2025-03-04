@@ -1,4 +1,3 @@
-from typing_extensions import NamedTuple
 from dataclasses import dataclass
 from typing import List
 
@@ -20,7 +19,8 @@ class StageEntranceMeta:
     destination : str
     rules : Rulesets = None
 
-    def __init__(self, destination : str, rules : Callable | Set[Callable] | Set[Set[Callable]] | Rulesets = None):
+    def __init__(self, destination : str,
+                 rules : Callable | Set[Callable] | Set[frozenset[Callable]] | Rulesets = None):
         self.destination = destination
 
         if rules is Rulesets:
@@ -33,9 +33,9 @@ class StageEntranceMeta:
             elif rules is Set[Callable]:
                 self.rules.Rules.add(frozenset(rules))
             elif rules is Set[Set[Callable]]:
-                self.rules.Rules.update(frozenset(s) for s in rules)
+                self.rules.Rules.update(rules)
 
-class AE3StageMeta(NamedTuple):
+class AE3StageMeta:
     """
     Base Data Class for all the Stages in Ape Escape 3. This will be used as a basis when creating regions.
 
@@ -43,33 +43,33 @@ class AE3StageMeta(NamedTuple):
         name : Name of Stage from Strings.py
         entrances : List of Entrances (as defined by StageEntranceMeta) this stage has, excluding initial entrance.
         monkeys : List of Monkey Locations that this Stage contains.
-        points_of_interest : List of other non-monkey Locations that this stage contains
+        points_of_interest : List of other non-monkey Locations that this stage contains.
     """
 
     name : str
-    entrances : List[StageEntranceMeta] = None
-    monkeys : List[MonkeyLocation] = None
-    points_of_interest : List[AE3LocationMeta] = None
+    entrances : list[StageEntranceMeta] = []
+    monkeys : list[MonkeyLocation] = []
+    points_of_interest : list[AE3LocationMeta] = []
 
-    def __new__(cls, name : str, entrances : StageEntranceMeta | List[StageEntranceMeta] = None,
-                monkeys : MonkeyLocation | List[MonkeyLocation] = None,
-                pois : AE3LocationMeta | List[AE3LocationMeta] = None):
-        cls.name = name
+    def __init__(self, name : str, entrances : StageEntranceMeta | list[StageEntranceMeta] = None,
+                monkeys : MonkeyLocation | list[MonkeyLocation] = None,
+                pois : AE3LocationMeta | list[AE3LocationMeta] = None):
+        self.name = name
 
-        if entrances is StageEntranceMeta:
-            cls.locations = [entrances]
-        elif entrances is List[StageEntranceMeta]:
-            cls.locations = entrances
+        if isinstance(entrances, StageEntranceMeta):
+            self.entrances = [entrances]
+        elif isinstance(entrances, list):
+            self.entrances = entrances
 
-        if monkeys is MonkeyLocation:
-            cls.locations = [monkeys]
-        elif monkeys is List[MonkeyLocation]:
-            cls.locations = monkeys
+        if isinstance(monkeys, MonkeyLocation):
+            self.monkeys = [monkeys]
+        elif isinstance(monkeys, list):
+            self.monkeys = monkeys
 
-        if pois is AE3LocationMeta:
-            cls.locations = [pois]
-        elif pois is List[AE3LocationMeta]:
-            cls.locations = pois
+        if isinstance(pois, AE3LocationMeta):
+            self.points_of_interest = [pois]
+        elif isinstance(pois, list):
+            self.points_of_interest = pois
 
 ### [< --- ENTRANCES --- >]
 
@@ -93,7 +93,7 @@ Title_Screen = AE3StageMeta(Stage.title_screen.value,
 
 # Hub
 Travel_Station_A = AE3StageMeta(Stage.travel_station_a.value,
-                                [To_Seaside_A])
+                                [To_Travel_Station_B, To_Seaside_A])
 Travel_Station_B = AE3StageMeta(Stage.travel_station_b.value)
 
 # Zero

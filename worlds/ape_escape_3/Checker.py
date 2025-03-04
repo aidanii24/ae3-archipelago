@@ -34,7 +34,7 @@ async def check_items(ctx : 'AE3Context'):
             i : CollectableItem = item
 
             ### Handle Morph Energy
-            if item.address == GameStates[Game.morph_gauge_active.value].value():
+            if item.address == GameStates[Game.morph_gauge_active.value]:
                 ctx.ipc.give_morph_energy(i.amount)
 
             ### Handle Generic Items

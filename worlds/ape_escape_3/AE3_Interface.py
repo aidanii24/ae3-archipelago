@@ -66,7 +66,7 @@ class AEPS2Interface:
 
     # { Game Check }
     def get_player_state(self) -> int:
-        value : int = self.pine.read_int32(GameStates[Game.state.value].value)
+        value : int = self.pine.read_int32(GameStates[Game.state.value])
         return value
 
     def can_control(self) -> bool:
@@ -101,7 +101,7 @@ class AEPS2Interface:
 
     def give_morph_energy(self, amount : float = 3.0):
         # Check recharge state first
-        address : int = GameStates[Game.morph_gauge_recharge.value].value()
+        address : int = GameStates[Game.morph_gauge_recharge.value]
         value : int = self.pine.read_int32(address)
 
         if value != 0x0:
@@ -109,7 +109,7 @@ class AEPS2Interface:
             return
 
         # If recharge state is 0, we check the active gauge, following its pointer chain
-        address = GameStates[Game.morph_gauge_active.value].value()
+        address = GameStates[Game.morph_gauge_active.value]
         for pointer in Pointers[address]:
             address += self.pine.read_int32(address) + pointer
 

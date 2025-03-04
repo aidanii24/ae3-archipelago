@@ -4,11 +4,11 @@ from BaseClasses import MultiWorld, Tutorial, ItemClassification
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 
+from .data.Strings import Meta, APConsole
 from .AE3_Options import AE3Options
 from .Regions import create_regions
 from .data import Items, Locations
 from .data.Items import AE3Item
-from .data.Strings import Meta, APConsole
 
 # Identifier for Archipelago to recognize and run the client
 def run_client(_url : Optional[str] = None):

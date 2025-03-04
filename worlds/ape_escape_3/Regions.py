@@ -36,9 +36,9 @@ def generate_access_rule(player : int, rulesets : Rulesets) -> Callable[[Collect
         return reachable
     return access_rule
 
-def establish_entrances(player : int, parent_region : Region, connections : Dict[Region : Rulesets]):
+def establish_entrances(player : int, parent_region : Region, connections : Dict[Region, Rulesets]):
     """Connects the parent region to its destinations and assigns access rules where present."""
-    for destination, ruleset in connections:
+    for destination, ruleset in connections.items():
         entrance : Entrance = Entrance(player, parent_region.name + " <> " + destination.name)
         entrance.parent_region = parent_region
 
@@ -51,11 +51,12 @@ def establish_entrances(player : int, parent_region : Region, connections : Dict
 ### [< --- GENERATION --- >]
 def create_regions(world : "AE3World"):
     # Cache Data
-    meta_cache : Dict[str : AE3StageMeta] = { r.name : r for r in MASTER }
-    regions_dir : Dict[str : Region] = {}
+    meta_cache : Dict[str, AE3StageMeta] = { r.name : r for r in MASTER }
+    regions_dir : Dict[str, Region] = {}
 
     # Initialize Regions
     for stage in MASTER:
+
         region : Region = Region(stage.name, world.player, world.multiworld)
         regions_dir.setdefault(region.name, region)
 
@@ -64,20 +65,21 @@ def create_regions(world : "AE3World"):
         meta : AE3StageMeta = meta_cache[region.name]
 
         # Connect Regions
-        connections : Dict[Region : Rulesets] = {}
-        for entrance in meta.entrances:
-            connections.setdefault(regions_dir[entrance.destination], entrance.rules)
+        connections : Dict[Region, Rulesets] = {}
+        if meta.entrances:
+            for entrance in meta.entrances:
+                connections.setdefault(regions_dir[entrance.destination], entrance.rules)
 
         establish_entrances(world.player, region, connections)
 
         # Define Locations
-        for loc in meta.locations:
-            location : Location = AE3Location(world.player, loc.name, loc.address, region)
+        if meta.monkeys:
+            for loc in [*meta.monkeys]:
+                location : Location = AE3Location(world.player, loc.name, loc.address, region)
+                if loc.rules:
+                    location.access_rule = generate_access_rule(world.player, loc.rules)
 
-            if loc.rules:
-                location.access_rule = generate_access_rule(world.player, loc.rules)
-
-            region.locations.append(location)
+                region.locations.append(location)
 
     # Send Regions to Archipelago
     world.multiworld.regions.extend(list(regions_dir.values()))
