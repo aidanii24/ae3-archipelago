@@ -2,6 +2,7 @@ from typing import ClassVar, List, Optional
 
 from BaseClasses import MultiWorld, Tutorial, ItemClassification
 from worlds.AutoWorld import World, WebWorld
+from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 
 from .AE3_Options import AE3Options
 from .Regions import create_regions
@@ -9,7 +10,6 @@ from .data import Items, Locations
 from .data.Items import AE3Item
 from .data.Locations import location_table
 from .data.Strings import Meta, APConsole
-from ..LauncherComponents import Component, components, launch_subprocess, Type
 
 # Identifier for Archipelago to recognize and run the client
 def run_client(_url : Optional[str] = None):
@@ -110,7 +110,7 @@ class AE3World(World):
 
             self.item_pool += [chassis_twin, chassis_pudding, chassis_black]
 
-        # <!> Add Items to ItemPool
+        # Add Items to ItemPool
         self.multiworld.itempool = self.item_pool
 
     def fill_slot_data(self):
