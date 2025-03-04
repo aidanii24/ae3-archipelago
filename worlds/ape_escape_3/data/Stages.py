@@ -19,7 +19,7 @@ class StageEntranceMeta:
     destination : str
     rules : Rulesets = None
 
-    def __init__(self, destination : str, rules : Callable | Set[Callable] | Rulesets = None):
+    def __init__(self, destination : str, rules : Callable | Set[Callable] | Set[Set[Callable]] | Rulesets = None):
         self.destination = destination
 
         if rules is Rulesets:
@@ -29,8 +29,10 @@ class StageEntranceMeta:
 
             if rules is Callable:
                 self.rules.Rules.add(frozenset({rules}))
-            if rules is Set[Callable]:
+            elif rules is Set[Callable]:
                 self.rules.Rules.add(frozenset(rules))
+            elif rules is Set[Set[Callable]]:
+                self.rules.Rules.update(frozenset(s) for s in rules)
 
 class AE3StageMeta(NamedTuple):
     """

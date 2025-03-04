@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 
 ### [< --- HELPERS --- >]
 def generate_access_rule(player : int, rulesets : Rulesets) -> Callable[[CollectionState], bool]:
+    """Parses a Ruleset and returns a staticmethod for use as an access rule by Archipelago"""
     def access_rule(state: CollectionState) -> bool:
         # Any Critical Rules that return False should immediately mark the item as inaccessible with the current state
         if rulesets:
@@ -38,6 +39,7 @@ def generate_access_rule(player : int, rulesets : Rulesets) -> Callable[[Collect
     return access_rule
 
 def establish_entrances(player : int, parent_region : Region, connections : Dict[Region : Rulesets]):
+    """Connects the parent region to its destinations and assigns access rules where present."""
     for destination, ruleset in connections:
         entrance : Entrance = Entrance(player, parent_region.name + " <> " + destination.name)
         entrance.parent_region = parent_region

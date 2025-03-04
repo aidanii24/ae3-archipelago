@@ -26,11 +26,15 @@ def can_shoot(state : CollectionState, player : int):
             state.has(Itm.morph_cowboy.value, player) or
             state.has(Itm.morph_hero.value, player))
 
-## Check if Player can fly/glide
+## Check if Player can fly (can gain height)
 def can_fly(state : CollectionState, player : int):
     return (state.has(Itm.gadget_fly.value, player) or
 
-            state.has(Itm.morph_ninja.value, player) or
+            state.has(Itm.morph_ninja.value, player))
+
+## Check if the Player can glide
+def can_glide(state : CollectionState, player : int):
+    return (can_fly(state, player) or
             state.has(Itm.morph_hero.value, player))
 
 # Gadget Checks
@@ -60,7 +64,8 @@ class AccessRule:
     MORPH = can_morph
     MORPH_NO_MONKEY = can_morph_not_monkey      # Unlocked any morph that is not Super Monkey
     SHOOT = can_shoot                           # Slingback Shooter unlocked or has any morph with long range attacks
-    FLY = can_fly                               # Sky Flyer unlocked or has any morph that can fly/glide
+    FLY = can_fly                               # Sky Flyer unlocked or has any morph that can fly (gain height)
+    GLIDE = can_glide                           # Sky Flyer unlocked or has any morph that can glide
 
     # Gadget
     SLING = can_sling

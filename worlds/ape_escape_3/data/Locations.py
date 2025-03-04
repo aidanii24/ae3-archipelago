@@ -36,11 +36,11 @@ class MonkeyLocation(AE3LocationMeta):
 
     Parameters:
         name : Name of Location from Strings.py
-        rules : Sets of AccessRules for the Location. Can be an AccessRule, Set of AccessRule, or a full Ruleset.
-        Passing callables will add them as Normal Rules. To assign critical rules, pass a Ruleset instead.
+        rules : Sets of AccessRules for the Location. Can be an AccessRule, Sets of AccessRule, or a full Ruleset.
+        Only parameters of type RuleSet can set Critical Rules.
     """
 
-    def __init__(self, name : str, rules : Callable | Set[Callable] | Rulesets = None):
+    def __init__(self, name : str, rules : Callable | Set[Callable] | Set[Set[Callable]] | Rulesets = None):
         self.name = name
         self.loc_id = Locations[name].value
         self.address = self.loc_id
@@ -52,8 +52,10 @@ class MonkeyLocation(AE3LocationMeta):
 
             if rules is Callable:
                 self.rules.Rules.add(frozenset({rules}))
-            if rules is Set[Callable]:
+            elif rules is Set[Callable]:
                 self.rules.Rules.add(frozenset(rules))
+            elif rules is Set[Set[Callable]]:
+                self.rules.Rules.update(frozenset(s) for s in rules)
 
         # For Monkeys, always add CATCH as a Critical Rule
         self.rules.Critical.add(AccessRule.CATCH)
@@ -79,12 +81,12 @@ Seaside_Ukki_Pia = MonkeyLocation(Loc.seaside_ukki_pia.value)
 Seaside_Sarubo = MonkeyLocation(Loc.seaside_sarubo.value)
 Seaside_Salurin = MonkeyLocation(Loc.seaside_salurin.value)
 Seaside_Ukkitan = MonkeyLocation(Loc.seaside_ukkitan.value)
-Seaside_Morella = MonkeyLocation(Loc.seaside_morella.value, AccessRule.SLING)
+Seaside_Morella = MonkeyLocation(Loc.seaside_morella.value, {{AccessRule.SLING}, {AccessRule.FLY}})
 Seaside_Ukki_Ben = MonkeyLocation(Loc.seaside_ukki_ben.value)
-Seaside_Kankichi = MonkeyLocation(Loc.seaside_kankichi.value, AccessRule.MONKEY)
-Seaside_Tomezo = MonkeyLocation(Loc.seaside_tomezo.value, AccessRule.MONKEY)
-Seaside_Kamayan = MonkeyLocation(Loc.seaside_kamayan.value, AccessRule.MONKEY)
-Seaside_Taizo = MonkeyLocation(Loc.seaside_taizo.value, AccessRule.MONKEY)
+Seaside_Kankichi = MonkeyLocation(Loc.seaside_kankichi.value)
+Seaside_Tomezo = MonkeyLocation(Loc.seaside_tomezo.value)
+Seaside_Kamayan = MonkeyLocation(Loc.seaside_kamayan.value)
+Seaside_Taizo = MonkeyLocation(Loc.seaside_taizo.value)
 
 ### [< --- LOCATION GROUPS --- >]
 SEASIDE_MONKEYS : Sequence[MonkeyLocation] = [
