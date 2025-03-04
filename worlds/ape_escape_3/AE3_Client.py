@@ -1,5 +1,5 @@
-from typing import Optional, Set
 from argparse import ArgumentParser, Namespace
+from typing import Optional, Set
 import multiprocessing
 import asyncio
 import traceback

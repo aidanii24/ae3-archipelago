@@ -1,10 +1,10 @@
-from typing import Callable, Dict, List, Sequence, Set
+from typing import Callable, Dict, Set, Sequence
 from abc import ABC
 
 from BaseClasses import Location
 
-from .Logic import AccessRule, Rulesets
 from .Addresses import Locations, Pointers
+from .Logic import AccessRule, Rulesets
 from .Strings import Loc, Meta
 
 
@@ -64,13 +64,13 @@ class MonkeyLocation(AE3LocationMeta):
 class CameraLocation(AE3LocationMeta):
     """Base Data Class for all Camera Locations"""
 
-    ptrs : List[int]
+    ptrs : Sequence[int]
 
     def __init__(self, name : str):
         self.name = name
         self.loc_id = Locations[name].value    # Equipment can be assumed to always be in Addresses.Items.
         self.address = self.loc_id
-        self.ptrs = Pointers[self.address].value
+        self.ptrs = Pointers[self.address]
 
 ### [< --- LOCATIONS --- >]
 # Zero
@@ -113,60 +113,62 @@ def generate_name_to_id() -> Dict[str : int]:
     i: AE3LocationMeta
     return {i.name: i.loc_id for i in MASTER}
 
-# TODO - @Deprecated
-location_table = {
-    # Monkeys
 
-    ## TV Station/Zero
-    Loc.zero_ukki_pan.value :                   Locations[Loc.zero_ukki_pan.value].value,
 
-    ## Seaside Resort
-    Loc.seaside_nessal.value :                  Locations[Loc.seaside_nessal.value].value,
-    Loc.seaside_ukki_pia.value :                Locations[Loc.seaside_ukki_pia.value].value,
-    Loc.seaside_sarubo.value :                  Locations[Loc.seaside_sarubo.value].value,
-    Loc.seaside_salurin.value :                 Locations[Loc.seaside_salurin.value].value,
-    Loc.seaside_ukkitan.value :                 Locations[Loc.seaside_ukkitan.value].value,
-    Loc.seaside_morella.value :                 Locations[Loc.seaside_morella.value].value,
-    Loc.seaside_ukki_ben.value :                Locations[Loc.seaside_ukki_ben.value].value,
-    Loc.seaside_kankichi.value :                Locations[Loc.seaside_kankichi.value].value,
-    Loc.seaside_tomezo.value :                  Locations[Loc.seaside_tomezo.value].value,
-    Loc.seaside_kamayan.value :                 Locations[Loc.seaside_kamayan.value].value,
-    Loc.seaside_taizo.value :                   Locations[Loc.seaside_taizo.value].value
-}
-
-# Pre-list Prerequisite of Locations
-## TODO - Could Move these to Rules.py
-rules_table = {
-    # Name
-
-    # Monkeys
-
-    ## TV Station/Zero
-    Loc.zero_ukki_pan.value                 : Rulesets( {AccessRule.CATCH} ),
-
-    ## Seaside Resort
-    Loc.seaside_nessal.value                : Rulesets( {AccessRule.CATCH} ),
-    Loc.seaside_ukki_pia.value              : Rulesets( {AccessRule.CATCH} ),
-    Loc.seaside_sarubo.value                : Rulesets( {AccessRule.CATCH} ),
-    Loc.seaside_salurin.value               : Rulesets( {AccessRule.CATCH} ),
-    Loc.seaside_ukkitan.value               : Rulesets( {AccessRule.CATCH} ),
-    Loc.seaside_morella.value               : Rulesets( {AccessRule.CATCH},
-                                                                     {frozenset({AccessRule.SLING})}),
-    Loc.seaside_ukki_ben.value              : Rulesets( {AccessRule.CATCH} ),
-
-    Loc.seaside_kankichi.value              : Rulesets( {AccessRule.CATCH},
-                                                                     {frozenset({AccessRule.MONKEY})}),
-    Loc.seaside_tomezo.value                : Rulesets( {AccessRule.CATCH},
-                                                                     {frozenset({AccessRule.MONKEY})}),
-    Loc.seaside_kamayan.value               : Rulesets( {AccessRule.CATCH},
-                                                                     {frozenset({AccessRule.MONKEY})}),
-    Loc.seaside_taizo.value                 : Rulesets( {AccessRule.CATCH},
-                                                                     {frozenset({AccessRule.MONKEY})})
-}
-
-location_group : Dict[str, Set[str]] = {}
-
-def create_location_groups():
-    # Monkeys
-    for location in location_table.keys():
-        location_group.setdefault("Monkeys", set()).add(location)
+# # TODO - @Deprecated
+# location_table = {
+#     # Monkeys
+#
+#     ## TV Station/Zero
+#     Loc.zero_ukki_pan.value :                   Locations[Loc.zero_ukki_pan.value].value,
+#
+#     ## Seaside Resort
+#     Loc.seaside_nessal.value :                  Locations[Loc.seaside_nessal.value].value,
+#     Loc.seaside_ukki_pia.value :                Locations[Loc.seaside_ukki_pia.value].value,
+#     Loc.seaside_sarubo.value :                  Locations[Loc.seaside_sarubo.value].value,
+#     Loc.seaside_salurin.value :                 Locations[Loc.seaside_salurin.value].value,
+#     Loc.seaside_ukkitan.value :                 Locations[Loc.seaside_ukkitan.value].value,
+#     Loc.seaside_morella.value :                 Locations[Loc.seaside_morella.value].value,
+#     Loc.seaside_ukki_ben.value :                Locations[Loc.seaside_ukki_ben.value].value,
+#     Loc.seaside_kankichi.value :                Locations[Loc.seaside_kankichi.value].value,
+#     Loc.seaside_tomezo.value :                  Locations[Loc.seaside_tomezo.value].value,
+#     Loc.seaside_kamayan.value :                 Locations[Loc.seaside_kamayan.value].value,
+#     Loc.seaside_taizo.value :                   Locations[Loc.seaside_taizo.value].value
+# }
+#
+# # Pre-list Prerequisite of Locations
+# ## TODO - Could Move these to Rules.py
+# rules_table = {
+#     # Name
+#
+#     # Monkeys
+#
+#     ## TV Station/Zero
+#     Loc.zero_ukki_pan.value                 : Rulesets( {AccessRule.CATCH} ),
+#
+#     ## Seaside Resort
+#     Loc.seaside_nessal.value                : Rulesets( {AccessRule.CATCH} ),
+#     Loc.seaside_ukki_pia.value              : Rulesets( {AccessRule.CATCH} ),
+#     Loc.seaside_sarubo.value                : Rulesets( {AccessRule.CATCH} ),
+#     Loc.seaside_salurin.value               : Rulesets( {AccessRule.CATCH} ),
+#     Loc.seaside_ukkitan.value               : Rulesets( {AccessRule.CATCH} ),
+#     Loc.seaside_morella.value               : Rulesets( {AccessRule.CATCH},
+#                                                                      {frozenset({AccessRule.SLING})}),
+#     Loc.seaside_ukki_ben.value              : Rulesets( {AccessRule.CATCH} ),
+#
+#     Loc.seaside_kankichi.value              : Rulesets( {AccessRule.CATCH},
+#                                                                      {frozenset({AccessRule.MONKEY})}),
+#     Loc.seaside_tomezo.value                : Rulesets( {AccessRule.CATCH},
+#                                                                      {frozenset({AccessRule.MONKEY})}),
+#     Loc.seaside_kamayan.value               : Rulesets( {AccessRule.CATCH},
+#                                                                      {frozenset({AccessRule.MONKEY})}),
+#     Loc.seaside_taizo.value                 : Rulesets( {AccessRule.CATCH},
+#                                                                      {frozenset({AccessRule.MONKEY})})
+# }
+#
+# location_group : Dict[str, Set[str]] = {}
+#
+# def create_location_groups():
+#     # Monkeys
+#     for location in location_table.keys():
+#         location_group.setdefault("Monkeys", set()).add(location)

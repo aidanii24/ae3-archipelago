@@ -2,11 +2,11 @@ from typing import TYPE_CHECKING, Set, List
 
 from NetUtils import NetworkItem
 
-from .data import Items
 from .data.Items import EquipmentItem, CollectableItem
 from .data.Addresses import GADGET_INDEX, GameStates
 from .data.Locations import MONKEYS
 from .data.Strings import Game
+from .data import Items
 
 if TYPE_CHECKING:
     from .AE3_Client import AE3Context

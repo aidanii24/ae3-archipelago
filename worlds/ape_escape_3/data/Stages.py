@@ -1,5 +1,6 @@
 from typing_extensions import NamedTuple
 from dataclasses import dataclass
+from typing import List
 
 from .Strings import Stage
 from .Locations import *

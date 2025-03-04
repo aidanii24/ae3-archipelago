@@ -8,7 +8,6 @@ from .AE3_Options import AE3Options
 from .Regions import create_regions
 from .data import Items, Locations
 from .data.Items import AE3Item
-from .data.Locations import location_table
 from .data.Strings import Meta, APConsole
 
 # Identifier for Archipelago to recognize and run the client
@@ -120,7 +119,7 @@ class AE3World(World):
             "Auto-equip Gadgets when obtained" : self.options.AutoEquip.value
         }
 
-    def generate_output(self, dir : str):
-        data = {
+    def generate_output(self, directory : str):
+        datas = {
             "slot_data" : self.fill_slot_data()
         }

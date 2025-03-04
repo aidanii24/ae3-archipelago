@@ -1,5 +1,5 @@
-from typing import Dict, List, Sequence
-from enum import Enum, IntEnum
+from typing import Dict, Sequence
+from enum import IntEnum
 
 from .Strings import Itm, Loc, Game
 
@@ -109,87 +109,89 @@ BUTTON_INDEX : Sequence[int] = [
     GameStates[Game.equip_square.value].value, GameStates[Game.equip_triangle.value].value,
 ]
 
-@DeprecationWarning
-class Address:
-    """
-    Container for all the relevant memory addresses in Ape Escape 3.
 
-    Attributes:
-        itm : Item Strings of the Game
-        loc : Location Strings of the Game
-        game : Strings related to the overall game
-    """
-    itm : Dict[str : int | List[int] ]= {
-        # <!> Values are on/off between 0x01 and 0x02 respectively unless commented otherwise.
 
-        # Gadgets
-        Itm.gadget_club.name            : 0x649950,
-        Itm.gadget_net.name             : 0x649954,
-        Itm.gadget_radar.name           : 0x649958,
-        Itm.gadget_hoop.name            : 0x64995c,
-        Itm.gadget_sling.name           : 0x649960,
-        Itm.gadget_swim.name            : 0x649978,
-        Itm.gadget_rcc.name             : 0x649964,
-        Itm.gadget_fly.name             : 0x649968,
-
-        # Morphs
-        Itm.morph_knight.name           : 0x649930,
-        Itm.morph_cowboy.name           : 0x649934,
-        Itm.morph_ninja.name            : 0x649938,
-        Itm.morph_magician.name         : 0x64993c,
-        Itm.morph_kungfu.name           : 0x649940,
-        Itm.morph_hero.name             : 0x649944,
-        Itm.morph_monkey.name           : 0x649948,
-
-        # Accessories
-        Itm.chassis_twin.name           : 0x649c98, # boolean (0x00 - 0x01)
-        Itm.chassis_black.name          : 0x649c99, # boolean (0x00 - 0x01)
-        Itm.chassis_pudding.name        : 0x649c9a, # boolean (0x00 - 0x01)
-    }
-
-    loc = {
-        # Monkeys
-        # <!> Values are on/off between 0x00 and 0x01 respectively unless commented otherwise.
-
-        ## TV Station/Zero
-        Loc.zero_ukki_pan.name          : 0x649b4e,
-
-        ## Seaside Resort
-        Loc.seaside_nessal.name         : 0x6499dd,
-        Loc.seaside_ukki_pia.name       : 0x6499de,
-        Loc.seaside_sarubo.name         : 0x6499df,
-        Loc.seaside_salurin.name        : 0x6499e0,
-        Loc.seaside_ukkitan.name        : 0x649b4f,
-        Loc.seaside_morella.name        : 0x649b99,
-        Loc.seaside_ukki_ben.name       : 0x6499e1,
-        Loc.seaside_kankichi.name       : 0x649b5e,
-        Loc.seaside_tomezo.name         : 0x649b5f,
-        Loc.seaside_kamayan.name        : 0x649b60,
-        Loc.seaside_taizo.name          : 0x649b61
-    }
-
-    game = {
-        # Status
-        Game.state.name                     : 0x8519e4, # int32 (0x00 - 0x04)
-        Game.character.name                 : 0x649910, # int32 (0x00 - 0x01)
-
-        # Resources
-        Game.jackets.name                   : 0x649914,
-        Game.cookies.name                   : 0x649918,
-        Game.morph_gauge_active.name        : 0x649920,
-        Game.morph_gauge_recharge.name      : 0x649924,
-        Itm.acc_morph_stock.name            : 0x649928,  # float (0000C842 - 00808944)
-        Itm.ammo_boom.name                  : 0x649998,  # int32
-        Itm.ammo_homing.name                : 0x64999c,  # int32
-
-        # Equipment
-        Game.equip_circle.name              : 0x64997c,
-        Game.equip_cross.name               : 0x649980,
-        Game.equip_square.name              : 0x649984,
-        Game.equip_triangle.name            : 0x649988,
-        Game.equip_active.name              : 0x64998c,
-        Game.equip_pellet_active            : 0x649990,
-        Game.equip_chassis_active           : 0x6499ac,
-        Game.equip_quick_morph              : 0x7954b0,
-        Game.equip_morph_target             : 0x692018,
-    }
+# @DeprecationWarning
+# class Address:
+#     """
+#     Container for all the relevant memory addresses in Ape Escape 3.
+#
+#     Attributes:
+#         itm : Item Strings of the Game
+#         loc : Location Strings of the Game
+#         game : Strings related to the overall game
+#     """
+#     itm : Dict[str : int | List[int] ]= {
+#         # <!> Values are on/off between 0x01 and 0x02 respectively unless commented otherwise.
+#
+#         # Gadgets
+#         Itm.gadget_club.name            : 0x649950,
+#         Itm.gadget_net.name             : 0x649954,
+#         Itm.gadget_radar.name           : 0x649958,
+#         Itm.gadget_hoop.name            : 0x64995c,
+#         Itm.gadget_sling.name           : 0x649960,
+#         Itm.gadget_swim.name            : 0x649978,
+#         Itm.gadget_rcc.name             : 0x649964,
+#         Itm.gadget_fly.name             : 0x649968,
+#
+#         # Morphs
+#         Itm.morph_knight.name           : 0x649930,
+#         Itm.morph_cowboy.name           : 0x649934,
+#         Itm.morph_ninja.name            : 0x649938,
+#         Itm.morph_magician.name         : 0x64993c,
+#         Itm.morph_kungfu.name           : 0x649940,
+#         Itm.morph_hero.name             : 0x649944,
+#         Itm.morph_monkey.name           : 0x649948,
+#
+#         # Accessories
+#         Itm.chassis_twin.name           : 0x649c98, # boolean (0x00 - 0x01)
+#         Itm.chassis_black.name          : 0x649c99, # boolean (0x00 - 0x01)
+#         Itm.chassis_pudding.name        : 0x649c9a, # boolean (0x00 - 0x01)
+#     }
+#
+#     loc = {
+#         # Monkeys
+#         # <!> Values are on/off between 0x00 and 0x01 respectively unless commented otherwise.
+#
+#         ## TV Station/Zero
+#         Loc.zero_ukki_pan.name          : 0x649b4e,
+#
+#         ## Seaside Resort
+#         Loc.seaside_nessal.name         : 0x6499dd,
+#         Loc.seaside_ukki_pia.name       : 0x6499de,
+#         Loc.seaside_sarubo.name         : 0x6499df,
+#         Loc.seaside_salurin.name        : 0x6499e0,
+#         Loc.seaside_ukkitan.name        : 0x649b4f,
+#         Loc.seaside_morella.name        : 0x649b99,
+#         Loc.seaside_ukki_ben.name       : 0x6499e1,
+#         Loc.seaside_kankichi.name       : 0x649b5e,
+#         Loc.seaside_tomezo.name         : 0x649b5f,
+#         Loc.seaside_kamayan.name        : 0x649b60,
+#         Loc.seaside_taizo.name          : 0x649b61
+#     }
+#
+#     game = {
+#         # Status
+#         Game.state.name                     : 0x8519e4, # int32 (0x00 - 0x04)
+#         Game.character.name                 : 0x649910, # int32 (0x00 - 0x01)
+#
+#         # Resources
+#         Game.jackets.name                   : 0x649914,
+#         Game.cookies.name                   : 0x649918,
+#         Game.morph_gauge_active.name        : 0x649920,
+#         Game.morph_gauge_recharge.name      : 0x649924,
+#         Itm.acc_morph_stock.name            : 0x649928,  # float (0000C842 - 00808944)
+#         Itm.ammo_boom.name                  : 0x649998,  # int32
+#         Itm.ammo_homing.name                : 0x64999c,  # int32
+#
+#         # Equipment
+#         Game.equip_circle.name              : 0x64997c,
+#         Game.equip_cross.name               : 0x649980,
+#         Game.equip_square.name              : 0x649984,
+#         Game.equip_triangle.name            : 0x649988,
+#         Game.equip_active.name              : 0x64998c,
+#         Game.equip_pellet_active            : 0x649990,
+#         Game.equip_chassis_active           : 0x6499ac,
+#         Game.equip_quick_morph              : 0x7954b0,
+#         Game.equip_morph_target             : 0x692018,
+#     }
