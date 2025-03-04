@@ -1,28 +1,58 @@
-from typing import TYPE_CHECKING, Set
+from typing import TYPE_CHECKING, Set, List
+
+from NetUtils import NetworkItem
 
 from .data import Items
-from .data.Addresses import Address
-from .data.Items import item_group
+from .data.Items import EquipmentItem, CollectableItem
+from .data.Addresses import GADGET_INDEX, GameStates
+from .data.Locations import MONKEYS
+from .data.Strings import Game
 
 if TYPE_CHECKING:
     from .AE3_Client import AE3Context
 
+### [< --- CHECKS --- >]
 async def check_items(ctx : 'AE3Context'):
-    # Get Items from server
-    for server_item in ctx.items_received:
+    cache_batch_items : Set[NetworkItem] = set()
+
+    # Get Difference to get only new items
+    received : List[NetworkItem] = list(set(ctx.items_received).difference(ctx.cached_received_items))
+
+    for server_item in received:
         item = Items.from_id(server_item.item)
 
-        # Check for new Gadgets/Morphs
-        if item in item_group["Equipment"]:
-            ctx.ipc.unlock_equipment(server_item.item)
-            ctx.cached_received_items.add(server_item.item)
+        # Handle Item depending on category
+        ## Unlock Morphs and Gadgets
+        if item is EquipmentItem:
+            ctx.ipc.unlock_equipment(item.address)
+
+            if not ctx.cached_received_items:
+                ctx.ipc.auto_equip(GADGET_INDEX.index(item.address))
+
+        ## Handle Collectables
+        elif item in CollectableItem:
+            i : CollectableItem = item
+
+            ### Handle Morph Energy
+            if item.address == GameStates[Game.morph_gauge_active.value].value():
+                ctx.ipc.give_morph_energy(i.amount)
+
+            ### Handle Generic Items
+            else:
+                ctx.ipc.give_collectable(item.address, i.amount)
+
+        # Add to temporary container; to be cached as a single batched after
+        cache_batch_items.add(server_item)
+
+    # Add to Cache
+    ctx.cached_received_items.update(cache_batch_items)
 
 async def check_locations(ctx : 'AE3Context') -> bool:
     cleared : Set[int] = set()
 
-    for value in Address.locations.values():
-        if ctx.ipc.pine.read_int8(value) == 0x01:
-            cleared.add(value)
+    for monkey in MONKEYS:
+        if ctx.ipc.pine.read_int8(monkey.address) == 0x01:
+            cleared.add(monkey.address)
 
     # Get newly checked locations
     cleared = cleared.difference(ctx.checked_locations)

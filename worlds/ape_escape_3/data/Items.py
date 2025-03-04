@@ -6,7 +6,7 @@ from abc import ABC
 from BaseClasses import Item
 
 from .Strings import Itm, Game, Meta, APHelper
-from .Addresses import Items, GameStates
+from .Addresses import Items, GameStates, Pointers
 
 ### [< --- HELPERS --- >]
 class AE3Item(Item):
@@ -47,21 +47,29 @@ class CollectableItem(AE3ItemMeta):
     Parameters:
         name : Name of Item from Strings.py
         address : Memory Address of Item from Addresses.py
+        amount : Amount of the Item to give
         capacity : Maximum amount of the item the player can hold
         weight : How often to be chosen to fill a location
         id_offset : (default : 0) Added Offset to ID for Items that target the same Memory Address
     """
 
+    amount : int | float
     capacity : int
     weight : float
 
-    def __init__(self, name : str, address : int, capacity : int, weight : float, id_offset : int = 0):
+    pointers: Sequence[int] = None
+
+    def __init__(self, name : str, address : int, amount : int | float,
+                 capacity : int, weight : float, id_offset : int = 0):
         self.name = name
         self.item_id = address + id_offset
         self.address = address
 
+        self.amount = amount
         self.capacity = capacity
         self.weight = weight
+
+        self.pointers = Pointers[address]
 
 class UpgradeableItem(AE3ItemMeta):
     """
@@ -109,26 +117,29 @@ Chassis_Black = EquipmentItem(Itm.chassis_black.value)
 Chassis_Pudding = EquipmentItem(Itm.chassis_pudding.value)
 
 # Upgradeables
-Acc_Morph_Stock = UpgradeableItem(Itm.acc_morph_stock.value, Items[Game.morph_stocks.value].value, 10)
+Acc_Morph_Stock = UpgradeableItem(Game.morph_stocks.value, GameStates[Game.morph_stocks.value].value, 10)
 
 # Collectables
-Nothing = CollectableItem(Itm.nothing.value, Items[Itm.nothing.value].value, 0, 0.0)
+Nothing = CollectableItem(Itm.nothing.value, Items[Itm.nothing.value].value, 0,0, 0.0)
 
-Cookie = CollectableItem(Itm.cookie.value, GameStates[Game.cookies.value].value, 5, 0.4)
-Cookie_Giant = CollectableItem(Itm.cookie_giant.value, GameStates[Game.cookies.value].value, 5, 0.15,
-                               0x01)
-Jacket = CollectableItem(Itm.jacket.value, GameStates[Game.jackets.value].value, 99, 0.1)
-Chip_1x = CollectableItem(Itm.chip_1x.value, GameStates[Game.chips.value].value, 9999, 0.5)
-Chip_5x = CollectableItem(Itm.chip_5x.value, GameStates[Game.chips.value].value, 9999, 0.45,
+Cookie = CollectableItem(Itm.cookie.value, GameStates[Game.cookies.value].value, 20.0, 100, 0.4)
+Cookie_Giant = CollectableItem(Itm.cookie_giant.value, GameStates[Game.cookies.value].value, 100.0, 100,
+                               0.15,0x01)
+Jacket = CollectableItem(Itm.jacket.value, GameStates[Game.jackets.value].value, 1.0, 0x63, 0.1)
+Chip_1x = CollectableItem(Itm.chip_1x.value, GameStates[Game.chips.value].value, 1, 0x270F, 0.5)
+Chip_5x = CollectableItem(Itm.chip_5x.value, GameStates[Game.chips.value].value, 5, 0x270F, 0.45,
                           0x01)
-Chip_10x = CollectableItem(Itm.chip_10x.value, GameStates[Game.chips.value].value, 9999, 0.4,
+Chip_10x = CollectableItem(Itm.chip_10x.value, GameStates[Game.chips.value].value, 10, 0x270F, 0.4,
                             0x02)
-Energy = CollectableItem(Itm.energy.value, GameStates[Game.morph_gauge_active.value].value, 30, 0.35,)
-Energy_Mega = CollectableItem(Itm.energy_mega.value, GameStates[Game.morph_gauge_recharge.value].value, 3,
-                            0.25)
+Energy = CollectableItem(Itm.energy.value, GameStates[Game.morph_gauge_active.value].value, 3.0, 30,
+                         0.35, 0x0)
+Energy_Mega = CollectableItem(Itm.energy_mega.value, GameStates[Game.morph_gauge_active.value].value, 30.0,
+                              30, 0.25, 0x01)
 
-Ammo_Boom = CollectableItem(Itm.ammo_boom.value, Items[Game.ammo_boom.value].value, 9, 0.3)
-Ammo_Homing = CollectableItem(Itm.ammo_homing.value, Items[Game.ammo_homing.value].value, 9, 0.3)
+Ammo_Boom = CollectableItem(Itm.ammo_boom.value, GameStates[Game.ammo_boom.value].value, 1, 0x9,
+                            0.3)
+Ammo_Homing = CollectableItem(Itm.ammo_homing.value, GameStates[Game.ammo_homing.value].value, 1, 0x9,
+                              0.3)
 
 ### [< --- ITEM GROUPS --- >]
 GADGETS : Sequence[EquipmentItem] = [
@@ -164,14 +175,14 @@ INDEX : Sequence[Sequence] = [
 ]
 
 ### [< --- METHODS --- >]
-def from_id(item_id = int, category : int = 0) -> AE3ItemMeta:
+def from_id(item_id = int, category : int = 0):
     """Get Item by its ID"""
     ref : Sequence = INDEX[category]
 
     i : AE3ItemMeta = next((i for i in ref if i.item_id == item_id), None)
     return i
 
-def from_name(name = str, category : int = 0) -> AE3ItemMeta:
+def from_name(name = str, category : int = 0):
     """Get Item by its Name"""
     ref : Sequence = INDEX[category]
 

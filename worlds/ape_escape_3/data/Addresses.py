@@ -69,7 +69,7 @@ class GameStates(IntEnum):
     Game.jackets.value =                    0x649914,
     Game.cookies.value =                    0x649918,
     Game.chips.value =                      0x6499d4,
-    Game.morph_gauge_active.value =         0x649920,
+    Game.morph_gauge_active.value =         0x742014,
     Game.morph_gauge_recharge.value =       0x649924,
     Game.morph_stocks.value =               0x649928,  # float (0000C842 - 00808944)
     Game.ammo_boom.value =                  0x649998,  # int32
@@ -86,11 +86,22 @@ class GameStates(IntEnum):
     Game.equip_quick_morph.value =          0x7954b0,
     Game.equip_morph_target.value =         0x692018,
 
+### [< --- POINTER CHAINS --- >]
+Pointers : Dict[int, Sequence[int]] = {
+    GameStates[Game.morph_gauge_active.value].value     : [0x44, 0x24, 0x38, 0x18]
+}
+
 ### [< --- ADDRESS GROUPS --- >]
 GADGET_INDEX : Sequence[int] = [
     Items[Itm.gadget_swim.value].value, Items[Itm.gadget_net.value].value, Items[Itm.gadget_club.value].value,
     Items[Itm.gadget_radar.value].value, Items[Itm.gadget_hoop.value].value, Items[Itm.gadget_sling.value].value,
     Items[Itm.gadget_rcc.value].value, Items[Itm.gadget_fly.value].value
+]
+
+MORPH_INDEX : Sequence[int] = [
+    Items[Itm.morph_knight.value].value, Items[Itm.morph_cowboy.value].value, Items[Itm.morph_ninja.value].value,
+    Items[Itm.morph_magician.value].value, Items[Itm.morph_kungfu.value].value, Items[Itm.morph_hero.value].value,
+    Items[Itm.morph_monkey.value].value
 ]
 
 BUTTON_INDEX : Sequence[int] = [
@@ -131,11 +142,6 @@ class Address:
         Itm.morph_monkey.name           : 0x649948,
 
         # Accessories
-        Itm.acc_morph_stock.name        : 0x649928, # float (0000C842 - 00808944)
-
-        Itm.ammo_boom.name              : 0x649998, # int32
-        Itm.ammo_homing.name            : 0x64999c, # int32
-
         Itm.chassis_twin.name           : 0x649c98, # boolean (0x00 - 0x01)
         Itm.chassis_black.name          : 0x649c99, # boolean (0x00 - 0x01)
         Itm.chassis_pudding.name        : 0x649c9a, # boolean (0x00 - 0x01)
@@ -172,6 +178,9 @@ class Address:
         Game.cookies.name                   : 0x649918,
         Game.morph_gauge_active.name        : 0x649920,
         Game.morph_gauge_recharge.name      : 0x649924,
+        Itm.acc_morph_stock.name            : 0x649928,  # float (0000C842 - 00808944)
+        Itm.ammo_boom.name                  : 0x649998,  # int32
+        Itm.ammo_homing.name                : 0x64999c,  # int32
 
         # Equipment
         Game.equip_circle.name              : 0x64997c,

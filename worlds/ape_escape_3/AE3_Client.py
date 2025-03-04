@@ -5,6 +5,7 @@ import asyncio
 import traceback
 
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled
+from NetUtils import NetworkItem
 import Utils
 
 from .AE3_Interface import AEPS2Interface, ConnectionStatus
@@ -35,7 +36,7 @@ class AE3Context(CommonContext):
     last_error_message : Optional[str] = None
 
     cached_locations_checked : Set[int]
-    cached_received_items : Set[int]
+    cached_received_items : Set[NetworkItem]
 
     player_control : bool = True
     current_stage = None
