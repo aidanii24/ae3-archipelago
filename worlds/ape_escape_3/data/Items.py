@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import List
 from abc import ABC
 
-from BaseClasses import Item
+from BaseClasses import Item, ItemClassification
 
 from .Strings import Itm, Game, Meta, APHelper
 from .Addresses import Items, GameStates, Pointers
@@ -24,6 +24,14 @@ class AE3ItemMeta(ABC):
     item_id : int
     address : int
 
+    def to_item(self, player : int, classification : ItemClassification = None) -> AE3Item:
+        cls = classification
+
+        if cls is None:
+            cls = ItemClassification.filler
+
+        return AE3Item(self.name, cls, self.item_id, player)
+
 @dataclass
 class EquipmentItem(AE3ItemMeta):
     """
@@ -37,6 +45,14 @@ class EquipmentItem(AE3ItemMeta):
         self.name = name
         self.item_id = Items[name].value    # Equipment can be assumed to always be in Addresses.Items.
         self.address = self.item_id
+
+    def to_item(self, player : int, classification : ItemClassification = None) -> AE3Item:
+        cls = classification
+
+        if cls is None:
+            cls = ItemClassification.progression
+
+        return AE3Item(self.name, cls, self.item_id, player)
 
 @dataclass
 class CollectableItem(AE3ItemMeta):

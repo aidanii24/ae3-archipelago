@@ -47,7 +47,7 @@ class AE3Context(CommonContext):
 
     def __init__(self, address, password):
         super().__init__(address, password)
-        Utils.init_logging("Ape Escape 3 Archipelago Client" + self.client_version)
+        Utils.init_logging(APConsole.Info.client_name.value + self.client_version)
 
         self.ipc = AEPS2Interface(logger)
 
@@ -69,7 +69,7 @@ class AE3Context(CommonContext):
 
         class AE3Manager(GameManager):
             logging_pairs = [("Client", "Archipelago")]
-            base_title = "Ape Escape 3 Archipelago"
+            base_title = APConsole.Info.game_name.value
 
         self.ui = AE3Manager(self)
         self.ui_task = asyncio.create_task(self.ui.async_run(), name = "ui")

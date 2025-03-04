@@ -4,10 +4,11 @@ from BaseClasses import MultiWorld, Tutorial, ItemClassification
 from worlds.AutoWorld import World, WebWorld
 
 from .AE3_Options import AE3Options
-from .Regions import create_regions, AE3Stage
-from .data.Items import AE3Item, item_table, item_group
+from .Regions import create_regions
+from .data import Items, Locations
+from .data.Items import AE3Item
 from .data.Locations import location_table
-from .data.Strings import AE3Items, AE3Locations
+from .data.Strings import Meta, APConsole
 from ..LauncherComponents import Component, components, launch_subprocess, Type
 
 # Identifier for Archipelago to recognize and run the client
@@ -16,7 +17,7 @@ def run_client(_url : Optional[str] = None):
     launch_subprocess(launch, name="AE3Client")
 
 components.append(
-    Component("Ape Escape 3 Client", func = run_client, component_type = Type.CLIENT))
+    Component(APConsole.Info.client_name.value, func = run_client, component_type = Type.CLIENT))
 
 class AE3Web(WebWorld):
     theme = "ocean"
@@ -41,7 +42,7 @@ class AE3World(World):
     """
 
     # Define Basic Game Parameters
-    game = "Ape Escape 3"
+    game = Meta.game.value
     web : ClassVar[WebWorld] = AE3Web()
     topology_present = True
 
@@ -50,10 +51,10 @@ class AE3World(World):
     options = AE3Options  # Purely for Type Hints; not logically significant
 
     # Define the Items and Locations to/for Archipelago
-    item_name_to_id = item_table
-    location_name_to_id = location_table
+    item_name_to_id = Items.generate_name_to_id()
+    location_name_to_id = Locations.generate_name_to_id()
 
-    item_name_groups = item_group
+    item_name_groups = Items.generate_item_groups()
 
     def __init__(self, multiworld : MultiWorld, player: int):
         self.auto_equip : bool = False
@@ -63,66 +64,49 @@ class AE3World(World):
         super(AE3World, self).__init__(multiworld, player)
 
     def generate_early(self):
-        self.auto_equip = self.options.option_auto_equip
+        self.auto_equip = self.options.AutoEquip
 
         self.item_pool = []
 
     def create_regions(self):
         create_regions(self)
 
-    # Classify Items for the Randomizer.
-    # Mark Important accordingly using the enums available in *Item Classification*
-    def create_item(self, name : str) -> AE3Item:
-        item_id = item_table[name]
-        classification = ItemClassification.progression
-
-        if name not in item_group["Equipment"]:
-            classification = ItemClassification.filler
-
-        item = AE3Item(name, classification, item_id, self.player)
-        return item
-
     def create_items(self):
-        reserved_locations : int = 0
+        # Define Items
+        stun_club = Items.Gadget_Club.to_item(self.player)
+        monkey_net = Items.Gadget_Net.to_item(self.player)
+        monkey_radar = Items.Gadget_Radar.to_item(self.player)
+        super_hoop = Items.Gadget_Hoop.to_item(self.player)
+        slingback_shooter = Items.Gadget_Sling.to_item(self.player)
+        water_net = Items.Gadget_Swim.to_item(self.player)
+        rc_car = Items.Gadget_RCC.to_item(self.player)
+        sky_flyer = Items.Gadget_Fly.to_item(self.player)
 
-        # TODO - Could automate this in a loop; the variable name most likely isn't important...?
-
-        stun_club = self.create_item(AE3Items.stun_club.value)
-        monkey_net = self.create_item(AE3Items.monkey_net.value)
-        monkey_radar = self.create_item(AE3Items.monkey_radar.value)
-        super_hoop = self.create_item(AE3Items.super_hoop.value)
-        slingback_shooter = self.create_item(AE3Items.slingback_shooter.value)
-        water_net = self.create_item(AE3Items.water_net.value)
-        rc_car = self.create_item(AE3Items.rc_car.value)
-        sky_flyer = self.create_item(AE3Items.sky_flyer.value)
-
-        knight = self.create_item(AE3Items.morph_knight.value)
-        cowboy = self.create_item(AE3Items.morph_cowboy.value)
-        ninja = self.create_item(AE3Items.morph_ninja.value)
-        magician = self.create_item(AE3Items.morph_magician.value)
-        kungfu = self.create_item(AE3Items.morph_kungfu.value)
-        hero = self.create_item(AE3Items.morph_hero.value)
-        monkey = self.create_item(AE3Items.morph_monkey.value)
+        knight = Items.Morph_Knight.to_item(self.player)
+        cowboy = Items.Morph_Cowboy.to_item(self.player)
+        ninja = Items.Morph_Ninja.to_item(self.player)
+        magician = Items.Morph_Magician.to_item(self.player)
+        kungfu = Items.Morph_Kungfu.to_item(self.player)
+        hero = Items.Morph_Hero.to_item(self.player)
+        monkey = Items.Morph_Monkey.to_item(self.player)
 
         gadgets : List[AE3Item] = [stun_club, monkey_radar, super_hoop, slingback_shooter, water_net, rc_car,
                                   sky_flyer]
 
-        if self.options.option_starting_gadget > 0:
-            self.multiworld.push_precollected(gadgets[self.options.option_starting_gadget - 1])
-            del gadgets[self.options.option_starting_gadget - 1]
+        # Push Starting Gadget as pre-collected
+        if self.options.StartingGadget > 0:
+            self.multiworld.push_precollected(gadgets[self.options.StartingGadget - 1])
+            del gadgets[self.options.StartingGadget - 1]
 
-        if self.options.option_shuffle_net:
-            gadgets.append(monkey_net)
-        else:
-            self.multiworld.push_precollected(monkey_net)
+        self.multiworld.push_precollected(monkey_net)
 
         self.item_pool += gadgets
         self.item_pool += [cowboy, ninja, magician, kungfu, hero, monkey]
 
-        if self.options.option_shuffle_chassis:
-            chassis_twin = self.create_item(AE3Items.chassis_twin.value)
-            chassis_black = self.create_item(AE3Items.chassis_black.value)
-            chassis_pudding = self.create_item(AE3Items.chassis_pudding.value)
+        if self.options.ShuffleChassis:
+            chassis_twin = Items.Chassis_Twin.to_item(self.player)
+            chassis_black = Items.Chassis_Black.to_item(self.player)
+            chassis_pudding = Items.Chassis_Pudding.to_item(self.player)
 
             self.item_pool += [chassis_twin, chassis_pudding, chassis_black]
 
@@ -131,10 +115,9 @@ class AE3World(World):
 
     def fill_slot_data(self):
         return {
-            "Starting Gadget" : self.options.option_starting_gadget.value,
-            "Shuffle Net" : self.options.option_shuffle_net.value,
-            "Include RC Car Chassis in Randomizer" : self.options.option_shuffle_chassis.value,
-            "Auto-equip Gadgets when obtained" : self.options.option_auto_equip.value
+            "Starting Gadget" : self.options.StartingGadget.value,
+            "Include RC Car Chassis in Randomizer" : self.options.ShuffleChassis.value,
+            "Auto-equip Gadgets when obtained" : self.options.AutoEquip.value
         }
 
     def generate_output(self, dir : str):

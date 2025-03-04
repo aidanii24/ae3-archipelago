@@ -158,6 +158,8 @@ class APConsole:
         sym_conf =      " [-/-]"
         decor =         "||========================================||"
         greet =         " Welcome to Ape Escape 3 Archipelago!"
+        game_name =     "Ape Escape 3 Archipelago"
+        client_name =   "Ape Escape 3 Archipelago Client"
         client_ver =    " Client v0.2a"
         world_ver =     " World v0.2a"
 

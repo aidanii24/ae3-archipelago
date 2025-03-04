@@ -1,11 +1,12 @@
 from typing import Callable, Dict, List, Sequence, Set
 from abc import ABC
 
-from BaseClasses import Location, Region
+from BaseClasses import Location
 
 from .Logic import AccessRule, Rulesets
-from .Addresses import Locations
+from .Addresses import Locations, Pointers
 from .Strings import Loc, Meta
+
 
 ### [< --- HELPERS --- >]
 class AE3Location(Location):
@@ -69,7 +70,7 @@ class CameraLocation(AE3LocationMeta):
         self.name = name
         self.loc_id = Locations[name].value    # Equipment can be assumed to always be in Addresses.Items.
         self.address = self.loc_id
-        self.ptrs = Locations[name + "_ptrs"].value
+        self.ptrs = Pointers[self.address].value
 
 ### [< --- LOCATIONS --- >]
 # Zero
@@ -106,6 +107,11 @@ INDEX : Sequence[Sequence] = [
     MASTER, MONKEYS, SEASIDE_MONKEYS
 ]
 
+### [< --- METHODS --- >]
+def generate_name_to_id() -> Dict[str : int]:
+    """Get a Dictionary of all Items in Name-ID pairs"""
+    i: AE3LocationMeta
+    return {i.name: i.loc_id for i in MASTER}
 
 # TODO - @Deprecated
 location_table = {
