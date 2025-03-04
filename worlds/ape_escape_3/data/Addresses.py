@@ -1,10 +1,11 @@
-from typing import Dict, List
-from enum import Enum
+from typing import Dict, List, Sequence
+from enum import Enum, IntEnum
 
 from .Strings import Itm, Loc, Game
 
 
-class Items(Enum):
+### [< --- ADDRESSES --- >]
+class Items(IntEnum):
     """
     Contains all relevant Memory Addresses associated with Items in the game.
     """
@@ -16,9 +17,9 @@ class Items(Enum):
     Itm.gadget_radar.value =        0x649958,
     Itm.gadget_hoop.value =         0x64995c,
     Itm.gadget_sling.value =        0x649960,
-    Itm.gadget_swim.value =         0x649978,
     Itm.gadget_rcc.value =          0x649964,
     Itm.gadget_fly.value =          0x649968,
+    Itm.gadget_swim.value =         0x649978,
 
     # Morphs
     Itm.morph_knight.value =        0x649930,
@@ -37,7 +38,7 @@ class Items(Enum):
     # Collectables
     Itm.nothing.value =             0x200000,   # Arbitrary Number
 
-class Locations(Enum):
+class Locations(IntEnum):
     """Contains all relevant Memory Addresses associated with Locations in the game."""
     # Monkeys
     # <!> Values are on/off between 0x00 and 0x01 respectively unless commented otherwise.
@@ -58,7 +59,7 @@ class Locations(Enum):
     Loc.seaside_kamayan.value =         0x649b60,
     Loc.seaside_taizo.value =           0x649b61
 
-class GameStates(Enum):
+class GameStates(IntEnum):
     """Contains all relevant Memory Addresses associated with the general game."""
     # Status
     Game.state.value =                      0x8519e4,  # int32 (0x00 - 0x04)
@@ -85,7 +86,17 @@ class GameStates(Enum):
     Game.equip_quick_morph.value =          0x7954b0,
     Game.equip_morph_target.value =         0x692018,
 
+### [< --- ADDRESS GROUPS --- >]
+GADGET_INDEX : Sequence[int] = [
+    Items[Itm.gadget_swim.value].value, Items[Itm.gadget_net.value].value, Items[Itm.gadget_club.value].value,
+    Items[Itm.gadget_radar.value].value, Items[Itm.gadget_hoop.value].value, Items[Itm.gadget_sling.value].value,
+    Items[Itm.gadget_rcc.value].value, Items[Itm.gadget_fly.value].value
+]
 
+BUTTON_INDEX : Sequence[int] = [
+    GameStates[Game.equip_circle.value].value, GameStates[Game.equip_cross.value].value,
+    GameStates[Game.equip_square.value].value, GameStates[Game.equip_triangle.value].value,
+]
 
 @DeprecationWarning
 class Address:

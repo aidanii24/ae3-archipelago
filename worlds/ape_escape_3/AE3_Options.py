@@ -46,8 +46,8 @@ class AutoEquipOnUnlock(Toggle):
 
 @dataclass
 class AE3Options(PerGameCommonOptions):
-    option_starting_gadget : StartingGadget
-    option_shuffle_net : ShuffleMonkeyNet
-    option_shuffle_chassis : ShuffleRCCarChassis
+    StartingGadget : StartingGadget
+    ShuffleNet : ShuffleMonkeyNet
+    ShuffleChassis : ShuffleRCCarChassis
 
-    option_auto_equip : AutoEquipOnUnlock
+    AutoEquip : AutoEquipOnUnlock

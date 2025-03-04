@@ -21,7 +21,7 @@ async def check_locations(ctx : 'AE3Context') -> bool:
     cleared : Set[int] = set()
 
     for value in Address.locations.values():
-        if ctx.ipc.ipc.read_int8(value) == 0x01:
+        if ctx.ipc.pine.read_int8(value) == 0x01:
             cleared.add(value)
 
     # Get newly checked locations
