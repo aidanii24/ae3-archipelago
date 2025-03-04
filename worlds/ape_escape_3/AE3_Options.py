@@ -23,10 +23,6 @@ class StartingGadget(Choice):
 class ShuffleMonkeyNet(Toggle):
     """
     Choose if the Monkey Net should also be shuffled. This will skip the tutorial level immediately.
-
-    <!> Idea Feature - No Guarantee this will be in the final APWorld.
-    If "Associate Morph Abilities with Gadgets" is enabled, The Monkey Net will be guaranteed to appear 
-    somewhere in the Travel Station or Shopping District.
     """
     display_name : str = "Shuffle Monkey Net"
 
