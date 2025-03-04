@@ -1,6 +1,6 @@
-from enum import Enum
+from typing import Optional
 from logging import Logger
-from typing import List, Optional
+from enum import Enum
 
 from .data.Addresses import BUTTON_INDEX, GADGET_INDEX, GameStates
 from .data.Strings import Meta, Game, APConsole
@@ -27,7 +27,7 @@ class AEPS2Interface:
     def __init__(self, logger : Logger):
         self.logger = logger
 
-    # PINE Connection
+    # { PINE Network }
     def connect_game(self):
         if not self.pine.is_connected():
             self.pine.connect()
@@ -64,7 +64,7 @@ class AEPS2Interface:
         except RuntimeError:
             return False
 
-    # Game Check
+    # { Game Check }
     def get_player_state(self) -> int:
         value : int = self.pine.read_int32(GameStates[Game.state.value].value)
         return value
@@ -73,7 +73,7 @@ class AEPS2Interface:
         value : int = self.get_player_state()
         return value == 0x00 or value == 0x02
 
-    # Game Manipulation
+    # { Game Manipulation }
     def unlock_equipment(self, address: int = 0):
         self.pine.write_int32(address, 2)
 
@@ -82,8 +82,8 @@ class AEPS2Interface:
 
     def auto_equip(self, gadget_id: int):
         for button in BUTTON_INDEX:
-            gadget_id = self.pine.read_int32(button)
-            if button != 0x0:
+            value = self.pine.read_int32(button)
+            if value != 0x0:
                 continue
 
             self.pine.write_int32(button, gadget_id)
