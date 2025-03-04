@@ -38,7 +38,7 @@ class AEPS2Interface:
             self.logger.info(APConsole.Info.init.value)
 
         try:
-            self.logger.info(APConsole.Info.p_init_g)
+            self.logger.info(APConsole.Info.p_init_g.value)
             game_id : str = self.pine.get_game_id()
 
             self.loaded_game = None
@@ -54,7 +54,7 @@ class AEPS2Interface:
     def disconnect_game(self):
         self.pine.disconnect()
         self.loaded_game = None
-        self.logger.info(APConsole.Err.sock_disc)
+        self.logger.info(APConsole.Err.sock_disc.value)
 
     def get_connection_state(self) -> bool:
         try:

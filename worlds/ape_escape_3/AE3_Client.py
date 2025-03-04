@@ -8,6 +8,7 @@ from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser,
 from NetUtils import NetworkItem
 import Utils
 
+from .data.Strings import Meta, APConsole
 from .AE3_Interface import AEPS2Interface, ConnectionStatus
 from .Checker import check_locations, check_items
 
@@ -22,10 +23,11 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
 class AE3Context(CommonContext):
     # Feature/Refactor Release : Patch/Minor Release : Minor Patch Release
-    client_version: str = "v0.1a"
+    client_version: str = APConsole.Info.client_ver.value
+    world_version : str = APConsole.Info.world_ver.value
 
-    game: str = "Ape Escape 3"
-    platform: str = "PS2"
+    game: str = Meta.game.value
+    platform: str = Meta.platform.value
 
     command_processor = AE3CommandProcessor
     items_handling = 0b111
@@ -77,23 +79,34 @@ def update_connection_status(ctx : AE3Context, status : bool):
         return
 
     if status:
-        logger.info("Connected to Ape Escape 3!")
+        logger.info(APConsole.Info.init.value)
     else:
-        logger.info("Cannot connect to PCSX2. Retrying to connect...")
+        logger.info(APConsole.Err.sock_fail.value + APConsole.Err.sock_re.value)
 
     ctx.is_connected = status
 
 # Main Client Loop
-async def interface_sync_task(ctx : AE3Context):
-    logger.info("Initializing PINE Interface, Attempting to connect to PCSX2")
+async def main_sync_task(ctx : AE3Context):
+    # Greetings
+    logger.info(APConsole.Info.decor.value)
+    logger.info(APConsole.Info.greet.value + APConsole.Info.world_ver.value)
+    logger.info(APConsole.Info.client_ver.value)
+    logger.info(APConsole.Info.decor.value)
+    logger.info("\n")
+    logger.info(APConsole.Info.p_init.value)
     ctx.ipc.connect_game()
 
     while not ctx.exit_event.is_set():
         try:
+            # Check connection to PCSX2 first
             is_connected = ctx.ipc.get_connection_state()
             update_connection_status(ctx, is_connected)
+
+            # Check Progress if connection is good
             if is_connected:
                 await check_game(ctx)
+
+            # Attempt reconnection to PCSX2 otherwise
             else:
                 await reconnect_game(ctx)
         except ConnectionError:
@@ -110,17 +123,17 @@ async def interface_sync_task(ctx : AE3Context):
 async def check_game(ctx : AE3Context):
     # Check if Game State is safe for Checking
     if ctx.player_control:
-        if not ctx.ipc.get_player_state():
+        if not ctx.ipc.can_control():
             ctx.player_control = False
             await asyncio.sleep(1)
 
         await asyncio.sleep(0.5)
         return
-    elif ctx.ipc.get_player_state():
+    elif ctx.ipc.can_control():
         ctx.player_control = True
         return
 
-    # Check for Connection Errors
+    # Check for Archipelago Connection Errors
     if ctx.server:
         ctx.last_error_message = None
         if not ctx.slot:
@@ -134,9 +147,9 @@ async def check_game(ctx : AE3Context):
             await asyncio.sleep(1)
 
     else:
-        message : str = "Waiting for player to connect to server..."
+        message : str = APConsole.Info.p_init_sre.value
         if ctx.last_error_message is not message:
-            logger.info("Waiting for player to connect to server...")
+            logger.info(APConsole.Info.p_init_sre.value)
             ctx.last_error_message = message
 
         await asyncio.sleep(1)
@@ -145,6 +158,7 @@ async def reconnect_game(ctx : AE3Context):
     ctx.ipc.connect_game()
     await asyncio.sleep(3)
 
+# Starting point of function
 def launch():
     async def main():
         multiprocessing.freeze_support()
@@ -159,7 +173,7 @@ def launch():
         ctx = AE3Context(args.connect, args.password)
 
         # Archipelago Server Connections
-        logger.info("Connecting to the Archipelago Server...")
+        logger.info(APConsole.Info.p_init_s.value)
         ctx.server_task = asyncio.create_task(server_loop(ctx), name="Server Loop")
 
         if gui_enabled:
@@ -167,7 +181,7 @@ def launch():
         ctx.run_cli()
 
         # Create Main Loop
-        ctx.interface_sync_task = asyncio.create_task(interface_sync_task(ctx), name="PCSX2 Sync")
+        ctx.interface_sync_task = asyncio.create_task(main_sync_task(ctx), name="PCSX2 Sync")
 
         await ctx.exit_event.wait()
         ctx.server_address = None
@@ -186,6 +200,6 @@ def launch():
     asyncio.run(main())
     colorama.deinit()
 
-
+# Ensures file will only run as the main file
 if __name__ == '__main__':
     launch()

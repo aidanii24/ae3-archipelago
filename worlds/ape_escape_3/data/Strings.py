@@ -127,6 +127,7 @@ class Game(BaseEnum):
 
 class Meta(BaseEnum):
     game =                  "Ape Escape 3"
+    platform =              "PS2"
     sup_ver =               set("SCUS-97501")
 
 class APHelper(BaseEnum):
@@ -144,7 +145,7 @@ class APHelper(BaseEnum):
     # Item Groups
     gadgets =               "Gadgets"
     morphs =                "Morphs"
-    morphs_no_monkey =        "Morphs (Not Super Monkey)"
+    morphs_no_monkey =      "Morphs (Not Super Monkey)"
     equipment =             "Equipment"
 
 class APConsole:
@@ -155,24 +156,27 @@ class APConsole:
     class Info(BaseEnum):
         sym_wait =      " [...]"
         sym_conf =      " [-/-]"
+        decor =         "||========================================||"
         greet =         " Welcome to Ape Escape 3 Archipelago!"
+        client_ver =    " Client v0.2a"
+        world_ver =     " World v0.2a"
 
-        p_init =        " Starting PINE Interface. Connecting to PCSX2..."
-        p_init_g =      " Confirming Running Game..."
-        p_init_s =      " Connecting to an Archipelago Server..."
-        p_init_sre =    " Waiting for player to reconnect to sever"
+        p_init =        " [...] Starting PINE Interface. Connecting to PCSX2..."
+        p_init_g =      " [...] Confirming Running Game..."
+        p_init_s =      " [...] Connecting to an Archipelago Server..."
+        p_init_sre =    " [...] Waiting for player to reconnect to server..."
 
-        init =          " Successfully connected to PCSX2"
-        init_game =     " Connected to Ape Escape 3!"
+        init =          " [-/-] Successfully connected to PCSX2"
+        init_game =     " [-/-] Connected to Ape Escape 3!"
 
     class Err(BaseEnum):
         sym =           " [!!!]"
 
-        sock_no =       " Failed to find PCSX2. Make sure it is running and that PINE is enabled."
-        sock_fail =     " Failed to connect to PCSX2."
-        sock_disc =     " Connection to PCSX2 has been terminated."
-        sock_re =       " Retrying to connect to PCSX2."
+        sock_no =       " [!!!] Failed to find PCSX2. Make sure it is running and that PINE is enabled."
+        sock_fail =     " [!!!] Failed to connect to PCSX2."
+        sock_disc =     " [!!!] Connection to PCSX2 has been terminated."
+        sock_re =       " [!!!] Retrying to connect to PCSX2..."
 
-        game_no =       "PCSX2 is not running a game. Please run a supported version of Ape Escape 3"
-        game_wrong =    "PCSX2 is running, but the loaded game is different or is an unsupported version."
-        conf_game =     "Please load a supported version of Ape Escape 3."
+        game_no =       " [!!!] PCSX2 is not running a game. Please run a supported version of Ape Escape 3"
+        game_wrong =    " [!!!] PCSX2 is running, but the loaded game is different or is an unsupported version."
+        conf_game =     " [!!!] Please load a supported version of Ape Escape 3."
