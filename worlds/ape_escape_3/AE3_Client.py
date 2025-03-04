@@ -144,6 +144,7 @@ async def check_game(ctx : AE3Context):
         await check_items(ctx)
 
         if await check_locations(ctx):
+            # Await after new location check to reduce connection drops (improves PONG efficacy)
             await asyncio.sleep(1)
 
     else:
