@@ -20,7 +20,7 @@ class AE3Location(Location):
         rules : Sets of AccessRules to check if the Location is reachable
     """
 
-    game : str = Meta.game.value
+    game : str = Meta.game
     rules : Rulesets
 
 @dataclass

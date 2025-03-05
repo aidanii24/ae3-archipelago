@@ -41,7 +41,7 @@ class AE3World(World):
     """
 
     # Define Basic Game Parameters
-    game = Meta.game.value
+    game = Meta.game
     web : ClassVar[WebWorld] = AE3Web()
     topology_present = True
 

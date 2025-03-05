@@ -40,9 +40,9 @@ class AEPS2Interface:
         try:
             self.logger.info(APConsole.Info.p_init_g.value)
             game_id : str = self.pine.get_game_id()
-
+            print(game_id, [Meta.supported_versions])
             self.loaded_game = None
-            if game_id in Meta.sup_ver.value:
+            if game_id in [Meta.supported_versions]:
                 self.loaded_game = game_id
             else:
                 self.logger.warning(APConsole.Err.game_wrong.value)

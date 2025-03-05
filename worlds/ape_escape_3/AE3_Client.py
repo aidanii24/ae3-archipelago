@@ -26,8 +26,8 @@ class AE3Context(CommonContext):
     client_version: str = APConsole.Info.client_ver.value
     world_version : str = APConsole.Info.world_ver.value
 
-    game: str = Meta.game.value
-    platform: str = Meta.platform.value
+    game: str = Meta.game
+    platform: str = Meta.platform
 
     command_processor = AE3CommandProcessor
     items_handling = 0b111
@@ -89,8 +89,8 @@ def update_connection_status(ctx : AE3Context, status : bool):
 async def main_sync_task(ctx : AE3Context):
     # Greetings
     logger.info(APConsole.Info.decor.value)
-    logger.info(APConsole.Info.greet.value + APConsole.Info.world_ver.value)
-    logger.info(APConsole.Info.client_ver.value)
+    logger.info(APConsole.Info.greet.value)
+    logger.info(APConsole.Info.world_ver.value + "\t" + APConsole.Info.client_ver.value)
     logger.info(APConsole.Info.decor.value)
     logger.info("\n")
     logger.info(APConsole.Info.p_init.value)

@@ -14,7 +14,7 @@ class AE3Item(Item):
     in the Shopping District.
     """
 
-    game : str = Meta.game.value
+    game : str = Meta.game
 
 @dataclass
 class AE3ItemMeta(ABC):
