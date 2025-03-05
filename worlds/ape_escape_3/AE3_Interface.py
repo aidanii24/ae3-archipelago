@@ -102,6 +102,7 @@ class AEPS2Interface:
                 continue
 
             self.pine.write_int32(button, gadget_id)
+            break
 
     def give_collectable(self, address : int, amount : int | float = 0x1):
         current : int = self.pine.read_int32(address)
