@@ -168,7 +168,8 @@ Pointers : Dict[int, Sequence[int]] = {
 GADGET_INDEX : Sequence[int] = [
     Items[Itm.gadget_swim.value], Items[Itm.gadget_net.value], Items[Itm.gadget_club.value],
     Items[Itm.gadget_radar.value], Items[Itm.gadget_hoop.value], Items[Itm.gadget_sling.value],
-    Items[Itm.gadget_rcc.value], Items[Itm.gadget_fly.value]
+    Items[Itm.gadget_rcc.value], Items[Itm.gadget_fly.value], Items[Itm.chassis_twin.value],
+    Items[Itm.chassis_black.value], Items[Itm.chassis_pudding.value]
 ]
 
 MORPH_INDEX : Sequence[int] = [
@@ -181,6 +182,24 @@ BUTTON_INDEX : Sequence[int] = [
     GameStates[Game.equip_circle.value], GameStates[Game.equip_cross.value],
     GameStates[Game.equip_square.value], GameStates[Game.equip_triangle.value],
 ]
+
+### [< --- METHODS --- >]
+def get_gadget_id(address : int):
+    id : int = 0
+
+    # Abort if Address is not in GADGET_INDEX
+    if address not in GADGET_INDEX:
+        return -1
+
+    id = GADGET_INDEX.index(address)
+
+    # Return immediately if Gadget is part of normal set (the first 7)
+    if id <= 7:
+        return id
+
+    # Last 3 items are RC Car variants, so return thr RC Car Address for them
+    return GADGET_INDEX.index(Items[Itm.gadget_rcc.value])
+
 
 
 

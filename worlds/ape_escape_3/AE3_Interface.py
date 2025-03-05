@@ -2,7 +2,7 @@ from typing import Optional
 from logging import Logger
 from enum import Enum
 
-from .data.Addresses import BUTTON_INDEX, GADGET_INDEX, GameStates, Pointers
+from .data.Addresses import BUTTON_INDEX, GameStates, Pointers, get_gadget_id
 from .data.Strings import Meta, Game, APConsole
 from .interface.pine import Pine
 
@@ -90,10 +90,10 @@ class AEPS2Interface:
         self.pine.write_int32(address, 2)
 
         if self.will_auto_equip:
-            self.auto_equip(GADGET_INDEX.index(address))
+            self.auto_equip(get_gadget_id(address))
 
     def auto_equip(self, gadget_id: int):
-        if gadget_id == 0:
+        if gadget_id <= 0:
             return
 
         for button in BUTTON_INDEX:
