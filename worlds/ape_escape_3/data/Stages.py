@@ -1,6 +1,3 @@
-from dataclasses import dataclass
-from typing import List
-
 from .Strings import Stage
 from .Locations import *
 
@@ -17,23 +14,23 @@ class StageEntranceMeta:
         Passing callables will add them as Normal Rules. To assign critical rules, pass a Ruleset instead.
     """
     destination : str
-    rules : Rulesets = None
+    rules : Rulesets
 
     def __init__(self, destination : str,
-                 rules : Callable | Set[Callable] | Set[frozenset[Callable]] | Rulesets = None):
+                 *rules : Callable | frozenset[Callable] | Set[frozenset[Callable]] | Rulesets):
         self.destination = destination
+        self.rules = Rulesets()
 
-        if rules is Rulesets:
-            self.rules = rules
-        else:
-            self.rules = Rulesets()
-
-            if rules is Callable:
-                self.rules.Rules.add(frozenset({rules}))
-            elif rules is Set[Callable]:
-                self.rules.Rules.add(frozenset(rules))
-            elif rules is Set[Set[Callable]]:
-                self.rules.Rules.update(rules)
+        for rule in rules:
+            if isinstance(rule, Rulesets):
+                self.rules = rule
+            else:
+                if isinstance(rule, Callable):
+                    self.rules.Rules.add(frozenset({rule}))
+                elif isinstance(rule, set):
+                    self.rules.Rules.update(frozenset(rule))
+                elif isinstance(rule, frozenset):
+                    self.rules.Rules.add(rule)
 
 class AE3StageMeta:
     """
@@ -47,14 +44,18 @@ class AE3StageMeta:
     """
 
     name : str
-    entrances : list[StageEntranceMeta] = []
-    monkeys : list[MonkeyLocation] = []
-    points_of_interest : list[AE3LocationMeta] = []
+    entrances : list[StageEntranceMeta]
+    monkeys : list[MonkeyLocation]
+    points_of_interest : list[AE3LocationMeta]
 
     def __init__(self, name : str, entrances : StageEntranceMeta | list[StageEntranceMeta] = None,
-                monkeys : MonkeyLocation | list[MonkeyLocation] = None,
-                pois : AE3LocationMeta | list[AE3LocationMeta] = None):
+        monkeys : MonkeyLocation | list[MonkeyLocation] = None,
+        pois : AE3LocationMeta | list[AE3LocationMeta] = None):
+
         self.name = name
+        self.entrances = []
+        self.monkeys = []
+        self.points_of_interest = []
 
         if isinstance(entrances, StageEntranceMeta):
             self.entrances = [entrances]

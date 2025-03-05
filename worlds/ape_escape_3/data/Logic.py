@@ -102,3 +102,6 @@ class Rulesets:
             self.Rules = rules
         else:
             self.Rules = set()
+
+    def __bool__(self):
+        return bool(self.Critical) or bool(self.Rules)

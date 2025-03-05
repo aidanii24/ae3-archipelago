@@ -120,8 +120,6 @@ def generate_name_to_id() -> Dict[str, int]:
     return {i.name: i.loc_id for i in MASTER}
 
 
-
-
 # # TODO - @Deprecated
 # location_table = {
 #     # Monkeys

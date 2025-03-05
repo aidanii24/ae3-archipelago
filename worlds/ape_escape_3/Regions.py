@@ -14,7 +14,7 @@ def generate_access_rule(player : int, rulesets : Rulesets) -> Callable[[Collect
     """Parses a Ruleset and returns a staticmethod for use as an access rule by Archipelago"""
     def access_rule(state: CollectionState) -> bool:
         # Any Critical Rules that return False should immediately mark the item as inaccessible with the current state
-        if rulesets:
+        if rulesets.Critical:
             for rule in rulesets.Critical:
                 if not rule(state, player):
                     return False
@@ -30,8 +30,8 @@ def generate_access_rule(player : int, rulesets : Rulesets) -> Callable[[Collect
                 if not rule(state, player):
                     continue
 
-            reachable = True
-            break
+                reachable = True
+                break
 
         return reachable
     return access_rule
@@ -76,6 +76,7 @@ def create_regions(world : "AE3World"):
         if meta.monkeys:
             for loc in [*meta.monkeys]:
                 location : Location = AE3Location(world.player, loc.name, loc.address, region)
+
                 if loc.rules:
                     location.access_rule = generate_access_rule(world.player, loc.rules)
 
