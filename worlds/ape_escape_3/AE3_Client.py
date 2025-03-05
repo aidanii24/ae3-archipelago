@@ -79,7 +79,7 @@ def update_connection_status(ctx : AE3Context, status : bool):
         return
 
     if status:
-        logger.info(APConsole.Info.init.value)
+        logger.info(APConsole.Info.init_game.value)
     else:
         logger.info(APConsole.Err.sock_fail.value + APConsole.Err.sock_re.value)
 
@@ -89,8 +89,8 @@ def update_connection_status(ctx : AE3Context, status : bool):
 async def main_sync_task(ctx : AE3Context):
     # Greetings
     logger.info(APConsole.Info.decor.value)
-    logger.info(APConsole.Info.greet.value)
-    logger.info(APConsole.Info.world_ver.value + "\t" + APConsole.Info.client_ver.value)
+    logger.info("    " + APConsole.Info.greet.value)
+    logger.info("    " + APConsole.Info.world_ver.value + "    " + APConsole.Info.client_ver.value)
     logger.info(APConsole.Info.decor.value)
     logger.info("\n")
     logger.info(APConsole.Info.p_init.value)

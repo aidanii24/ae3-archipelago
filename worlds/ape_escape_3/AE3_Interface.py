@@ -8,8 +8,9 @@ from .interface.pine import Pine
 
 ### [< --- HELPERS --- >]
 class ConnectionStatus(Enum):
+    WRONG_GAME = -1
     DISCONNECTED = 0
-    IN_MENU = 1
+    CONNECTED = 1
     IN_GAME = 2
 
 ### [< --- INTERFACE --- >]
@@ -29,27 +30,38 @@ class AEPS2Interface:
 
     # { PINE Network }
     def connect_game(self):
+        # Check for connection with PCSX2
         if not self.pine.is_connected():
             self.pine.connect()
 
             if not self.pine.is_connected():
+                self.status = ConnectionStatus.DISCONNECTED
                 return
 
             self.logger.info(APConsole.Info.init.value)
 
+        # Check for Game running in PCSX2
         try:
-            self.logger.info(APConsole.Info.p_init_g.value)
+            if self.status is ConnectionStatus.CONNECTED:
+                self.logger.info(APConsole.Info.p_init_g.value)
+
             game_id : str = self.pine.get_game_id()
-            print(game_id, [Meta.supported_versions])
+
             self.loaded_game = None
-            if game_id in [Meta.supported_versions]:
+
+            if game_id in Meta.supported_versions:
                 self.loaded_game = game_id
-            else:
+                self.status =  ConnectionStatus.IN_GAME
+            elif not self.status is ConnectionStatus.WRONG_GAME:
                 self.logger.warning(APConsole.Err.game_wrong.value)
+                self.status = ConnectionStatus.WRONG_GAME
         except RuntimeError:
-            pass
+            return
         except ConnectionError:
-            pass
+            return
+
+        if self.status is ConnectionStatus.DISCONNECTED:
+            self.status = ConnectionStatus.CONNECTED
 
     def disconnect_game(self):
         self.pine.disconnect()

@@ -159,8 +159,8 @@ class APConsole:
         sym_conf =      " [-/-]"
         decor =         "||========================================||"
         greet =         " Welcome to Ape Escape 3 Archipelago!"
-        game_name =     "Ape Escape 3 Archipelago"
-        client_name =   "Ape Escape 3 Client"
+        game_name =     " Ape Escape 3 Archipelago"
+        client_name =   " Ape Escape 3 Client"
         client_ver =    " Client v0.2a"
         world_ver =     " World v0.2a"
 
@@ -177,8 +177,8 @@ class APConsole:
 
         sock_no =       " [!!!] Failed to find PCSX2. Make sure it is running and that PINE is enabled."
         sock_fail =     " [!!!] Failed to connect to PCSX2."
-        sock_disc =     " [!!!] Connection to PCSX2 has been terminated."
-        sock_re =       " [!!!] Retrying to connect to PCSX2..."
+        sock_disc =     " [!!!] Lost connection to PCSX2."
+        sock_re =       " Retrying to connect to PCSX2..."
 
         game_no =       " [!!!] PCSX2 is not running a game. Please run a supported version of Ape Escape 3"
         game_wrong =    " [!!!] PCSX2 is running, but the loaded game is different or is an unsupported version."
