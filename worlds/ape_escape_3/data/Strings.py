@@ -164,22 +164,22 @@ class APConsole:
         client_ver =    " Client v0.2a"
         world_ver =     " World v0.2a"
 
-        p_init =        " [...]\tStarting PINE Interface. Connecting to PCSX2..."
-        p_init_g =      " [...]\tConfirming Running Game..."
-        p_init_s =      " [...]\tConnecting to an Archipelago Server..."
-        p_init_sre =    " [...]\tWaiting for player to reconnect to server..."
+        p_init =        " [...] Starting PINE Interface. Connecting to PCSX2..."
+        p_init_g =      " [...] Confirming Running Game..."
+        p_init_s =      " [...] Connecting to an Archipelago Server..."
+        p_init_sre =    " [...] Waiting for player to reconnect to server..."
 
-        init =          " [-/-]\tSuccessfully connected to PCSX2"
-        init_game =     " [-/-]\tConnected to Ape Escape 3!"
+        init =          " [-/-] Successfully connected to PCSX2"
+        init_game =     " [-/-] Connected to Ape Escape 3!"
 
     class Err(BaseEnum):
         sym =           " [!!!]"
 
-        sock_no =       " [!!!]\tFailed to find PCSX2. Make sure it is running and that PINE is enabled."
-        sock_fail =     " [!!!]\tFailed to connect to PCSX2."
-        sock_disc =     " [!!!]\tConnection to PCSX2 has been terminated."
-        sock_re =       " [!!!]\tRetrying to connect to PCSX2..."
+        sock_no =       " [!!!] Failed to find PCSX2. Make sure it is running and that PINE is enabled."
+        sock_fail =     " [!!!] Failed to connect to PCSX2."
+        sock_disc =     " [!!!] Connection to PCSX2 has been terminated."
+        sock_re =       " [!!!] Retrying to connect to PCSX2..."
 
-        game_no =       " [!!!]\tPCSX2 is not running a game. Please run a supported version of Ape Escape 3"
-        game_wrong =    " [!!!]\tPCSX2 is running, but the loaded game is different or is an unsupported version."
-        conf_game =     " [!!!]\tPlease load a supported version of Ape Escape 3."
+        game_no =       " [!!!] PCSX2 is not running a game. Please run a supported version of Ape Escape 3"
+        game_wrong =    " [!!!] PCSX2 is running, but the loaded game is different or is an unsupported version."
+        conf_game =     " [!!!] Please load a supported version of Ape Escape 3."
