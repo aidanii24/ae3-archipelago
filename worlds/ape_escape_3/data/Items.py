@@ -1,6 +1,5 @@
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import List
 from abc import ABC
 
 from BaseClasses import Item, ItemClassification
@@ -73,7 +72,7 @@ class CollectableItem(AE3ItemMeta):
     capacity : int
     weight : float
 
-    pointers: Sequence[int] = None
+    pointers : Sequence[int]
 
     def __init__(self, name : str, address : int, amount : int | float,
                  capacity : int, weight : float, id_offset : int = 0):

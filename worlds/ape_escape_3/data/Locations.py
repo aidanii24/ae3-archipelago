@@ -119,8 +119,8 @@ def generate_name_to_id() -> Dict[str, int]:
     i: AE3LocationMeta
     return {i.name: i.loc_id for i in MASTER}
 
-for m in MONKEYS:
-    print(m.name, [[s] for s in m.rules.Rules])
+
+
 
 # # TODO - @Deprecated
 # location_table = {
