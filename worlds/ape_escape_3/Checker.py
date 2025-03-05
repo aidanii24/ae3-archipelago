@@ -23,14 +23,14 @@ async def check_items(ctx : 'AE3Context'):
 
         # Handle Item depending on category
         ## Unlock Morphs and Gadgets
-        if item is EquipmentItem:
+        if isinstance(item, EquipmentItem):
             ctx.ipc.unlock_equipment(item.address)
 
             if not ctx.cached_received_items:
                 ctx.ipc.auto_equip(GADGET_INDEX.index(item.address))
 
         ## Handle Collectables
-        elif item in CollectableItem:
+        elif isinstance(item, CollectableItem):
             i : CollectableItem = item
 
             ### Handle Morph Energy
