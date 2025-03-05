@@ -103,7 +103,11 @@ class AEPS2Interface:
         target : int = -1
         for button in BUTTON_INTUIT_INDEX:
             value = self.pine.read_int32(button)
-            self.logger.info("ID of Equipped Gadgets: " +  str(value))
+
+            # Do not auto-equip when gadget is already assigned
+            if value == gadget_id:
+                return
+
             if value != 0x0:
                 continue
 
@@ -111,12 +115,7 @@ class AEPS2Interface:
                 target = button
                 continue
 
-            # Do not auto-equip when gadget is already assigned
-            if value == gadget_id:
-                return
-
         if target >= 0:
-            self.logger.info("[/] ID of Gadget Received: " + str(gadget_id))
             self.pine.write_int32(target, gadget_id)
 
     def give_collectable(self, address : int, amount : int | float = 0x1):
