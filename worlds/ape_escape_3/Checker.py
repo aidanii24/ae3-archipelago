@@ -26,7 +26,9 @@ async def check_items(ctx : 'AE3Context'):
         if isinstance(item, EquipmentItem):
             ctx.ipc.unlock_equipment(item.address)
 
+            # Handle game start equipment
             if not ctx.cached_received_items:
+                ctx.ipc.clear_equipment()
                 ctx.ipc.auto_equip(get_gadget_id(item.address))
 
         ## Handle Collectables

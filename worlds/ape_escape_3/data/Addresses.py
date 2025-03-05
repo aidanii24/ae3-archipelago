@@ -166,7 +166,7 @@ Pointers : Dict[int, Sequence[int]] = {
 
 ### [< --- ADDRESS GROUPS --- >]
 GADGET_INDEX : Sequence[int] = [
-    Items[Itm.gadget_swim.value], Items[Itm.gadget_net.value], Items[Itm.gadget_club.value],
+    Items[Itm.gadget_swim.value], Items[Itm.gadget_club.value], Items[Itm.gadget_net.value],
     Items[Itm.gadget_radar.value], Items[Itm.gadget_hoop.value], Items[Itm.gadget_sling.value],
     Items[Itm.gadget_rcc.value], Items[Itm.gadget_fly.value], Items[Itm.chassis_twin.value],
     Items[Itm.chassis_black.value], Items[Itm.chassis_pudding.value]
@@ -180,7 +180,12 @@ MORPH_INDEX : Sequence[int] = [
 
 BUTTON_INDEX : Sequence[int] = [
     GameStates[Game.equip_circle.value], GameStates[Game.equip_cross.value],
-    GameStates[Game.equip_square.value], GameStates[Game.equip_triangle.value],
+    GameStates[Game.equip_square.value], GameStates[Game.equip_triangle.value]
+]
+
+BUTTON_INTUIT_INDEX : Sequence[int] = [
+    GameStates[Game.equip_triangle.value], GameStates[Game.equip_cross.value],
+    GameStates[Game.equip_square.value], GameStates[Game.equip_circle.value]
 ]
 
 ### [< --- METHODS --- >]

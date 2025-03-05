@@ -2,7 +2,7 @@ from typing import Optional
 from logging import Logger
 from enum import Enum
 
-from .data.Addresses import BUTTON_INDEX, GameStates, Pointers, get_gadget_id
+from .data.Addresses import BUTTON_INDEX, BUTTON_INTUIT_INDEX, GameStates, Pointers, get_gadget_id
 from .data.Strings import Meta, Game, APConsole
 from .interface.pine import Pine
 
@@ -86,8 +86,12 @@ class AEPS2Interface:
         return value == 0x00 or value == 0x02
 
     # { Game Manipulation }
+    def clear_equipment(self):
+        for button in BUTTON_INDEX:
+            self.pine.write_int32(button, 0x0)
+
     def unlock_equipment(self, address: int = 0):
-        self.pine.write_int32(address, 2)
+        self.pine.write_int32(address, 0x2)
 
         if self.will_auto_equip:
             self.auto_equip(get_gadget_id(address))
@@ -96,13 +100,24 @@ class AEPS2Interface:
         if gadget_id <= 0:
             return
 
-        for button in BUTTON_INDEX:
+        target : int = -1
+        for button in BUTTON_INTUIT_INDEX:
             value = self.pine.read_int32(button)
+            self.logger.info("ID of Equipped Gadgets: " +  str(value))
             if value != 0x0:
                 continue
 
-            self.pine.write_int32(button, gadget_id)
-            break
+            if target < 0:
+                target = button
+                continue
+
+            # Do not auto-equip when gadget is already assigned
+            if value == gadget_id:
+                return
+
+        if target >= 0:
+            self.logger.info("[/] ID of Gadget Received: " + str(gadget_id))
+            self.pine.write_int32(target, gadget_id)
 
     def give_collectable(self, address : int, amount : int | float = 0x1):
         current : int = self.pine.read_int32(address)
