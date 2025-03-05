@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Set, List
 from NetUtils import NetworkItem
 
 from .data.Items import EquipmentItem, CollectableItem
-from .data.Addresses import GADGET_INDEX, GameStates
+from .data.Addresses import GameStates, get_gadget_id
 from .data.Locations import MONKEYS
 from .data.Strings import Game
 from .data import Items
@@ -27,7 +27,7 @@ async def check_items(ctx : 'AE3Context'):
             ctx.ipc.unlock_equipment(item.address)
 
             if not ctx.cached_received_items:
-                ctx.ipc.auto_equip(GADGET_INDEX.index(item.address))
+                ctx.ipc.auto_equip(get_gadget_id(item.address))
 
         ## Handle Collectables
         elif isinstance(item, CollectableItem):
