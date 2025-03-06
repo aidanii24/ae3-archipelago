@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Set, List
 from NetUtils import NetworkItem
 
 from .data.Items import EquipmentItem, CollectableItem
-from .data.Addresses import GameStates, get_gadget_id
+from .data.Addresses import GameStates
 from .data.Locations import MONKEYS
 from .data.Strings import Game
 from .data import Items
@@ -18,17 +18,16 @@ async def check_items(ctx : 'AE3Context'):
     # Get Difference to get only new items
     received : List[NetworkItem] = list(set(ctx.items_received).difference(ctx.cached_received_items))
 
+    # Auto-equip if option is enabled or for handling the starting gadgets
+    auto_equip: bool = ctx.auto_equip or not ctx.cached_received_items
+
     for server_item in received:
         item = Items.from_id(server_item.item)
 
         # Handle Item depending on category
         ## Unlock Morphs and Gadgets
         if isinstance(item, EquipmentItem):
-            ctx.ipc.unlock_equipment(item.address)
-
-            # Handle game start equipment
-            if not ctx.cached_received_items:
-                ctx.ipc.auto_equip(get_gadget_id(item.address))
+            ctx.ipc.unlock_equipment(item.address, auto_equip)
 
         ## Handle Collectables
         elif isinstance(item, CollectableItem):
@@ -62,5 +61,6 @@ async def check_locations(ctx : 'AE3Context') -> bool:
     if cleared:
         await ctx.send_msgs([{"cmd" : "LocationChecks", "locations" : cleared}])
         ctx.cached_locations_checked.update(cleared)
+
         return True
     return False

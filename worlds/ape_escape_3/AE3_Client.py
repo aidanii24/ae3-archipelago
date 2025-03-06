@@ -8,7 +8,7 @@ from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser,
 from NetUtils import NetworkItem
 import Utils
 
-from .data.Strings import Meta, APConsole
+from .data.Strings import APHelper, Meta, APConsole
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
 from .Checker import check_locations, check_items
 
@@ -37,6 +37,7 @@ class AE3Context(CommonContext):
     interface_sync_task : asyncio.tasks = None
     last_error_message : Optional[str] = None
 
+    slot_data : dict[str, Utils.Any]
     cached_locations_checked : Set[int]
     cached_received_items : Set[NetworkItem]
 
@@ -62,6 +63,17 @@ class AE3Context(CommonContext):
 
         await self.get_username()
         await self.send_connect()
+
+    def on_package(self, cmd: str, args: dict):
+        if cmd != "Connected":
+            return
+
+        self.slot_data = args["slot_data"]
+
+        # Get Relevant Runtime options
+        if APHelper.auto_equip.value in args["slot_data"]:
+            self.auto_equip = bool(args["slot_data"][APHelper.auto_equip.value])
+
 
     # Client Command GUI
     def run_gui(self):

@@ -23,8 +23,6 @@ class AEPS2Interface:
     sync_task = None
     logger : Logger
 
-    will_auto_equip : bool = True
-
     def __init__(self, logger : Logger):
         self.logger = logger
 
@@ -90,10 +88,10 @@ class AEPS2Interface:
         for button in BUTTON_INDEX:
             self.pine.write_int32(button, 0x0)
 
-    def unlock_equipment(self, address: int = 0):
+    def unlock_equipment(self, address: int = 0, auto_equip : bool = False):
         self.pine.write_int32(address, 0x2)
 
-        if self.will_auto_equip:
+        if auto_equip:
             self.auto_equip(get_gadget_id(address))
 
     def auto_equip(self, gadget_id: int):

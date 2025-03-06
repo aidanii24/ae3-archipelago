@@ -149,6 +149,13 @@ class APHelper(BaseEnum):
     morphs_no_monkey =      "Morphs (Not Super Monkey)"
     equipment =             "Equipment"
 
+    # AP Options
+    starting_gadget =       "starting_gadget"
+    shuffle_net =           "shuffle_net"
+    shuffle_chassis =       "shuffle_chassis"
+
+    auto_equip =            "auto_equip"
+
 class APConsole:
     """
     Strings for all text to be used in the Archipelago Game Client

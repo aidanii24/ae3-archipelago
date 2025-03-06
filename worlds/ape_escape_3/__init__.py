@@ -1,10 +1,12 @@
 from typing import ClassVar, List, Optional
 
+from aiohttp.web_routedef import options
+
 from BaseClasses import MultiWorld, Tutorial, ItemClassification
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 
-from .data.Strings import Meta, APConsole
+from .data.Strings import Meta, APHelper, APConsole
 from .AE3_Options import AE3Options
 from .Regions import create_regions
 from .data import Items, Locations
@@ -47,7 +49,7 @@ class AE3World(World):
 
     # Initialize Randomizer Options
     options_dataclass = AE3Options
-    options = AE3Options  # Purely for Type Hints; not logically significant
+    options : AE3Options                    # Purely for Type Hints; not logically significant
 
     # Define the Items and Locations to/for Archipelago
     item_name_to_id = Items.generate_name_to_id()
@@ -113,11 +115,12 @@ class AE3World(World):
         self.multiworld.itempool = self.item_pool
 
     def fill_slot_data(self):
-        return {
-            "Starting Gadget" : self.options.starting_gadget.value,
-            "Include RC Car Chassis in Randomizer" : self.options.shuffle_chassis.value,
-            "Auto-equip Gadgets when obtained" : self.options.auto_equip.value
-        }
+        return self.options.as_dict(
+            APHelper.starting_gadget.value,
+            APHelper.shuffle_chassis.value,
+
+            APHelper.auto_equip.value
+        )
 
     def generate_output(self, directory : str):
         datas = {
