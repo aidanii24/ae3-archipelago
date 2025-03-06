@@ -1,8 +1,8 @@
 from argparse import ArgumentParser, Namespace
 from typing import Optional, Set
 import multiprocessing
-import asyncio
 import traceback
+import asyncio
 
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled
 from NetUtils import NetworkItem

@@ -1,8 +1,6 @@
 from typing import ClassVar, List, Optional
 
-from aiohttp.web_routedef import options
-
-from BaseClasses import MultiWorld, Tutorial, ItemClassification
+from BaseClasses import MultiWorld, Tutorial
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 
@@ -10,7 +8,8 @@ from .data.Strings import Meta, APHelper, APConsole
 from .AE3_Options import AE3Options
 from .Regions import create_regions
 from .data import Items, Locations
-from .data.Items import AE3Item
+from .data.Items import AE3Item, generate_collectables
+
 
 # Identifier for Archipelago to recognize and run the client
 def run_client(_url : Optional[str] = None):
@@ -102,7 +101,7 @@ class AE3World(World):
         self.multiworld.push_precollected(monkey_net)
 
         self.item_pool += gadgets
-        self.item_pool += [cowboy, ninja, magician, kungfu, hero, monkey]
+        self.item_pool += [knight, cowboy, ninja, magician, kungfu, hero, monkey]
 
         if self.options.shuffle_chassis:
             chassis_twin = Items.Chassis_Twin.to_item(self.player)
@@ -110,6 +109,13 @@ class AE3World(World):
             chassis_pudding = Items.Chassis_Pudding.to_item(self.player)
 
             self.item_pool += [chassis_twin, chassis_pudding, chassis_black]
+
+        # Add Upgradeables
+        self.item_pool += Items.Acc_Morph_Stock.to_items(self.player)
+
+        # Fill remaining locations with Collectables
+        unfilled : int = len(self.multiworld.get_unfilled_locations()) - len(self.item_pool)
+        self.item_pool += generate_collectables(self.player, unfilled)
 
         # Add Items to ItemPool
         self.multiworld.itempool = self.item_pool

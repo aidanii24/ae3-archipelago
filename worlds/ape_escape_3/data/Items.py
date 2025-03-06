@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 from dataclasses import dataclass
 from abc import ABC
+import random
 
 from BaseClasses import Item, ItemClassification
 
@@ -70,12 +71,12 @@ class CollectableItem(AE3ItemMeta):
 
     amount : int | float
     capacity : int
-    weight : float
+    weight : int
 
     pointers : Sequence[int]
 
     def __init__(self, name : str, address : int, amount : int | float,
-                 capacity : int, weight : float, id_offset : int = 0):
+                 capacity : int, weight : int, id_offset : int = 0):
         self.name = name
         self.item_id = address + id_offset
         self.address = address
@@ -98,14 +99,27 @@ class UpgradeableItem(AE3ItemMeta):
         id_offset : (default : 0) Added Offset to ID for Items that target the same Memory Address
     """
 
+    amount : int
     limit : int
 
-    def __init__(self, name : str, address : int, limit : int, id_offset : int = 0):
+    def __init__(self, name : str, address : int, amount : int, limit : int, id_offset : int = 0):
         self.name = name
         self.item_id = address + id_offset
         self.address = address
 
+        self.amount = amount
         self.limit = limit
+
+    def to_item(self, player : int, classification : ItemClassification = None) -> AE3Item:
+        cls = classification
+
+        if cls is None:
+            cls = ItemClassification.useful
+
+        return AE3Item(self.name, cls, self.item_id, player)
+
+    def to_items(self, player : int, classification : ItemClassification = None) -> list[AE3Item]:
+        return [self.to_item(player, classification) for amt in range(self.limit)]
 
 ### [< --- ITEMS --- >]
 # Gadgets
@@ -133,29 +147,29 @@ Chassis_Black = EquipmentItem(Itm.chassis_black.value)
 Chassis_Pudding = EquipmentItem(Itm.chassis_pudding.value)
 
 # Upgradeables
-Acc_Morph_Stock = UpgradeableItem(Game.morph_stocks.value, GameStates[Game.morph_stocks.value], 10)
+Acc_Morph_Stock = UpgradeableItem(Game.morph_stocks.value, GameStates[Game.morph_stocks.value], 100, 1100)
 
 # Collectables
-Nothing = CollectableItem(Itm.nothing.value, Items[Itm.nothing.value], 0,0, 0.0)
+Nothing = CollectableItem(Itm.nothing.value, Items[Itm.nothing.value], 0,0, 1)
 
-Cookie = CollectableItem(Itm.cookie.value, GameStates[Game.cookies.value], 20.0, 100, 0.4)
+Cookie = CollectableItem(Itm.cookie.value, GameStates[Game.cookies.value], 20.0, 100, 15)
 Cookie_Giant = CollectableItem(Itm.cookie_giant.value, GameStates[Game.cookies.value], 100.0, 100,
-                               0.15,0x01)
-Jacket = CollectableItem(Itm.jacket.value, GameStates[Game.jackets.value], 1.0, 0x63, 0.1)
-Chip_1x = CollectableItem(Itm.chip_1x.value, GameStates[Game.chips.value], 1, 0x270F, 0.5)
-Chip_5x = CollectableItem(Itm.chip_5x.value, GameStates[Game.chips.value], 5, 0x270F, 0.45,
+                               5,0x01)
+Jacket = CollectableItem(Itm.jacket.value, GameStates[Game.jackets.value], 1.0, 0x63, 3)
+Chip_1x = CollectableItem(Itm.chip_1x.value, GameStates[Game.chips.value], 1, 0x270F, 35)
+Chip_5x = CollectableItem(Itm.chip_5x.value, GameStates[Game.chips.value], 5, 0x270F, 30,
                           0x01)
-Chip_10x = CollectableItem(Itm.chip_10x.value, GameStates[Game.chips.value], 10, 0x270F, 0.4,
+Chip_10x = CollectableItem(Itm.chip_10x.value, GameStates[Game.chips.value], 10, 0x270F, 25,
                             0x02)
 Energy = CollectableItem(Itm.energy.value, GameStates[Game.morph_gauge_active.value], 3.0, 30,
-                         0.35, 0x0)
+                         20, 0x0)
 Energy_Mega = CollectableItem(Itm.energy_mega.value, GameStates[Game.morph_gauge_active.value], 30.0,
-                              30, 0.25, 0x01)
+                              30, 5, 0x01)
 
 Ammo_Boom = CollectableItem(Itm.ammo_boom.value, GameStates[Game.ammo_boom.value], 1, 0x9,
-                            0.3)
+                            25)
 Ammo_Homing = CollectableItem(Itm.ammo_homing.value, GameStates[Game.ammo_homing.value], 1, 0x9,
-                              0.3)
+                              25)
 
 ### [< --- ITEM GROUPS --- >]
 GADGETS : Sequence[EquipmentItem] = [
@@ -221,3 +235,10 @@ def generate_item_groups() -> dict[str : set[str]]:
     groups.setdefault(APHelper.equipment.value, set()).update(groups[APHelper.morphs.value])
 
     return groups
+
+def generate_collectables(player : int, amt : int) -> list[AE3Item]:
+    """Get a list of Items of the specified Archipelago"""
+    population : dict[AE3Item, int] = {i.to_item(player) : i.weight for i in COLLECTABLES}
+
+    result : list[AE3Item] = random.choices([*population.keys()], [*population.values()], k = amt)
+    return result

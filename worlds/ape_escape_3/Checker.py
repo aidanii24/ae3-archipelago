@@ -63,4 +63,5 @@ async def check_locations(ctx : 'AE3Context') -> bool:
         ctx.cached_locations_checked.update(cleared)
 
         return True
+
     return False
