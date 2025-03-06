@@ -9,7 +9,7 @@ from NetUtils import NetworkItem
 import Utils
 
 from .data.Strings import Meta, APConsole
-from .AE3_Interface import AEPS2Interface, ConnectionStatus
+from .AE3_Interface import ConnectionStatus, AEPS2Interface
 from .Checker import check_locations, check_items
 
 

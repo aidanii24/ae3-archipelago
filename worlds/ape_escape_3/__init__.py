@@ -63,7 +63,7 @@ class AE3World(World):
         super(AE3World, self).__init__(multiworld, player)
 
     def generate_early(self):
-        self.auto_equip = self.options.AutoEquip
+        self.auto_equip = self.options.auto_equip
 
         self.item_pool = []
 
@@ -93,16 +93,16 @@ class AE3World(World):
                                   sky_flyer]
 
         # Push Starting Gadget as pre-collected
-        if self.options.StartingGadget > 0:
-            self.multiworld.push_precollected(gadgets[self.options.StartingGadget - 1])
-            del gadgets[self.options.StartingGadget - 1]
+        if self.options.starting_gadget > 0:
+            self.multiworld.push_precollected(gadgets[self.options.starting_gadget - 1])
+            del gadgets[self.options.starting_gadget - 1]
 
         self.multiworld.push_precollected(monkey_net)
 
         self.item_pool += gadgets
         self.item_pool += [cowboy, ninja, magician, kungfu, hero, monkey]
 
-        if self.options.ShuffleChassis:
+        if self.options.shuffle_chassis:
             chassis_twin = Items.Chassis_Twin.to_item(self.player)
             chassis_black = Items.Chassis_Black.to_item(self.player)
             chassis_pudding = Items.Chassis_Pudding.to_item(self.player)
@@ -114,9 +114,9 @@ class AE3World(World):
 
     def fill_slot_data(self):
         return {
-            "Starting Gadget" : self.options.StartingGadget.value,
-            "Include RC Car Chassis in Randomizer" : self.options.ShuffleChassis.value,
-            "Auto-equip Gadgets when obtained" : self.options.AutoEquip.value
+            "Starting Gadget" : self.options.starting_gadget.value,
+            "Include RC Car Chassis in Randomizer" : self.options.shuffle_chassis.value,
+            "Auto-equip Gadgets when obtained" : self.options.auto_equip.value
         }
 
     def generate_output(self, directory : str):

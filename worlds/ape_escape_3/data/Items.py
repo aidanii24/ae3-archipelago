@@ -198,22 +198,10 @@ def from_id(item_id = int, category : int = 0):
     i : AE3ItemMeta = next((i for i in ref if i.item_id == item_id), None)
     return i
 
-def from_name(name = str, category : int = 0):
-    """Get Item by its Name"""
-    ref : Sequence = INDEX[category]
-
-    i : AE3ItemMeta = next((i for i in ref if i.name == name), None)
-    return i
-
 def generate_name_to_id() -> dict[str : int]:
     """Get a Dictionary of all Items in Name-ID pairs"""
     i : AE3ItemMeta
     return {i.name : i.item_id for i in MASTER}
-
-def generate_id_to_name() -> dict[int : str]:
-    """Get a Dictionary of all Items in ID-Name pairs"""
-    i : AE3ItemMeta
-    return {i.item_id : i.name for i in MASTER}
 
 def generate_item_groups() -> dict[str : set[str]]:
     """Get a Dictionary of Item Groups"""
