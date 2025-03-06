@@ -82,6 +82,23 @@ class Loc(BaseEnum):
     seaside_kamayan             = "Kamayan"
     seaside_taizo               = "Taizo"
 
+    ## Hide-n-Seek Forest
+    woods_ukki_pon              = "Ukki Pon"
+    woods_ukkian                = "Ukkian"
+    woods_ukki_red               = "Ukki Red"
+    woods_rosalin               = "Rosalin"
+    woods_salubon               = "Salubon"
+    woods_wolfmon               = "Wolfmon"
+    woods_ukiko                 = "Ukiko"
+    woods_lambymon              = "Lambymon"
+    woods_kreemon               = "Kreemon"
+    woods_ukkilei               = "Ukkilei"
+    woods_spork                 = "Spork"
+    woods_king_goat             = "King Goat"
+    woods_marukichi             = "Marukichi"
+    woods_kikimon               = "Kikimon"
+    woods_kominato              = "Kominato"
+
 class Stage(BaseEnum):
     """Strings for the various stages of Ape Escape 3. This refers to the names of all the rooms in the game."""
 
@@ -98,6 +115,12 @@ class Stage(BaseEnum):
     seaside_a                   = "Seaside Resort - Outside"
     seaside_b                   = "Seaside Resort - Chapel"
     seaside_c                   = "Seaside Resort - Break Room"
+
+    woods                       = "Hide-n-Seek Forest"
+    woods_a                     = "Hide-n-Seek Forest - Forest"
+    woods_b                     = "Hide-n-Seek Forest - Hills"
+    woods_c                     = "Hide-n-Seek Forest - Cabin"
+    woods_d                     = "Hide-n-Seek Forest - Break Room"
 
 class Game(BaseEnum):
     # Player

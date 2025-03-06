@@ -51,7 +51,23 @@ Locations : Dict[str, int] = {
     Loc.seaside_kankichi.value      : 0x649b5e,
     Loc.seaside_tomezo.value        : 0x649b5f,
     Loc.seaside_kamayan.value       : 0x649b60,
-    Loc.seaside_taizo.value         : 0x649b61
+    Loc.seaside_taizo.value         : 0x649b61,
+
+    Loc.woods_ukki_pon.value        : 0x6499e2,
+    Loc.woods_ukkian.value          : 0x6499e3,
+    Loc.woods_ukki_red.value         : 0x6499e4,
+    Loc.woods_rosalin.value         : 0x649b4b,
+    Loc.woods_salubon.value         : 0x6499e5,
+    Loc.woods_wolfmon.value         : 0x6499e6,
+    Loc.woods_ukiko.value           : 0x649be8,
+    Loc.woods_lambymon.value        : 0x6499e7,
+    Loc.woods_kreemon.value         : 0x6499e8,
+    Loc.woods_ukkilei.value         : 0x6499e9,
+    Loc.woods_spork.value           : 0x649be7,
+    Loc.woods_king_goat.value       : 0x649b62,
+    Loc.woods_marukichi.value       : 0x649b63,
+    Loc.woods_kikimon.value         : 0x649b64,
+    Loc.woods_kominato.value        : 0x649b65
 }
 
 GameStates : Dict[str, int] = {

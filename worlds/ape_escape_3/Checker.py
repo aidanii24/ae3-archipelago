@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Set, List
 
 from NetUtils import NetworkItem
 
-from .data.Items import EquipmentItem, CollectableItem
+from .data.Items import EquipmentItem, CollectableItem, UpgradeableItem
 from .data.Addresses import GameStates
 from .data.Locations import MONKEYS
 from .data.Strings import Game
@@ -30,8 +30,8 @@ async def check_items(ctx : 'AE3Context'):
             ctx.ipc.unlock_equipment(item.address, auto_equip)
 
         ## Handle Collectables
-        elif isinstance(item, CollectableItem):
-            i : CollectableItem = item
+        elif isinstance(item, CollectableItem) or isinstance(item, UpgradeableItem):
+            i = item
 
             ### Handle Morph Energy
             if item.address == GameStates[Game.morph_gauge_active.value]:

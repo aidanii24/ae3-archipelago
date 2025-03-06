@@ -95,14 +95,38 @@ Seaside_Tomezo = MonkeyLocation(Loc.seaside_tomezo.value)
 Seaside_Kamayan = MonkeyLocation(Loc.seaside_kamayan.value)
 Seaside_Taizo = MonkeyLocation(Loc.seaside_taizo.value)
 
+Woods_Ukki_Pon = MonkeyLocation(Loc.woods_ukki_pon.value)
+Woods_Ukkian = MonkeyLocation(Loc.woods_ukkian.value)
+Woods_Ukki_Red = MonkeyLocation(Loc.woods_ukki_red.value)
+Woods_Rosalin = MonkeyLocation(Loc.woods_rosalin.value)
+Woods_Salubon = MonkeyLocation(Loc.woods_salubon.value)
+Woods_Wolfmon = MonkeyLocation(Loc.woods_wolfmon.value)
+Woods_Ukiko = MonkeyLocation(Loc.woods_ukiko.value)
+Woods_Lambymon = MonkeyLocation(Loc.woods_lambymon.value)
+Woods_Kreemon = MonkeyLocation(Loc.woods_kreemon.value)
+Woods_Ukkilei = MonkeyLocation(Loc.woods_ukkilei.value)
+Woods_Spork = MonkeyLocation(Loc.woods_spork.value)
+Woods_King_Goat = MonkeyLocation(Loc.woods_king_goat.value)
+Woods_Marukichi = MonkeyLocation(Loc.woods_marukichi.value)
+Woods_Kikimon = MonkeyLocation(Loc.woods_kikimon.value)
+Woods_Kominato = MonkeyLocation(Loc.woods_kominato.value)
+
+# Woods
+
 ### [< --- LOCATION GROUPS --- >]
 SEASIDE_MONKEYS : Sequence[MonkeyLocation] = [
     Seaside_Nessal, Seaside_Ukki_Pia, Seaside_Sarubo, Seaside_Salurin, Seaside_Ukkitan, Seaside_Morella,
     Seaside_Ukki_Ben, Seaside_Kankichi, Seaside_Tomezo, Seaside_Kamayan, Seaside_Taizo
 ]
 
+WOODS_MONKEYS : Sequence[MonkeyLocation] = [
+    Woods_Ukki_Pon, Woods_Ukkian, Woods_Ukki_Red, Woods_Rosalin, Woods_Salubon, Woods_Wolfmon, Woods_Ukiko,
+    Woods_Lambymon, Woods_Kreemon, Woods_Ukkilei, Woods_Spork, Woods_King_Goat, Woods_Marukichi, Woods_Kikimon,
+    Woods_Kominato
+]
+
 MONKEYS : Sequence[MonkeyLocation] = [
-    Zero_Ukki_Pan, *SEASIDE_MONKEYS
+    Zero_Ukki_Pan, *SEASIDE_MONKEYS, *WOODS_MONKEYS
 ]
 
 MASTER : Sequence[AE3LocationMeta] = [

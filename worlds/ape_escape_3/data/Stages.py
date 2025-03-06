@@ -86,6 +86,12 @@ To_Seaside_A = StageEntranceMeta(Stage.seaside_a.value)
 To_Seaside_B = StageEntranceMeta(Stage.seaside_b.value)
 To_Seaside_C = StageEntranceMeta(Stage.seaside_c.value, AccessRule.MONKEY)
 
+# Woods
+To_Woods_A = StageEntranceMeta(Stage.woods_a.value)
+To_Woods_B = StageEntranceMeta(Stage.woods_b.value)
+To_Woods_C = StageEntranceMeta(Stage.woods_c.value)
+To_Woods_D = StageEntranceMeta(Stage.woods_d.value, AccessRule.MONKEY)
+
 ### [< --- STAGES --- >]
 
 # Menu
@@ -94,7 +100,8 @@ Title_Screen = AE3StageMeta(Stage.title_screen.value,
 
 # Hub
 Travel_Station_A = AE3StageMeta(Stage.travel_station_a.value,
-                                [To_Travel_Station_B, To_Seaside_A])
+                                [To_Travel_Station_B,
+                                 To_Seaside_A, To_Woods_A])
 Travel_Station_B = AE3StageMeta(Stage.travel_station_b.value)
 
 # Zero
@@ -112,6 +119,18 @@ Seaside_B = AE3StageMeta(Stage.seaside_b.value, None,
 Seaside_C = AE3StageMeta(Stage.seaside_c.value, None,
                          [Seaside_Kankichi, Seaside_Tomezo, Seaside_Kamayan, Seaside_Taizo])
 
+# Woods
+Woods_A = AE3StageMeta(Stage.woods_a.value,
+                       [To_Woods_B, To_Woods_D],
+                       [Woods_Ukki_Pon, Woods_Ukkian, Woods_Ukki_Red, Woods_Rosalin])
+Woods_B = AE3StageMeta(Stage.woods_b.value,
+                       [To_Woods_C],
+                       [Woods_Salubon, Woods_Wolfmon, Woods_Ukiko])
+Woods_C = AE3StageMeta(Stage.woods_c.value, None,
+                       [Woods_Lambymon, Woods_Kreemon, Woods_Ukkilei, Woods_Spork])
+Woods_D = AE3StageMeta(Stage.woods_d.value, None,
+                       [Woods_King_Goat, Woods_Marukichi, Woods_Kikimon, Woods_Kominato])
+
 ### [< --- STAGE GROUPS --- >]
 HUB : Sequence[AE3StageMeta] = [
     Travel_Station_A, Travel_Station_B
@@ -121,10 +140,14 @@ SEASIDE : Sequence[AE3StageMeta] = [
     Seaside_A, Seaside_B, Seaside_C
 ]
 
+WOODS : Sequence[AE3StageMeta] = [
+    Woods_A, Woods_B, Woods_C, Woods_D
+]
+
 MASTER : Sequence[AE3StageMeta] = [
-    Title_Screen, Zero, *HUB, *SEASIDE
+    Title_Screen, Zero, *HUB, *SEASIDE, *WOODS
 ]
 
 INDEX : Sequence[Sequence] = [
-    MASTER, HUB, SEASIDE
+    MASTER, HUB, SEASIDE, WOODS
 ]

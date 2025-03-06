@@ -120,9 +120,9 @@ class AEPS2Interface:
     def give_collectable(self, address : int, amount : int | float = 0x1):
         current : int = self.pine.read_int32(address)
 
-        if amount is int:
+        if isinstance(amount, int):
             self.pine.write_int32(address, current + amount)
-        elif amount is float:
+        elif isinstance(amount, float):
             self.pine.write_float(address, float(current + amount))
 
     def give_morph_energy(self, amount : float = 3.0):

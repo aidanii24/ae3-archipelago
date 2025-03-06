@@ -99,10 +99,10 @@ class UpgradeableItem(AE3ItemMeta):
         id_offset : (default : 0) Added Offset to ID for Items that target the same Memory Address
     """
 
-    amount : int
+    amount : int | float
     limit : int
 
-    def __init__(self, name : str, address : int, amount : int, limit : int, id_offset : int = 0):
+    def __init__(self, name : str, address : int, amount : int | float, limit : int, id_offset : int = 0):
         self.name = name
         self.item_id = address + id_offset
         self.address = address
@@ -147,7 +147,7 @@ Chassis_Black = EquipmentItem(Itm.chassis_black.value)
 Chassis_Pudding = EquipmentItem(Itm.chassis_pudding.value)
 
 # Upgradeables
-Acc_Morph_Stock = UpgradeableItem(Game.morph_stocks.value, GameStates[Game.morph_stocks.value], 100, 1100)
+Acc_Morph_Stock = UpgradeableItem(Game.morph_stocks.value, GameStates[Game.morph_stocks.value], 100.0, 10)
 
 # Collectables
 Nothing = CollectableItem(Itm.nothing.value, Items[Itm.nothing.value], 0,0, 1)
@@ -238,7 +238,8 @@ def generate_item_groups() -> dict[str : set[str]]:
 
 def generate_collectables(player : int, amt : int) -> list[AE3Item]:
     """Get a list of Items of the specified Archipelago"""
-    population : dict[AE3Item, int] = {i.to_item(player) : i.weight for i in COLLECTABLES}
+    weights : list[int] = [w.weight for w in COLLECTABLES]
 
-    result : list[AE3Item] = random.choices([*population.keys()], [*population.values()], k = amt)
-    return result
+    result : list[CollectableItem] = random.choices([*COLLECTABLES], [*weights], k = amt)
+    items : list[AE3Item] = [c.to_item(player) for c in result]
+    return items
