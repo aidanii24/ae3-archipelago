@@ -1,6 +1,8 @@
+import struct
 from typing import Optional
 from logging import Logger
 from enum import Enum
+import struct
 
 from .data.Addresses import BUTTON_INDEX, BUTTON_INTUIT_INDEX, GameStates, Pointers, get_gadget_id
 from .data.Strings import Meta, Game, APConsole
@@ -123,7 +125,18 @@ class AEPS2Interface:
         if isinstance(amount, int):
             self.pine.write_int32(address, current + amount)
         elif isinstance(amount, float):
-            self.pine.write_float(address, float(current + amount))
+            # Workaround for now; pine.write_float() seems to be broken
+            ## Reinterpret read value as float
+            current_as_hex : str = f'{current:x}'
+            current_as_float : float = struct.unpack('!f', bytes.fromhex(current_as_hex))[0]
+
+            ## Get New Value
+            new : float = current_as_float + amount
+
+            ## Convert new value to an int that will be interpreted as the same hexadecimal value as the float
+            new_as_int : int = int(hex(struct.unpack("<I", struct.pack("<f", new))[0]), 16)
+
+            self.pine.write_int32(address, new_as_int)
 
     def give_morph_energy(self, amount : float = 3.0):
         # Check recharge state first
