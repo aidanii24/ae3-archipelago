@@ -10,7 +10,7 @@ import Utils
 
 from .data.Strings import APHelper, Meta, APConsole
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
-from .Checker import check_locations, check_items
+from .Checker import check_locations, check_items, correct_progress
 
 
 class AE3CommandProcessor(ClientCommandProcessor):
@@ -41,8 +41,10 @@ class AE3Context(CommonContext):
     cached_locations_checked : Set[int]
     cached_received_items : Set[NetworkItem]
 
-    player_control : bool = True
-    current_stage = None
+    unlocked_levels : int = 0
+    player_control : bool = False
+    current_stage : str = None
+    has_morph_monkey : bool = False
 
     auto_equip : bool = False
 
@@ -133,16 +135,20 @@ async def main_sync_task(ctx : AE3Context):
             continue
 
 async def check_game(ctx : AE3Context):
-    # Check if Game State is safe for Checking
-    if ctx.player_control:
-        if not ctx.ipc.can_control():
-            ctx.player_control = False
+    # Check if Game State is safe for Further Checking
+    if not ctx.player_control:
+        if ctx.ipc.check_control():
+            ctx.player_control = True
+
             await asyncio.sleep(1)
+
+        # Run maintenance game checks when not in player control
+        await correct_progress(ctx)
 
         await asyncio.sleep(0.5)
         return
-    elif ctx.ipc.can_control():
-        ctx.player_control = True
+    elif not ctx.ipc.check_control():
+        ctx.player_control = False
         return
 
     # Check for Archipelago Connection Errors
@@ -151,7 +157,6 @@ async def check_game(ctx : AE3Context):
         if not ctx.slot:
             await asyncio.sleep(1)
             return
-
         # Check Progression
         await check_items(ctx)
 

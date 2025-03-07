@@ -72,21 +72,23 @@ Locations : Dict[str, int] = {
 
 GameStates : Dict[str, int] = {
 # Status
-    Game.state.value                        : 0x8519e4,  # int32 (0x00 - 0x04)
-    Game.character.value                    : 0x649910,  # int32 (0x00 - 0x01)
-    Game.progress.value                     : 0x8738B0,  # string (64bit)
+    Game.state.value                        : 0x8519e4, # int32 (0x00 - 0x04)
+    Game.character.value                    : 0x649910, # int32 (0x00 - 0x01)
+    Game.progress.value                     : 0x73f810, # Pointer Lead - End Value is 64bit
+    Game.on_warp_gate.value                 : 0x698298, # boolean (0x00 - 0x01)
     Game.levels_unlocked.value              : 0x73ff2c,
+    Game.level_confirmed.value              : 0x73FF3C, # boolean (0x00 - 0x01)
     Game.current_stage.value                : 0x8519f0,
 
     # Resources
     Game.jackets.value                      : 0x649914,
     Game.cookies.value                      : 0x649918,
     Game.chips.value                        : 0x6499d4,
-    Game.morph_gauge_active.value           : 0x742014,
+    Game.morph_gauge_active.value           : 0x742014, # Pointer Lead
     Game.morph_gauge_recharge.value         : 0x649924,
-    Game.morph_stocks.value                 : 0x649928,  # float (0000C842 - 00808944)
-    Game.ammo_boom.value                    : 0x649998,  # int32
-    Game.ammo_homing.value                  : 0x64999c,  # int32
+    Game.morph_stocks.value                 : 0x649928, # float (0000C842 - 00808944)
+    Game.ammo_boom.value                    : 0x649998, # int32
+    Game.ammo_homing.value                  : 0x64999c, # int32
 
     # Equipment
     Game.equip_circle.value                 : 0x64997c,
@@ -102,6 +104,7 @@ GameStates : Dict[str, int] = {
 
 ### [< --- POINTER CHAINS --- >]
 Pointers : Dict[int, Sequence[int]] = {
+    GameStates[Game.progress.value]             : [0x04, 0x1A0, 0x20, 0x0],
     GameStates[Game.morph_gauge_active.value]   : [0x44, 0x24, 0x38, 0x18]
 }
 

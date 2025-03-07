@@ -128,6 +128,8 @@ class Game(BaseEnum):
     character =             "Character"
     progress =              "Progress"
     levels_unlocked =       "Levels Unlocked"
+    on_warp_gate =           "On Warp Gate"
+    level_confirmed =       "Level Confirmed"
     current_stage =         "Current Stage"
 
     # Resources
@@ -178,7 +180,7 @@ class APHelper(BaseEnum):
     # Game Groups
     travel_station =        "o_1"
 
-    round2 =                "Round2"
+    round2 =                "round2"
 
     # AP Options
     starting_gadget =       "starting_gadget"

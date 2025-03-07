@@ -1,10 +1,10 @@
-from typing import Optional
+from typing import Optional, Sequence
 from logging import Logger
 from enum import Enum
 import struct
 
 from .data.Addresses import BUTTON_INDEX, BUTTON_INTUIT_INDEX, GameStates, Pointers, get_gadget_id
-from .data.Strings import Meta, Game, APConsole
+from .data.Strings import APHelper, Meta, Game, APConsole
 from .interface.pine import Pine
 
 
@@ -18,9 +18,10 @@ class ConnectionStatus(Enum):
 ### [< --- INTERFACE --- >]
 class AEPS2Interface:
     pine : Pine = Pine()
-    status : ConnectionStatus = 0
+    status : ConnectionStatus = ConnectionStatus.DISCONNECTED
 
     loaded_game : Optional[str] = None
+    cached_pointer_targets : dict[int, int] = {}
 
     sync_task = None
     logger : Logger
@@ -39,6 +40,9 @@ class AEPS2Interface:
                 return
 
             self.logger.info(APConsole.Info.init.value)
+
+            # Erase cache when reconnecting, to ensure its correct
+            self.cached_pointer_targets.clear()
 
         # Check for Game running in PCSX2
         try:
@@ -76,19 +80,78 @@ class AEPS2Interface:
         except RuntimeError:
             return False
 
+    # { Generic }
+    def check_pointers_updated(self):
+        return bool(self.cached_pointer_targets)
+
+    def follow_pointer_chain(self, start_addr : int) -> int:
+        # Get first pointer
+        addr : int = self.pine.read_int32(start_addr)
+
+        # Loop through remaining pointers and adding the offsets
+        ptrs : Sequence = Pointers[start_addr]
+        amt : int = len(ptrs) - 1
+        for offset in Pointers[start_addr]:
+            addr += offset
+
+            # Do not read value for the last offset
+            if ptrs.index(offset) >= amt:
+                return addr
+
+            addr = self.pine.read_int32(addr)
+
+            # Getting an Address of 0 means the pointer has not been set yet
+            if addr == 0x0:
+                return 0x0
+
+        return 0x0
+
     # { Game Check }
+    def get_progress(self) -> str:
+        addr : int = GameStates[Game.progress.value]
+        addr = self.follow_pointer_chain(addr)
+
+        if addr == 0:
+            return "none"
+
+        value: bytes = self.pine.read_bytes(addr, 8)
+        value_decoded: str = bytes.decode(value)
+        return value_decoded
+
+    def get_stage(self) -> str:
+        stage_as_bytes = self.pine.read_bytes(GameStates[Game.current_stage.value], 4)
+        return stage_as_bytes.decode("utf-8")
+
+    def check_in_stage(self) -> bool:
+        value : int = self.pine.read_int8(GameStates[Game.current_stage.value])
+        return value > 0
+
+    def check_warp_gate_state(self) -> bool:
+        value : int = self.pine.read_int8(GameStates[Game.on_warp_gate.value])
+        return value != 0
+
+    def check_level_confirmed_state(self):
+        value: int = self.pine.read_int8(GameStates[Game.level_confirmed.value])
+        return value != 0
+
     def get_player_state(self) -> int:
         value : int = self.pine.read_int32(GameStates[Game.state.value])
         return value
 
-    def can_control(self) -> bool:
+    def check_control(self) -> bool:
         value : int = self.get_player_state()
-        return value == 0x00 or value == 0x02
+        return value != 0x00 and value != 0x02
 
     # { Game Manipulation }
-    def set_progress(self, address : int, progress : str):
+    def set_progress(self, progress : str = APHelper.round2.value):
+        addr : int = GameStates[Game.progress.value]
+        addr = self.follow_pointer_chain(addr)
+
+        if addr == 0x0:
+            return
+
         as_bytes : bytes = progress.encode() + b'\x00'
-        self.pine.write_bytes(address, as_bytes)
+        self.pine.write_bytes(addr, as_bytes)
 
     def clear_equipment(self):
         for button in BUTTON_INDEX:
@@ -99,6 +162,9 @@ class AEPS2Interface:
 
         if auto_equip:
             self.auto_equip(get_gadget_id(address))
+
+    def lock_equipment(self, address: int = 0):
+        self.pine.write_int32(address, 0x1)
 
     def auto_equip(self, gadget_id: int):
         if gadget_id <= 0:
@@ -136,7 +202,7 @@ class AEPS2Interface:
             ## Get New Value
             new : float = current_as_float + amount
 
-            ## Convert new value to an int that will be interpreted as the same hexadecimal value as the float
+            ## Convert new value to an int that will be represented as the same hexadecimal value as the float
             new_as_int : int = int(hex(struct.unpack("<I", struct.pack("<f", new))[0]), 16)
 
             self.pine.write_int32(address, new_as_int)
