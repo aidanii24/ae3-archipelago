@@ -74,6 +74,9 @@ GameStates : Dict[str, int] = {
 # Status
     Game.state.value                        : 0x8519e4,  # int32 (0x00 - 0x04)
     Game.character.value                    : 0x649910,  # int32 (0x00 - 0x01)
+    Game.progress.value                     : 0x8738B0,  # string (64bit)
+    Game.levels_unlocked.value              : 0x73ff2c,
+    Game.current_stage.value                : 0x8519f0,
 
     # Resources
     Game.jackets.value                      : 0x649914,

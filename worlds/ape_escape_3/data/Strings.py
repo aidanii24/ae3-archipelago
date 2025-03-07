@@ -126,6 +126,9 @@ class Game(BaseEnum):
     # Player
     state =                 "Player State"
     character =             "Character"
+    progress =              "Progress"
+    levels_unlocked =       "Levels Unlocked"
+    current_stage =         "Current Stage"
 
     # Resources
     jackets =               "Jackets"
@@ -171,6 +174,11 @@ class APHelper(BaseEnum):
     morphs =                "Morphs"
     morphs_no_monkey =      "Morphs (Not Super Monkey)"
     equipment =             "Equipment"
+
+    # Game Groups
+    travel_station =        "o_1"
+
+    round2 =                "Round2"
 
     # AP Options
     starting_gadget =       "starting_gadget"

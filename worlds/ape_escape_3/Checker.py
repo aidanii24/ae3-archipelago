@@ -5,13 +5,35 @@ from NetUtils import NetworkItem
 from .data.Items import EquipmentItem, CollectableItem, UpgradeableItem
 from .data.Addresses import GameStates
 from .data.Locations import MONKEYS
-from .data.Strings import Game
+from .data.Strings import APHelper, Game
 from .data import Items
 
 if TYPE_CHECKING:
     from .AE3_Client import AE3Context
 
 ### [< --- CHECKS --- >]
+async def check_states(ctx : 'AE3Context'):
+    # Make sure progress is always set to "round2"
+    if ctx.cached_locations_checked and not ctx.player_control:
+        await force_progress(ctx)
+
+    # Check current stage
+    stage_as_bytes = ctx.ipc.pine.read_bytes(GameStates[Game.current_stage.value], 4)
+    ctx.current_stage = stage_as_bytes.decode("utf-8")
+
+async def setup_level_select(ctx : 'AE3Context'):
+    if ctx.ipc.pine.read_int32(GameStates[Game.levels_unlocked.value]) > 0x1B:
+        ctx.ipc.pine.write_int32(GameStates[Game.levels_unlocked.value], ctx.progress)
+
+async def force_progress(ctx : 'AE3Context'):
+    value : bytes = ctx.ipc.pine.read_bytes(GameStates[Game.progress.value], 8)
+    value_decoded : str = bytes.decode(value)
+    ctx.current_stage = value_decoded
+
+    if value_decoded != APHelper.round2.value:
+        as_bytes: bytes = APHelper.round2.value.encode() + b'\x00'
+        ctx.ipc.pine.write_bytes(GameStates[APHelper.round2.value], as_bytes)
+
 async def check_items(ctx : 'AE3Context'):
     cache_batch_items : Set[NetworkItem] = set()
 

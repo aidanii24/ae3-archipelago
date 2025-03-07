@@ -1,4 +1,3 @@
-import struct
 from typing import Optional
 from logging import Logger
 from enum import Enum
@@ -87,6 +86,10 @@ class AEPS2Interface:
         return value == 0x00 or value == 0x02
 
     # { Game Manipulation }
+    def set_progress(self, address : int, progress : str):
+        as_bytes : bytes = progress.encode() + b'\x00'
+        self.pine.write_bytes(address, as_bytes)
+
     def clear_equipment(self):
         for button in BUTTON_INDEX:
             self.pine.write_int32(button, 0x0)
