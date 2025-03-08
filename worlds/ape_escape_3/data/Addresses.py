@@ -7,6 +7,7 @@ from worlds.ape_escape_3.data.Items import GADGETS
 
 ### [< --- HELPERS --- >]
 class Version(ABC):
+    """Base Class to access easily change target memory addresses depending on Game Version used"""
     Items : Dict[str, int]
     Locations : Dict[str, int]
     GameStates : Dict[str, int]
@@ -24,6 +25,7 @@ class Version(ABC):
         buttons_internal: list[int] = []
         buttons_intuit: list[int] = []
 
+        # Create Sequence of Gadgets by ID in Quick Gadget Swap (Water Net is index 0 for convenience)
         for gadget in Itm.get_gadgets_ordered():
             gadgets : list[int] = []
             if gadget in Items:
@@ -34,6 +36,7 @@ class Version(ABC):
 
         self.GADGETS = gadgets
 
+        # Get Face Buttons in order of ID used by Gadget Selected (Circle, Cross, Square, Triangle)
         for button in Game.get_buttons_by_internal_index():
             if button in GameStates:
                 buttons_internal.append(GameStates[button])
@@ -42,6 +45,7 @@ class Version(ABC):
 
         self.BUTTONS_BY_INTERNAL = buttons_internal
 
+        # Get Face Buttons by order in which gadgets may intuitively be equipped (Triangle, Cross, Square, Circle)
         for button in Game.get_buttons_by_intuitive_index():
             if button in GameStates:
                 buttons_intuit.append(GameStates[button])
@@ -68,6 +72,8 @@ class Version(ABC):
 
 ### [< --- ADDRESSES --- >]
 class NTSCU(Version):
+    """Container for memory addresses in the NTSC-U (SCUS-97501) version of Ape Escape 3."""
+
     Items: Dict[str, int] = {
         # Gadgets
         Itm.gadget_club.value       : 0x649950,
