@@ -1,5 +1,5 @@
 from enum import Enum, EnumMeta
-from typing import Set
+from typing import Sequence
 
 
 ### [< --- HELPERS --- >]
@@ -59,6 +59,11 @@ class Itm(BaseEnum):
     acc_morph_stock =   "Morph Stock"
     ammo_boom =         "Explosive Pellet"
     ammo_homing =       "Guided Pellet"
+
+    @classmethod
+    def get_gadgets_ordered(cls) -> Sequence[str]:
+        return [cls.gadget_swim.value, cls.gadget_club.value, cls.gadget_net.value, cls.gadget_radar.value,
+                cls.gadget_hoop.value, cls.gadget_sling.value, cls.gadget_rcc.value, cls.gadget_fly.value]
 
 class Loc(BaseEnum):
     """
@@ -154,10 +159,18 @@ class Game(BaseEnum):
     equip_quick_morph =     "Quick Morph Selected"
     equip_morph_target =    "Selected Morph"
 
+    @classmethod
+    def get_buttons_by_internal_index(cls) -> Sequence[str]:
+        return [cls.equip_circle.value, cls.equip_cross.value, cls.equip_square.value, cls.equip_triangle.value]
+
+    @classmethod
+    def get_buttons_by_intuitive_index(cls) -> Sequence[str]:
+        return [cls.equip_triangle.value, cls.equip_cross.value, cls.equip_square.value, cls.equip_circle.value]
+
 class Meta:
-    game : str =                    "Ape Escape 3"
-    platform : str =                "PS2"
-    supported_versions : Set[str] = {"SCUS-97501"}
+    game : str =                            "Ape Escape 3"
+    platform : str =                        "PS2"
+    supported_versions : Sequence[str] =    {"SCUS-97501"}  # NTSC-U, PAL, NTSC-J
 
 class APHelper(BaseEnum):
     """
