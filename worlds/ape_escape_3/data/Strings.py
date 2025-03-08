@@ -108,24 +108,24 @@ class Stage(BaseEnum):
     """Strings for the various stages of Ape Escape 3. This refers to the names of all the rooms in the game."""
 
     # Menu/Hub
-    title_screen                = "Menu"
-    char_select                 = "Character Select"
-    travel_station_a            = "TV Station"
-    travel_station_b            = "Shopping District"
+    title_screen =              "Menu"
+    char_select =               "Character Select"
+    travel_station_a =          "TV Station"
+    travel_station_b =          "Shopping District"
 
     # Channels
-    zero                        = "TV Station (Stage)"
+    zero =                      "TV Station (Stage)"
 
-    seaside                     = "Seaside Resort"
-    seaside_a                   = "Seaside Resort - Outside"
-    seaside_b                   = "Seaside Resort - Chapel"
-    seaside_c                   = "Seaside Resort - Break Room"
+    seaside =                   "Seaside Resort"
+    seaside_a =                 "Seaside Resort - Outside"
+    seaside_b =                 "Seaside Resort - Chapel"
+    seaside_c =                 "Seaside Resort - Break Room"
 
-    woods                       = "Hide-n-Seek Forest"
-    woods_a                     = "Hide-n-Seek Forest - Forest"
-    woods_b                     = "Hide-n-Seek Forest - Hills"
-    woods_c                     = "Hide-n-Seek Forest - Cabin"
-    woods_d                     = "Hide-n-Seek Forest - Break Room"
+    woods =                     "Hide-n-Seek Forest"
+    woods_a =                   "Hide-n-Seek Forest - Forest"
+    woods_b =                   "Hide-n-Seek Forest - Hills"
+    woods_c =                   "Hide-n-Seek Forest - Cabin"
+    woods_d =                   "Hide-n-Seek Forest - Break Room"
 
 class Game(BaseEnum):
     # Player
@@ -133,7 +133,7 @@ class Game(BaseEnum):
     character =             "Character"
     progress =              "Progress"
     levels_unlocked =       "Levels Unlocked"
-    on_warp_gate =           "On Warp Gate"
+    on_warp_gate =          "On Warp Gate"
     level_confirmed =       "Level Confirmed"
     current_stage =         "Current Stage"
 
@@ -147,6 +147,8 @@ class Game(BaseEnum):
     morph_stocks =          "Morph Stocks"
     ammo_boom =             "Explosive Pellets"
     ammo_homing =           "Guided Pellets"
+
+    nothing =               "Nothing"
 
     # Equipment
     equip_circle =          "Gadget on Circle Button"
@@ -170,7 +172,7 @@ class Game(BaseEnum):
 class Meta:
     game : str =                            "Ape Escape 3"
     platform : str =                        "PS2"
-    supported_versions : Sequence[str] =    {"SCUS-97501"}  # NTSC-U, PAL, NTSC-J
+    supported_versions : Sequence[str] =    ["SCUS-97501"]  # NTSC-U, PAL, NTSC-J
 
 class APHelper(BaseEnum):
     """

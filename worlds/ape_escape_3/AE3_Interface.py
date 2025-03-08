@@ -3,7 +3,7 @@ from logging import Logger
 from enum import Enum
 import struct
 
-from .data.Addresses import BUTTON_INDEX, BUTTON_INTUIT_INDEX, GameStates, Pointers, get_gadget_id
+from .data.Addresses import VersionAddresses, get_version_addresses
 from .data.Strings import APHelper, Meta, Game, APConsole
 from .interface.pine import Pine
 
@@ -15,12 +15,24 @@ class ConnectionStatus(Enum):
     CONNECTED = 1
     IN_GAME = 2
 
+# Workaround for now; pine.write_float() seems to be broken
+def hex_int32_to_float(value : int) -> float:
+    ## Reinterpret read value as float
+    current_as_hex: str = f'{value:x}'
+    current_as_float: float = struct.unpack('!f', bytes.fromhex(current_as_hex))[0]
+
+    return current_as_float
+
+def float_to_hex_int32(value : float) -> int:
+    return int(hex(struct.unpack("<I", struct.pack("<f", value))[0]), 16)
+
 ### [< --- INTERFACE --- >]
 class AEPS2Interface:
     pine : Pine = Pine()
     status : ConnectionStatus = ConnectionStatus.DISCONNECTED
 
     loaded_game : Optional[str] = None
+    addresses : VersionAddresses = None
     cached_pointer_targets : dict[int, int] = {}
 
     sync_task = None
@@ -55,6 +67,7 @@ class AEPS2Interface:
 
             if game_id in Meta.supported_versions:
                 self.loaded_game = game_id
+                self.addresses = get_version_addresses(self.loaded_game)
                 self.status =  ConnectionStatus.IN_GAME
             elif not self.status is ConnectionStatus.WRONG_GAME:
                 self.logger.warning(APConsole.Err.game_wrong.value)
@@ -89,9 +102,9 @@ class AEPS2Interface:
         addr : int = self.pine.read_int32(start_addr)
 
         # Loop through remaining pointers and adding the offsets
-        ptrs : Sequence = Pointers[start_addr]
+        ptrs : Sequence = self.addresses.Pointers[start_addr]
         amt : int = len(ptrs) - 1
-        for offset in Pointers[start_addr]:
+        for offset in self.addresses.Pointers[start_addr]:
             addr += offset
 
             # Do not read value for the last offset
@@ -108,7 +121,7 @@ class AEPS2Interface:
 
     # { Game Check }
     def get_progress(self) -> str:
-        addr : int = GameStates[Game.progress.value]
+        addr : int = self.addresses.GameStates[Game.progress.value]
         addr = self.follow_pointer_chain(addr)
 
         if addr == 0:
@@ -118,33 +131,40 @@ class AEPS2Interface:
         value_decoded: str = bytes.decode(value)
         return value_decoded
 
+    def get_unlocked_stages(self):
+        return self.pine.read_int32(self.addresses.GameStates[Game.levels_unlocked.value])
+
     def get_stage(self) -> str:
-        stage_as_bytes = self.pine.read_bytes(GameStates[Game.current_stage.value], 4)
+        stage_as_bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_stage.value], 4)
         return stage_as_bytes.decode("utf-8")
 
     def check_in_stage(self) -> bool:
-        value : int = self.pine.read_int8(GameStates[Game.current_stage.value])
+        value : int = self.pine.read_int8(self.addresses.GameStates[Game.current_stage.value])
         return value > 0
 
     def check_warp_gate_state(self) -> bool:
-        value : int = self.pine.read_int8(GameStates[Game.on_warp_gate.value])
+        value : int = self.pine.read_int8(self.addresses.GameStates[Game.on_warp_gate.value])
         return value != 0
 
     def check_level_confirmed_state(self):
-        value: int = self.pine.read_int8(GameStates[Game.level_confirmed.value])
+        value: int = self.pine.read_int8(self.addresses.GameStates[Game.level_confirmed.value])
         return value != 0
 
     def get_player_state(self) -> int:
-        value : int = self.pine.read_int32(GameStates[Game.state.value])
+        value : int = self.pine.read_int32(self.addresses.GameStates[Game.state.value])
         return value
 
     def check_control(self) -> bool:
         value : int = self.get_player_state()
         return value != 0x00 and value != 0x02
 
+    def is_monkey_captured(self, name : str) -> bool:
+        address : int = self.addresses.Locations[name]
+        return self.pine.read_int8(address) == 0x01
+
     # { Game Manipulation }
     def set_progress(self, progress : str = APHelper.round2.value):
-        addr : int = GameStates[Game.progress.value]
+        addr : int = self.addresses.GameStates[Game.progress.value]
         addr = self.follow_pointer_chain(addr)
 
         if addr == 0x0:
@@ -153,25 +173,29 @@ class AEPS2Interface:
         as_bytes : bytes = progress.encode() + b'\x00'
         self.pine.write_bytes(addr, as_bytes)
 
+    def set_unlocked_levels(self, index : int):
+        self.pine.write_int32(self.addresses.GameStates[Game.levels_unlocked.value], index)
+
     def clear_equipment(self):
-        for button in BUTTON_INDEX:
+        for button in self.addresses.BUTTONS_BY_INTERNAL:
             self.pine.write_int32(button, 0x0)
 
-    def unlock_equipment(self, address: int = 0, auto_equip : bool = False):
-        self.pine.write_int32(address, 0x2)
+    def unlock_equipment(self, address_name : str, auto_equip : bool = False):
+        address : int = self.addresses.Items[address_name]
+        self.pine.write_int32(self.addresses.Items[address_name], 0x2)
 
         if auto_equip:
-            self.auto_equip(get_gadget_id(address))
+            self.auto_equip(self.addresses.get_gadget_id(address))
 
-    def lock_equipment(self, address: int = 0):
-        self.pine.write_int32(address, 0x1)
+    def lock_equipment(self, address_name : str):
+        self.pine.write_int32(self.addresses.Items[address_name], 0x1)
 
     def auto_equip(self, gadget_id: int):
         if gadget_id <= 0:
             return
 
         target : int = -1
-        for button in BUTTON_INTUIT_INDEX:
+        for button in self.addresses.BUTTONS_BY_INTUIT:
             value = self.pine.read_int32(button)
 
             # Do not auto-equip when gadget is already assigned
@@ -188,7 +212,8 @@ class AEPS2Interface:
         if target >= 0:
             self.pine.write_int32(target, gadget_id)
 
-    def give_collectable(self, address : int, amount : int | float = 0x1):
+    def give_collectable(self, address_name : str, amount : int | float = 0x1):
+        address : int = self.addresses.GameStates[address_name]
         current : int = self.pine.read_int32(address)
 
         if isinstance(amount, int):
@@ -209,17 +234,23 @@ class AEPS2Interface:
 
     def give_morph_energy(self, amount : float = 3.0):
         # Check recharge state first
-        address : int = GameStates[Game.morph_gauge_recharge.value]
+        address : int = self.addresses.GameStates[Game.morph_gauge_recharge.value]
         value : int = self.pine.read_int32(address)
 
         if value != 0x0:
-            self.pine.write_float(address, float(value + amount))
+            value_as_float : float = hex_int32_to_float(value) + amount
+            value = float_to_hex_int32(value_as_float)
+            self.pine.read_int32(value)
             return
 
         # If recharge state is 0, we check the active gauge, following its pointer chain
-        address = GameStates[Game.morph_gauge_active.value]
-        for pointer in Pointers[address]:
-            address += self.pine.read_int32(address) + pointer
+        address = self.follow_pointer_chain(self.addresses.GameStates[Game.morph_gauge_active.value])
+
+        if address == 0x0:
+            return
 
         value = self.pine.read_int32(address)
-        self.pine.write_float(address, value + amount)
+        value_as_float: float = min(hex_int32_to_float(value) + amount, 30.0)
+
+        value = float_to_hex_int32(value_as_float)
+        self.pine.read_int32(value)

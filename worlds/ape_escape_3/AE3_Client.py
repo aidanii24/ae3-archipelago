@@ -10,7 +10,7 @@ import Utils
 
 from .data.Strings import APHelper, Meta, APConsole
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
-from .Checker import check_locations, check_items, correct_progress
+from .Checker import *
 
 
 class AE3CommandProcessor(ClientCommandProcessor):
@@ -144,6 +144,7 @@ async def check_game(ctx : AE3Context):
 
         # Run maintenance game checks when not in player control
         await correct_progress(ctx)
+        await check_states(ctx)
 
         await asyncio.sleep(0.5)
         return
@@ -157,6 +158,11 @@ async def check_game(ctx : AE3Context):
         if not ctx.slot:
             await asyncio.sleep(1)
             return
+
+        # Setup Stage when needed
+        if ctx.current_stage == APHelper.travel_station.value:
+            await setup_level_select(ctx)
+
         # Check Progression
         await check_items(ctx)
 

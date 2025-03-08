@@ -4,7 +4,8 @@ from abc import ABC
 
 from BaseClasses import Location
 
-from .Addresses import Locations, Pointers
+#from .Addresses import Locations, Pointers
+from .Addresses import NTSCU
 from .Logic import AccessRule, Rulesets
 from .Strings import Loc, Meta
 
@@ -45,7 +46,8 @@ class MonkeyLocation(AE3LocationMeta):
 
     def __init__(self, name : str, *rules : Callable | frozenset[Callable] | Set[frozenset[Callable]] | Rulesets):
         self.name = name
-        self.loc_id = Locations[name]
+        # Locations can be assumed to always be in Addresses.Locations. NTSCU version will be used as basis for the ID.
+        self.loc_id = NTSCU.Locations[name]
         self.address = self.loc_id
         self.rules = Rulesets()
 
@@ -62,20 +64,6 @@ class MonkeyLocation(AE3LocationMeta):
 
         # For Monkeys, always add CATCH as a Critical Rule
         self.rules.Critical.add(AccessRule.CATCH)
-
-@dataclass
-class CameraLocation(AE3LocationMeta):
-    """Base Data Class for all Camera Locations"""
-
-    ptrs : Sequence[int]
-
-    def __init__(self, name : str):
-        self.name = name
-        self.loc_id = Locations[name]    # Equipment can be assumed to always be in Addresses.Items.
-        self.address = self.loc_id
-
-        if self.address in Pointers:
-            self.ptrs = Pointers[self.address]
 
 ### [< --- LOCATIONS --- >]
 # Zero

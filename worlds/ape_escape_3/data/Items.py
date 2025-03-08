@@ -6,7 +6,8 @@ import random
 from BaseClasses import Item, ItemClassification
 
 from .Strings import Itm, Game, Meta, APHelper
-from .Addresses import Items, GameStates, Pointers
+from .Addresses import NTSCU
+
 
 ### [< --- HELPERS --- >]
 class AE3Item(Item):
@@ -43,7 +44,8 @@ class EquipmentItem(AE3ItemMeta):
 
     def __init__(self, name : str):
         self.name = name
-        self.item_id = Items[name]    # Equipment can be assumed to always be in Addresses.Items.
+        # Equipment can be assumed to always be in Addresses.Items. NTSCU version will be used as basis for the ID.
+        self.item_id = NTSCU.Items[name]
         self.address = self.item_id
 
     def to_item(self, player : int, classification : ItemClassification = None) -> AE3Item:
@@ -62,31 +64,29 @@ class CollectableItem(AE3ItemMeta):
 
     Parameters:
         name : Name of Item from Strings.py
-        address : Memory Address of Item from Addresses.py
+        resource : Name of resource affected by Item from Strings.py
         amount : Amount of the Item to give
         capacity : Maximum amount of the item the player can hold
         weight : How often to be chosen to fill a location
         id_offset : (default : 0) Added Offset to ID for Items that target the same Memory Address
     """
 
+    resource : str
     amount : int | float
     capacity : int
     weight : int
 
-    pointers : Sequence[int]
-
-    def __init__(self, name : str, address : int, amount : int | float,
+    def __init__(self, name : str, resource : str, amount : int | float,
                  capacity : int, weight : int, id_offset : int = 0):
         self.name = name
-        self.item_id = address + id_offset
-        self.address = address
+        # Collectables can be assumed to always be in Addresses.Items. NTSCU version will be used as basis for the ID.
+        self.address = NTSCU.GameStates[resource]
+        self.item_id = self.address + id_offset
+        self.resource = resource
 
         self.amount = amount
         self.capacity = capacity
         self.weight = weight
-
-        if address in Pointers:
-            self.pointers = Pointers[address]
 
 class UpgradeableItem(AE3ItemMeta):
     """
@@ -94,18 +94,21 @@ class UpgradeableItem(AE3ItemMeta):
 
     Parameters:
         name : Name of Item from Strings.py
-        address : Memory Address of Item from Addresses.py
+        resource : Name of resource affected by Item from Strings.py
         limit : Maximum amount of the item that is expected to exist in the game
         id_offset : (default : 0) Added Offset to ID for Items that target the same Memory Address
     """
 
+    resource : str
     amount : int | float
     limit : int
 
-    def __init__(self, name : str, address : int, amount : int | float, limit : int, id_offset : int = 0):
+    def __init__(self, name : str, resource : str, amount : int | float, limit : int, id_offset : int = 0):
         self.name = name
-        self.item_id = address + id_offset
-        self.address = address
+        # Upgradeables can be assumed to always be in Addresses.Items. NTSCU version will be used as basis for the ID.
+        self.address = NTSCU.GameStates[resource]
+        self.item_id = self.address + id_offset
+        self.resource = resource
 
         self.amount = amount
         self.limit = limit
@@ -119,7 +122,7 @@ class UpgradeableItem(AE3ItemMeta):
         return AE3Item(self.name, cls, self.item_id, player)
 
     def to_items(self, player : int, classification : ItemClassification = None) -> list[AE3Item]:
-        return [self.to_item(player, classification) for amt in range(self.limit)]
+        return [self.to_item(player, classification) for _ in range(self.limit)]
 
 ### [< --- ITEMS --- >]
 # Gadgets
@@ -147,28 +150,28 @@ Chassis_Black = EquipmentItem(Itm.chassis_black.value)
 Chassis_Pudding = EquipmentItem(Itm.chassis_pudding.value)
 
 # Upgradeables
-Acc_Morph_Stock = UpgradeableItem(Game.morph_stocks.value, GameStates[Game.morph_stocks.value], 100.0, 10)
+Acc_Morph_Stock = UpgradeableItem(Game.morph_stocks.value, Game.morph_stocks.value, 100.0, 10)
 
 # Collectables
-Nothing = CollectableItem(Itm.nothing.value, Items[Itm.nothing.value], 0,0, 1)
+Nothing = CollectableItem(Itm.nothing.value, Game.nothing.value, 0,0, 1)
 
-Cookie = CollectableItem(Itm.cookie.value, GameStates[Game.cookies.value], 20.0, 100, 15)
-Cookie_Giant = CollectableItem(Itm.cookie_giant.value, GameStates[Game.cookies.value], 100.0, 100,
+Cookie = CollectableItem(Itm.cookie.value, Game.cookies.value, 20.0, 100, 15)
+Cookie_Giant = CollectableItem(Itm.cookie_giant.value, Game.cookies.value, 100.0, 100,
                                5,0x01)
-Jacket = CollectableItem(Itm.jacket.value, GameStates[Game.jackets.value], 1.0, 0x63, 3)
-Chip_1x = CollectableItem(Itm.chip_1x.value, GameStates[Game.chips.value], 1, 0x270F, 35)
-Chip_5x = CollectableItem(Itm.chip_5x.value, GameStates[Game.chips.value], 5, 0x270F, 30,
+Jacket = CollectableItem(Itm.jacket.value, Game.jackets.value, 1.0, 0x63, 3)
+Chip_1x = CollectableItem(Itm.chip_1x.value, Game.chips.value, 1, 0x270F, 35)
+Chip_5x = CollectableItem(Itm.chip_5x.value, Game.chips.value, 5, 0x270F, 30,
                           0x01)
-Chip_10x = CollectableItem(Itm.chip_10x.value, GameStates[Game.chips.value], 10, 0x270F, 25,
+Chip_10x = CollectableItem(Itm.chip_10x.value, Game.chips.value, 10, 0x270F, 25,
                             0x02)
-Energy = CollectableItem(Itm.energy.value, GameStates[Game.morph_gauge_active.value], 3.0, 30,
+Energy = CollectableItem(Itm.energy.value, Game.morph_gauge_active.value, 3.0, 30,
                          20, 0x0)
-Energy_Mega = CollectableItem(Itm.energy_mega.value, GameStates[Game.morph_gauge_active.value], 30.0,
+Energy_Mega = CollectableItem(Itm.energy_mega.value, Game.morph_gauge_active.value, 30.0,
                               30, 5, 0x01)
 
-Ammo_Boom = CollectableItem(Itm.ammo_boom.value, GameStates[Game.ammo_boom.value], 1, 0x9,
+Ammo_Boom = CollectableItem(Itm.ammo_boom.value, Game.ammo_boom.value, 1, 0x9,
                             25)
-Ammo_Homing = CollectableItem(Itm.ammo_homing.value, GameStates[Game.ammo_homing.value], 1, 0x9,
+Ammo_Homing = CollectableItem(Itm.ammo_homing.value, Game.ammo_homing.value, 1, 0x9,
                               25)
 
 ### [< --- ITEM GROUPS --- >]

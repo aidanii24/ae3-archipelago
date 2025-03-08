@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Set, List
 from NetUtils import NetworkItem
 
 from .data.Items import EquipmentItem, CollectableItem, UpgradeableItem
-from .data.Addresses import GameStates, Items
+from .data.Addresses import NTSCU
 from .data.Locations import MONKEYS
 from .data.Strings import Game, Itm
 from .data import Items
@@ -23,16 +23,16 @@ async def correct_progress(ctx : 'AE3Context'):
 
 async def setup_level_select(ctx : 'AE3Context'):
     # In case levels unlocked value glitches out from forcing progression to round2
-    if ctx.ipc.pine.read_int32(GameStates[Game.levels_unlocked.value]) > 0x1B:
-        ctx.ipc.pine.write_int32(GameStates[Game.levels_unlocked.value], ctx.unlocked_levels)
+    if ctx.ipc.get_unlocked_stages() > 0x1A:
+        ctx.ipc.set_unlocked_levels(ctx.unlocked_levels)
 
     # If Super Monkey isn't properly unlocked yet, temporarily do so during level select to prevent Aki from
     # introducing and giving it to the player.
-    if not ctx.has_morph_monkey and ctx.ipc.check_warp_gate_state():
-        ctx.ipc.unlock_equipment(Items[Itm.morph_monkey.value])
+    if not ctx.has_morph_monkey:
+        ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
 
         if ctx.ipc.check_level_confirmed_state():
-            ctx.ipc.lock_equipment(Items[Itm.morph_monkey.value])
+            ctx.ipc.lock_equipment(Itm.morph_monkey.value)
 
 async def check_items(ctx : 'AE3Context'):
     cache_batch_items : Set[NetworkItem] = set()
@@ -49,19 +49,23 @@ async def check_items(ctx : 'AE3Context'):
         # Handle Item depending on category
         ## Unlock Morphs and Gadgets
         if isinstance(item, EquipmentItem):
-            ctx.ipc.unlock_equipment(item.address, auto_equip)
+            ctx.ipc.unlock_equipment(item.name, auto_equip)
 
         ## Handle Collectables
         elif isinstance(item, CollectableItem) or isinstance(item, UpgradeableItem):
             i = item
 
+            ### <!> NTSC-U Addresses are used when identifying Items regardless of region
+            if item.address == NTSCU.GameStates[Game.nothing.value]:
+                continue
+
             ### Handle Morph Energy
-            if item.address == GameStates[Game.morph_gauge_active.value]:
+            elif item.resource == Game.morph_gauge_active.value:
                 ctx.ipc.give_morph_energy(i.amount)
 
             ### Handle Generic Items
             else:
-                ctx.ipc.give_collectable(item.address, i.amount)
+                ctx.ipc.give_collectable(item.resource, i.amount)
 
         # Add to temporary container; to be cached as a single batched after
         cache_batch_items.add(server_item)
@@ -73,7 +77,7 @@ async def check_locations(ctx : 'AE3Context') -> bool:
     cleared : Set[int] = set()
 
     for monkey in MONKEYS:
-        if ctx.ipc.pine.read_int8(monkey.address) == 0x01:
+        if ctx.ipc.is_monkey_captured(monkey.name):
             cleared.add(monkey.address)
 
     # Get newly checked locations

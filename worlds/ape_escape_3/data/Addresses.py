@@ -1,12 +1,11 @@
 from typing import Dict, Sequence
 from abc import ABC
 
-from Strings import Itm, Loc, Game
-from worlds.ape_escape_3.data.Items import GADGETS
+from .Strings import Itm, Loc, Game, Meta
 
 
 ### [< --- HELPERS --- >]
-class Version(ABC):
+class VersionAddresses(ABC):
     """Base Class to access easily change target memory addresses depending on Game Version used"""
     Items : Dict[str, int]
     Locations : Dict[str, int]
@@ -27,7 +26,6 @@ class Version(ABC):
 
         # Create Sequence of Gadgets by ID in Quick Gadget Swap (Water Net is index 0 for convenience)
         for gadget in Itm.get_gadgets_ordered():
-            gadgets : list[int] = []
             if gadget in Items:
                 gadgets.append(Items[gadget])
             else:
@@ -41,7 +39,8 @@ class Version(ABC):
             if button in GameStates:
                 buttons_internal.append(GameStates[button])
             else:
-                return
+                buttons_internal.clear()
+                break
 
         self.BUTTONS_BY_INTERNAL = buttons_internal
 
@@ -50,7 +49,8 @@ class Version(ABC):
             if button in GameStates:
                 buttons_intuit.append(GameStates[button])
             else:
-                return
+                buttons_intuit.clear()
+                break
 
         self.BUTTONS_BY_INTUIT = buttons_intuit
 
@@ -61,17 +61,17 @@ class Version(ABC):
         if address not in self.GADGETS:
             return -1
 
-        gadget_id: int = GADGETS.index(address)
+        gadget_id: int = self.GADGETS.index(address)
 
         # Return immediately if Gadget is part of normal set (the first 7)
         if gadget_id <= 7:
             return gadget_id
 
         # Last 3 items are RC Car variants, so return thr RC Car Address for them
-        return GADGETS.index(self.Items[Itm.gadget_rcc.value])
+        return self.GADGETS.index(self.Items[Itm.gadget_rcc.value])
 
 ### [< --- ADDRESSES --- >]
-class NTSCU(Version):
+class NTSCU(VersionAddresses):
     """Container for memory addresses in the NTSC-U (SCUS-97501) version of Ape Escape 3."""
 
     Items: Dict[str, int] = {
@@ -98,9 +98,6 @@ class NTSCU(Version):
         Itm.chassis_twin.value      : 0x649c98,  # boolean (0x00 - 0x01)
         Itm.chassis_black.value     : 0x649c99,  # boolean (0x00 - 0x01)
         Itm.chassis_pudding.value   : 0x649c9a,  # boolean (0x00 - 0x01)
-
-        # Collectables
-        Itm.nothing.value           : 0x200000,  # Arbitrary Number
     }
 
     Locations: Dict[str, int] = {
@@ -151,6 +148,8 @@ class NTSCU(Version):
         Game.current_stage.value        : 0x8519f0,
 
         # Resources
+        Game.nothing.value               : 0x200000,  # Arbitrary Number
+
         Game.jackets.value              : 0x649914,
         Game.cookies.value              : 0x649918,
         Game.chips.value                : 0x6499d4,
@@ -177,6 +176,15 @@ class NTSCU(Version):
         GameStates[Game.progress.value]             : [0x04, 0x1A0, 0x20, 0x0],
         GameStates[Game.morph_gauge_active.value]   : [0x44, 0x24, 0x38, 0x18]
     }
+
+def get_version_addresses(game_id : str) -> VersionAddresses | None:
+    if game_id not in Meta.supported_versions:
+        return None
+
+    id_index : int = Meta.supported_versions.index(game_id)
+
+    if id_index == 0:
+        return NTSCU()
 
 
 
