@@ -73,7 +73,7 @@ async def check_items(ctx : 'AE3Context'):
     # Add to Cache
     ctx.cached_received_items.update(cache_batch_items)
 
-async def check_locations(ctx : 'AE3Context') -> bool:
+async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
 
     for monkey in MONKEYS:
@@ -87,7 +87,3 @@ async def check_locations(ctx : 'AE3Context') -> bool:
     if cleared:
         await ctx.send_msgs([{"cmd" : "LocationChecks", "locations" : cleared}])
         ctx.cached_locations_checked.update(cleared)
-
-        return True
-
-    return False
