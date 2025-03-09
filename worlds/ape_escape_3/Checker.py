@@ -22,9 +22,10 @@ async def correct_progress(ctx : 'AE3Context'):
     ctx.ipc.set_progress()
 
 async def setup_level_select(ctx : 'AE3Context'):
-    # In case levels unlocked value glitches out from forcing progression to round2
-    if ctx.ipc.get_unlocked_stages() > 0x1A:
-        ctx.ipc.set_unlocked_levels(ctx.unlocked_levels)
+    # Force Unlocked Levels to be in sync with the player's chosen option,
+    # maxing out at 0x1B as supported by the game
+    if ctx.ipc.get_unlocked_stages() > min(ctx.unlocked_stages, 0x1B):
+        ctx.ipc.set_unlocked_levels(ctx.unlocked_stages)
 
     # If Super Monkey isn't properly unlocked yet, temporarily do so during level select to prevent Aki from
     # introducing and giving it to the player.

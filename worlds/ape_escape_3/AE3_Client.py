@@ -1,14 +1,14 @@
 from argparse import ArgumentParser, Namespace
-from typing import Optional, Set
+from typing import Optional
 import multiprocessing
 import traceback
 import asyncio
 
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled
-from NetUtils import NetworkItem
 import Utils
 
 from .data.Strings import APHelper, Meta, APConsole
+from .data.Items import ProgressionType
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
 from .Checker import *
 
@@ -41,12 +41,13 @@ class AE3Context(CommonContext):
     cached_locations_checked : Set[int]
     cached_received_items : Set[NetworkItem]
 
-    unlocked_levels : int = 0
+    unlocked_stages : int = 0
     player_control : bool = False
     current_stage : str = None
     has_morph_monkey : bool = False
 
     auto_equip : bool = False
+    progression : ProgressionType = ProgressionType.BOSS
 
     def __init__(self, address, password):
         super().__init__(address, password)
@@ -73,9 +74,14 @@ class AE3Context(CommonContext):
         self.slot_data = args["slot_data"]
 
         # Get Relevant Runtime options
+        ## Progression Type
+        if APHelper.progression_type.value in args["slot_data"]:
+            self.progression = ProgressionType.get_progression_type(args["slot_data"][APHelper.progression_type.value])
+            self.unlocked_stages = self.progression.get_current_progress(0)
+
+        ## Auto-Equip
         if APHelper.auto_equip.value in args["slot_data"]:
             self.auto_equip = bool(args["slot_data"][APHelper.auto_equip.value])
-
 
     # Client Command GUI
     def run_gui(self):

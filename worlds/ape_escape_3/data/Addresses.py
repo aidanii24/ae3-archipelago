@@ -1,7 +1,7 @@
 from typing import Dict, Sequence
 from abc import ABC
 
-from .Strings import Itm, Loc, Game, Meta
+from .Strings import Itm, Loc, Game, Meta, APHelper
 
 
 ### [< --- HELPERS --- >]
@@ -179,6 +179,11 @@ class NTSCU(VersionAddresses):
         GameStates[Game.progress.value]             : [0x04, 0x1A0, 0x20, 0x0],
         GameStates[Game.morph_gauge_active.value]   : [0x44, 0x24, 0x38, 0x18]
     }
+
+AP : dict[str, int] = {
+    APHelper.channel_key.value      : 0x698298,
+    APHelper.victory.value          : 0x73ff2c
+}
 
 def get_version_addresses(game_id : str) -> VersionAddresses | None:
     if game_id not in Meta.supported_versions:

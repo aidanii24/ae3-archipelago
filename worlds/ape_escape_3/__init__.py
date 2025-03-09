@@ -122,6 +122,7 @@ class AE3World(World):
 
     def fill_slot_data(self):
         return self.options.as_dict(
+            APHelper.progression_type.value,
             APHelper.starting_gadget.value,
             APHelper.shuffle_chassis.value,
 

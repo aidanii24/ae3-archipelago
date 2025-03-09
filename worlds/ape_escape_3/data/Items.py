@@ -1,12 +1,13 @@
 from collections.abc import Sequence
 from dataclasses import dataclass
+from enum import Enum
 from abc import ABC
 import random
 
 from BaseClasses import Item, ItemClassification
 
 from .Strings import Itm, Game, Meta, APHelper
-from .Addresses import NTSCU
+from .Addresses import NTSCU, AP
 
 
 ### [< --- HELPERS --- >]
@@ -25,8 +26,8 @@ class AE3ItemMeta(ABC):
     item_id : int
     address : int
 
-    def to_item(self, player : int, classification : ItemClassification = ItemClassification.filler) -> AE3Item:
-        return AE3Item(self.name, classification, self.item_id, player)
+    def to_item(self, player : int) -> AE3Item:
+        return AE3Item(self.name, ItemClassification.filler, self.item_id, player)
 
 @dataclass
 class EquipmentItem(AE3ItemMeta):
@@ -109,6 +110,18 @@ class UpgradeableItem(AE3ItemMeta):
     def to_items(self, player : int, classification : ItemClassification = ItemClassification.useful) -> list[AE3Item]:
         return [self.to_item(player, classification) for _ in range(self.limit)]
 
+class ArchipelagoItem(AE3ItemMeta):
+    """Base class for any non in-game item"""
+    def __init__(self, name : str):
+        self.name = name
+        self.item_id = AP[name]
+
+    def to_item(self, player : int) -> AE3Item:
+        return AE3Item(self.name, ItemClassification.progression, self.item_id, player)
+
+    def to_items(self, player : int, amount : int):
+        return [self.to_item(player) for _ in range(amount)]
+
 ### [< --- ITEMS --- >]
 # Gadgets
 Gadget_Club = EquipmentItem(Itm.gadget_club.value)
@@ -141,25 +154,31 @@ Acc_Morph_Stock = UpgradeableItem(Game.morph_stocks.value, Game.morph_stocks.val
 Nothing = CollectableItem(Itm.nothing.value, Game.nothing.value, 0,0, 1)
 
 Cookie = CollectableItem(Itm.cookie.value, Game.cookies.value, 20.0, 100, 20)
-Cookie_Giant = CollectableItem(Itm.cookie_giant.value, Game.cookies.value, 100.0, 100,
-                               10,0x01)
+Cookie_Giant = CollectableItem(Itm.cookie_giant.value, Game.cookies.value, 100.0, 100, 10,
+                               0x01)
 Jacket = CollectableItem(Itm.jacket.value, Game.jackets.value, 1, 0x63, 5)
 Chip_1x = CollectableItem(Itm.chip_1x.value, Game.chips.value, 1, 0x270F, 35)
 Chip_5x = CollectableItem(Itm.chip_5x.value, Game.chips.value, 5, 0x270F, 30,
                           0x01)
 Chip_10x = CollectableItem(Itm.chip_10x.value, Game.chips.value, 10, 0x270F, 25,
                             0x02)
-Energy = CollectableItem(Itm.energy.value, Game.morph_gauge_active.value, 3.0, 30,
-                         25, 0x0)
-Energy_Mega = CollectableItem(Itm.energy_mega.value, Game.morph_gauge_active.value, 30.0,
-                              30, 10, 0x01)
+Energy = CollectableItem(Itm.energy.value, Game.morph_gauge_active.value, 3.0, 30,25,
+                         0x0)
+Energy_Mega = CollectableItem(Itm.energy_mega.value, Game.morph_gauge_active.value, 30.0, 30, 10,
+                              0x01)
 
 Ammo_Boom = CollectableItem(Itm.ammo_boom.value, Game.ammo_boom.value, 1, 0x9,
                             25)
 Ammo_Homing = CollectableItem(Itm.ammo_homing.value, Game.ammo_homing.value, 1, 0x9,
                               25)
 
+# Archipelago
+Channel_Key = ArchipelagoItem(APHelper.channel_key.value)
+Victory = ArchipelagoItem(APHelper.victory.value)
+
 ### [< --- ITEM GROUPS --- >]
+
+
 GADGETS : Sequence[EquipmentItem] = [
     Gadget_Swim, Gadget_Club, Gadget_Net, Gadget_Radar, Gadget_Hoop, Gadget_Sling, Gadget_RCC, Gadget_Fly
 ]
@@ -191,6 +210,30 @@ MASTER : Sequence[AE3ItemMeta] = [
 INDEX : Sequence[Sequence] = [
     MASTER, GADGETS, MORPHS, EQUIPMENT, ACCESSORIES, UPGRADEABLES, COLLECTABLES
 ]
+
+### [< --- ITEM DATA HELPERS --- >]
+class ProgressionType(Enum):
+    # Seaside Resort is unlocked at value 0, so starting unlocked levels are 1 less than actually represented.
+    SINGLES =       [1 for _ in range(31)]
+    BOSS =          [2, 1, 4, 1, 3, 1, 4, 1, 3, 1, 2, 1, 1, 1]
+    BOSS_INCL =     [3, 5, 4, 5, 4, 3, 1, 1]
+
+    def get_current_progress(self, keys : int):
+        unlocks : int = 0
+        for i, unlocked in enumerate(self.value):
+            unlocks += unlocked
+
+            if i >= keys:
+                return unlocks
+
+    @classmethod
+    def get_progression_type(cls, index : int):
+        if index == 1:
+            return cls.BOSS
+        elif index == 2:
+            return cls.BOSS_INCL
+
+        return cls.SINGLES
 
 ### [< --- METHODS --- >]
 def from_id(item_id = int, category : int = 0):

@@ -180,7 +180,7 @@ class APHelper(BaseEnum):
     """
 
     # Progression
-    stage_key =             "Stage Key"
+    channel_key =           "Channel Key"
     victory =               "Victory"
 
     # Special
@@ -198,6 +198,8 @@ class APHelper(BaseEnum):
     round2 =                "round2"
 
     # AP Options
+    progression_type =      "progression_type"
+
     starting_gadget =       "starting_gadget"
     shuffle_net =           "shuffle_net"
     shuffle_chassis =       "shuffle_chassis"
