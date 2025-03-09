@@ -14,8 +14,8 @@ if TYPE_CHECKING:
 ### [< --- CHECKS --- >]
 
 async def check_states(ctx : 'AE3Context'):
-    # Get current stage
-    ctx.current_stage = ctx.ipc.get_stage()
+    # Get current stage; remove null bytes if present
+    ctx.current_stage = ctx.ipc.get_stage().removesuffix("\x00")
 
 # Ensure game is always set to "round2"
 async def correct_progress(ctx : 'AE3Context'):
@@ -50,6 +50,9 @@ async def check_items(ctx : 'AE3Context'):
         ## Unlock Morphs and Gadgets
         if isinstance(item, EquipmentItem):
             ctx.ipc.unlock_equipment(item.name, auto_equip)
+
+            if not ctx.has_morph_monkey and item.address == NTSCU.Items[Itm.morph_monkey.value]:
+                ctx.has_morph_monkey = True
 
         ## Handle Collectables
         elif isinstance(item, CollectableItem) or isinstance(item, UpgradeableItem):

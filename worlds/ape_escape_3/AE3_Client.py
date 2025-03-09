@@ -158,7 +158,7 @@ async def check_game(ctx : AE3Context):
         if not ctx.slot:
             await asyncio.sleep(1)
             return
-        print(ctx.current_stage, APHelper.travel_station.value, ctx.current_stage == APHelper.travel_station.value)
+
         # Setup Stage when needed
         if ctx.current_stage == APHelper.travel_station.value:
             await setup_level_select(ctx)

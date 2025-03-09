@@ -25,13 +25,8 @@ class AE3ItemMeta(ABC):
     item_id : int
     address : int
 
-    def to_item(self, player : int, classification : ItemClassification = None) -> AE3Item:
-        cls = classification
-
-        if cls is None:
-            cls = ItemClassification.filler
-
-        return AE3Item(self.name, cls, self.item_id, player)
+    def to_item(self, player : int, classification : ItemClassification = ItemClassification.filler) -> AE3Item:
+        return AE3Item(self.name, classification, self.item_id, player)
 
 @dataclass
 class EquipmentItem(AE3ItemMeta):
@@ -48,13 +43,8 @@ class EquipmentItem(AE3ItemMeta):
         self.item_id = NTSCU.Items[name]
         self.address = self.item_id
 
-    def to_item(self, player : int, classification : ItemClassification = None) -> AE3Item:
-        cls = classification
-
-        if cls is None:
-            cls = ItemClassification.progression
-
-        return AE3Item(self.name, cls, self.item_id, player)
+    def to_item(self, player : int, classification : ItemClassification = ItemClassification.progression) -> AE3Item:
+        return AE3Item(self.name, classification, self.item_id, player)
 
 @dataclass
 class CollectableItem(AE3ItemMeta):
@@ -113,15 +103,10 @@ class UpgradeableItem(AE3ItemMeta):
         self.amount = amount
         self.limit = limit
 
-    def to_item(self, player : int, classification : ItemClassification = None) -> AE3Item:
-        cls = classification
+    def to_item(self, player : int, classification : ItemClassification = ItemClassification.useful) -> AE3Item:
+        return AE3Item(self.name, classification, self.item_id, player)
 
-        if cls is None:
-            cls = ItemClassification.useful
-
-        return AE3Item(self.name, cls, self.item_id, player)
-
-    def to_items(self, player : int, classification : ItemClassification = None) -> list[AE3Item]:
+    def to_items(self, player : int, classification : ItemClassification = ItemClassification.useful) -> list[AE3Item]:
         return [self.to_item(player, classification) for _ in range(self.limit)]
 
 ### [< --- ITEMS --- >]

@@ -131,11 +131,11 @@ class AEPS2Interface:
         value_decoded: str = bytes.decode(value)
         return value_decoded
 
-    def get_unlocked_stages(self):
+    def get_unlocked_stages(self) -> int:
         return self.pine.read_int32(self.addresses.GameStates[Game.levels_unlocked.value])
 
     def get_stage(self) -> str:
-        stage_as_bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_stage.value], 4)
+        stage_as_bytes : bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_stage.value], 4)
         return stage_as_bytes.decode("utf-8")
 
     def check_in_stage(self) -> bool:
@@ -146,7 +146,7 @@ class AEPS2Interface:
         value : int = self.pine.read_int8(self.addresses.GameStates[Game.on_warp_gate.value])
         return value != 0
 
-    def check_level_confirmed_state(self):
+    def check_level_confirmed_state(self) -> bool:
         value: int = self.pine.read_int8(self.addresses.GameStates[Game.level_confirmed.value])
         return value != 0
 
