@@ -145,7 +145,6 @@ async def check_game(ctx : AE3Context):
         # Run maintenance game checks when not in player control
         await correct_progress(ctx)
         await check_states(ctx)
-        print(ctx.current_stage)
 
         await asyncio.sleep(0.5)
         return
@@ -168,6 +167,7 @@ async def check_game(ctx : AE3Context):
         await check_items(ctx)
         await check_locations(ctx)
 
+        # Sleep functions keep the client from being unresponsive
         await asyncio.sleep(0.5)
 
     else:

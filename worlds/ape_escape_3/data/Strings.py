@@ -212,7 +212,7 @@ class APConsole:
     class Info(BaseEnum):
         sym_wait =      " [...]"
         sym_conf =      " [-/-]"
-        decor =         "||========================================||"
+        decor =         "||==========================================||"
         greet =         " Welcome to Ape Escape 3 Archipelago!"
         game_name =     " Ape Escape 3 Archipelago"
         client_name =   " Ape Escape 3 Client"
