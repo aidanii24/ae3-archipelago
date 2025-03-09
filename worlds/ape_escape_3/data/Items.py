@@ -140,19 +140,19 @@ Acc_Morph_Stock = UpgradeableItem(Game.morph_stocks.value, Game.morph_stocks.val
 # Collectables
 Nothing = CollectableItem(Itm.nothing.value, Game.nothing.value, 0,0, 1)
 
-Cookie = CollectableItem(Itm.cookie.value, Game.cookies.value, 20.0, 100, 15)
+Cookie = CollectableItem(Itm.cookie.value, Game.cookies.value, 20.0, 100, 20)
 Cookie_Giant = CollectableItem(Itm.cookie_giant.value, Game.cookies.value, 100.0, 100,
-                               5,0x01)
-Jacket = CollectableItem(Itm.jacket.value, Game.jackets.value, 1.0, 0x63, 3)
+                               10,0x01)
+Jacket = CollectableItem(Itm.jacket.value, Game.jackets.value, 1, 0x63, 5)
 Chip_1x = CollectableItem(Itm.chip_1x.value, Game.chips.value, 1, 0x270F, 35)
 Chip_5x = CollectableItem(Itm.chip_5x.value, Game.chips.value, 5, 0x270F, 30,
                           0x01)
 Chip_10x = CollectableItem(Itm.chip_10x.value, Game.chips.value, 10, 0x270F, 25,
                             0x02)
 Energy = CollectableItem(Itm.energy.value, Game.morph_gauge_active.value, 3.0, 30,
-                         20, 0x0)
+                         25, 0x0)
 Energy_Mega = CollectableItem(Itm.energy_mega.value, Game.morph_gauge_active.value, 30.0,
-                              30, 5, 0x01)
+                              30, 10, 0x01)
 
 Ammo_Boom = CollectableItem(Itm.ammo_boom.value, Game.ammo_boom.value, 1, 0x9,
                             25)
