@@ -221,14 +221,10 @@ class AEPS2Interface:
         elif isinstance(amount, float):
             # Workaround for now; pine.write_float() seems to be broken
             ## Reinterpret read value as float
-            current_as_hex : str = f'{current:x}'
-            current_as_float : float = struct.unpack('!f', bytes.fromhex(current_as_hex))[0]
-
-            ## Get New Value
-            new : float = current_as_float + amount
+            current_as_float : float = hex_int32_to_float(current)
 
             ## Convert new value to an int that will be represented as the same hexadecimal value as the float
-            new_as_int : int = int(hex(struct.unpack("<I", struct.pack("<f", new))[0]), 16)
+            new_as_int : int = float_to_hex_int32(current_as_float + amount)
 
             self.pine.write_int32(address, new_as_int)
 
@@ -238,9 +234,11 @@ class AEPS2Interface:
         value : int = self.pine.read_int32(address)
 
         if value != 0x0:
-            value_as_float : float = hex_int32_to_float(value) + amount
-            value = float_to_hex_int32(value_as_float)
-            self.pine.read_int32(value)
+            # Ranges from 0 to 100 for every Morph Stock, with a maximum of 1100 for all 10 Stocks filled.
+            value_as_float : float = hex_int32_to_float(value) + (amount / 30.0 * 100.0)
+            value : int = float_to_hex_int32(value_as_float)
+
+            self.pine.write_int32(address, value)
             return
 
         # If recharge state is 0, we check the active gauge, following its pointer chain
@@ -249,8 +247,8 @@ class AEPS2Interface:
         if address == 0x0:
             return
 
-        value = self.pine.read_int32(address)
-        value_as_float: float = min(hex_int32_to_float(value) + amount, 30.0)
-
+        value : int = self.pine.read_int32(address)
+        # Ranges from 0 to 30 in vanilla game.
+        value_as_float: float = hex_int32_to_float(value) + amount
         value = float_to_hex_int32(value_as_float)
-        self.pine.read_int32(value)
+        self.pine.write_int32(address, value)
