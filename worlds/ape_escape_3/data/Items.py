@@ -215,6 +215,10 @@ INDEX : Sequence[Sequence] = [
 
 ### [< --- ITEM DATA HELPERS --- >]
 class ProgressionType(Enum):
+    """
+    Defines how levels should be unlocked throughout the game..
+    """
+
     # Seaside Resort is unlocked at value 0, so starting unlocked levels are 1 less than actually represented.
     SINGLES =       [1 for _ in range(31)]
     BOSS =          [2, 1, 4, 1, 3, 1, 4, 1, 3, 1, 2, 1, 1, 1]

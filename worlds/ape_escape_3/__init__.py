@@ -4,11 +4,11 @@ from BaseClasses import MultiWorld, Tutorial
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 
-from .data.Strings import Meta, APHelper, APConsole
+from .data.Items import AE3Item, Channel_Key, ProgressionType, generate_collectables
+from .data.Strings import Loc, Meta, APHelper, APConsole
 from .AE3_Options import AE3Options
 from .Regions import create_regions
 from .data import Items, Locations
-from .data.Items import AE3Item, ProgressionType, generate_collectables
 
 
 # Identifier for Archipelago to recognize and run the client
@@ -115,7 +115,10 @@ class AE3World(World):
 
         # Add Archipelago Items
         progression : ProgressionType = ProgressionType.get_progression_type(self.options.progression_type.value)
-        self.item_pool += progression.generate_keys(self.player)
+        self.item_pool += progression.generate_keys(self.player, 1)
+
+        ## Manually Set Items
+        self.get_location(Loc.boss_monkey_white.value).place_locked_item(Channel_Key.to_item(self.player))
 
         # Fill remaining locations with Collectables
         unfilled : int = len(self.multiworld.get_unfilled_locations()) - len(self.item_pool)
