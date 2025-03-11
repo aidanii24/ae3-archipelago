@@ -83,6 +83,7 @@ Seaside_Tomezo = MonkeyLocation(Loc.seaside_tomezo.value)
 Seaside_Kamayan = MonkeyLocation(Loc.seaside_kamayan.value)
 Seaside_Taizo = MonkeyLocation(Loc.seaside_taizo.value)
 
+# Woods
 Woods_Ukki_Pon = MonkeyLocation(Loc.woods_ukki_pon.value)
 Woods_Ukkian = MonkeyLocation(Loc.woods_ukkian.value)
 Woods_Ukki_Red = MonkeyLocation(Loc.woods_ukki_red.value)
@@ -99,7 +100,27 @@ Woods_Marukichi = MonkeyLocation(Loc.woods_marukichi.value)
 Woods_Kikimon = MonkeyLocation(Loc.woods_kikimon.value)
 Woods_Kominato = MonkeyLocation(Loc.woods_kominato.value)
 
-# Woods
+# Castle
+Castle_Ukkido = MonkeyLocation(Loc.castle_ukkido.value)
+Castle_Pipo_Guard = MonkeyLocation(Loc.castle_pipo_guard.value)
+Castle_Monderella = MonkeyLocation(Loc.castle_monderella.value)
+Castle_Ukki_Ichi = MonkeyLocation(Loc.castle_ukki_ichi.value)
+Castle_Ukkinee = MonkeyLocation(Loc.castle_ukkinee.value)
+Castle_Saru_Mon = MonkeyLocation(Loc.castle_saru_mon.value)
+Castle_Monga = MonkeyLocation(Loc.castle_monga.value,
+                              AccessRule.SHOOT, AccessRule.GLIDE)
+Castle_Ukkiton = MonkeyLocation(Loc.castle_ukkiton.value)
+Castle_King_Leo = MonkeyLocation(Loc.castle_king_leo.value)
+Castle_Ukkii = MonkeyLocation(Loc.castle_ukkii.value)
+Castle_Saluto = MonkeyLocation(Loc.castle_saluto.value)
+Castle_Kings_Double = MonkeyLocation(Loc.castle_kings_double.value)
+Castle_Mattsun = MonkeyLocation(Loc.castle_mattsun.value)
+Castle_Miya = MonkeyLocation(Loc.castle_miya.value)
+Castle_Mon_San = MonkeyLocation(Loc.castle_mon_san.value)
+Castle_SAL_1000 = MonkeyLocation(Loc.castle_sal_1000.value)
+
+## Monkey White Battle!
+Boss_Monkey_White = MonkeyLocation(Loc.boss_monkey_white.value)
 
 ### [< --- LOCATION GROUPS --- >]
 SEASIDE_MONKEYS : Sequence[MonkeyLocation] = [
@@ -113,8 +134,18 @@ WOODS_MONKEYS : Sequence[MonkeyLocation] = [
     Woods_Kominato
 ]
 
+CASTLE_MONKEYS : Sequence[MonkeyLocation] = [
+    Castle_Ukkido, Castle_Pipo_Guard, Castle_Monderella, Castle_Ukki_Ichi, Castle_Ukkinee, Castle_Saru_Mon,
+    Castle_Monga, Castle_Ukkiton, Castle_King_Leo, Castle_Ukkii, Castle_Saluto, Castle_Kings_Double,
+    Castle_Mattsun, Castle_Miya, Castle_Mon_San, Castle_SAL_1000
+]
+
+BOSS_MONKEYS : Sequence[MonkeyLocation] = [
+    Boss_Monkey_White
+]
+
 MONKEYS : Sequence[MonkeyLocation] = [
-    Zero_Ukki_Pan, *SEASIDE_MONKEYS, *WOODS_MONKEYS
+    Zero_Ukki_Pan, *SEASIDE_MONKEYS, *WOODS_MONKEYS, *CASTLE_MONKEYS, *BOSS_MONKEYS
 ]
 
 MASTER : Sequence[AE3LocationMeta] = [
@@ -122,7 +153,7 @@ MASTER : Sequence[AE3LocationMeta] = [
 ]
 
 INDEX : Sequence[Sequence] = [
-    MASTER, MONKEYS, SEASIDE_MONKEYS
+    MASTER, MONKEYS, SEASIDE_MONKEYS, WOODS_MONKEYS, CASTLE_MONKEYS, BOSS_MONKEYS
 ]
 
 ### [< --- METHODS --- >]

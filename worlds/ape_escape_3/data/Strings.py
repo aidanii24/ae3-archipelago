@@ -104,6 +104,27 @@ class Loc(BaseEnum):
     woods_kikimon               = "Kikimon"
     woods_kominato              = "Kominato"
 
+    ## Castle
+    castle_ukkido               = "Ukkido"
+    castle_pipo_guard           = "Pipo Guard"
+    castle_monderella           = "Monderella"
+    castle_ukki_ichi            = "Ukki-ichi"
+    castle_ukkinee              = "Ukkinee"
+    castle_saru_mon             = "Saru-mon"
+    castle_monga                = "Monga"
+    castle_ukkiton              = "Ukkiton"
+    castle_king_leo             = "King Leo"
+    castle_ukkii                = "Ukkii"
+    castle_saluto               = "Saluto"
+    castle_kings_double         = "King's Double"
+    castle_mattsun              = "Mattsun"
+    castle_miya                 = "Miya"
+    castle_mon_san              = "Mon San"
+    castle_sal_1000             = "SAL-1000"
+
+    ## Monkey White Battle!
+    boss_monkey_white           = "Monkey White"
+
 class Stage(BaseEnum):
     """Strings for the various stages of Ape Escape 3. This refers to the names of all the rooms in the game."""
 
@@ -126,6 +147,16 @@ class Stage(BaseEnum):
     woods_b =                   "Hide-n-Seek Forest - Hills"
     woods_c =                   "Hide-n-Seek Forest - Cabin"
     woods_d =                   "Hide-n-Seek Forest - Break Room"
+
+    castle =                    "Saru-mon's Castle"
+    castle_a =                  "Saru-mon's Castle - Gates"
+    castle_b =                  "Saru-mon's Castle - Courtyard"
+    castle_c =                  "Saru-mon's Castle - Ballroom"
+    castle_d =                  "Saru-mon's Castle - Dungeon"
+    castle_e =                  "Saru-mon's Castle - Break Room"
+    castle_f =                  "Saru-mon's Castle - Arena"
+
+    boss1_a =                   "Monkey White Battle!"
 
 class Game(BaseEnum):
     # Player

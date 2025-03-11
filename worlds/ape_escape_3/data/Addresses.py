@@ -108,36 +108,58 @@ class NTSCU(VersionAddresses):
         # <!> Values are on/off between 0x00 and 0x01 respectively unless commented otherwise.
 
         ## TV Station/Zero
-        Loc.zero_ukki_pan.value     : 0x649b4e,
+        Loc.zero_ukki_pan.value         : 0x649b4e,
 
         ## Seaside Resort
-        Loc.seaside_nessal.value    : 0x6499dd,
-        Loc.seaside_ukki_pia.value  : 0x6499de,
-        Loc.seaside_sarubo.value    : 0x6499df,
-        Loc.seaside_salurin.value   : 0x6499e0,
-        Loc.seaside_ukkitan.value   : 0x649b4f,
-        Loc.seaside_morella.value   : 0x649b99,
-        Loc.seaside_ukki_ben.value  : 0x6499e1,
-        Loc.seaside_kankichi.value  : 0x649b5e,
-        Loc.seaside_tomezo.value    : 0x649b5f,
-        Loc.seaside_kamayan.value   : 0x649b60,
-        Loc.seaside_taizo.value     : 0x649b61,
+        Loc.seaside_nessal.value        : 0x6499dd,
+        Loc.seaside_ukki_pia.value      : 0x6499de,
+        Loc.seaside_sarubo.value        : 0x6499df,
+        Loc.seaside_salurin.value       : 0x6499e0,
+        Loc.seaside_ukkitan.value       : 0x649b4f,
+        Loc.seaside_morella.value       : 0x649b99,
+        Loc.seaside_ukki_ben.value      : 0x6499e1,
+        Loc.seaside_kankichi.value      : 0x649b5e,
+        Loc.seaside_tomezo.value        : 0x649b5f,
+        Loc.seaside_kamayan.value       : 0x649b60,
+        Loc.seaside_taizo.value         : 0x649b61,
 
-        Loc.woods_ukki_pon.value    : 0x6499e2,
-        Loc.woods_ukkian.value      : 0x6499e3,
-        Loc.woods_ukki_red.value    : 0x6499e4,
-        Loc.woods_rosalin.value     : 0x649b4b,
-        Loc.woods_salubon.value     : 0x6499e5,
-        Loc.woods_wolfmon.value     : 0x6499e6,
-        Loc.woods_ukiko.value       : 0x649be8,
-        Loc.woods_lambymon.value    : 0x6499e7,
-        Loc.woods_kreemon.value     : 0x6499e8,
-        Loc.woods_ukkilei.value     : 0x6499e9,
-        Loc.woods_spork.value       : 0x649be7,
-        Loc.woods_king_goat.value   : 0x649b62,
-        Loc.woods_marukichi.value   : 0x649b63,
-        Loc.woods_kikimon.value     : 0x649b64,
-        Loc.woods_kominato.value    : 0x649b65
+        ## Hide-n-Seek Forest
+        Loc.woods_ukki_pon.value        : 0x6499e2,
+        Loc.woods_ukkian.value          : 0x6499e3,
+        Loc.woods_ukki_red.value        : 0x6499e4,
+        Loc.woods_rosalin.value         : 0x649b4b,
+        Loc.woods_salubon.value         : 0x6499e5,
+        Loc.woods_wolfmon.value         : 0x6499e6,
+        Loc.woods_ukiko.value           : 0x649be8,
+        Loc.woods_lambymon.value        : 0x6499e7,
+        Loc.woods_kreemon.value         : 0x6499e8,
+        Loc.woods_ukkilei.value         : 0x6499e9,
+        Loc.woods_spork.value           : 0x649be7,
+        Loc.woods_king_goat.value       : 0x649b62,
+        Loc.woods_marukichi.value       : 0x649b63,
+        Loc.woods_kikimon.value         : 0x649b64,
+        Loc.woods_kominato.value        : 0x649b65,
+
+        ## Saru-mon's Castle
+        Loc.castle_ukkido.value         : 0x6499ea,
+        Loc.castle_pipo_guard.value     : 0x6499eb,
+        Loc.castle_monderella.value     : 0x6499ec,
+        Loc.castle_ukki_ichi.value      : 0x6499ed,
+        Loc.castle_ukkinee.value        : 0x6499ee,
+        Loc.castle_saru_mon.value       : 0x6499ef,
+        Loc.castle_monga.value          : 0x6499f0,
+        Loc.castle_ukkiton.value        : 0x6499f1,
+        Loc.castle_king_leo.value       : 0x6499f2,
+        Loc.castle_ukkii.value          : 0x6499f3,
+        Loc.castle_saluto.value         : 0x6499f4,
+        Loc.castle_kings_double.value   : 0x649b68,
+        Loc.castle_mattsun.value        : 0x649b69,
+        Loc.castle_miya.value           : 0x649b6a,
+        Loc.castle_mon_san.value        : 0x649b6b,
+        Loc.castle_sal_1000.value       : 0x649be4,
+
+        ## Monkey White Battle!
+        Loc.boss_monkey_white.value     : 0x649b40
     }
 
     GameStates: Dict[str, int] = {

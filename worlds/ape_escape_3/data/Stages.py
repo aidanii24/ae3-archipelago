@@ -92,6 +92,15 @@ To_Woods_B = StageEntranceMeta(Stage.woods_b.value)
 To_Woods_C = StageEntranceMeta(Stage.woods_c.value)
 To_Woods_D = StageEntranceMeta(Stage.woods_d.value, AccessRule.MONKEY)
 
+To_Castle_A = StageEntranceMeta(Stage.castle_a.value)
+To_Castle_B = StageEntranceMeta(Stage.castle_b.value)
+To_Castle_C = StageEntranceMeta(Stage.castle_c.value)
+To_Castle_D = StageEntranceMeta(Stage.castle_d.value)
+To_Castle_E = StageEntranceMeta(Stage.castle_e.value, AccessRule.MONKEY)
+To_Castle_F = StageEntranceMeta(Stage.castle_f.value)
+
+To_Boss1 = StageEntranceMeta(Stage.boss1_a.value)
+
 ### [< --- STAGES --- >]
 
 # Menu
@@ -101,7 +110,7 @@ Title_Screen = AE3StageMeta(Stage.title_screen.value,
 # Hub
 Travel_Station_A = AE3StageMeta(Stage.travel_station_a.value,
                                 [To_Travel_Station_B,
-                                 To_Seaside_A, To_Woods_A])
+                                 To_Seaside_A, To_Woods_A, To_Castle_A, To_Boss1])
 Travel_Station_B = AE3StageMeta(Stage.travel_station_b.value)
 
 # Zero
@@ -131,6 +140,27 @@ Woods_C = AE3StageMeta(Stage.woods_c.value, None,
 Woods_D = AE3StageMeta(Stage.woods_d.value, None,
                        [Woods_King_Goat, Woods_Marukichi, Woods_Kikimon, Woods_Kominato])
 
+# Castle
+Castle_A = AE3StageMeta(Stage.castle_a.value,
+                        [To_Castle_D],
+                        [Castle_Ukkido])
+Castle_B = AE3StageMeta(Stage.castle_b.value,
+                        [To_Castle_A, To_Castle_C, To_Castle_E],
+                        [Castle_Pipo_Guard, Castle_Monderella, Castle_Ukki_Ichi, Castle_Ukkinee])
+Castle_C = AE3StageMeta(Stage.castle_c.value, None,
+                        [Castle_Saru_Mon, Castle_Monga, Castle_Ukkiton, Castle_King_Leo])
+Castle_D = AE3StageMeta(Stage.castle_d.value,
+                        [To_Castle_B],
+                        [Castle_Ukkii, Castle_Saluto])
+Castle_E = AE3StageMeta(Stage.castle_e.value,
+                        [To_Castle_F],
+                        [Castle_Kings_Double, Castle_Mattsun, Castle_Miya, Castle_Mon_San])
+Castle_F = AE3StageMeta(Stage.castle_f.value, None,
+                        [Castle_SAL_1000])
+
+# Monkey White Battle!
+Boss1 = AE3StageMeta(Stage.boss1_a.value, None, [Boss_Monkey_White])
+
 ### [< --- STAGE GROUPS --- >]
 HUB : Sequence[AE3StageMeta] = [
     Travel_Station_A, Travel_Station_B
@@ -144,10 +174,18 @@ WOODS : Sequence[AE3StageMeta] = [
     Woods_A, Woods_B, Woods_C, Woods_D
 ]
 
+CASTLE : Sequence[AE3StageMeta] = [
+    Castle_A, Castle_B, Castle_C, Castle_D, Castle_E, Castle_F
+]
+
+BOSS : Sequence[AE3StageMeta] = [
+    Boss1
+]
+
 MASTER : Sequence[AE3StageMeta] = [
-    Title_Screen, Zero, *HUB, *SEASIDE, *WOODS
+    Title_Screen, Zero, *HUB, *SEASIDE, *WOODS, *CASTLE, *BOSS
 ]
 
 INDEX : Sequence[Sequence] = [
-    MASTER, HUB, SEASIDE, WOODS
+    MASTER, HUB, SEASIDE, WOODS, CASTLE, BOSS
 ]
