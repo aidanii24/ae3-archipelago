@@ -177,8 +177,6 @@ Channel_Key = ArchipelagoItem(APHelper.channel_key.value)
 Victory = ArchipelagoItem(APHelper.victory.value)
 
 ### [< --- ITEM GROUPS --- >]
-
-
 GADGETS : Sequence[EquipmentItem] = [
     Gadget_Swim, Gadget_Club, Gadget_Net, Gadget_Radar, Gadget_Hoop, Gadget_Sling, Gadget_RCC, Gadget_Fly
 ]
@@ -203,12 +201,16 @@ COLLECTABLES : Sequence[CollectableItem] = [
     Nothing, Cookie, Cookie_Giant, Jacket, Chip_1x, Chip_5x, Chip_10x, Energy, Energy_Mega, Ammo_Boom, Ammo_Homing
 ]
 
+ARCHIPELAGO : Sequence[ArchipelagoItem] = [
+    Channel_Key, Victory
+]
+
 MASTER : Sequence[AE3ItemMeta] = [
-    *GADGETS, *MORPHS, *ACCESSORIES, *UPGRADEABLES, *COLLECTABLES
+    *GADGETS, *MORPHS, *ACCESSORIES, *UPGRADEABLES, *COLLECTABLES, *ARCHIPELAGO
 ]
 
 INDEX : Sequence[Sequence] = [
-    MASTER, GADGETS, MORPHS, EQUIPMENT, ACCESSORIES, UPGRADEABLES, COLLECTABLES
+    MASTER, GADGETS, MORPHS, EQUIPMENT, ACCESSORIES, UPGRADEABLES, COLLECTABLES, ARCHIPELAGO
 ]
 
 ### [< --- ITEM DATA HELPERS --- >]

@@ -203,8 +203,8 @@ class NTSCU(VersionAddresses):
     }
 
 AP : dict[str, int] = {
-    APHelper.channel_key.value      : 0x698298,
-    APHelper.victory.value          : 0x73ff2c
+    APHelper.channel_key.value      : 0x100,
+    APHelper.victory.value          : 0x500
 }
 
 def get_version_addresses(game_id : str) -> VersionAddresses | None:
