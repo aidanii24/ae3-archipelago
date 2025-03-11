@@ -53,6 +53,13 @@ def can_genie(state : CollectionState, player : int):
 def can_monkey(state : CollectionState, player : int):
     return state.has(Itm.morph_monkey.value, player)
 
+# Channel Key Checks
+def has_enough_keys(state : CollectionState, player : int, keys : int):
+    return state.has(APHelper.channel_key.value, player, keys)
+
+def has_keys(keys : int):
+    return lambda state, player : has_enough_keys(state, player, keys=keys)
+
 ### [< --- WRAPPER SHORTHAND --- >]
 class AccessRule:
     """

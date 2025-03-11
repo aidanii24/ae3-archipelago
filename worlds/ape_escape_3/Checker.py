@@ -51,7 +51,7 @@ async def check_items(ctx : 'AE3Context'):
         ## Handle Archipelago Items
         if isinstance(item, ArchipelagoItem):
             # Add Key Count and unlock levels accordingly
-            if item.address == AP[APHelper.channel_key.value]:
+            if item.item_id == AP[APHelper.channel_key.value]:
                 ctx.keys += 1
                 ctx.unlocked_stages = ctx.progression.get_current_progress(ctx.keys)
 

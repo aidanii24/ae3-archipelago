@@ -8,7 +8,7 @@ from .data.Strings import Meta, APHelper, APConsole
 from .AE3_Options import AE3Options
 from .Regions import create_regions
 from .data import Items, Locations
-from .data.Items import AE3Item, generate_collectables
+from .data.Items import AE3Item, ProgressionType, generate_collectables
 
 
 # Identifier for Archipelago to recognize and run the client
@@ -114,6 +114,8 @@ class AE3World(World):
         self.item_pool += Items.Acc_Morph_Stock.to_items(self.player)
 
         # Add Archipelago Items
+        progression : ProgressionType = ProgressionType.get_progression_type(self.options.progression_type.value)
+        self.item_pool += progression.generate_keys(self.player)
 
         # Fill remaining locations with Collectables
         unfilled : int = len(self.multiworld.get_unfilled_locations()) - len(self.item_pool)

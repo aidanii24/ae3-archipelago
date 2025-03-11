@@ -1,3 +1,4 @@
+from .Logic import has_keys
 from .Strings import Stage
 from .Locations import *
 
@@ -99,7 +100,7 @@ To_Castle_D = StageEntranceMeta(Stage.castle_d.value)
 To_Castle_E = StageEntranceMeta(Stage.castle_e.value, AccessRule.MONKEY)
 To_Castle_F = StageEntranceMeta(Stage.castle_f.value)
 
-To_Boss1 = StageEntranceMeta(Stage.boss1_a.value)
+To_Boss1 = StageEntranceMeta(Stage.boss1_a.value, has_keys(1))
 
 ### [< --- STAGES --- >]
 
