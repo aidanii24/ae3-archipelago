@@ -221,6 +221,7 @@ class APConsole:
         client_ver =    " Client v0.3a"
         world_ver =     " World v0.3b"
 
+        p_check =       " [|?|] Confirming PCSX2 Status..."
         p_init =        " [...] Starting PINE Interface. Connecting to PCSX2..."
         p_init_g =      " [...] Confirming Running Game..."
         p_init_s =      " [...] Connecting to an Archipelago Server..."
@@ -228,6 +229,7 @@ class APConsole:
 
         init =          " [-/-] Successfully connected to PCSX2"
         init_game =     " [-/-] Connected to Ape Escape 3!"
+        exit =          " [-/-] Disconnected from PCSX2."
 
     class Err(BaseEnum):
         sym =           " [!!!]"

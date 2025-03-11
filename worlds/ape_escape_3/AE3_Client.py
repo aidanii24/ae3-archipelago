@@ -19,7 +19,8 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
     def _cmd_status(self):
         if isinstance(self.ctx, AE3Context):
-            logger.info(f"PCSX2 Status: {'Connected' if self.ctx.is_connected else 'Disconnected'}")
+            logger.info(f"{APConsole.Info.p_check.value}"
+                        f"{APConsole.Info.init.value if self.ctx.is_connected else APConsole.Info.exit.value}")
 
 class AE3Context(CommonContext):
     # Feature/Refactor Release : Patch/Minor Release : Minor Patch Release
