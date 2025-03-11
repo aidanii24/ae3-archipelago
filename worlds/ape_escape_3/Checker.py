@@ -2,10 +2,10 @@ from typing import TYPE_CHECKING, Set, List
 
 from NetUtils import NetworkItem
 
-from .data.Items import EquipmentItem, CollectableItem, UpgradeableItem
-from .data.Addresses import NTSCU
+from .data.Items import ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem
+from .data.Strings import Game, Itm, APHelper
+from .data.Addresses import NTSCU, AP
 from .data.Locations import MONKEYS
-from .data.Strings import Game, Itm
 from .data import Items
 
 if TYPE_CHECKING:
@@ -48,8 +48,15 @@ async def check_items(ctx : 'AE3Context'):
         item = Items.from_id(server_item.item)
 
         # Handle Item depending on category
+        ## Handle Archipelago Items
+        if isinstance(item, ArchipelagoItem):
+            # Add Key Count and unlock levels accordingly
+            if item.address == AP[APHelper.channel_key.value]:
+                ctx.keys += 1
+                ctx.unlocked_stages = ctx.progression.get_current_progress(ctx.keys)
+
         ## Unlock Morphs and Gadgets
-        if isinstance(item, EquipmentItem):
+        elif isinstance(item, EquipmentItem):
             ctx.ipc.unlock_equipment(item.name, auto_equip)
 
             if not ctx.has_morph_monkey and item.address == NTSCU.Items[Itm.morph_monkey.value]:

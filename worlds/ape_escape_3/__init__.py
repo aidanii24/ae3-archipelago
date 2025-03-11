@@ -113,6 +113,8 @@ class AE3World(World):
         # Add Upgradeables
         self.item_pool += Items.Acc_Morph_Stock.to_items(self.player)
 
+        # Add Archipelago Items
+
         # Fill remaining locations with Collectables
         unfilled : int = len(self.multiworld.get_unfilled_locations()) - len(self.item_pool)
         self.item_pool += generate_collectables(self.player, unfilled)

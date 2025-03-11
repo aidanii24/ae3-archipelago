@@ -220,6 +220,9 @@ class ProgressionType(Enum):
     BOSS =          [2, 1, 4, 1, 3, 1, 4, 1, 3, 1, 2, 1, 1, 1]
     BOSS_INCL =     [3, 5, 4, 5, 4, 3, 1, 1]
 
+    def generate_keys(self, player : int) -> list[AE3Item]:
+        return Channel_Key.to_items(player, len(self.value))
+
     def get_current_progress(self, keys : int):
         unlocks : int = 0
         for i, unlocked in enumerate(self.value):
