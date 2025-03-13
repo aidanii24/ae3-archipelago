@@ -122,6 +122,92 @@ Castle_SAL_1000 = MonkeyLocation(Loc.castle_sal_1000.value)
 ## Monkey White Battle!
 Boss_Monkey_White = MonkeyLocation(Loc.boss_monkey_white.value)
 
+## The Big City
+Ciscocity_Ukima = MonkeyLocation(Loc.ciscocity_ukima.value)
+Ciscocity_Monbolo = MonkeyLocation(Loc.ciscocity_monbolo.value)
+Ciscocity_Pipo_Mondy = MonkeyLocation(Loc.ciscocity_pipo_mondy.value)
+Ciscocity_Ukki_Mattan = MonkeyLocation(Loc.ciscocity_ukki_mattan.value)
+Ciscocity_Bemucho = MonkeyLocation(Loc.ciscocity_bemucho.value)
+Ciscocity_Ukki_Nader = MonkeyLocation(Loc.ciscocity_ukki_nader.value)
+Ciscocity_Sabu_Sabu = MonkeyLocation(Loc.ciscocity_sabu_sabu.value)
+Ciscocity_Ginjiro = MonkeyLocation(Loc.ciscocity_ginjiro.value)
+Ciscocity_Kichiemon = MonkeyLocation(Loc.ciscocity_kichiemon.value)
+Ciscocity_Ukkilun = MonkeyLocation(Loc.ciscocity_ukkilun.value)
+Ciscocity_Bully_Mon = MonkeyLocation(Loc.ciscocity_bully_mon.value)
+Ciscocity_Ukki_Joe = MonkeyLocation(Loc.ciscocity_ukki_joe.value)
+Ciscocity_Tamaki = MonkeyLocation(Loc.ciscocity_tamaki.value)
+Ciscocity_Mickey_Oou = MonkeyLocation(Loc.ciscocity_mickey_oou.value)
+Ciscocity_Sally_Kokoroe = MonkeyLocation(Loc.ciscocity_sally_kokoroe.value)
+Ciscocity_Monkey_Manager = MonkeyLocation(Loc.ciscocity_monkey_manager.value)
+Ciscocity_Supervisor_Chimp = MonkeyLocation(Loc.ciscocity_supervisor_chimp.value)
+Ciscocity_Boss_Ape = MonkeyLocation(Loc.ciscocity_boss_ape.value)
+
+## Specter TV Studio
+Studio_Ukki_Yan = MonkeyLocation(Loc.studio_ukki_yan.value)
+Studio_Ukkipuss = MonkeyLocation(Loc.studio_ukkipuss.value)
+Studio_Minoh = MonkeyLocation(Loc.studio_minoh.value)
+Studio_Monta = MonkeyLocation(Loc.studio_monta.value)
+Studio_Pipopam = MonkeyLocation(Loc.studio_pipopam.value)
+Studio_Monpii_Ukkichi = MonkeyLocation(Loc.studio_monpii_ukkichi.value)
+Studio_Gabimon = MonkeyLocation(Loc.studio_gabimon.value)
+Studio_Bananamon = MonkeyLocation(Loc.studio_bananamon.value)
+Studio_Mokinza = MonkeyLocation(Loc.studio_mokinza.value)
+Studio_Ukki_Lee_Ukki = MonkeyLocation(Loc.studio_ukki_lee_ukki.value)
+Studio_Ukkida_Jiro = MonkeyLocation(Loc.studio_ukkida_jiro.value)
+Studio_Sal_Ukindo = MonkeyLocation(Loc.studio_sal_ukindo.value)
+Studio_Gimminey = MonkeyLocation(Loc.studio_gimminey.value)
+Studio_Hant = MonkeyLocation(Loc.studio_hant.value)
+Studio_Chippino = MonkeyLocation(Loc.studio_chippino.value)
+Studio_Ukki_Paul = MonkeyLocation(Loc.studio_ukki_paul.value)
+Studio_Sally_Mon = MonkeyLocation(Loc.studio_sally_mon.value)
+Studio_Bonly = MonkeyLocation(Loc.studio_bonly.value)
+Studio_Monly = MonkeyLocation(Loc.studio_monly.value)
+
+## Bootown
+Halloween_Monkichiro = MonkeyLocation(Loc.halloween_monkichiro.value)
+Halloween_Leomon = MonkeyLocation(Loc.halloween_leomon.value)
+Halloween_Uikkun = MonkeyLocation(Loc.halloween_uikkun.value)
+Halloween_Take_Ukita = MonkeyLocation(Loc.halloween_take_ukita.value)
+Halloween_Bonbon = MonkeyLocation(Loc.halloween_bonbon.value)
+Halloween_Chichi = MonkeyLocation(Loc.halloween_chichi.value)
+Halloween_Ukkisuke = MonkeyLocation(Loc.halloween_ukkisuke.value)
+Halloween_Chibi_Sally = MonkeyLocation(Loc.halloween_chibi_sally.value)
+Halloween_Ukkison = MonkeyLocation(Loc.halloween_ukkison.value)
+Halloween_Saruhotep = MonkeyLocation(Loc.halloween_saruhotep.value)
+Halloween_Ukkito = MonkeyLocation(Loc.halloween_ukkito.value)
+Halloween_Monzally = MonkeyLocation(Loc.halloween_monzally.value)
+Halloween_Ukkiami = MonkeyLocation(Loc.halloween_ukkiami.value)
+Halloween_Monjan = MonkeyLocation(Loc.halloween_monjan.value)
+Halloween_Nattchan = MonkeyLocation(Loc.halloween_nattchan.value)
+Halloween_Kabochin = MonkeyLocation(Loc.halloween_kabochin.value)
+Halloween_Ukki_Mon = MonkeyLocation(Loc.halloween_ukki_mon.value)
+Halloween_Mumpkin = MonkeyLocation(Loc.halloween_mumpkin.value)
+
+## Wild West Town
+Western_Morrey = MonkeyLocation(Loc.western_morrey.value)
+Western_Jomi = MonkeyLocation(Loc.western_jomi.value)
+Western_Tammy = MonkeyLocation(Loc.western_tammy.value)
+Western_Ukki_Gigolo = MonkeyLocation(Loc.western_ukki_gigolo.value)
+Western_Monboron = MonkeyLocation(Loc.western_monboron.value)
+Western_West_Ukki = MonkeyLocation(Loc.western_west_ukki.value)
+Western_Lucky_Woo = MonkeyLocation(Loc.western_lucky_woo.value)
+Western_Pamela = MonkeyLocation(Loc.western_pamela.value)
+Western_Ukki_Monber = MonkeyLocation(Loc.western_ukki_monber.value)
+Western_Gaukichi = MonkeyLocation(Loc.western_gaukichi.value)
+Western_Shaluron = MonkeyLocation(Loc.western_shaluron.value)
+Western_Jay_Mohn = MonkeyLocation(Loc.western_jay_mohn.value)
+Western_Munkee_Joe = MonkeyLocation(Loc.western_munkee_joe.value)
+Western_Saru_Chison = MonkeyLocation(Loc.western_saru_chison.value)
+Western_Jaja_Jamo = MonkeyLocation(Loc.western_jaja_jamo.value)
+Western_Chammy_Mo = MonkeyLocation(Loc.western_chammy_mo.value)
+Western_Golon_Moe = MonkeyLocation(Loc.western_golon_moe.value)
+Western_Golozo = MonkeyLocation(Loc.western_golozo.value)
+Western_Ukkia_Munbo = MonkeyLocation(Loc.western_ukkia_munbo.value)
+Western_Mon_Johny = MonkeyLocation(Loc.western_mon_johny.value)
+
+## Monkey Blue Battle!
+Boss_Monkey_Blue = MonkeyLocation(Loc.boss_monkey_blue.value)
+
 ### [< --- LOCATION GROUPS --- >]
 SEASIDE_MONKEYS : Sequence[MonkeyLocation] = [
     Seaside_Nessal, Seaside_Ukki_Pia, Seaside_Sarubo, Seaside_Salurin, Seaside_Ukkitan, Seaside_Morella,
@@ -140,12 +226,41 @@ CASTLE_MONKEYS : Sequence[MonkeyLocation] = [
     Castle_Mattsun, Castle_Miya, Castle_Mon_San, Castle_SAL_1000
 ]
 
+CISCOCITY_MONKEYS : Sequence[MonkeyLocation] = [
+    Ciscocity_Ukima, Ciscocity_Monbolo, Ciscocity_Pipo_Mondy, Ciscocity_Ukki_Mattan, Ciscocity_Bemucho,
+    Ciscocity_Ukki_Nader, Ciscocity_Sabu_Sabu, Ciscocity_Ginjiro, Ciscocity_Kichiemon, Ciscocity_Ukkilun,
+    Ciscocity_Bully_Mon, Ciscocity_Ukki_Joe, Ciscocity_Tamaki, Ciscocity_Mickey_Oou, Ciscocity_Sally_Kokoroe,
+    Ciscocity_Monkey_Manager, Ciscocity_Supervisor_Chimp, Ciscocity_Boss_Ape
+]
+
+STUDIO_MONKEYS : Sequence[MonkeyLocation] = [
+    Studio_Ukki_Yan, Studio_Ukkipuss, Studio_Minoh, Studio_Monta, Studio_Pipopam, Studio_Monpii_Ukkichi,
+    Studio_Gabimon, Studio_Bananamon, Studio_Mokinza, Studio_Bananamon, Studio_Ukki_Lee_Ukki, Studio_Ukkida_Jiro,
+    Studio_Sal_Ukindo, Studio_Gimminey, Studio_Hant, Studio_Chippino, Studio_Ukki_Paul, Studio_Sally_Mon,
+    Studio_Bonly, Studio_Monly
+]
+
+HALLOWEEN_MONKEYS : Sequence[MonkeyLocation] = [
+    Halloween_Monkichiro, Halloween_Leomon, Halloween_Uikkun, Halloween_Take_Ukita, Halloween_Bonbon, Halloween_Chichi,
+    Halloween_Ukkisuke, Halloween_Chibi_Sally, Halloween_Ukkison, Halloween_Saruhotep, Halloween_Ukkito,
+    Halloween_Monzally, Halloween_Ukkiami, Halloween_Monjan, Halloween_Nattchan, Halloween_Kabochin, Halloween_Ukki_Mon,
+    Halloween_Mumpkin
+]
+
+WESTERN_MONKEYS : Sequence[MonkeyLocation] = [
+    Western_Morrey, Western_Jomi, Western_Tammy, Western_Ukki_Gigolo, Western_Monboron, Western_West_Ukki,
+    Western_Lucky_Woo, Western_Pamela, Western_Ukki_Monber, Western_Gaukichi, Western_Shaluron, Western_Jay_Mohn,
+    Western_Munkee_Joe, Western_Saru_Chison, Western_Jaja_Jamo, Western_Chammy_Mo, Western_Golon_Moe, Western_Golozo,
+    Western_Ukkia_Munbo, Western_Mon_Johny
+]
+
 BOSS_MONKEYS : Sequence[MonkeyLocation] = [
-    Boss_Monkey_White
+    Boss_Monkey_White, Boss_Monkey_Blue
 ]
 
 MONKEYS : Sequence[MonkeyLocation] = [
-    Zero_Ukki_Pan, *SEASIDE_MONKEYS, *WOODS_MONKEYS, *CASTLE_MONKEYS, *BOSS_MONKEYS
+    Zero_Ukki_Pan, *SEASIDE_MONKEYS, *WOODS_MONKEYS, *CASTLE_MONKEYS, *CISCOCITY_MONKEYS, *STUDIO_MONKEYS,
+    *HALLOWEEN_MONKEYS, *WESTERN_MONKEYS, *BOSS_MONKEYS
 ]
 
 MASTER : Sequence[AE3LocationMeta] = [
@@ -153,7 +268,8 @@ MASTER : Sequence[AE3LocationMeta] = [
 ]
 
 INDEX : Sequence[Sequence] = [
-    MASTER, MONKEYS, SEASIDE_MONKEYS, WOODS_MONKEYS, CASTLE_MONKEYS, BOSS_MONKEYS
+    MASTER, MONKEYS, SEASIDE_MONKEYS, WOODS_MONKEYS, CASTLE_MONKEYS, CISCOCITY_MONKEYS, STUDIO_MONKEYS,
+    HALLOWEEN_MONKEYS, WESTERN_MONKEYS, BOSS_MONKEYS
 ]
 
 ### [< --- METHODS --- >]

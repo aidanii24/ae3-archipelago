@@ -19,12 +19,23 @@ def can_morph(state : CollectionState, player : int):
 def can_morph_not_monkey(state : CollectionState, player : int):
     return state.has(APHelper.morphs_no_monkey.value, player)
 
+# Check if player has the ability to move fast
+def can_dash(state : CollectionState, player : int):
+    return (state.has(Itm.gadget_hoop.value, player) or
+
+            state.has(Itm.morph_ninja.value, player) or
+            state.has(Itm.morph_hero.value, player))
+
 ## Check if Player can use long-ranged attacks
 def can_shoot(state : CollectionState, player : int):
     return (state.has(Itm.gadget_sling.value, player) or
 
             state.has(Itm.morph_cowboy.value, player) or
             state.has(Itm.morph_hero.value, player))
+
+## Check if Player has Water Net
+def can_swim(state : CollectionState, player : int):
+    return state.has(Itm.gadget_swim.value, player)
 
 ## Check if Player can fly (can gain height)
 def can_fly(state : CollectionState, player : int):
@@ -50,6 +61,9 @@ def can_rcc(state : CollectionState, player : int):
 def can_genie(state : CollectionState, player : int):
     return state.has(Itm.morph_magician.value, player)
 
+def can_hero(state : CollectionState, player : int):
+    return state.has(Itm.morph_hero.value, player)
+
 def can_monkey(state : CollectionState, player : int):
     return state.has(Itm.morph_monkey.value, player)
 
@@ -70,7 +84,9 @@ class AccessRule:
     CATCH = can_catch                           # Monkey Net unlocked or any Morph that can Catch Monkeys
     MORPH = can_morph
     MORPH_NO_MONKEY = can_morph_not_monkey      # Unlocked any morph that is not Super Monkey
+    DASH = can_dash                             # Unlocked Super Hoop or any fast moving Morph
     SHOOT = can_shoot                           # Slingback Shooter unlocked or has any morph with long range attacks
+    SWIM = can_swim
     FLY = can_fly                               # Sky Flyer unlocked or has any morph that can fly (gain height)
     GLIDE = can_glide                           # Sky Flyer unlocked or has any morph that can glide
 
@@ -80,6 +96,7 @@ class AccessRule:
 
     # Morph
     GENIE = can_genie
+    HERO = can_hero
     MONKEY = can_monkey
 
     # Glitches

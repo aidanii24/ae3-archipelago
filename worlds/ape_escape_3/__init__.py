@@ -115,10 +115,11 @@ class AE3World(World):
 
         # Add Archipelago Items
         progression : ProgressionType = ProgressionType.get_progression_type(self.options.progression_type.value)
-        self.item_pool += progression.generate_keys(self.player, 1)
+        self.item_pool += progression.generate_keys(self.player, 2)
 
         ## Manually Set Items
         self.get_location(Loc.boss_monkey_white.value).place_locked_item(Channel_Key.to_item(self.player))
+        self.get_location(Loc.boss_monkey_blue.value).place_locked_item(Channel_Key.to_item(self.player))
 
         # Fill remaining locations with Collectables
         unfilled : int = len(self.multiworld.get_unfilled_locations()) - len(self.item_pool)

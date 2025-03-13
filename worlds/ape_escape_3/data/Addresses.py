@@ -233,7 +233,7 @@ class NTSCU(VersionAddresses):
         Loc.western_lucky_woo.value             : 0x649b78,
         Loc.western_pamela.value                : 0x649b79,
         Loc.western_ukki_monber.value           : 0x649b7a,
-        Loc.western_gaukchi.value               : 0x649b7b,
+        Loc.western_gaukichi.value               : 0x649b7b,
         Loc.western_shaluron.value              : 0x649a20,
         Loc.western_jay_mohn.value              : 0x649a21,
         Loc.western_munkee_joe.value            : 0x649a22,

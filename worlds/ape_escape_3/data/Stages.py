@@ -93,6 +93,7 @@ To_Woods_B = StageEntranceMeta(Stage.woods_b.value)
 To_Woods_C = StageEntranceMeta(Stage.woods_c.value)
 To_Woods_D = StageEntranceMeta(Stage.woods_d.value, AccessRule.MONKEY)
 
+# Castle
 To_Castle_A = StageEntranceMeta(Stage.castle_a.value)
 To_Castle_B = StageEntranceMeta(Stage.castle_b.value)
 To_Castle_C = StageEntranceMeta(Stage.castle_c.value)
@@ -100,7 +101,45 @@ To_Castle_D = StageEntranceMeta(Stage.castle_d.value)
 To_Castle_E = StageEntranceMeta(Stage.castle_e.value, AccessRule.MONKEY)
 To_Castle_F = StageEntranceMeta(Stage.castle_f.value)
 
+# Monkey White Battle!
 To_Boss1 = StageEntranceMeta(Stage.boss1.value, has_keys(1))
+
+# Ciscocity
+To_Ciscocity_A = StageEntranceMeta(Stage.ciscocity_a.value, has_keys(2))
+To_Ciscocity_B = StageEntranceMeta(Stage.ciscocity_b.value)
+To_Ciscocity_C = StageEntranceMeta(Stage.ciscocity_c.value)
+To_Ciscocity_D = StageEntranceMeta(Stage.ciscocity_d.value, AccessRule.DASH, AccessRule.RCC)
+To_Ciscocity_E = StageEntranceMeta(Stage.ciscocity_e.value, AccessRule.MONKEY)
+
+# Studio
+To_Studio_A = StageEntranceMeta(Stage.studio_a.value, AccessRule.SWIM, AccessRule.HERO)
+To_Studio_A.rules.Critical.add(has_keys(2))
+To_Studio_A_From_D = StageEntranceMeta(Stage.studio_a.value, AccessRule.SHOOT)
+To_Studio_B = StageEntranceMeta(Stage.studio_b.value)
+To_Studio_C = StageEntranceMeta(Stage.studio_c.value)
+To_Studio_D = StageEntranceMeta(Stage.studio_d.value)
+To_Studio_E = StageEntranceMeta(Stage.studio_e.value)
+To_Studio_F = StageEntranceMeta(Stage.studio_f.value)
+To_Studio_G = StageEntranceMeta(Stage.studio_g.value, AccessRule.MONKEY)
+
+# Halloween
+To_Halloween_A = StageEntranceMeta(Stage.halloween_a.value, has_keys(2))
+To_Halloween_B = StageEntranceMeta(Stage.halloween_b.value)
+To_Halloween_C = StageEntranceMeta(Stage.halloween_c.value)
+To_Halloween_D = StageEntranceMeta(Stage.halloween_d.value)
+To_Halloween_E = StageEntranceMeta(Stage.halloween_e.value, AccessRule.MONKEY)
+To_Halloween_F = StageEntranceMeta(Stage.halloween_f.value)
+
+# Western
+To_Western_A = StageEntranceMeta(Stage.western_a.value, has_keys(2))
+To_Western_B = StageEntranceMeta(Stage.western_b.value)
+To_Western_C = StageEntranceMeta(Stage.western_c.value, AccessRule.MONKEY)
+To_Western_D = StageEntranceMeta(Stage.western_d.value)
+To_Western_E = StageEntranceMeta(Stage.western_e.value)
+To_Western_F = StageEntranceMeta(Stage.western_f.value)
+
+# Monkey Blue Battle!
+To_Boss2 = StageEntranceMeta(Stage.boss2.value, has_keys(3))
 
 ### [< --- STAGES --- >]
 
@@ -111,7 +150,8 @@ Title_Screen = AE3StageMeta(Stage.title_screen.value,
 # Hub
 Travel_Station_A = AE3StageMeta(Stage.travel_station_a.value,
                                 [To_Travel_Station_B,
-                                 To_Seaside_A, To_Woods_A, To_Castle_A, To_Boss1])
+                                 To_Seaside_A, To_Woods_A, To_Castle_A, To_Boss1, To_Ciscocity_A, To_Studio_A,
+                                 To_Halloween_A, To_Western_A, To_Boss2])
 Travel_Station_B = AE3StageMeta(Stage.travel_station_b.value)
 
 # Zero
@@ -162,6 +202,85 @@ Castle_F = AE3StageMeta(Stage.castle_f.value, None,
 # Monkey White Battle!
 Boss1 = AE3StageMeta(Stage.boss1.value, None, [Boss_Monkey_White])
 
+# Ciscocity
+Ciscocity_A = AE3StageMeta(Stage.ciscocity_a.value,
+                           [To_Ciscocity_B, To_Ciscocity_C, To_Ciscocity_D],
+                           [Ciscocity_Ukima, Ciscocity_Monbolo, Ciscocity_Pipo_Mondy, Ciscocity_Ukki_Mattan,
+                            Ciscocity_Bemucho, Ciscocity_Ukki_Nader])
+Ciscocity_B = AE3StageMeta(Stage.ciscocity_b.value, None,
+                           [Ciscocity_Sabu_Sabu, Ciscocity_Ginjiro, Ciscocity_Kichiemon])
+Ciscocity_C = AE3StageMeta(Stage.ciscocity_c.value,
+                           [To_Ciscocity_E],
+                           [Ciscocity_Ukkilun])
+Ciscocity_D = AE3StageMeta(Stage.ciscocity_d.value, None,
+                           [Ciscocity_Bully_Mon, Ciscocity_Ukki_Joe, Ciscocity_Tamaki, Ciscocity_Mickey_Oou])
+Ciscocity_E = AE3StageMeta(Stage.ciscocity_e.value, None,
+                           [Ciscocity_Sally_Kokoroe, Ciscocity_Monkey_Manager, Ciscocity_Supervisor_Chimp,
+                            Ciscocity_Boss_Ape])
+
+# Studio
+Studio_A = AE3StageMeta(Stage.studio_a.value,
+                        [To_Studio_B, To_Studio_E],
+                        [Studio_Ukki_Yan])
+Studio_B = AE3StageMeta(Stage.studio_b.value,
+                        [To_Studio_F],
+                        [Studio_Ukkipuss, Studio_Minoh, Studio_Monta])
+Studio_C = AE3StageMeta(Stage.studio_c.value,
+                        [To_Studio_A],
+                        [Studio_Pipopam, Studio_Monpii_Ukkichi, Studio_Gabimon])
+Studio_D = AE3StageMeta(Stage.studio_d.value,
+                        [To_Studio_A_From_D, To_Studio_G],
+                        [Studio_Bananamon, Studio_Mokinza])
+Studio_E = AE3StageMeta(Stage.studio_e.value,
+                        [To_Studio_C],
+                        [Studio_Ukki_Lee_Ukki, Studio_Ukkida_Jiro, Studio_Sal_Ukindo])
+Studio_F = AE3StageMeta(Stage.studio_f.value,
+                        [To_Studio_D],
+                        [Studio_Gimminey, Studio_Hant, Studio_Chippino])
+Studio_G = AE3StageMeta(Stage.studio_d.value, None,
+                        [Studio_Ukki_Paul, Studio_Sally_Mon, Studio_Bonly, Studio_Monly])
+
+# Halloween
+Halloween_A = AE3StageMeta(Stage.halloween_a.value,
+                           [To_Halloween_B],
+                           [Halloween_Monkichiro, Halloween_Leomon, Halloween_Uikkun,Halloween_Take_Ukita])
+Halloween_B = AE3StageMeta(Stage.halloween_b.value,
+                           [To_Halloween_F],
+                           [Halloween_Bonbon, Halloween_Chichi])
+Halloween_C = AE3StageMeta(Stage.halloween_c.value,
+                           [To_Halloween_D],
+                           [Halloween_Ukkisuke, Halloween_Chibi_Sally, Halloween_Ukkison])
+Halloween_D = AE3StageMeta(Stage.halloween_d.value,
+                           [To_Halloween_E],
+                           [Halloween_Saruhotep, Halloween_Ukkito, Halloween_Monzally, Halloween_Ukkiami])
+Halloween_E = AE3StageMeta(Stage.halloween_e.value, None,
+                           [Halloween_Monjan, Halloween_Nattchan, Halloween_Kabochin, Halloween_Ukki_Mon])
+Halloween_F = AE3StageMeta(Stage.halloween_f.value,
+                           [To_Halloween_C],
+                           [Halloween_Mumpkin])
+
+# Western
+Western_A = AE3StageMeta(Stage.western_a.value,
+                         [To_Western_B, To_Western_F],
+                         [Western_Morrey, Western_Jomi, Western_Tammy])
+Western_B = AE3StageMeta(Stage.western_b.value, None,
+                         [Western_Ukki_Gigolo, Western_Monboron, Western_West_Ukki])
+Western_C = AE3StageMeta(Stage.western_c.value, None,
+                         [Western_Lucky_Woo, Western_Pamela, Western_Ukki_Monber, Western_Gaukichi])
+Western_D = AE3StageMeta(Stage.western_d.value,
+                         [To_Western_E],
+                         [Western_Shaluron, Western_Jay_Mohn, Western_Munkee_Joe, Western_Saru_Chison,
+                          Western_Jaja_Jamo])
+Western_E = AE3StageMeta(Stage.western_e.value,
+                         [To_Western_A, To_Western_C],
+                         [Western_Chammy_Mo, Western_Golon_Moe, Western_Golozo])
+Western_F = AE3StageMeta(Stage.western_f.value,
+                         [To_Western_D],
+                         [Western_Ukkia_Munbo, Western_Mon_Johny])
+
+# Monkey Blue Battle!
+Boss2 = AE3StageMeta(Stage.boss2.value, None, [Boss_Monkey_Blue])
+
 ### [< --- STAGE GROUPS --- >]
 HUB : Sequence[AE3StageMeta] = [
     Travel_Station_A, Travel_Station_B
@@ -179,14 +298,30 @@ CASTLE : Sequence[AE3StageMeta] = [
     Castle_A, Castle_B, Castle_C, Castle_D, Castle_E, Castle_F
 ]
 
+CISCOCITY : Sequence[AE3StageMeta] = [
+    Ciscocity_A, Ciscocity_B, Ciscocity_C, Ciscocity_D, Ciscocity_E
+]
+
+STUDIO : Sequence[AE3StageMeta] = [
+    Studio_A, Studio_B, Studio_C, Studio_D, Studio_E, Studio_F, Studio_G
+]
+
+HALLOWEEN : Sequence[AE3StageMeta] = [
+    Halloween_A, Halloween_B, Halloween_C, Halloween_D, Halloween_E, Halloween_F
+]
+
+WESTERN : Sequence[AE3StageMeta] = [
+    Western_A, Western_B, Western_C, Western_D, Western_E, Western_F
+]
+
 BOSS : Sequence[AE3StageMeta] = [
-    Boss1
+    Boss1, Boss2
 ]
 
 MASTER : Sequence[AE3StageMeta] = [
-    Title_Screen, Zero, *HUB, *SEASIDE, *WOODS, *CASTLE, *BOSS
+    Title_Screen, Zero, *HUB, *SEASIDE, *WOODS, *CASTLE, *CISCOCITY, *STUDIO, *HALLOWEEN, *WESTERN, *BOSS
 ]
 
 INDEX : Sequence[Sequence] = [
-    MASTER, HUB, SEASIDE, WOODS, CASTLE, BOSS
+    MASTER, HUB, SEASIDE, WOODS, CASTLE, CISCOCITY, STUDIO, HALLOWEEN, WESTERN, BOSS
 ]
