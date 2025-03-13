@@ -100,7 +100,7 @@ To_Castle_D = StageEntranceMeta(Stage.castle_d.value)
 To_Castle_E = StageEntranceMeta(Stage.castle_e.value, AccessRule.MONKEY)
 To_Castle_F = StageEntranceMeta(Stage.castle_f.value)
 
-To_Boss1 = StageEntranceMeta(Stage.boss1_a.value, has_keys(1))
+To_Boss1 = StageEntranceMeta(Stage.boss1.value, has_keys(1))
 
 ### [< --- STAGES --- >]
 
@@ -160,7 +160,7 @@ Castle_F = AE3StageMeta(Stage.castle_f.value, None,
                         [Castle_SAL_1000])
 
 # Monkey White Battle!
-Boss1 = AE3StageMeta(Stage.boss1_a.value, None, [Boss_Monkey_White])
+Boss1 = AE3StageMeta(Stage.boss1.value, None, [Boss_Monkey_White])
 
 ### [< --- STAGE GROUPS --- >]
 HUB : Sequence[AE3StageMeta] = [
