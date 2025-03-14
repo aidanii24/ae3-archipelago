@@ -141,6 +141,27 @@ To_Western_F = StageEntranceMeta(Stage.western_f.value)
 # Monkey Blue Battle!
 To_Boss2 = StageEntranceMeta(Stage.boss2.value, has_keys(3))
 
+
+
+### Stage Table
+stage_data : dict[str : list[str]] = {
+    # Menu
+    Stage.title_screen.value                : [],
+
+    # Hub
+    Stage.travel_station_a.value            : [],
+    Stage.travel_station_b.value            : [],
+
+    # Zero
+    Stage.zero.value                        : [Loc.zero_ukki_pan],
+
+    # Seaside
+    Stage.seaside_a.value                   : [Loc.seaside_nessal.value, Loc.seaside_ukki_pia, Loc.seaside_sarubo,
+                                               Loc.seaside_salurin, Loc.seaside_ukkitan, Loc.seaside_morella]
+}
+
+
+
 ### [< --- STAGES --- >]
 
 # Menu
