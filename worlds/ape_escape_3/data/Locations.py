@@ -85,44 +85,44 @@ class MonkeyLocation(AE3LocationMeta):
 # Seaside_Kamayan = MonkeyLocation(Loc.seaside_kamayan.value)
 # Seaside_Taizo = MonkeyLocation(Loc.seaside_taizo.value)
 
-# Woods
-Woods_Ukki_Pon = MonkeyLocation(Loc.woods_ukki_pon.value)
-Woods_Ukkian = MonkeyLocation(Loc.woods_ukkian.value)
-Woods_Ukki_Red = MonkeyLocation(Loc.woods_ukki_red.value)
-Woods_Rosalin = MonkeyLocation(Loc.woods_rosalin.value)
-Woods_Salubon = MonkeyLocation(Loc.woods_salubon.value)
-Woods_Wolfmon = MonkeyLocation(Loc.woods_wolfmon.value)
-Woods_Ukiko = MonkeyLocation(Loc.woods_ukiko.value)
-Woods_Lambymon = MonkeyLocation(Loc.woods_lambymon.value)
-Woods_Kreemon = MonkeyLocation(Loc.woods_kreemon.value)
-Woods_Ukkilei = MonkeyLocation(Loc.woods_ukkilei.value)
-Woods_Spork = MonkeyLocation(Loc.woods_spork.value)
-Woods_King_Goat = MonkeyLocation(Loc.woods_king_goat.value)
-Woods_Marukichi = MonkeyLocation(Loc.woods_marukichi.value)
-Woods_Kikimon = MonkeyLocation(Loc.woods_kikimon.value)
-Woods_Kominato = MonkeyLocation(Loc.woods_kominato.value)
-
-# Castle
-Castle_Ukkido = MonkeyLocation(Loc.castle_ukkido.value)
-Castle_Pipo_Guard = MonkeyLocation(Loc.castle_pipo_guard.value)
-Castle_Monderella = MonkeyLocation(Loc.castle_monderella.value)
-Castle_Ukki_Ichi = MonkeyLocation(Loc.castle_ukki_ichi.value)
-Castle_Ukkinee = MonkeyLocation(Loc.castle_ukkinee.value)
-Castle_Saru_Mon = MonkeyLocation(Loc.castle_saru_mon.value)
-Castle_Monga = MonkeyLocation(Loc.castle_monga.value,
-                              AccessRule.SHOOT, AccessRule.GLIDE)
-Castle_Ukkiton = MonkeyLocation(Loc.castle_ukkiton.value)
-Castle_King_Leo = MonkeyLocation(Loc.castle_king_leo.value)
-Castle_Ukkii = MonkeyLocation(Loc.castle_ukkii.value)
-Castle_Saluto = MonkeyLocation(Loc.castle_saluto.value)
-Castle_Kings_Double = MonkeyLocation(Loc.castle_kings_double.value)
-Castle_Mattsun = MonkeyLocation(Loc.castle_mattsun.value)
-Castle_Miya = MonkeyLocation(Loc.castle_miya.value)
-Castle_Mon_San = MonkeyLocation(Loc.castle_mon_san.value)
-Castle_SAL_1000 = MonkeyLocation(Loc.castle_sal_1000.value)
-
-## Monkey White Battle!
-Boss_Monkey_White = MonkeyLocation(Loc.boss_monkey_white.value)
+# # Woods
+# Woods_Ukki_Pon = MonkeyLocation(Loc.woods_ukki_pon.value)
+# Woods_Ukkian = MonkeyLocation(Loc.woods_ukkian.value)
+# Woods_Ukki_Red = MonkeyLocation(Loc.woods_ukki_red.value)
+# Woods_Rosalin = MonkeyLocation(Loc.woods_rosalin.value)
+# Woods_Salubon = MonkeyLocation(Loc.woods_salubon.value)
+# Woods_Wolfmon = MonkeyLocation(Loc.woods_wolfmon.value)
+# Woods_Ukiko = MonkeyLocation(Loc.woods_ukiko.value)
+# Woods_Lambymon = MonkeyLocation(Loc.woods_lambymon.value)
+# Woods_Kreemon = MonkeyLocation(Loc.woods_kreemon.value)
+# Woods_Ukkilei = MonkeyLocation(Loc.woods_ukkilei.value)
+# Woods_Spork = MonkeyLocation(Loc.woods_spork.value)
+# Woods_King_Goat = MonkeyLocation(Loc.woods_king_goat.value)
+# Woods_Marukichi = MonkeyLocation(Loc.woods_marukichi.value)
+# Woods_Kikimon = MonkeyLocation(Loc.woods_kikimon.value)
+# Woods_Kominato = MonkeyLocation(Loc.woods_kominato.value)
+#
+# # Castle
+# Castle_Ukkido = MonkeyLocation(Loc.castle_ukkido.value)
+# Castle_Pipo_Guard = MonkeyLocation(Loc.castle_pipo_guard.value)
+# Castle_Monderella = MonkeyLocation(Loc.castle_monderella.value)
+# Castle_Ukki_Ichi = MonkeyLocation(Loc.castle_ukki_ichi.value)
+# Castle_Ukkinee = MonkeyLocation(Loc.castle_ukkinee.value)
+# Castle_Saru_Mon = MonkeyLocation(Loc.castle_saru_mon.value)
+# Castle_Monga = MonkeyLocation(Loc.castle_monga.value,
+#                               AccessRule.SHOOT, AccessRule.GLIDE)
+# Castle_Ukkiton = MonkeyLocation(Loc.castle_ukkiton.value)
+# Castle_King_Leo = MonkeyLocation(Loc.castle_king_leo.value)
+# Castle_Ukkii = MonkeyLocation(Loc.castle_ukkii.value)
+# Castle_Saluto = MonkeyLocation(Loc.castle_saluto.value)
+# Castle_Kings_Double = MonkeyLocation(Loc.castle_kings_double.value)
+# Castle_Mattsun = MonkeyLocation(Loc.castle_mattsun.value)
+# Castle_Miya = MonkeyLocation(Loc.castle_miya.value)
+# Castle_Mon_San = MonkeyLocation(Loc.castle_mon_san.value)
+# Castle_SAL_1000 = MonkeyLocation(Loc.castle_sal_1000.value)
+#
+# ## Monkey White Battle!
+# Boss_Monkey_White = MonkeyLocation(Loc.boss_monkey_white.value)
 
 ## The Big City
 Ciscocity_Ukima = MonkeyLocation(Loc.ciscocity_ukima.value)
@@ -215,18 +215,18 @@ Boss_Monkey_Blue = MonkeyLocation(Loc.boss_monkey_blue.value)
 #     Seaside_Nessal, Seaside_Ukki_Pia, Seaside_Sarubo, Seaside_Salurin, Seaside_Ukkitan, Seaside_Morella,
 #     Seaside_Ukki_Ben, Seaside_Kankichi, Seaside_Tomezo, Seaside_Kamayan, Seaside_Taizo
 # ]
-
-WOODS_MONKEYS : Sequence[MonkeyLocation] = [
-    Woods_Ukki_Pon, Woods_Ukkian, Woods_Ukki_Red, Woods_Rosalin, Woods_Salubon, Woods_Wolfmon, Woods_Ukiko,
-    Woods_Lambymon, Woods_Kreemon, Woods_Ukkilei, Woods_Spork, Woods_King_Goat, Woods_Marukichi, Woods_Kikimon,
-    Woods_Kominato
-]
-
-CASTLE_MONKEYS : Sequence[MonkeyLocation] = [
-    Castle_Ukkido, Castle_Pipo_Guard, Castle_Monderella, Castle_Ukki_Ichi, Castle_Ukkinee, Castle_Saru_Mon,
-    Castle_Monga, Castle_Ukkiton, Castle_King_Leo, Castle_Ukkii, Castle_Saluto, Castle_Kings_Double,
-    Castle_Mattsun, Castle_Miya, Castle_Mon_San, Castle_SAL_1000
-]
+#
+# WOODS_MONKEYS : Sequence[MonkeyLocation] = [
+#     Woods_Ukki_Pon, Woods_Ukkian, Woods_Ukki_Red, Woods_Rosalin, Woods_Salubon, Woods_Wolfmon, Woods_Ukiko,
+#     Woods_Lambymon, Woods_Kreemon, Woods_Ukkilei, Woods_Spork, Woods_King_Goat, Woods_Marukichi, Woods_Kikimon,
+#     Woods_Kominato
+# ]
+#
+# CASTLE_MONKEYS : Sequence[MonkeyLocation] = [
+#     Castle_Ukkido, Castle_Pipo_Guard, Castle_Monderella, Castle_Ukki_Ichi, Castle_Ukkinee, Castle_Saru_Mon,
+#     Castle_Monga, Castle_Ukkiton, Castle_King_Leo, Castle_Ukkii, Castle_Saluto, Castle_Kings_Double,
+#     Castle_Mattsun, Castle_Miya, Castle_Mon_San, Castle_SAL_1000
+# ]
 
 CISCOCITY_MONKEYS : Sequence[MonkeyLocation] = [
     Ciscocity_Ukima, Ciscocity_Monbolo, Ciscocity_Pipo_Mondy, Ciscocity_Ukki_Mattan, Ciscocity_Bemucho,
@@ -256,9 +256,9 @@ WESTERN_MONKEYS : Sequence[MonkeyLocation] = [
     Western_Ukkia_Munbo, Western_Mon_Johny
 ]
 
-BOSS_MONKEYS : Sequence[MonkeyLocation] = [
-    Boss_Monkey_White, Boss_Monkey_Blue
-]
+# BOSS_MONKEYS : Sequence[MonkeyLocation] = [
+#     Boss_Monkey_White, Boss_Monkey_Blue
+# ]
 
 # MONKEYS : Sequence[MonkeyLocation] = [
 #     Zero_Ukki_Pan, *SEASIDE_MONKEYS, *WOODS_MONKEYS, *CASTLE_MONKEYS, *CISCOCITY_MONKEYS, *STUDIO_MONKEYS,
@@ -283,10 +283,13 @@ BOSS_MONKEYS : Sequence[MonkeyLocation] = [
 
 
 ### [< --- STAGE GROUPS --- >]
+
+# Zero
 MONKEYS_ZERO : Sequence[str] = [
     Loc.zero_ukki_pan.value
 ]
 
+# Seaside
 MONKEYS_SEASIDE_A : Sequence[str] = [
     Loc.seaside_nessal.value, Loc.seaside_ukki_pia.value, Loc.seaside_sarubo.value, Loc.seaside_salurin.value,
     Loc.seaside_ukkitan.value, Loc.seaside_morella.value
@@ -304,17 +307,94 @@ MONKEYS_SEASIDE : Sequence[str] = [
     *MONKEYS_SEASIDE_A, *MONKEYS_SEASIDE_B, *MONKEYS_SEASIDE_C
 ]
 
+# Woods
+MONKEYS_WOODS_A : Sequence[str] = [
+    Loc.woods_ukki_pon.value, Loc.woods_ukkian.value, Loc.woods_ukki_red.value, Loc.woods_rosalin.value
+]
+
+MONKEYS_WOODS_B : Sequence[str] = [
+    Loc.woods_salubon.value, Loc.woods_wolfmon.value, Loc.woods_ukiko.value
+]
+
+MONKEYS_WOODS_C : Sequence[str] = [
+    Loc.woods_lambymon.value, Loc.woods_kreemon.value, Loc.woods_ukkilei.value, Loc.woods_spork.value
+]
+
+MONKEYS_WOODS_D : Sequence[str] = [
+    Loc.woods_king_goat.value, Loc.woods_marukichi.value, Loc.woods_kikimon.value, Loc.woods_kominato.value
+]
+
+MONKEYS_WOODS : Sequence[str] = [
+    *MONKEYS_WOODS_A, *MONKEYS_WOODS_B, *MONKEYS_WOODS_C, *MONKEYS_WOODS_D
+]
+
+# Castle
+MONKEYS_CASTLE_A : Sequence[str] = [
+    Loc.castle_ukkido.value
+]
+
+MONKEYS_CASTLE_B : Sequence[str] = [
+    Loc.castle_pipo_guard.value, Loc.castle_monderella.value, Loc.castle_ukki_ichi.value, Loc.castle_ukkinee.value
+]
+
+MONKEYS_CASTLE_C : Sequence[str] = [
+    Loc.castle_saru_mon.value, Loc.castle_monga.value, Loc.castle_ukkiton.value, Loc.castle_king_leo.value
+]
+
+MONKEYS_CASTLE_D : Sequence[str] = [
+    Loc.castle_ukkii.value, Loc.castle_saluto.value
+]
+
+MONKEYS_CASTLE_E : Sequence[str] = [
+    Loc.castle_kings_double.value, Loc.castle_mattsun.value, Loc.castle_miya.value, Loc.castle_mon_san.value
+]
+
+MONKEYS_CASTLE_F : Sequence[str] = [
+    Loc.castle_sal_1000.value
+]
+
+MONKEYS_CASTLE : Sequence[str] = [
+    *MONKEYS_CASTLE_A, *MONKEYS_CASTLE_B, *MONKEYS_CASTLE_C, *MONKEYS_CASTLE_D, *MONKEYS_CASTLE_E, *MONKEYS_CASTLE_F
+]
+
+# Boss1
+MONKEYS_BOSS1 : Sequence[str] = [ Loc.boss_monkey_white.value ]
+
+MONKEYS_BOSSES : Sequence[str] = [
+    *MONKEYS_BOSS1
+]
+
 MONKEYS_MASTER : Sequence[str] = [
-    *MONKEYS_ZERO, *MONKEYS_SEASIDE
+    *MONKEYS_ZERO, *MONKEYS_SEASIDE, *MONKEYS_WOODS, *MONKEYS_CASTLE, *MONKEYS_BOSSES
 ]
 
 MONKEYS_INDEX : dict[str, Sequence] = {
+    # Zero
     Stage.zero.value            : MONKEYS_ZERO,
+
+    # Seaside
     Stage.seaside_a.value       : MONKEYS_SEASIDE_A,
     Stage.seaside_b.value       : MONKEYS_SEASIDE_B,
-    Stage.seaside_c.value       : MONKEYS_SEASIDE_C
+    Stage.seaside_c.value       : MONKEYS_SEASIDE_C,
+
+    # Woods
+    Stage.woods_a.value         : MONKEYS_WOODS_A,
+    Stage.woods_b.value         : MONKEYS_WOODS_B,
+    Stage.woods_c.value         : MONKEYS_WOODS_C,
+    Stage.woods_d.value         : MONKEYS_WOODS_D,
+
+    # Castle
+    Stage.castle_a.value        : MONKEYS_CASTLE_A,
+    Stage.castle_b.value        : MONKEYS_CASTLE_B,
+    Stage.castle_c.value        : MONKEYS_CASTLE_C,
+    Stage.castle_d.value        : MONKEYS_CASTLE_D,
+    Stage.castle_e.value        : MONKEYS_CASTLE_E,
+    Stage.castle_f.value        : MONKEYS_CASTLE_F,
+
+    # Boss1
+    Stage.boss1.value           : MONKEYS_BOSS1
 }
 
 # TODO - Rename this
 def generate_name_to_id() -> dict[str, int]:
-    return { name : MonkeyLocation(name).loc_id for name in MONKEYS_MASTER}
+    return { name : MonkeyLocation(name).loc_id for name in MONKEYS_MASTER }

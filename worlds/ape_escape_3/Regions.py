@@ -105,8 +105,9 @@ def create_regions(world : "AE3World"):
 
         # Connect Regions
         connections : dict[Region, Rulesets] = {}
-        for entrance in rule.entrances[stage.name]:
-            connections.setdefault(stages[entrance.destination], entrance.rules)
+        if rule.entrances[stage.name]:
+            for entrance in rule.entrances[stage.name]:
+                connections.setdefault(stages[entrance.destination], entrance.rules)
 
         if connections:
             establish_entrances(world.player, stage, connections)

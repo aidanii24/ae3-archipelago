@@ -48,7 +48,7 @@ class AE3World(World):
 
     # Initialize Randomizer Options
     options_dataclass = AE3Options
-    options : AE3Options                    # Purely for Type Hints; not logically significant
+    options : AE3Options
 
     # Define the Items and Locations to/for Archipelago
     item_name_to_id = Items.generate_name_to_id()
@@ -101,7 +101,7 @@ class AE3World(World):
         self.multiworld.push_precollected(monkey_net)
 
         self.item_pool += gadgets
-        self.item_pool += [cowboy, ninja, magician, kungfu, hero, monkey]
+        self.item_pool += [knight, cowboy, ninja, magician, kungfu, hero, monkey]
 
         if self.options.shuffle_chassis:
             chassis_twin = Items.Chassis_Twin.to_item(self.player)
@@ -111,19 +111,19 @@ class AE3World(World):
             self.item_pool += [chassis_twin, chassis_pudding, chassis_black]
 
         # Add Upgradeables
-        #self.item_pool += Items.Acc_Morph_Stock.to_items(self.player)
+        self.item_pool += Items.Acc_Morph_Stock.to_items(self.player)
 
         # Add Archipelago Items
-        #progression : ProgressionType = ProgressionType.get_progression_type(self.options.progression_type.value)
-        #self.item_pool += progression.generate_keys(self.player, 2)
+        progression : ProgressionType = ProgressionType.get_progression_type(self.options.progression_type.value)
+        self.item_pool += progression.generate_keys(self.player, 2)
 
-        ## Manually Set Items
-        #self.get_location(Loc.boss_monkey_white.value).place_locked_item(Channel_Key.to_item(self.player))
+        # Manually Set Items
+        self.get_location(Loc.boss_monkey_white.value).place_locked_item(Channel_Key.to_item(self.player))
         #self.get_location(Loc.boss_monkey_blue.value).place_locked_item(Channel_Key.to_item(self.player))
 
         # Fill remaining locations with Collectables
-        #unfilled : int = len(self.multiworld.get_unfilled_locations()) - len(self.item_pool)
-        #self.item_pool += generate_collectables(self.player, unfilled)
+        unfilled : int = len(self.multiworld.get_unfilled_locations()) - len(self.item_pool)
+        self.item_pool += generate_collectables(self.player, unfilled)
 
         # Add Items to ItemPool
         self.multiworld.itempool = self.item_pool

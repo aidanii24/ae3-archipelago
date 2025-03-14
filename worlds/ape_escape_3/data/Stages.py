@@ -189,38 +189,38 @@ Travel_Station_B = AE3StageMeta(Stage.travel_station_b.value)
 # Seaside_C = AE3StageMeta(Stage.seaside_c.value, None,
 #                          [Seaside_Kankichi, Seaside_Tomezo, Seaside_Kamayan, Seaside_Taizo])
 
-# Woods
-Woods_A = AE3StageMeta(Stage.woods_a.value,
-                       [To_Woods_B, To_Woods_D],
-                       [Woods_Ukki_Pon, Woods_Ukkian, Woods_Ukki_Red, Woods_Rosalin])
-Woods_B = AE3StageMeta(Stage.woods_b.value,
-                       [To_Woods_C],
-                       [Woods_Salubon, Woods_Wolfmon, Woods_Ukiko])
-Woods_C = AE3StageMeta(Stage.woods_c.value, None,
-                       [Woods_Lambymon, Woods_Kreemon, Woods_Ukkilei, Woods_Spork])
-Woods_D = AE3StageMeta(Stage.woods_d.value, None,
-                       [Woods_King_Goat, Woods_Marukichi, Woods_Kikimon, Woods_Kominato])
-
-# Castle
-Castle_A = AE3StageMeta(Stage.castle_a.value,
-                        [To_Castle_D],
-                        [Castle_Ukkido])
-Castle_B = AE3StageMeta(Stage.castle_b.value,
-                        [To_Castle_A, To_Castle_C, To_Castle_E],
-                        [Castle_Pipo_Guard, Castle_Monderella, Castle_Ukki_Ichi, Castle_Ukkinee])
-Castle_C = AE3StageMeta(Stage.castle_c.value, None,
-                        [Castle_Saru_Mon, Castle_Monga, Castle_Ukkiton, Castle_King_Leo])
-Castle_D = AE3StageMeta(Stage.castle_d.value,
-                        [To_Castle_B],
-                        [Castle_Ukkii, Castle_Saluto])
-Castle_E = AE3StageMeta(Stage.castle_e.value,
-                        [To_Castle_F],
-                        [Castle_Kings_Double, Castle_Mattsun, Castle_Miya, Castle_Mon_San])
-Castle_F = AE3StageMeta(Stage.castle_f.value, None,
-                        [Castle_SAL_1000])
-
-# Monkey White Battle!
-Boss1 = AE3StageMeta(Stage.boss1.value, None, [Boss_Monkey_White])
+# # Woods
+# Woods_A = AE3StageMeta(Stage.woods_a.value,
+#                        [To_Woods_B, To_Woods_D],
+#                        [Woods_Ukki_Pon, Woods_Ukkian, Woods_Ukki_Red, Woods_Rosalin])
+# Woods_B = AE3StageMeta(Stage.woods_b.value,
+#                        [To_Woods_C],
+#                        [Woods_Salubon, Woods_Wolfmon, Woods_Ukiko])
+# Woods_C = AE3StageMeta(Stage.woods_c.value, None,
+#                        [Woods_Lambymon, Woods_Kreemon, Woods_Ukkilei, Woods_Spork])
+# Woods_D = AE3StageMeta(Stage.woods_d.value, None,
+#                        [Woods_King_Goat, Woods_Marukichi, Woods_Kikimon, Woods_Kominato])
+#
+# # Castle
+# Castle_A = AE3StageMeta(Stage.castle_a.value,
+#                         [To_Castle_D],
+#                         [Castle_Ukkido])
+# Castle_B = AE3StageMeta(Stage.castle_b.value,
+#                         [To_Castle_A, To_Castle_C, To_Castle_E],
+#                         [Castle_Pipo_Guard, Castle_Monderella, Castle_Ukki_Ichi, Castle_Ukkinee])
+# Castle_C = AE3StageMeta(Stage.castle_c.value, None,
+#                         [Castle_Saru_Mon, Castle_Monga, Castle_Ukkiton, Castle_King_Leo])
+# Castle_D = AE3StageMeta(Stage.castle_d.value,
+#                         [To_Castle_B],
+#                         [Castle_Ukkii, Castle_Saluto])
+# Castle_E = AE3StageMeta(Stage.castle_e.value,
+#                         [To_Castle_F],
+#                         [Castle_Kings_Double, Castle_Mattsun, Castle_Miya, Castle_Mon_San])
+# Castle_F = AE3StageMeta(Stage.castle_f.value, None,
+#                         [Castle_SAL_1000])
+#
+# # Monkey White Battle!
+# Boss1 = AE3StageMeta(Stage.boss1.value, None, [Boss_Monkey_White])
 
 # Ciscocity
 Ciscocity_A = AE3StageMeta(Stage.ciscocity_a.value,
@@ -302,21 +302,21 @@ Western_F = AE3StageMeta(Stage.western_f.value,
 Boss2 = AE3StageMeta(Stage.boss2.value, None, [Boss_Monkey_Blue])
 
 ### [< --- STAGE GROUPS --- >]
-HUB : Sequence[AE3StageMeta] = [
-    Travel_Station_A, Travel_Station_B
-]
+# HUB : Sequence[AE3StageMeta] = [
+#     Travel_Station_A, Travel_Station_B
+#]
 
 # SEASIDE : Sequence[AE3StageMeta] = [
 #     Seaside_A, Seaside_B, Seaside_C
 # ]
 
-WOODS : Sequence[AE3StageMeta] = [
-    Woods_A, Woods_B, Woods_C, Woods_D
-]
-
-CASTLE : Sequence[AE3StageMeta] = [
-    Castle_A, Castle_B, Castle_C, Castle_D, Castle_E, Castle_F
-]
+# WOODS : Sequence[AE3StageMeta] = [
+#     Woods_A, Woods_B, Woods_C, Woods_D
+# ]
+#
+# CASTLE : Sequence[AE3StageMeta] = [
+#     Castle_A, Castle_B, Castle_C, Castle_D, Castle_E, Castle_F
+# ]
 
 CISCOCITY : Sequence[AE3StageMeta] = [
     Ciscocity_A, Ciscocity_B, Ciscocity_C, Ciscocity_D, Ciscocity_E
@@ -334,9 +334,9 @@ WESTERN : Sequence[AE3StageMeta] = [
     Western_A, Western_B, Western_C, Western_D, Western_E, Western_F
 ]
 
-BOSS : Sequence[AE3StageMeta] = [
-    Boss1, Boss2
-]
+# BOSS : Sequence[AE3StageMeta] = [
+#     Boss1, Boss2
+# ]
 
 # MASTER : Sequence[AE3StageMeta] = [
 #     Title_Screen, Zero, *HUB, *SEASIDE, *WOODS, *CASTLE, *CISCOCITY, *STUDIO, *HALLOWEEN, *WESTERN, *BOSS
@@ -375,22 +375,24 @@ STAGES_CASTLE : Sequence[str] = [
     Stage.castle_f.value
 ]
 
+
+
 STAGES_CISCOCITY : Sequence[str] = []
 STAGES_HALLOWEEN : Sequence[str] = []
 STAGES_WESTERN : Sequence[str] = []
-STAGES_BOSSES : Sequence[str] = []
+
+STAGES_BOSSES : Sequence[str] = [
+    Stage.boss1.value
+]
 
 STAGES_MASTER : Sequence[str] = [
-    *STAGES_ZERO, *STAGES_SEASIDE##, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY,
-    # *STAGES_STUDIO,
-    ##*STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_BOSSES
-    , *STAGES_TITLE, *STAGES_HUB
+    *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE, ##*STAGES_CISCOCITY, *STAGES_STUDIO,
+    # *STAGES_HALLOWEEN, *STAGES_WESTERN,
+    *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB
 ]
 
 STAGES_INDEX : Sequence[Sequence[str]] = [
-    STAGES_MASTER, STAGES_ZERO, STAGES_SEASIDE##, STAGES_WOODS, STAGES_CASTLE,
-    # STAGES_CISCOCITY,
-    # STAGES_STUDIO,
-    ##STAGES_HALLOWEEN, STAGES_WESTERN, STAGES_BOSSES
-    , STAGES_TITLE, STAGES_HUB,
+    STAGES_MASTER, STAGES_ZERO, STAGES_SEASIDE, STAGES_WOODS, STAGES_CASTLE,
+    # STAGES_CISCOCITY, STAGES_STUDIO, STAGES_HALLOWEEN, STAGES_WESTERN, STAGES_BOSSES
+    STAGES_BOSSES, STAGES_TITLE, STAGES_HUB,
 ]
