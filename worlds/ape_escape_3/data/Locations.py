@@ -4,7 +4,6 @@ from abc import ABC
 
 from BaseClasses import Location
 
-#from .Addresses import Locations, Pointers
 from .Addresses import NTSCU
 from .Logic import AccessRule, Rulesets
 from .Strings import Loc, Meta
@@ -307,5 +306,5 @@ MONKEYS_MASTER : Sequence[str] = [
 ]
 
 MONKEYS_INDEX : Sequence[Sequence[str]] = [
-    MONKEYS_MASTER, MONKEYS_ZERO, MONKEYS_SEASIDE_A, MONKEYS_SEASIDE_B, MONKEYS_SEASIDE_C
+    MONKEYS_ZERO, MONKEYS_SEASIDE_A, MONKEYS_SEASIDE_B, MONKEYS_SEASIDE_C
 ]
