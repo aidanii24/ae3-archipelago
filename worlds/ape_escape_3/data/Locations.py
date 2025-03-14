@@ -277,3 +277,35 @@ def generate_name_to_id() -> Dict[str, int]:
     """Get a Dictionary of all Items in Name-ID pairs"""
     i: AE3LocationMeta
     return {i.name: i.loc_id for i in MASTER}
+
+
+
+### [< --- STAGE GROUPS --- >]
+MONKEYS_ZERO : Sequence[str] = [
+    Loc.zero_ukki_pan.value
+]
+
+MONKEYS_SEASIDE_A : Sequence[str] = [
+    Loc.seaside_nessal.value, Loc.seaside_ukki_pia.value, Loc.seaside_sarubo.value, Loc.seaside_salurin.value,
+    Loc.seaside_ukkitan.value, Loc.seaside_morella
+]
+
+MONKEYS_SEASIDE_B : Sequence[str] = [
+    Loc.seaside_ukki_ben.value
+]
+
+MONKEYS_SEASIDE_C : Sequence[str] = [
+    Loc.seaside_kankichi.value, Loc.seaside_tomezo.value, Loc.seaside_kamayan.value, Loc.seaside_taizo.value
+]
+
+MONKEYS_SEASIDE : Sequence[str] = [
+    *MONKEYS_SEASIDE_A, *MONKEYS_SEASIDE_B, *MONKEYS_SEASIDE_C
+]
+
+MONKEYS_MASTER : Sequence[str] = [
+    *MONKEYS_ZERO, *MONKEYS_SEASIDE
+]
+
+MONKEYS_INDEX : Sequence[Sequence[str]] = [
+    MONKEYS_MASTER, MONKEYS_ZERO, MONKEYS_SEASIDE_A, MONKEYS_SEASIDE_B, MONKEYS_SEASIDE_C
+]

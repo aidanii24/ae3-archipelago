@@ -346,3 +346,39 @@ MASTER : Sequence[AE3StageMeta] = [
 INDEX : Sequence[Sequence] = [
     MASTER, HUB, SEASIDE, WOODS, CASTLE, CISCOCITY, STUDIO, HALLOWEEN, WESTERN, BOSS
 ]
+
+
+
+
+### [< --- REFACTORED STAGE GROUPS --- >]
+STAGES_ZERO : Sequence[str] = [
+    Stage.zero.value
+]
+
+STAGES_SEASIDE : Sequence[str] = [
+    Stage.seaside_a.value, Stage.seaside_b, Stage.seaside_c
+]
+
+STAGES_WOODS : Sequence[str] = [
+    Stage.woods_a.value, Stage.woods_b.value, Stage.woods_c.value, Stage.woods_d.value
+]
+
+STAGES_CASTLE : Sequence[str] = [
+    Stage.castle_a.value, Stage.castle_b.value, Stage.castle_c.value, Stage.castle_d.value, Stage.castle_e.value,
+    Stage.castle_f.value
+]
+
+STAGES_CISCOCITY : Sequence[str] = []
+STAGES_HALLOWEEN : Sequence[str] = []
+STAGES_WESTERN : Sequence[str] = []
+STAGES_BOSSES : Sequence[str] = []
+
+STAGES_MASTER : Sequence[str] = [
+    *STAGES_ZERO, *STAGES_SEASIDE##, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY, *STAGES_STUDIO,
+    ##*STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_BOSSES
+]
+
+STAGES_INDEX : Sequence[Sequence[str]] = [
+    STAGES_MASTER, STAGES_ZERO, STAGES_SEASIDE##, STAGES_WOODS, STAGES_CASTLE, STAGES_CISCOCITY, STAGES_STUDIO,
+    ##STAGES_HALLOWEEN, STAGES_WESTERN, STAGES_BOSSES
+]
