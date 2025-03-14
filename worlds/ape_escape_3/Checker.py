@@ -5,7 +5,7 @@ from NetUtils import NetworkItem
 from .data.Items import ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem
 from .data.Strings import Game, Itm, APHelper
 from .data.Addresses import NTSCU, AP
-from .data.Locations import MONKEYS
+from .data.Locations import MONKEYS_MASTER
 from .data import Items
 
 if TYPE_CHECKING:
@@ -87,9 +87,9 @@ async def check_items(ctx : 'AE3Context'):
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
 
-    for monkey in MONKEYS:
-        if ctx.ipc.is_monkey_captured(monkey.name):
-            cleared.add(monkey.address)
+    for monkey in MONKEYS_MASTER:
+        if ctx.ipc.is_monkey_captured(monkey):
+            cleared.add(ctx.monkeys_name_to_id[monkey])
 
     # Get newly checked locations
     cleared = cleared.difference(ctx.checked_locations)

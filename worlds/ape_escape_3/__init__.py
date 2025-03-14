@@ -52,7 +52,7 @@ class AE3World(World):
 
     # Define the Items and Locations to/for Archipelago
     item_name_to_id = Items.generate_name_to_id()
-    location_name_to_id = Locations.loc_refactor_n2id()
+    location_name_to_id = Locations.generate_name_to_id()
 
     item_name_groups = Items.generate_item_groups()
 

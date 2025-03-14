@@ -1,12 +1,9 @@
+from typing import Callable, Set
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
 
-from .Strings import Stage
-from .Locations import *
+from .Logic import Rulesets, AccessRule
 from .Stages import StageEntranceMeta
-
-if TYPE_CHECKING:
-    from .. import AE3World
+from .Strings import Loc, Stage
 
 
 @dataclass

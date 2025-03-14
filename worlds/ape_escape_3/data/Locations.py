@@ -1,4 +1,4 @@
-from typing import Callable, Dict, Set, Sequence
+from typing import Callable, Set, Sequence
 from dataclasses import dataclass
 from abc import ABC
 
@@ -67,23 +67,23 @@ class MonkeyLocation(AE3LocationMeta):
     def to_location(self, player : int, parent : Region) -> Location:
         return Location(player, self.name, self.loc_id, parent)
 
-### [< --- LOCATIONS --- >]
-# Zero
-Zero_Ukki_Pan = MonkeyLocation(Loc.zero_ukki_pan.value)
-
-# Seaside
-Seaside_Nessal = MonkeyLocation(Loc.seaside_nessal.value)
-Seaside_Ukki_Pia = MonkeyLocation(Loc.seaside_ukki_pia.value)
-Seaside_Sarubo = MonkeyLocation(Loc.seaside_sarubo.value)
-Seaside_Salurin = MonkeyLocation(Loc.seaside_salurin.value)
-Seaside_Ukkitan = MonkeyLocation(Loc.seaside_ukkitan.value)
-Seaside_Morella = MonkeyLocation(Loc.seaside_morella.value,
-                                 AccessRule.SHOOT, AccessRule.FLY)
-Seaside_Ukki_Ben = MonkeyLocation(Loc.seaside_ukki_ben.value)
-Seaside_Kankichi = MonkeyLocation(Loc.seaside_kankichi.value)
-Seaside_Tomezo = MonkeyLocation(Loc.seaside_tomezo.value)
-Seaside_Kamayan = MonkeyLocation(Loc.seaside_kamayan.value)
-Seaside_Taizo = MonkeyLocation(Loc.seaside_taizo.value)
+# ### [< --- LOCATIONS --- >]
+# # Zero
+# Zero_Ukki_Pan = MonkeyLocation(Loc.zero_ukki_pan.value)
+#
+# # Seaside
+# Seaside_Nessal = MonkeyLocation(Loc.seaside_nessal.value)
+# Seaside_Ukki_Pia = MonkeyLocation(Loc.seaside_ukki_pia.value)
+# Seaside_Sarubo = MonkeyLocation(Loc.seaside_sarubo.value)
+# Seaside_Salurin = MonkeyLocation(Loc.seaside_salurin.value)
+# Seaside_Ukkitan = MonkeyLocation(Loc.seaside_ukkitan.value)
+# Seaside_Morella = MonkeyLocation(Loc.seaside_morella.value,
+#                                  AccessRule.SHOOT, AccessRule.FLY)
+# Seaside_Ukki_Ben = MonkeyLocation(Loc.seaside_ukki_ben.value)
+# Seaside_Kankichi = MonkeyLocation(Loc.seaside_kankichi.value)
+# Seaside_Tomezo = MonkeyLocation(Loc.seaside_tomezo.value)
+# Seaside_Kamayan = MonkeyLocation(Loc.seaside_kamayan.value)
+# Seaside_Taizo = MonkeyLocation(Loc.seaside_taizo.value)
 
 # Woods
 Woods_Ukki_Pon = MonkeyLocation(Loc.woods_ukki_pon.value)
@@ -211,10 +211,10 @@ Western_Mon_Johny = MonkeyLocation(Loc.western_mon_johny.value)
 Boss_Monkey_Blue = MonkeyLocation(Loc.boss_monkey_blue.value)
 
 ### [< --- LOCATION GROUPS --- >]
-SEASIDE_MONKEYS : Sequence[MonkeyLocation] = [
-    Seaside_Nessal, Seaside_Ukki_Pia, Seaside_Sarubo, Seaside_Salurin, Seaside_Ukkitan, Seaside_Morella,
-    Seaside_Ukki_Ben, Seaside_Kankichi, Seaside_Tomezo, Seaside_Kamayan, Seaside_Taizo
-]
+# SEASIDE_MONKEYS : Sequence[MonkeyLocation] = [
+#     Seaside_Nessal, Seaside_Ukki_Pia, Seaside_Sarubo, Seaside_Salurin, Seaside_Ukkitan, Seaside_Morella,
+#     Seaside_Ukki_Ben, Seaside_Kankichi, Seaside_Tomezo, Seaside_Kamayan, Seaside_Taizo
+# ]
 
 WOODS_MONKEYS : Sequence[MonkeyLocation] = [
     Woods_Ukki_Pon, Woods_Ukkian, Woods_Ukki_Red, Woods_Rosalin, Woods_Salubon, Woods_Wolfmon, Woods_Ukiko,
@@ -260,25 +260,25 @@ BOSS_MONKEYS : Sequence[MonkeyLocation] = [
     Boss_Monkey_White, Boss_Monkey_Blue
 ]
 
-MONKEYS : Sequence[MonkeyLocation] = [
-    Zero_Ukki_Pan, *SEASIDE_MONKEYS, *WOODS_MONKEYS, *CASTLE_MONKEYS, *CISCOCITY_MONKEYS, *STUDIO_MONKEYS,
-    *HALLOWEEN_MONKEYS, *WESTERN_MONKEYS, *BOSS_MONKEYS
-]
+# MONKEYS : Sequence[MonkeyLocation] = [
+#     Zero_Ukki_Pan, *SEASIDE_MONKEYS, *WOODS_MONKEYS, *CASTLE_MONKEYS, *CISCOCITY_MONKEYS, *STUDIO_MONKEYS,
+#     *HALLOWEEN_MONKEYS, *WESTERN_MONKEYS, *BOSS_MONKEYS
+# ]
 
-MASTER : Sequence[AE3LocationMeta] = [
-    *MONKEYS
-]
+# MASTER : Sequence[AE3LocationMeta] = [
+#     *MONKEYS
+# ]
 
-INDEX : Sequence[Sequence] = [
-    MASTER, MONKEYS, SEASIDE_MONKEYS, WOODS_MONKEYS, CASTLE_MONKEYS, CISCOCITY_MONKEYS, STUDIO_MONKEYS,
-    HALLOWEEN_MONKEYS, WESTERN_MONKEYS, BOSS_MONKEYS
-]
+# INDEX : Sequence[Sequence] = [
+#     MASTER, MONKEYS, SEASIDE_MONKEYS, WOODS_MONKEYS, CASTLE_MONKEYS, CISCOCITY_MONKEYS, STUDIO_MONKEYS,
+#     HALLOWEEN_MONKEYS, WESTERN_MONKEYS, BOSS_MONKEYS
+# ]
 
 ### [< --- METHODS --- >]
-def generate_name_to_id() -> Dict[str, int]:
-    """Get a Dictionary of all Items in Name-ID pairs"""
-    i: AE3LocationMeta
-    return {i.name: i.loc_id for i in MASTER}
+# def generate_name_to_id() -> Dict[str, int]:
+#     """Get a Dictionary of all Items in Name-ID pairs"""
+#     i: AE3LocationMeta
+#     return {i.name: i.loc_id for i in MASTER}
 
 
 
@@ -315,5 +315,6 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.seaside_c.value       : MONKEYS_SEASIDE_C
 }
 
-def loc_refactor_n2id() -> dict[str, int]:
+# TODO - Rename this
+def generate_name_to_id() -> dict[str, int]:
     return { name : MonkeyLocation(name).loc_id for name in MONKEYS_MASTER}

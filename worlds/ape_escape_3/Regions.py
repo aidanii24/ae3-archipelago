@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING, Callable, Dict
 
 from BaseClasses import CollectionState, Entrance, Location, Region
 
-from .data.Stages import AE3StageMeta, MASTER, STAGES_MASTER
-from .data.Locations import AE3Location, MonkeyLocation, MONKEYS_INDEX
+from .data.Stages import STAGES_MASTER
+from .data.Locations import MonkeyLocation, MONKEYS_INDEX
 from .data.Logic import Rulesets
 from .data.Rules import RuleType, Casual
 
@@ -50,51 +50,51 @@ def establish_entrances(player : int, parent_region : Region, connections : Dict
         entrance.connect(destination)
 
 ### [< --- GENERATION --- >]
+# def create_regions(world : "AE3World"):
+#     create_regions_refactor(world)
+#     return
+#
+#     # Cache Data
+#     meta_cache : Dict[str, AE3StageMeta] = { r.name : r for r in MASTER }
+#     regions_dir : Dict[str, Region] = {}
+#
+#     # Initialize Regions
+#     for stage in MASTER:
+#
+#         region : Region = Region(stage.name, world.player, world.multiworld)
+#         regions_dir.setdefault(region.name, region)
+#
+#     # Define Regions
+#     for region in regions_dir.values():
+#         meta : AE3StageMeta = meta_cache[region.name]
+#
+#         # Connect Regions
+#         connections : Dict[Region, Rulesets] = {}
+#         if meta.entrances:
+#             for entrance in meta.entrances:
+#                 connections.setdefault(regions_dir[entrance.destination], entrance.rules)
+#
+#         establish_entrances(world.player, region, connections)
+#
+#         # Define Locations
+#         if meta.monkeys:
+#             for loc in [*meta.monkeys]:
+#                 location : Location = AE3Location(world.player, loc.name, loc.address, region)
+#
+#                 if loc.rules:
+#                     location.access_rule = generate_access_rule(world.player, loc.rules)
+#
+#                 region.locations.append(location)
+#
+#     # Send Regions to Archipelago
+#     world.multiworld.regions.extend(list(regions_dir.values()))
+#
+#     # <!> DEBUG
+#     # Connection Diagrams
+#     from Utils import visualize_regions
+#     visualize_regions(world.multiworld.get_region("Menu", world.player), "_region_diagram.puml")
+
 def create_regions(world : "AE3World"):
-    create_regions_refactor(world)
-    return
-
-    # Cache Data
-    meta_cache : Dict[str, AE3StageMeta] = { r.name : r for r in MASTER }
-    regions_dir : Dict[str, Region] = {}
-
-    # Initialize Regions
-    for stage in MASTER:
-
-        region : Region = Region(stage.name, world.player, world.multiworld)
-        regions_dir.setdefault(region.name, region)
-
-    # Define Regions
-    for region in regions_dir.values():
-        meta : AE3StageMeta = meta_cache[region.name]
-
-        # Connect Regions
-        connections : Dict[Region, Rulesets] = {}
-        if meta.entrances:
-            for entrance in meta.entrances:
-                connections.setdefault(regions_dir[entrance.destination], entrance.rules)
-
-        establish_entrances(world.player, region, connections)
-
-        # Define Locations
-        if meta.monkeys:
-            for loc in [*meta.monkeys]:
-                location : Location = AE3Location(world.player, loc.name, loc.address, region)
-
-                if loc.rules:
-                    location.access_rule = generate_access_rule(world.player, loc.rules)
-
-                region.locations.append(location)
-
-    # Send Regions to Archipelago
-    world.multiworld.regions.extend(list(regions_dir.values()))
-
-    # <!> DEBUG
-    # Connection Diagrams
-    from Utils import visualize_regions
-    visualize_regions(world.multiworld.get_region("Menu", world.player), "_region_diagram.puml")
-
-def create_regions_refactor(world : "AE3World"):
     rule : RuleType = Casual()
 
     # Initialize Regions

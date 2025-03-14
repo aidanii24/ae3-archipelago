@@ -1,5 +1,4 @@
 from .Logic import has_keys
-from .Strings import Stage
 from .Locations import *
 
 
@@ -176,19 +175,19 @@ Travel_Station_A = AE3StageMeta(Stage.travel_station_a.value,
 Travel_Station_B = AE3StageMeta(Stage.travel_station_b.value)
 
 # Zero
-Zero = AE3StageMeta(Stage.zero.value,
-                    To_Travel_Station_A,
-                    Zero_Ukki_Pan)
+# Zero = AE3StageMeta(Stage.zero.value,
+#                     To_Travel_Station_A,
+#                     Zero_Ukki_Pan)
 
 # Seaside
-Seaside_A = AE3StageMeta(Stage.seaside_a.value,
-                         [To_Seaside_B, To_Seaside_C],
-                         [Seaside_Nessal, Seaside_Ukki_Pia, Seaside_Sarubo, Seaside_Salurin, Seaside_Ukkitan,
-                          Seaside_Morella])
-Seaside_B = AE3StageMeta(Stage.seaside_b.value, None,
-                         [Seaside_Ukki_Ben])
-Seaside_C = AE3StageMeta(Stage.seaside_c.value, None,
-                         [Seaside_Kankichi, Seaside_Tomezo, Seaside_Kamayan, Seaside_Taizo])
+# Seaside_A = AE3StageMeta(Stage.seaside_a.value,
+#                          [To_Seaside_B, To_Seaside_C],
+#                          [Seaside_Nessal, Seaside_Ukki_Pia, Seaside_Sarubo, Seaside_Salurin, Seaside_Ukkitan,
+#                           Seaside_Morella])
+# Seaside_B = AE3StageMeta(Stage.seaside_b.value, None,
+#                          [Seaside_Ukki_Ben])
+# Seaside_C = AE3StageMeta(Stage.seaside_c.value, None,
+#                          [Seaside_Kankichi, Seaside_Tomezo, Seaside_Kamayan, Seaside_Taizo])
 
 # Woods
 Woods_A = AE3StageMeta(Stage.woods_a.value,
@@ -307,9 +306,9 @@ HUB : Sequence[AE3StageMeta] = [
     Travel_Station_A, Travel_Station_B
 ]
 
-SEASIDE : Sequence[AE3StageMeta] = [
-    Seaside_A, Seaside_B, Seaside_C
-]
+# SEASIDE : Sequence[AE3StageMeta] = [
+#     Seaside_A, Seaside_B, Seaside_C
+# ]
 
 WOODS : Sequence[AE3StageMeta] = [
     Woods_A, Woods_B, Woods_C, Woods_D
@@ -339,13 +338,13 @@ BOSS : Sequence[AE3StageMeta] = [
     Boss1, Boss2
 ]
 
-MASTER : Sequence[AE3StageMeta] = [
-    Title_Screen, Zero, *HUB, *SEASIDE, *WOODS, *CASTLE, *CISCOCITY, *STUDIO, *HALLOWEEN, *WESTERN, *BOSS
-]
-
-INDEX : Sequence[Sequence] = [
-    MASTER, HUB, SEASIDE, WOODS, CASTLE, CISCOCITY, STUDIO, HALLOWEEN, WESTERN, BOSS
-]
+# MASTER : Sequence[AE3StageMeta] = [
+#     Title_Screen, Zero, *HUB, *SEASIDE, *WOODS, *CASTLE, *CISCOCITY, *STUDIO, *HALLOWEEN, *WESTERN, *BOSS
+# ]
+#
+# INDEX : Sequence[Sequence] = [
+#     MASTER, HUB, SEASIDE, WOODS, CASTLE, CISCOCITY, STUDIO, HALLOWEEN, WESTERN, BOSS
+# ]
 
 
 

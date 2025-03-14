@@ -9,6 +9,7 @@ import Utils
 
 from .data.Strings import Meta, APConsole
 from .data.Items import ProgressionType
+from .data.Locations import generate_name_to_id
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
 from .Checker import *
 
@@ -41,6 +42,8 @@ class AE3Context(CommonContext):
     slot_data : dict[str, Utils.Any]
     cached_locations_checked : Set[int]
     cached_received_items : Set[NetworkItem]
+
+    monkeys_name_to_id : dict[str, int] = generate_name_to_id()
 
     keys : int = 0
     unlocked_stages : int = 0
