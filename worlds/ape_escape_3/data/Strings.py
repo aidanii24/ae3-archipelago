@@ -394,6 +394,10 @@ class APConsole:
         conf_game =     " [!!!] Please load a supported version of Ape Escape 3."
 
 class Groups:
+    STAGES_TITLE : Sequence[str] = [
+        Stage.title_screen.value
+    ]
+
     STAGES_SEASIDE : Sequence[str] = [
         Stage.seaside_a.value, Stage.seaside_b, Stage.seaside_c
     ]

@@ -2,11 +2,11 @@ from typing import Callable, Dict, Set, Sequence
 from dataclasses import dataclass
 from abc import ABC
 
-from BaseClasses import Location
+from BaseClasses import Location, Region
 
 from .Addresses import NTSCU
 from .Logic import AccessRule, Rulesets
-from .Strings import Loc, Meta
+from .Strings import Loc, Stage, Meta
 
 
 ### [< --- HELPERS --- >]
@@ -63,6 +63,9 @@ class MonkeyLocation(AE3LocationMeta):
 
         # For Monkeys, always add CATCH as a Critical Rule
         self.rules.Critical.add(AccessRule.CATCH)
+
+    def to_location(self, player : int, parent : Region) -> Location:
+        return Location(player, self.name, self.loc_id, parent)
 
 ### [< --- LOCATIONS --- >]
 # Zero
@@ -286,7 +289,7 @@ MONKEYS_ZERO : Sequence[str] = [
 
 MONKEYS_SEASIDE_A : Sequence[str] = [
     Loc.seaside_nessal.value, Loc.seaside_ukki_pia.value, Loc.seaside_sarubo.value, Loc.seaside_salurin.value,
-    Loc.seaside_ukkitan.value, Loc.seaside_morella
+    Loc.seaside_ukkitan.value, Loc.seaside_morella.value
 ]
 
 MONKEYS_SEASIDE_B : Sequence[str] = [
@@ -305,6 +308,12 @@ MONKEYS_MASTER : Sequence[str] = [
     *MONKEYS_ZERO, *MONKEYS_SEASIDE
 ]
 
-MONKEYS_INDEX : Sequence[Sequence[str]] = [
-    MONKEYS_ZERO, MONKEYS_SEASIDE_A, MONKEYS_SEASIDE_B, MONKEYS_SEASIDE_C
-]
+MONKEYS_INDEX : dict[str, Sequence] = {
+    Stage.zero.value            : MONKEYS_ZERO,
+    Stage.seaside_a.value       : MONKEYS_SEASIDE_A,
+    Stage.seaside_b.value       : MONKEYS_SEASIDE_B,
+    Stage.seaside_c.value       : MONKEYS_SEASIDE_C
+}
+
+def loc_refactor_n2id() -> dict[str, int]:
+    return { name : MonkeyLocation(name).loc_id for name in MONKEYS_MASTER}

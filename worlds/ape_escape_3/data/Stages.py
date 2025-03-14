@@ -351,12 +351,20 @@ INDEX : Sequence[Sequence] = [
 
 
 ### [< --- REFACTORED STAGE GROUPS --- >]
+STAGES_TITLE : Sequence[str] = [
+    Stage.title_screen.value
+]
+
+STAGES_HUB : Sequence[str] = [
+    Stage.travel_station_a.value, Stage.travel_station_b.value
+]
+
 STAGES_ZERO : Sequence[str] = [
     Stage.zero.value
 ]
 
 STAGES_SEASIDE : Sequence[str] = [
-    Stage.seaside_a.value, Stage.seaside_b, Stage.seaside_c
+    Stage.seaside_a.value, Stage.seaside_b.value, Stage.seaside_c.value
 ]
 
 STAGES_WOODS : Sequence[str] = [
@@ -374,11 +382,16 @@ STAGES_WESTERN : Sequence[str] = []
 STAGES_BOSSES : Sequence[str] = []
 
 STAGES_MASTER : Sequence[str] = [
-    *STAGES_ZERO, *STAGES_SEASIDE##, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY, *STAGES_STUDIO,
+    *STAGES_ZERO, *STAGES_SEASIDE##, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY,
+    # *STAGES_STUDIO,
     ##*STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_BOSSES
+    , *STAGES_TITLE, *STAGES_HUB
 ]
 
 STAGES_INDEX : Sequence[Sequence[str]] = [
-    STAGES_MASTER, STAGES_ZERO, STAGES_SEASIDE##, STAGES_WOODS, STAGES_CASTLE, STAGES_CISCOCITY, STAGES_STUDIO,
+    STAGES_MASTER, STAGES_ZERO, STAGES_SEASIDE##, STAGES_WOODS, STAGES_CASTLE,
+    # STAGES_CISCOCITY,
+    # STAGES_STUDIO,
     ##STAGES_HALLOWEEN, STAGES_WESTERN, STAGES_BOSSES
+    , STAGES_TITLE, STAGES_HUB,
 ]
