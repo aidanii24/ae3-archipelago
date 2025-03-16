@@ -19,10 +19,8 @@ def can_morph(state : CollectionState, player : int):
 def can_morph_not_monkey(state : CollectionState, player : int):
     return state.has(APHelper.morphs_no_monkey.value, player)
 
-def has_club(state : CollectionState, player : int):
-    return state.has(Itm.gadget_club.value, player)
-
-# Check if player has the ability to move fast
+# General Ability Checks
+## Check if player has the ability to move fast
 def can_dash(state : CollectionState, player : int):
     return (state.has(Itm.gadget_hoop.value, player) or
 
@@ -36,10 +34,6 @@ def can_shoot(state : CollectionState, player : int):
             state.has(Itm.morph_cowboy.value, player) or
             state.has(Itm.morph_hero.value, player))
 
-## Check if Player has Water Net
-def can_swim(state : CollectionState, player : int):
-    return state.has(Itm.gadget_swim.value, player)
-
 ## Check if Player can fly (can gain height)
 def can_fly(state : CollectionState, player : int):
     return (state.has(Itm.gadget_fly.value, player) or
@@ -52,9 +46,16 @@ def can_glide(state : CollectionState, player : int):
             state.has(Itm.morph_hero.value, player))
 
 # Gadget Checks
+def has_club(state : CollectionState, player : int):
+    return state.has(Itm.gadget_club.value, player)
+
 ## Check if Player can use the Slingback Shooter
 def can_sling(state : CollectionState, player : int):
     return state.has(Itm.gadget_sling.value, player)
+
+## Check if Player has Water Net
+def can_swim(state : CollectionState, player : int):
+    return state.has(Itm.gadget_swim.value, player)
 
 ## Check if Player can use the RC Car
 def can_rcc(state : CollectionState, player : int):
@@ -70,12 +71,18 @@ def can_hero(state : CollectionState, player : int):
 def can_monkey(state : CollectionState, player : int):
     return state.has(Itm.morph_monkey.value, player)
 
-# Channel Key Checks
+# Event Checks
 def has_enough_keys(state : CollectionState, player : int, keys : int):
     return state.has(APHelper.channel_key.value, player, keys)
 
 def has_keys(keys : int):
     return lambda state, player : has_enough_keys(state, player, keys=keys)
+
+def is_event_invoked(state : CollectionState, player : int, event_name : str):
+    return state.has(event_name, player)
+
+def event_invoked(even_name : str):
+    return lambda state, player : is_event_invoked(state, player, even_name)
 
 ### [< --- WRAPPER SHORTHAND --- >]
 class AccessRule:

@@ -1,9 +1,9 @@
 from typing import Callable, Set
 from dataclasses import dataclass
 
-from .Logic import Rulesets, AccessRule, has_keys
+from .Logic import Rulesets, AccessRule, has_keys, event_invoked
+from .Strings import Loc, Stage, Game
 from .Stages import StageEntranceMeta
-from .Strings import Loc, Stage
 
 
 @dataclass
@@ -47,11 +47,18 @@ class Casual(RuleType):
     entrances = {
         Stage.title_screen.value            : [StageEntranceMeta(Stage.zero.value),
                                                StageEntranceMeta(Stage.travel_station_a.value)],
+
+        # Level Select
         Stage.travel_station_a.value        : [StageEntranceMeta(Stage.travel_station_b.value),
                                                StageEntranceMeta(Stage.seaside_a.value),
                                                StageEntranceMeta(Stage.woods_a.value),
                                                StageEntranceMeta(Stage.castle_a.value),
-                                               StageEntranceMeta(Stage.boss1.value, has_keys(1))],
+
+                                               StageEntranceMeta(Stage.boss1.value, has_keys(1)),
+
+                                               StageEntranceMeta(Stage.ciscocity_a.value, has_keys(2)),
+                                               StageEntranceMeta(Stage.studio_a.value, has_keys(2))],
+
         Stage.travel_station_b.value        : [StageEntranceMeta(Stage.travel_station_a.value)],
 
         # Zero
@@ -87,4 +94,35 @@ class Casual(RuleType):
 
         # Boss1
         Stage.boss1.value                   : None,
+
+        # Ciscocity
+        Stage.ciscocity_a.value             : [StageEntranceMeta(Stage.ciscocity_b.value),
+                                               StageEntranceMeta(Stage.ciscocity_c.value),
+                                               StageEntranceMeta(Stage.ciscocity_d.value),],
+        Stage.ciscocity_b.value             : [StageEntranceMeta(Stage.ciscocity_a.value)],
+        Stage.ciscocity_c.value             : [StageEntranceMeta(Stage.ciscocity_a.value),
+                                               StageEntranceMeta(Stage.ciscocity_e.value),],
+        Stage.ciscocity_d.value             : [StageEntranceMeta(Stage.ciscocity_a.value,
+                                                                 AccessRule.DASH, AccessRule.RCC)],
+        Stage.ciscocity_e.value             : [StageEntranceMeta(Stage.ciscocity_c.value, AccessRule.MONKEY)],
+
+        # Studio
+        Stage.studio_a.value                : [StageEntranceMeta(Stage.studio_b.value, AccessRule.SHOOT,
+                                                                 AccessRule.GLIDE, AccessRule.GENIE),
+                                               StageEntranceMeta(Stage.studio_c.value,
+                                                                 event_invoked(Game.shortcut_studio_ac.value)),
+                                               StageEntranceMeta(Stage.studio_d.value),
+                                               StageEntranceMeta(Stage.studio_e.value)],
+        Stage.studio_b.value                : [StageEntranceMeta(Stage.studio_a.value),
+                                               StageEntranceMeta(Stage.studio_f.value)],
+        Stage.studio_c.value                : [StageEntranceMeta(Stage.studio_a.value),
+                                               StageEntranceMeta(Stage.studio_e.value)],
+        Stage.studio_d.value                : [StageEntranceMeta(Stage.studio_a.value, AccessRule.SHOOT),
+                                               StageEntranceMeta(Stage.studio_f.value),
+                                               StageEntranceMeta(Stage.studio_g.value, AccessRule.MONKEY)],
+        Stage.studio_e.value                : [StageEntranceMeta(Stage.studio_a.value),
+                                               StageEntranceMeta(Stage.studio_c.value)],
+        Stage.studio_f.value                : [StageEntranceMeta(Stage.studio_b.value),
+                                               StageEntranceMeta(Stage.studio_d.value)],
+        Stage.studio_g.value                : [StageEntranceMeta(Stage.studio_d.value)]
     }

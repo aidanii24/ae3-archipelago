@@ -263,7 +263,7 @@ Studio_G = AE3StageMeta(Stage.studio_d.value, None,
 # Halloween
 Halloween_A = AE3StageMeta(Stage.halloween_a.value,
                            [To_Halloween_B],
-                           [Halloween_Monkichiro, Halloween_Leomon, Halloween_Uikkun,Halloween_Take_Ukita])
+                           [Halloween_Monkichiro, Halloween_Leomon, Halloween_Uikkun, Halloween_Take_Ukita])
 Halloween_B = AE3StageMeta(Stage.halloween_b.value,
                            [To_Halloween_F],
                            [Halloween_Bonbon, Halloween_Chichi])
@@ -375,24 +375,38 @@ STAGES_CASTLE : Sequence[str] = [
     Stage.castle_f.value
 ]
 
+STAGES_CISCOCITY : Sequence[str] = [
+    Stage.ciscocity_a.value, Stage.ciscocity_b.value, Stage.ciscocity_c.value, Stage.ciscocity_d.value,
+    Stage.ciscocity_e.value
+]
 
+STAGES_STUDIO : Sequence[str] = [
+    Stage.studio_a.value, Stage.studio_a.value, Stage.studio_a.value, Stage.studio_b.value, Stage.studio_c.value,
+    Stage.studio_d.value, Stage.studio_e.value, Stage.studio_f.value, Stage.studio_g.value
+]
 
-STAGES_CISCOCITY : Sequence[str] = []
-STAGES_HALLOWEEN : Sequence[str] = []
-STAGES_WESTERN : Sequence[str] = []
+STAGES_HALLOWEEN : Sequence[str] = [
+    Stage.halloween_a.value, Stage.halloween_a1.value, Stage.halloween_b.value, Stage.halloween_c.value,
+    Stage.halloween_d.value, Stage.halloween_e.value, Stage.halloween_e.value, Stage.halloween_f.value
+]
+
+STAGES_WESTERN : Sequence[str] = [
+    Stage.western_a.value, Stage.western_b.value, Stage.western_c.value, Stage.western_d.value, Stage.western_e.value,
+    Stage.western_f.value
+]
 
 STAGES_BOSSES : Sequence[str] = [
     Stage.boss1.value
 ]
 
 STAGES_MASTER : Sequence[str] = [
-    *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE, ##*STAGES_CISCOCITY, *STAGES_STUDIO,
+    *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY, *STAGES_STUDIO,
     # *STAGES_HALLOWEEN, *STAGES_WESTERN,
     *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB
 ]
 
 STAGES_INDEX : Sequence[Sequence[str]] = [
-    STAGES_MASTER, STAGES_ZERO, STAGES_SEASIDE, STAGES_WOODS, STAGES_CASTLE,
-    # STAGES_CISCOCITY, STAGES_STUDIO, STAGES_HALLOWEEN, STAGES_WESTERN, STAGES_BOSSES
+    STAGES_MASTER, STAGES_ZERO, STAGES_SEASIDE, STAGES_WOODS, STAGES_CASTLE, STAGES_CISCOCITY, STAGES_STUDIO,
+    ##STAGES_HALLOWEEN, STAGES_WESTERN,
     STAGES_BOSSES, STAGES_TITLE, STAGES_HUB,
 ]

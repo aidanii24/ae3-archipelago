@@ -2,11 +2,12 @@ from typing import Callable, Set, Sequence
 from dataclasses import dataclass
 from abc import ABC
 
-from BaseClasses import Location, Region
+from BaseClasses import Location, Region, ItemClassification
 
-from .Addresses import NTSCU
+from .Strings import Loc, Stage, Game, Meta
 from .Logic import AccessRule, Rulesets
-from .Strings import Loc, Stage, Meta
+from .Addresses import NTSCU
+from .Items import AE3Item
 
 
 ### [< --- HELPERS --- >]
@@ -66,6 +67,33 @@ class MonkeyLocation(AE3LocationMeta):
 
     def to_location(self, player : int, parent : Region) -> Location:
         return Location(player, self.name, self.loc_id, parent)
+
+class EventMeta(AE3LocationMeta):
+    def __init__(self, name : str, *rules : Callable | frozenset[Callable] | Set[frozenset[Callable]] | Rulesets):
+        self.name = name
+        self.loc_id = 0x0
+        self.address = 0x0
+
+        self.rules = Rulesets()
+
+        for rule in rules:
+            if isinstance(rule, Rulesets):
+                self.rules = rule
+            else:
+                if isinstance(rule, Callable):
+                    self.rules.Rules.add(frozenset({rule}))
+                elif isinstance(rule, set):
+                    self.rules.Rules.update(rule)
+                elif isinstance(rules, frozenset):
+                    self.rules.Rules.add(rule)
+
+    def to_event_location(self, player : int, parent : Region) -> Location:
+        event : Location = Location(player, self.name, None, parent)
+        item : AE3Item = AE3Item(self.name, ItemClassification.progression, None, player)
+
+        event.place_locked_item(item)
+
+        return event
 
 # ### [< --- LOCATIONS --- >]
 # # Zero
@@ -360,12 +388,155 @@ MONKEYS_CASTLE : Sequence[str] = [
 # Boss1
 MONKEYS_BOSS1 : Sequence[str] = [ Loc.boss_monkey_white.value ]
 
+# Ciscocity
+MONKEYS_CISCOCITY_A : Sequence[str] = [
+    Loc.ciscocity_ukima.value, Loc.ciscocity_monbolo.value, Loc.ciscocity_pipo_mondy.value,
+    Loc.ciscocity_ukki_mattan.value, Loc.ciscocity_bemucho.value, Loc.ciscocity_ukki_nader.value
+]
+
+MONKEYS_CISCOCITY_B : Sequence[str] = [
+    Loc.ciscocity_sabu_sabu.value, Loc.ciscocity_ginjiro.value, Loc.ciscocity_kichiemon.value
+]
+
+MONKEYS_CISCOCITY_C : Sequence[str] = [
+    Loc.ciscocity_ukkilun.value
+]
+
+MONKEYS_CISCOCITY_D : Sequence[str] = [
+    Loc.ciscocity_bully_mon.value, Loc.ciscocity_ukki_joe.value, Loc.ciscocity_tamaki.value,
+    Loc.ciscocity_mickey_oou.value
+]
+
+MONKEYS_CISCOCITY_E : Sequence[str] = [
+    Loc.ciscocity_sally_kokoroe.value, Loc.ciscocity_monkey_manager.value, Loc.ciscocity_supervisor_chimp.value,
+    Loc.ciscocity_boss_ape.value
+]
+
+MONKEYS_CISCOCITY : Sequence[str] = [
+    *MONKEYS_CISCOCITY_A, *MONKEYS_CISCOCITY_B, *MONKEYS_CISCOCITY_C, *MONKEYS_CISCOCITY_D, *MONKEYS_CISCOCITY_E,
+]
+
+# Studio
+MONKEYS_STUDIO_A : Sequence[str] = [
+    Loc.studio_ukki_yan.value
+]
+
+MONKEYS_STUDIO_B : Sequence[str] = [
+    Loc.studio_ukkipuss.value, Loc.studio_minoh.value, Loc.studio_monta.value
+]
+
+MONKEYS_STUDIO_C : Sequence[str] = [
+    Loc.studio_pipopam.value, Loc.studio_monpii_ukkichi.value, Loc.studio_gabimon.value
+]
+
+MONKEYS_STUDIO_D : Sequence[str] = [
+    Loc.studio_bananamon.value, Loc.studio_mokinza.value
+]
+
+MONKEYS_STUDIO_E : Sequence[str] = [
+    Loc.studio_ukki_lee_ukki.value, Loc.studio_ukkida_jiro.value, Loc.studio_sal_ukindo.value
+]
+
+MONKEYS_STUDIO_F : Sequence[str] = [
+    Loc.studio_gimminey.value, Loc.studio_hant.value, Loc.studio_chippino.value
+]
+
+MONKEYS_STUDIO_G : Sequence[str] = [
+    Loc.studio_ukki_paul.value, Loc.studio_sally_mon.value, Loc.studio_bonly.value, Loc.studio_monly.value
+]
+
+MONKEYS_STUDIO : Sequence[str] = [
+    *MONKEYS_STUDIO_A, *MONKEYS_STUDIO_B, *MONKEYS_STUDIO_C, *MONKEYS_STUDIO_D, *MONKEYS_STUDIO_E, *MONKEYS_STUDIO_F,
+    *MONKEYS_STUDIO_G,
+]
+
+# Halloween
+MONKEYS_HALLOWEEN_A : Sequence[str] = [
+    Loc.halloween_monkichiro.value
+]
+
+MONKEYS_HALLOWEEN_A1 : Sequence[str] = [
+    Loc.halloween_leomon.value, Loc.halloween_uikkun.value, Loc.halloween_take_ukita.value
+]
+
+MONKEYS_HALLOWEEN_B : Sequence[str] = [
+    Loc.halloween_bonbon.value, Loc.halloween_chichi.value
+]
+
+MONKEYS_HALLOWEEN_C : Sequence[str] = [
+    Loc.halloween_ukkisuke.value, Loc.halloween_chibi_sally.value, Loc.halloween_ukkison.value
+]
+
+MONKEYS_HALLOWEEN_D : Sequence[str] = [
+    Loc.halloween_saruhotep.value, Loc.halloween_ukkito.value, Loc.halloween_monzally.value,
+    Loc.halloween_ukkiami.value
+]
+
+MONKEYS_HALLOWEEN_E : Sequence[str] = [
+    Loc.halloween_monjan.value, Loc.halloween_nattchan.value, Loc.halloween_kabochin.value,
+    Loc.halloween_ukki_mon.value
+]
+
+MONKEYS_HALLOWEEN_F : Sequence[str] = [
+    Loc.halloween_mumpkin.value
+]
+
+MONKEYS_HALLOWEEN : Sequence[str] = [
+    *MONKEYS_HALLOWEEN_A, *MONKEYS_HALLOWEEN_B, *MONKEYS_HALLOWEEN_C, *MONKEYS_HALLOWEEN_D, *MONKEYS_HALLOWEEN_E,
+    *MONKEYS_HALLOWEEN_F,
+]
+
+# Western
+MONKEYS_WESTERN_A : Sequence[str] = [
+    Loc.western_morrey.value, Loc.western_jomi.value, Loc.western_tammy.value
+]
+
+MONKEYS_WESTERN_B : Sequence[str] = [
+    Loc.western_ukki_gigolo.value, Loc.western_monboron.value, Loc.western_west_ukki.value
+]
+
+MONKEYS_WESTERN_C : Sequence[str] = [
+    Loc.western_lucky_woo.value, Loc.western_pamela.value, Loc.western_ukki_monber.value, Loc.western_gaukichi.value
+]
+
+MONKEYS_WESTERN_D : Sequence[str] = [
+    Loc.western_shaluron.value, Loc.western_jay_mohn.value, Loc.western_munkee_joe.value, Loc.western_saru_chison.value,
+    Loc.western_jaja_jamo.value
+]
+
+MONKEYS_WESTERN_E : Sequence[str] = [
+    Loc.western_chammy_mo.value, Loc.western_golon_moe.value, Loc.western_golozo.value
+]
+
+MONKEYS_WESTERN_F : Sequence[str] = [
+    Loc.western_ukkia_munbo.value, Loc.western_mon_johny
+]
+
+MONKEYS_WESTERN : Sequence[str] = [
+    *MONKEYS_WESTERN_A, *MONKEYS_WESTERN_B, *MONKEYS_WESTERN_C, *MONKEYS_WESTERN_D, *MONKEYS_WESTERN_E,
+    *MONKEYS_WESTERN_F,
+]
+
+# Boss2
+MONKEYS_BOSS2 : Sequence[str] = [
+    Loc.boss_monkey_blue.value
+]
+
 MONKEYS_BOSSES : Sequence[str] = [
     *MONKEYS_BOSS1
 ]
 
 MONKEYS_MASTER : Sequence[str] = [
-    *MONKEYS_ZERO, *MONKEYS_SEASIDE, *MONKEYS_WOODS, *MONKEYS_CASTLE, *MONKEYS_BOSSES
+    *MONKEYS_ZERO, *MONKEYS_SEASIDE, *MONKEYS_WOODS, *MONKEYS_CASTLE, *MONKEYS_CISCOCITY, *MONKEYS_STUDIO,
+    *MONKEYS_BOSSES
+]
+
+EVENTS_STUDIO_C : Sequence[EventMeta] = [
+    EventMeta(Game.shortcut_studio_ac.value, AccessRule.SHOOT)
+]
+
+EVENTS_STUDIO_D : Sequence[EventMeta] = [
+    EventMeta(Game.shortcut_studio_ad.value)
 ]
 
 MONKEYS_INDEX : dict[str, Sequence] = {
@@ -392,7 +563,28 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.castle_f.value        : MONKEYS_CASTLE_F,
 
     # Boss1
-    Stage.boss1.value           : MONKEYS_BOSS1
+    Stage.boss1.value           : MONKEYS_BOSS1,
+
+    # Ciscocity
+    Stage.ciscocity_a.value     : MONKEYS_CISCOCITY_A,
+    Stage.ciscocity_b.value     : MONKEYS_CISCOCITY_B,
+    Stage.ciscocity_c.value     : MONKEYS_CISCOCITY_C,
+    Stage.ciscocity_d.value     : MONKEYS_CISCOCITY_D,
+    Stage.ciscocity_e.value     : MONKEYS_CISCOCITY_E,
+
+    # Studio
+    Stage.studio_a.value        : MONKEYS_STUDIO_A,
+    Stage.studio_b.value        : MONKEYS_STUDIO_B,
+    Stage.studio_c.value        : MONKEYS_STUDIO_C,
+    Stage.studio_d.value        : MONKEYS_STUDIO_D,
+    Stage.studio_e.value        : MONKEYS_STUDIO_E,
+    Stage.studio_f.value        : MONKEYS_STUDIO_F,
+    Stage.studio_g.value        : MONKEYS_STUDIO_G
+}
+
+EVENTS_INDEX : dict[str, Sequence[EventMeta]] = {
+    Stage.studio_c.value        : EVENTS_STUDIO_C,
+    Stage.studio_d.value        : EVENTS_STUDIO_D,
 }
 
 # TODO - Rename this
