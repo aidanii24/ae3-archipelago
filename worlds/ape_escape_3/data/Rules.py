@@ -39,7 +39,8 @@ class Casual(RuleType):
     knowledge of it.
     """
     monkey_rules = {
-        Loc.seaside_morella.value           : RuleWrap(AccessRule.SHOOT, AccessRule.FLY, AccessRule.GENIE),
+        Loc.seaside_morella.value           : RuleWrap(AccessRule.SHOOT, AccessRule.FLY,
+                                                       frozenset({AccessRule.GENIE, AccessRule.CLUB})),
         Loc.castle_monga.value              : RuleWrap(AccessRule.SHOOT, AccessRule.FLY)
     }
 

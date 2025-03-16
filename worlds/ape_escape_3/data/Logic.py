@@ -12,12 +12,15 @@ def can_catch(state : CollectionState, player : int):
 def can_net(state : CollectionState, player : int):
     return state.has(Itm.gadget_net.value, player)
 
-## Check if Player can Morph (Any Morph)
+## Check if Player can Morph
 def can_morph(state : CollectionState, player : int):
     return state.has(APHelper.morphs.value, player)
 
 def can_morph_not_monkey(state : CollectionState, player : int):
     return state.has(APHelper.morphs_no_monkey.value, player)
+
+def has_club(state : CollectionState, player : int):
+    return state.has(Itm.gadget_club.value, player)
 
 # Check if player has the ability to move fast
 def can_dash(state : CollectionState, player : int):
@@ -84,6 +87,7 @@ class AccessRule:
     CATCH = can_catch                           # Monkey Net unlocked or any Morph that can Catch Monkeys
     MORPH = can_morph
     MORPH_NO_MONKEY = can_morph_not_monkey      # Unlocked any morph that is not Super Monkey
+    CLUB = has_club                             # Unlocked Stun Club
     DASH = can_dash                             # Unlocked Super Hoop or any fast moving Morph
     SHOOT = can_shoot                           # Slingback Shooter unlocked or has any morph with long range attacks
     SWIM = can_swim
