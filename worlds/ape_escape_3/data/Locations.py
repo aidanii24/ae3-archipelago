@@ -594,6 +594,9 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.western_d.value       : MONKEYS_WESTERN_D,
     Stage.western_e.value       : MONKEYS_WESTERN_E,
     Stage.western_f.value       : MONKEYS_WESTERN_F,
+
+    # Boss2
+    Stage.boss2.value           : MONKEYS_BOSS2
 }
 
 EVENTS_INDEX : dict[str, Sequence[EventMeta]] = {
