@@ -381,7 +381,7 @@ STAGES_CISCOCITY : Sequence[str] = [
 ]
 
 STAGES_STUDIO : Sequence[str] = [
-    Stage.studio_a.value, Stage.studio_a.value, Stage.studio_a.value, Stage.studio_b.value, Stage.studio_c.value,
+    Stage.studio_a.value, Stage.studio_a1.value, Stage.studio_b.value, Stage.studio_c.value,
     Stage.studio_d.value, Stage.studio_e.value, Stage.studio_f.value, Stage.studio_g.value
 ]
 

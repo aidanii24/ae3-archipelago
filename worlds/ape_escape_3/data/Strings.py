@@ -253,7 +253,6 @@ class Stage(BaseEnum):
     studio =                    "Specter TV Studio"
     studio_a =                  "Specter TV Studio - Reception"
     studio_a1 =                 "Specter TV Studio - Reception - Door to Buildings Set"
-    studio_a2 =                 "Specter TV Studio - Reception - Door to Moon Set"
     studio_b =                  "Specter TV Studio - General Sets"
     studio_c =                  "Specter TV Studio - Moon Set"
     studio_d =                  "Specter TV Studio - Buildings Set"
@@ -262,8 +261,8 @@ class Stage(BaseEnum):
     studio_g =                  "Specter TV Studio - Break Room"
 
     halloween =                 "Bootown"
-    halloween_a =               "Bootown - Carnival Canal"
-    halloween_a1 =              "Bootown - Carnival"
+    halloween_a =               "Bootown - Carnival"
+    halloween_a1 =              "Bootown - Carnival Canal"
     halloween_b =               "Bootown - Circus Tent"
     halloween_c =               "Bootown - Lake"
     halloween_d =               "Bootown - Mausoleum"
@@ -315,8 +314,7 @@ class Game(BaseEnum):
     equip_morph_target =    "Selected Morph"
 
     # Environment
-    shortcut_studio_ac =    "Shortcut to Specter TV Studio - Buildings Set"
-    shortcut_studio_ad =    "Shortcut to Specter TV Studio - Moon Set"
+    shortcut_studio_ad =    "Shortcut to Specter TV Studio - Buildings Set"
 
     @classmethod
     def get_buttons_by_internal_index(cls) -> Sequence[str]:

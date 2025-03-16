@@ -81,8 +81,8 @@ def has_keys(keys : int):
 def is_event_invoked(state : CollectionState, player : int, event_name : str):
     return state.has(event_name, player)
 
-def event_invoked(even_name : str):
-    return lambda state, player : is_event_invoked(state, player, even_name)
+def event_invoked(event_name : str):
+    return lambda state, player : is_event_invoked(state, player, event_name)
 
 ### [< --- WRAPPER SHORTHAND --- >]
 class AccessRule:

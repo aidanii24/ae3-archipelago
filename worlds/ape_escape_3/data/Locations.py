@@ -69,6 +69,7 @@ class MonkeyLocation(AE3LocationMeta):
         return Location(player, self.name, self.loc_id, parent)
 
 class EventMeta(AE3LocationMeta):
+    """Base Class for all events."""
     def __init__(self, name : str, *rules : Callable | frozenset[Callable] | Set[frozenset[Callable]] | Rulesets):
         self.name = name
         self.loc_id = 0x0
@@ -451,11 +452,11 @@ MONKEYS_STUDIO : Sequence[str] = [
 ]
 
 # Halloween
-MONKEYS_HALLOWEEN_A : Sequence[str] = [
+MONKEYS_HALLOWEEN_A1 : Sequence[str] = [
     Loc.halloween_monkichiro.value
 ]
 
-MONKEYS_HALLOWEEN_A1 : Sequence[str] = [
+MONKEYS_HALLOWEEN_A : Sequence[str] = [
     Loc.halloween_leomon.value, Loc.halloween_uikkun.value, Loc.halloween_take_ukita.value
 ]
 
@@ -482,8 +483,8 @@ MONKEYS_HALLOWEEN_F : Sequence[str] = [
 ]
 
 MONKEYS_HALLOWEEN : Sequence[str] = [
-    *MONKEYS_HALLOWEEN_A, *MONKEYS_HALLOWEEN_B, *MONKEYS_HALLOWEEN_C, *MONKEYS_HALLOWEEN_D, *MONKEYS_HALLOWEEN_E,
-    *MONKEYS_HALLOWEEN_F,
+    *MONKEYS_HALLOWEEN_A1, *MONKEYS_HALLOWEEN_A, *MONKEYS_HALLOWEEN_B, *MONKEYS_HALLOWEEN_C, *MONKEYS_HALLOWEEN_D,
+    *MONKEYS_HALLOWEEN_E,  *MONKEYS_HALLOWEEN_F
 ]
 
 # Western
@@ -531,11 +532,7 @@ MONKEYS_MASTER : Sequence[str] = [
     *MONKEYS_BOSSES
 ]
 
-EVENTS_STUDIO_C : Sequence[EventMeta] = [
-    EventMeta(Game.shortcut_studio_ac.value, AccessRule.SHOOT)
-]
-
-EVENTS_STUDIO_D : Sequence[EventMeta] = [
+EVENTS_STUDIO_A1 : Sequence[EventMeta] = [
     EventMeta(Game.shortcut_studio_ad.value)
 ]
 
@@ -583,8 +580,7 @@ MONKEYS_INDEX : dict[str, Sequence] = {
 }
 
 EVENTS_INDEX : dict[str, Sequence[EventMeta]] = {
-    Stage.studio_c.value        : EVENTS_STUDIO_C,
-    Stage.studio_d.value        : EVENTS_STUDIO_D,
+    Stage.studio_a1.value        : EVENTS_STUDIO_A1
 }
 
 # TODO - Rename this

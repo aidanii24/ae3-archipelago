@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Callable, Dict
 from BaseClasses import CollectionState, Entrance, Location, Region
 
 from .data.Stages import STAGES_MASTER
-from .data.Locations import EventMeta, MonkeyLocation, MONKEYS_INDEX, EVENTS_INDEX
+from .data.Locations import MonkeyLocation, MONKEYS_INDEX, EVENTS_INDEX
 from .data.Logic import Rulesets
 from .data.Rules import RuleType, Casual
 
@@ -102,8 +102,6 @@ def create_regions(world : "AE3World"):
 
     # Define Regions
     for stage in stages.values():
-
-        # Connect Regions
         connections : dict[Region, Rulesets] = {}
         if rule.entrances[stage.name]:
             for entrance in rule.entrances[stage.name]:
@@ -134,6 +132,8 @@ def create_regions(world : "AE3World"):
         if stage.name in EVENTS_INDEX:
             for event in EVENTS_INDEX[stage.name]:
                 loc : Location = event.to_event_location(world.player, stage)
+
+                stage.locations.append(loc)
 
     # Send Regions to Archipelago
     world.multiworld.regions.extend(list(stages.values()))
