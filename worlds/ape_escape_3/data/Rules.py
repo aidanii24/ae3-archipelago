@@ -39,9 +39,23 @@ class Casual(RuleType):
     knowledge of it.
     """
     monkey_rules = {
+        # Seaside
         Loc.seaside_morella.value           : RuleWrap(AccessRule.SHOOT, AccessRule.FLY,
                                                        frozenset({AccessRule.GENIE, AccessRule.CLUB})),
-        Loc.castle_monga.value              : RuleWrap(AccessRule.SHOOT, AccessRule.FLY)
+
+        # Castle
+        Loc.castle_monga.value              : RuleWrap(AccessRule.SHOOT, AccessRule.FLY),
+
+        # Ciscocity
+        Loc.ciscocity_ukkilun.value         : RuleWrap(AccessRule.DASH, AccessRule.RCC, AccessRule.SHOOT),
+
+        # Studio
+        Loc.studio_minoh.value              : RuleWrap(AccessRule.SHOOT, AccessRule.FLY),
+        Loc.studio_monta.value              : RuleWrap(AccessRule.SHOOT, AccessRule.FLY),
+
+        # Halloween
+        Loc.halloween_ukkisuke.value        : RuleWrap(AccessRule.SWIM, AccessRule.HERO),
+        Loc.halloween_chibi_sally.value     : RuleWrap(AccessRule.SWIM, AccessRule.HERO)
     }
 
     entrances = {
@@ -57,7 +71,11 @@ class Casual(RuleType):
                                                StageEntranceMeta(Stage.boss1.value, has_keys(1)),
 
                                                StageEntranceMeta(Stage.ciscocity_a.value, has_keys(2)),
-                                               StageEntranceMeta(Stage.studio_a.value, has_keys(2))],
+                                               StageEntranceMeta(Stage.studio_a.value, has_keys(2)),
+                                               StageEntranceMeta(Stage.halloween_a1.value, has_keys(2)),
+                                               StageEntranceMeta(Stage.western_a.value, has_keys(2)),
+
+                                               StageEntranceMeta(Stage.boss2.value, has_keys(3))],
 
         Stage.travel_station_b.value        : [StageEntranceMeta(Stage.travel_station_a.value)],
 
@@ -126,5 +144,39 @@ class Casual(RuleType):
                                                StageEntranceMeta(Stage.studio_c.value)],
         Stage.studio_f.value                : [StageEntranceMeta(Stage.studio_b.value),
                                                StageEntranceMeta(Stage.studio_d.value)],
-        Stage.studio_g.value                : [StageEntranceMeta(Stage.studio_d.value)]
+        Stage.studio_g.value                : [StageEntranceMeta(Stage.studio_d.value)],
+
+        # Halloween
+        Stage.halloween_a1.value            : [StageEntranceMeta(Stage.halloween_a.value,
+                                                                 AccessRule.SWIM, AccessRule.HERO)],
+        Stage.halloween_a.value             : [StageEntranceMeta(Stage.halloween_a1.value,
+                                                                 AccessRule.SWIM, AccessRule.HERO),
+                                               StageEntranceMeta(Stage.halloween_b.value)],
+        Stage.halloween_b.value             : [StageEntranceMeta(Stage.halloween_a.value),
+                                               StageEntranceMeta(Stage.halloween_f.value)],
+        Stage.halloween_c.value             : [StageEntranceMeta(Stage.halloween_c1.value),
+                                               StageEntranceMeta(Stage.halloween_d.value)],
+        Stage.halloween_c1.value            : [StageEntranceMeta(Stage.halloween_c.value,
+                                                                 AccessRule.SWIM, AccessRule.HERO),
+                                               StageEntranceMeta(Stage.halloween_f.value)],
+        Stage.halloween_d.value             : [StageEntranceMeta(Stage.halloween_c.value),
+                                               StageEntranceMeta(Stage.halloween_e.value, AccessRule.MONKEY)],
+        Stage.halloween_e.value             : [StageEntranceMeta(Stage.halloween_d.value)],
+        Stage.halloween_f.value             : [StageEntranceMeta(Stage.halloween_b.value),
+                                               StageEntranceMeta(Stage.halloween_c1.value)],
+
+        # Western
+        Stage.western_a.value               : [StageEntranceMeta(Stage.western_b.value),
+                                               StageEntranceMeta(Stage.western_f.value)],
+        Stage.western_b.value               : [StageEntranceMeta(Stage.western_a.value)],
+        Stage.western_c.value               : [StageEntranceMeta(Stage.western_e.value)],
+        Stage.western_d.value               : [StageEntranceMeta(Stage.western_e.value),
+                                               StageEntranceMeta(Stage.western_f.value)],
+        Stage.western_e.value               : [StageEntranceMeta(Stage.western_d.value),
+                                               StageEntranceMeta(Stage.western_c.value, AccessRule.MONKEY)],
+        Stage.western_f.value               : [StageEntranceMeta(Stage.western_a.value),
+                                               StageEntranceMeta(Stage.western_d.value)],
+
+        # Boss2
+        Stage.boss2.value                   : None
     }

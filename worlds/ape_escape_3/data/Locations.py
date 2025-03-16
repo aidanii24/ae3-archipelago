@@ -510,7 +510,7 @@ MONKEYS_WESTERN_E : Sequence[str] = [
 ]
 
 MONKEYS_WESTERN_F : Sequence[str] = [
-    Loc.western_ukkia_munbo.value, Loc.western_mon_johny
+    Loc.western_ukkia_munbo.value, Loc.western_mon_johny.value
 ]
 
 MONKEYS_WESTERN : Sequence[str] = [
@@ -524,7 +524,7 @@ MONKEYS_BOSS2 : Sequence[str] = [
 ]
 
 MONKEYS_BOSSES : Sequence[str] = [
-    *MONKEYS_BOSS1
+    *MONKEYS_BOSS1, *MONKEYS_BOSS2
 ]
 
 MONKEYS_MASTER : Sequence[str] = [
@@ -576,7 +576,24 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.studio_d.value        : MONKEYS_STUDIO_D,
     Stage.studio_e.value        : MONKEYS_STUDIO_E,
     Stage.studio_f.value        : MONKEYS_STUDIO_F,
-    Stage.studio_g.value        : MONKEYS_STUDIO_G
+    Stage.studio_g.value        : MONKEYS_STUDIO_G,
+
+    # Halloween
+    Stage.halloween_a1.value    : MONKEYS_HALLOWEEN_A1,
+    Stage.halloween_a.value     : MONKEYS_HALLOWEEN_A,
+    Stage.halloween_b.value     : MONKEYS_HALLOWEEN_B,
+    Stage.halloween_c.value     : MONKEYS_HALLOWEEN_C,
+    Stage.halloween_d.value     : MONKEYS_HALLOWEEN_D,
+    Stage.halloween_e.value     : MONKEYS_HALLOWEEN_E,
+    Stage.halloween_f.value     : MONKEYS_HALLOWEEN_F,
+
+    # Western
+    Stage.western_a.value       : MONKEYS_WESTERN_A,
+    Stage.western_b.value       : MONKEYS_WESTERN_B,
+    Stage.western_c.value       : MONKEYS_WESTERN_C,
+    Stage.western_d.value       : MONKEYS_WESTERN_D,
+    Stage.western_e.value       : MONKEYS_WESTERN_E,
+    Stage.western_f.value       : MONKEYS_WESTERN_F,
 }
 
 EVENTS_INDEX : dict[str, Sequence[EventMeta]] = {

@@ -386,8 +386,9 @@ STAGES_STUDIO : Sequence[str] = [
 ]
 
 STAGES_HALLOWEEN : Sequence[str] = [
-    Stage.halloween_a.value, Stage.halloween_a1.value, Stage.halloween_b.value, Stage.halloween_c.value,
-    Stage.halloween_d.value, Stage.halloween_e.value, Stage.halloween_e.value, Stage.halloween_f.value
+    Stage.halloween_a1.value, Stage.halloween_a.value, Stage.halloween_b.value, Stage.halloween_c.value,
+    Stage.halloween_c1.value, Stage.halloween_d.value, Stage.halloween_e.value, Stage.halloween_e.value,
+    Stage.halloween_f.value
 ]
 
 STAGES_WESTERN : Sequence[str] = [
@@ -396,17 +397,15 @@ STAGES_WESTERN : Sequence[str] = [
 ]
 
 STAGES_BOSSES : Sequence[str] = [
-    Stage.boss1.value
+    Stage.boss1.value, Stage.boss2.value
 ]
 
 STAGES_MASTER : Sequence[str] = [
     *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY, *STAGES_STUDIO,
-    # *STAGES_HALLOWEEN, *STAGES_WESTERN,
-    *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB
+    *STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB
 ]
 
 STAGES_INDEX : Sequence[Sequence[str]] = [
     STAGES_MASTER, STAGES_ZERO, STAGES_SEASIDE, STAGES_WOODS, STAGES_CASTLE, STAGES_CISCOCITY, STAGES_STUDIO,
-    ##STAGES_HALLOWEEN, STAGES_WESTERN,
-    STAGES_BOSSES, STAGES_TITLE, STAGES_HUB,
+    STAGES_HALLOWEEN, STAGES_WESTERN, STAGES_BOSSES, STAGES_TITLE, STAGES_HUB,
 ]

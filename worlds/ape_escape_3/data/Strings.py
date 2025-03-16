@@ -264,6 +264,7 @@ class Stage(BaseEnum):
     halloween_a =               "Bootown - Carnival"
     halloween_a1 =              "Bootown - Carnival Canal"
     halloween_b =               "Bootown - Circus Tent"
+    halloween_c1 =              "Bootown - Lake Pier"
     halloween_c =               "Bootown - Lake"
     halloween_d =               "Bootown - Mausoleum"
     halloween_e =               "Bootown - Break Room"
