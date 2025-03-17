@@ -423,7 +423,7 @@ class Game(BaseEnum):
     # Environment
     shortcut_studio_ad =    "Shortcut to Specter TV Studio - Buildings Set"
 
-    shortcut_edotown_eb = "Shoercut to The Emperor's Castle - Castle Grounds"
+    shortcut_edotown_eb = "Shortcut to The Emperor's Castle - Castle Grounds"
 
     @classmethod
     def get_buttons_by_internal_index(cls) -> Sequence[str]:
