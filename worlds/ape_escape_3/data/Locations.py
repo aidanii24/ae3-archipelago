@@ -523,6 +523,18 @@ MONKEYS_BOSS2 : Sequence[str] = [
     Loc.boss_monkey_blue.value
 ]
 
+MONKEYS_ONSEN_A : Sequence[str] = [
+
+]
+MONKEYS_ONSEN_A1 : Sequence[str] = []
+MONKEYS_ONSEN_A2 : Sequence[str] = []
+MONKEYS_ONSEN_B : Sequence[str] = []
+MONKEYS_ONSEN_B1 : Sequence[str] = []
+MONKEYS_ONSEN_B2 : Sequence[str] = []
+MONKEYS_ONSEN_C : Sequence[str] = []
+MONKEYS_ONSEN_D : Sequence[str] = []
+MONKEYS_ONSEN_E : Sequence[str] = []
+
 MONKEYS_BOSSES : Sequence[str] = [
     *MONKEYS_BOSS1, *MONKEYS_BOSS2
 ]
