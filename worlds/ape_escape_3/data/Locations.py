@@ -524,30 +524,124 @@ MONKEYS_BOSS2 : Sequence[str] = [
 ]
 
 MONKEYS_ONSEN_A : Sequence[str] = [
-
+    Loc.onsen_chabimon.value, Loc.onsen_ukki_ichiro.value
 ]
-MONKEYS_ONSEN_A1 : Sequence[str] = []
-MONKEYS_ONSEN_A2 : Sequence[str] = []
-MONKEYS_ONSEN_B : Sequence[str] = []
-MONKEYS_ONSEN_B1 : Sequence[str] = []
-MONKEYS_ONSEN_B2 : Sequence[str] = []
-MONKEYS_ONSEN_C : Sequence[str] = []
-MONKEYS_ONSEN_D : Sequence[str] = []
-MONKEYS_ONSEN_E : Sequence[str] = []
+
+MONKEYS_ONSEN_A1 : Sequence[str] = [
+    Loc.onsen_michiyan.value, Loc.onsen_tome_san.value
+]
+
+MONKEYS_ONSEN_A2 : Sequence[str] = [
+    Loc.onsen_kiichiro.value, Loc.onsen_saru_sam.value
+]
+
+MONKEYS_ONSEN_B : Sequence[str] = [
+    Loc.onsen_ukki_emon.value, Loc.onsen_moki.value, Loc.onsen_ukimi.value, Loc.onsen_domobeh.value
+]
+
+MONKEYS_ONSEN_C : Sequence[str] = [
+    Loc.onsen_sam_san.value, Loc.onsen_donkichi.value, Loc.onsen_minokichi.value, Loc.onsen_tatabo.value
+]
+
+MONKEYS_ONSEN_D : Sequence[str] = [
+    Loc.onsen_michiro.value, Loc.onsen_gen_san.value
+]
+
+MONKEYS_ONSEN_D1 : Sequence[str] = [
+    Loc.onsen_kimi_san.value
+]
+
+MONKEYS_ONSEN_E : Sequence[str] = [
+    Loc.onsen_mujakin.value, Loc.onsen_mihachin.value, Loc.onsen_fuji_chan.value
+]
+
+MONKEYS_ONSEN : Sequence[str] = [
+    *MONKEYS_ONSEN_A, *MONKEYS_ONSEN_A1, *MONKEYS_ONSEN_A2, *MONKEYS_ONSEN_B, *MONKEYS_ONSEN_C, *MONKEYS_ONSEN_D,
+    *MONKEYS_ONSEN_D1, *MONKEYS_ONSEN_E
+]
+
+MONKEYS_SNOWFESTA_A : Sequence[str] = [
+    Loc.snowfesta_kimisuke.value, Loc.snowfesta_konzo.value, Loc.snowfesta_saburota.value, Loc.snowfesta_mitsuro.value,
+    Loc.snowfesta_takuo.value, Loc.snowfesta_konkichi.value
+]
+
+MONKEYS_SNOWFESTA_B : Sequence[str] = [
+    Loc.snowfesta_fumikichi.value, Loc.snowfesta_pipotron_yellow.value
+]
+
+MONKEYS_SNOWFESTA_C : Sequence[str] = [
+    Loc.snowfesta_tamubeh.value, Loc.snowfesta_kimikichi.value, Loc.snowfesta_gonbeh.value
+]
+
+MONKEYS_SNOWFESTA_D : Sequence[str] = [
+    Loc.snowfesta_shimmy.value
+]
+
+MONKEYS_SNOWFESTA_E : Sequence[str] = [
+    Loc.snowfesta_mako.value, Loc.snowfesta_miko.value, Loc.snowfesta_tamio.value, Loc.snowfesta_jeitan.value,
+    Loc.snowfesta_ukki_jii.value
+]
+
+MONKEYS_SNOWFESTA_F : Sequence[str] = [
+    Loc.snowfesta_akki_bon.value
+]
+
+MONKEYS_SNOWFESTA_G : Sequence[str] = [
+    Loc.snowfesta_kimi_chan.value, Loc.snowfesta_sae_chan.value, Loc.snowfesta_tassan.value,
+    Loc.snowfesta_tomokun.value
+]
+
+MONKEYS_SNOWFESTA : Sequence[str] = [
+    *MONKEYS_SNOWFESTA_A, *MONKEYS_SNOWFESTA_B, *MONKEYS_SNOWFESTA_C, *MONKEYS_SNOWFESTA_D, *MONKEYS_SNOWFESTA_E,
+    *MONKEYS_SNOWFESTA_F, *MONKEYS_SNOWFESTA_G,
+]
+
+MONKEYS_EDOTOWN_A : Sequence[str] = [
+    Loc.edotown_pipo_tobi.value, Loc.edotown_masan.value, Loc.edotown_mohachi.value
+]
+
+MONKEYS_EDOTOWN_B : Sequence[str] = [
+    Loc.edotown_mon_ninpo.value, Loc.edotown_yosio.value, Loc.edotown_fatty_mcfats.value
+]
+
+MONKEYS_EDOTOWN_C : Sequence[str] = [
+    Loc.edotown_tomoku_chan.value, Loc.edotown_uziko.value, Loc.edotown_gp.value
+]
+
+MONKEYS_EDOTOWN_C1 : Sequence[str] = [
+    Loc.edotown_kikimaru.value
+]
+
+MONKEYS_EDOTOWN_D : Sequence[str] = [
+    Loc.edotown_walter.value, Loc.edotown_monkibeth.value, Loc.edotown_babuzo.value, Loc.edotown_fishy_feet.value,
+    Loc.edotown_pipo_torin.value
+]
+
+MONKEYS_EDOTOWN_E : Sequence[str] = [
+    Loc.edotown_tomi.value, Loc.edotown_master_pan.value
+]
+
+MONKEYS_EDOTOWN_F : Sequence[str] = [
+    Loc.edotown_monchin_chi.value, Loc.edotown_masachi.value, Loc.edotown_golota.value, Loc.edotown_kinsuke.value
+]
+
+MONKEYS_EDOTOWN : Sequence[str] = [
+    *MONKEYS_EDOTOWN_A, *MONKEYS_EDOTOWN_B, *MONKEYS_EDOTOWN_C, *MONKEYS_EDOTOWN_D, *MONKEYS_EDOTOWN_E,
+    *MONKEYS_EDOTOWN_F,
+]
+
+MONKEYS_BOSS3 : Sequence[str] = [
+    Loc.boss_monkey_yellow.value
+]
 
 MONKEYS_BOSSES : Sequence[str] = [
-    *MONKEYS_BOSS1, *MONKEYS_BOSS2
+    *MONKEYS_BOSS1, *MONKEYS_BOSS2, *MONKEYS_BOSS3
 ]
 
 MONKEYS_MASTER : Sequence[str] = [
     *MONKEYS_ZERO, *MONKEYS_SEASIDE, *MONKEYS_WOODS, *MONKEYS_CASTLE, *MONKEYS_CISCOCITY, *MONKEYS_STUDIO,
-    *MONKEYS_HALLOWEEN, *MONKEYS_WESTERN, *MONKEYS_BOSSES
+    *MONKEYS_HALLOWEEN, *MONKEYS_WESTERN, *MONKEYS_ONSEN, *MONKEYS_SNOWFESTA, *MONKEYS_EDOTOWN, *MONKEYS_BOSSES
 ]
-
-EVENTS_STUDIO_A1 : Sequence[EventMeta] = [
-    EventMeta(Game.shortcut_studio_ad.value)
-]
-
 MONKEYS_INDEX : dict[str, Sequence] = {
     # Zero
     Stage.zero.value            : MONKEYS_ZERO,
@@ -608,13 +702,52 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.western_f.value       : MONKEYS_WESTERN_F,
 
     # Boss2
-    Stage.boss2.value           : MONKEYS_BOSS2
+    Stage.boss2.value           : MONKEYS_BOSS2,
+
+    # Onsen
+    Stage.onsen_a.value         : MONKEYS_ONSEN_A,
+    Stage.onsen_a1.value        : MONKEYS_ONSEN_A1,
+    Stage.onsen_a2.value        : MONKEYS_ONSEN_A2,
+    Stage.onsen_b.value         : MONKEYS_ONSEN_B,
+    Stage.onsen_c.value         : MONKEYS_ONSEN_C,
+    Stage.onsen_d.value         : MONKEYS_ONSEN_D,
+    Stage.onsen_d1.value        : MONKEYS_ONSEN_D1,
+    Stage.onsen_e.value         : MONKEYS_ONSEN_E,
+
+    # Snowfesta
+    Stage.snowfesta_a.value     : MONKEYS_SNOWFESTA_A,
+    Stage.snowfesta_b.value     : MONKEYS_SNOWFESTA_B,
+    Stage.snowfesta_c.value     : MONKEYS_SNOWFESTA_C,
+    Stage.snowfesta_d.value     : MONKEYS_SNOWFESTA_D,
+    Stage.snowfesta_e.value     : MONKEYS_SNOWFESTA_E,
+    Stage.snowfesta_f.value     : MONKEYS_SNOWFESTA_F,
+    Stage.snowfesta_g.value     : MONKEYS_SNOWFESTA_G,
+
+    # Edotown
+    Stage.edotown_a.value       : MONKEYS_EDOTOWN_A,
+    Stage.edotown_b.value       : MONKEYS_EDOTOWN_B,
+    Stage.edotown_c.value       : MONKEYS_EDOTOWN_C,
+    Stage.edotown_c1.value       : MONKEYS_EDOTOWN_C1,
+    Stage.edotown_d.value       : MONKEYS_EDOTOWN_D,
+    Stage.edotown_e.value       : MONKEYS_EDOTOWN_E,
+    Stage.edotown_f.value       : MONKEYS_EDOTOWN_F,
+
+    #Boss3
+    Stage.boss3.value           : MONKEYS_BOSS3,
 }
+
+EVENTS_STUDIO_A1 : Sequence[EventMeta] = [
+    EventMeta(Game.shortcut_studio_ad.value)
+]
+
+EVENTS_EDOTOWN_E : Sequence[EventMeta] = [
+    EventMeta(Game.shortcut_edotown_eb.value)
+]
 
 EVENTS_INDEX : dict[str, Sequence[EventMeta]] = {
-    Stage.studio_a1.value        : EVENTS_STUDIO_A1
+    Stage.studio_a1.value        : EVENTS_STUDIO_A1,
+    Stage.edotown_e.value        : EVENTS_EDOTOWN_E
 }
 
-# TODO - Rename this
 def generate_name_to_id() -> dict[str, int]:
     return { name : MonkeyLocation(name).loc_id for name in MONKEYS_MASTER }

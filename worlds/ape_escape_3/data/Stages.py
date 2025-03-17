@@ -396,16 +396,34 @@ STAGES_WESTERN : Sequence[str] = [
     Stage.western_f.value
 ]
 
+STAGES_ONSEN : Sequence[str] = [
+    Stage.onsen_a.value, Stage.onsen_a1.value, Stage.onsen_a2.value, Stage.onsen_b.value, Stage.onsen_b1.value,
+    Stage.onsen_b.value, Stage.onsen_b2.value, Stage.onsen_c.value, Stage.onsen_d.value, Stage.onsen_d1.value,
+    Stage.onsen_e.value
+]
+
+STAGES_SNOWFESTA : Sequence[str] = [
+    Stage.snowfesta_a.value, Stage.snowfesta_b.value, Stage.snowfesta_c.value, Stage.snowfesta_d.value,
+    Stage.snowfesta_e.value, Stage.snowfesta_f.value, Stage.snowfesta_g.value
+]
+
+STAGES_EDOTOWN : Sequence[str] = [
+    Stage.edotown_a.value, Stage.edotown_b1.value, Stage.edotown_b.value, Stage.edotown_c1.value,
+    Stage.edotown_c.value, Stage.edotown_d.value, Stage.edotown_e.value, Stage.edotown_f.value
+]
+
 STAGES_BOSSES : Sequence[str] = [
-    Stage.boss1.value, Stage.boss2.value
+    Stage.boss1.value, Stage.boss2.value, Stage.boss3.value
 ]
 
 STAGES_MASTER : Sequence[str] = [
     *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY, *STAGES_STUDIO,
-    *STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB
+    *STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_ONSEN, *STAGES_SNOWFESTA, *STAGES_EDOTOWN, *STAGES_BOSSES,
+    *STAGES_TITLE, *STAGES_HUB
 ]
 
 STAGES_INDEX : Sequence[Sequence[str]] = [
     STAGES_MASTER, STAGES_ZERO, STAGES_SEASIDE, STAGES_WOODS, STAGES_CASTLE, STAGES_CISCOCITY, STAGES_STUDIO,
-    STAGES_HALLOWEEN, STAGES_WESTERN, STAGES_BOSSES, STAGES_TITLE, STAGES_HUB,
+    STAGES_HALLOWEEN, STAGES_WESTERN, STAGES_ONSEN, STAGES_SNOWFESTA, STAGES_EDOTOWN, STAGES_BOSSES, STAGES_TITLE,
+    STAGES_HUB,
 ]

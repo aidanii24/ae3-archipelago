@@ -362,6 +362,7 @@ class Stage(BaseEnum):
     onsen_b2 =                  "The Hot Springs - Magma Room Exit"
     onsen_c =                   "The Hot Springs - Break Room"
     onsen_d =                   "The Hot Springs - Magma Room"
+    onsen_d1 =                  "The Hot Springs - Magma Stream"
     onsen_e =                   "The Hot Springs - Water Park"
 
     snowfesta =                 "Winterville"
@@ -378,6 +379,7 @@ class Stage(BaseEnum):
     edotown_b =                 "The Emperor's Castle - Castle Grounds"
     edotown_b1 =                "The Emperor's Castle - Castle Wall"
     edotown_c =                 "The Emperor's Castle - Castle Interior"
+    edotown_c1 =                "The Emperor's Castle - Castle Interior Entrance"
     edotown_d =                 "The Emperor's Castle - Castle Roofs"
     edotown_e =                 "The Emperor's Castle - Japanese Room"
     edotown_f =                 "The Emperor's Castle - Break Room"
@@ -420,6 +422,8 @@ class Game(BaseEnum):
 
     # Environment
     shortcut_studio_ad =    "Shortcut to Specter TV Studio - Buildings Set"
+
+    shortcut_edotown_eb = "Shoercut to The Emperor's Castle - Castle Grounds"
 
     @classmethod
     def get_buttons_by_internal_index(cls) -> Sequence[str]:

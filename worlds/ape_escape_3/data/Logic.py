@@ -62,6 +62,9 @@ def can_rcc(state : CollectionState, player : int):
     return state.has(Itm.gadget_rcc.value, player)
 
 # Morph Checks
+def can_ninja(state : CollectionState, player : int):
+    return state.has(Itm.morph_ninja.value, player)
+
 def can_genie(state : CollectionState, player : int):
     return state.has(Itm.morph_magician.value, player)
 
@@ -106,6 +109,7 @@ class AccessRule:
     RCC = can_rcc
 
     # Morph
+    NINJA = can_ninja
     GENIE = can_genie
     HERO = can_hero
     MONKEY = can_monkey
