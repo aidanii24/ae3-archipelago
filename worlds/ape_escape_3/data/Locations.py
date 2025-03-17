@@ -626,8 +626,8 @@ MONKEYS_EDOTOWN_F : Sequence[str] = [
 ]
 
 MONKEYS_EDOTOWN : Sequence[str] = [
-    *MONKEYS_EDOTOWN_A, *MONKEYS_EDOTOWN_B, *MONKEYS_EDOTOWN_C, *MONKEYS_EDOTOWN_D, *MONKEYS_EDOTOWN_E,
-    *MONKEYS_EDOTOWN_F,
+    *MONKEYS_EDOTOWN_A, *MONKEYS_EDOTOWN_B, *MONKEYS_EDOTOWN_C, *MONKEYS_EDOTOWN_C1, *MONKEYS_EDOTOWN_D,
+    *MONKEYS_EDOTOWN_E, *MONKEYS_EDOTOWN_F,
 ]
 
 MONKEYS_BOSS3 : Sequence[str] = [
@@ -727,7 +727,7 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.edotown_a.value       : MONKEYS_EDOTOWN_A,
     Stage.edotown_b.value       : MONKEYS_EDOTOWN_B,
     Stage.edotown_c.value       : MONKEYS_EDOTOWN_C,
-    Stage.edotown_c1.value       : MONKEYS_EDOTOWN_C1,
+    Stage.edotown_c1.value      : MONKEYS_EDOTOWN_C1,
     Stage.edotown_d.value       : MONKEYS_EDOTOWN_D,
     Stage.edotown_e.value       : MONKEYS_EDOTOWN_E,
     Stage.edotown_f.value       : MONKEYS_EDOTOWN_F,
