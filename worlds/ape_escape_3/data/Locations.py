@@ -523,6 +523,7 @@ MONKEYS_BOSS2 : Sequence[str] = [
     Loc.boss_monkey_blue.value
 ]
 
+# Onsen
 MONKEYS_ONSEN_A : Sequence[str] = [
     Loc.onsen_chabimon.value, Loc.onsen_ukki_ichiro.value
 ]
@@ -560,6 +561,7 @@ MONKEYS_ONSEN : Sequence[str] = [
     *MONKEYS_ONSEN_D1, *MONKEYS_ONSEN_E
 ]
 
+# Snowfesta
 MONKEYS_SNOWFESTA_A : Sequence[str] = [
     Loc.snowfesta_kimisuke.value, Loc.snowfesta_konzo.value, Loc.snowfesta_saburota.value, Loc.snowfesta_mitsuro.value,
     Loc.snowfesta_takuo.value, Loc.snowfesta_konkichi.value
@@ -596,6 +598,7 @@ MONKEYS_SNOWFESTA : Sequence[str] = [
     *MONKEYS_SNOWFESTA_F, *MONKEYS_SNOWFESTA_G,
 ]
 
+# Edotown
 MONKEYS_EDOTOWN_A : Sequence[str] = [
     Loc.edotown_pipo_tobi.value, Loc.edotown_masan.value, Loc.edotown_mohachi.value
 ]
@@ -630,8 +633,88 @@ MONKEYS_EDOTOWN : Sequence[str] = [
     *MONKEYS_EDOTOWN_E, *MONKEYS_EDOTOWN_F,
 ]
 
+# Boss3
 MONKEYS_BOSS3 : Sequence[str] = [
     Loc.boss_monkey_yellow.value
+]
+
+# Heaven
+MONKEYS_HEAVEN_A : Sequence[str] = [
+    Loc.heaven_ukkichi.value, Loc.heaven_chomon.value, Loc.heaven_ukkido.value
+]
+
+MONKEYS_HEAVEN_B : Sequence[str] = [
+    Loc.heaven_kyamio.value, Loc.heaven_talupon.value, Loc.heaven_bokitan.value, Loc.heaven_tami.value,
+    Loc.heaven_micchino.value,
+]
+
+MONKEYS_HEAVEN_C : Sequence[str] = [
+    Loc.heaven_talurin.value, Loc.heaven_occhimon.value, Loc.heaven_mikkurin.value, Loc.heaven_kicchino.value,
+    Loc.heaven_kimurin.heaven_kicchino, Loc.heaven_sakkano.value
+]
+
+MONKEYS_HEAVEN_D : Sequence[str] = [
+    Loc.heaven_camino.value, Loc.heaven_valuccha.value
+]
+
+MONKEYS_HEAVEN_E : Sequence[str] = [
+    Loc.heaven_pisuke.value, Loc.heaven_kansuke.value, Loc.heaven_pohta.value, Loc.heaven_keisuke.value
+]
+
+MONKEYS_HEAVEN : Sequence[str] = [
+    *MONKEYS_HEAVEN_A, *MONKEYS_HEAVEN_B, *MONKEYS_HEAVEN_C, *MONKEYS_HEAVEN_D, *MONKEYS_HEAVEN_E
+]
+
+# Toyhouse
+MONKEYS_TOYHOUSE_A : Sequence[str] = [
+    Loc.toyhouse_pikkori.value
+]
+
+MONKEYS_TOYHOUSE_B : Sequence[str] = []
+
+MONKEYS_TOYHOUSE_C : Sequence[str] = []
+
+MONKEYS_TOYHOUSE_D : Sequence[str] = []
+
+MONKEYS_TOYHOUSE_E : Sequence[str] = []
+
+MONKEYS_TOYHOUSE_F : Sequence[str] = []
+
+MONKEYS_TOYHOUSE_G : Sequence[str] = []
+
+MONKEYS_TOYHOUSE_H : Sequence[str] = []
+
+MONKEYS_TOYHOUSE : Sequence[str] = []
+
+# Iceland
+MONKEYS_ICELAND_A : Sequence[str] = []
+
+MONKEYS_ICELAND_B : Sequence[str] = []
+
+MONKEYS_ICELAND_C : Sequence[str] = []
+
+MONKEYS_ICELAND_D : Sequence[str] = []
+
+MONKEYS_ICELAND_E : Sequence[str] = []
+
+MONKEYS_ICELAND : Sequence[str] = []
+
+# Arabian
+MONKEYS_ARABIAN_A : Sequence[str] = []
+
+MONKEYS_ARABIAN_B : Sequence[str] = []
+
+MONKEYS_ARABIAN_C : Sequence[str] = []
+
+MONKEYS_ARABIAN_D : Sequence[str] = []
+
+MONKEYS_ARABIAN_E : Sequence[str] = []
+
+MONKEYS_ARABIAN : Sequence[str] = []
+
+# Boss4
+MONKEYS_BOSS4 : Sequence[str] = [
+    Loc.boss_monkey_pink.value
 ]
 
 MONKEYS_BOSSES : Sequence[str] = [

@@ -68,7 +68,10 @@ class Casual(RuleType):
 
         # Edotown
         Loc.edotown_walter.value            : RuleWrap(AccessRule.NINJA),
-        Loc.edotown_monkibeth.value         : RuleWrap(AccessRule.NINJA)
+        Loc.edotown_monkibeth.value         : RuleWrap(AccessRule.NINJA),
+
+        # Heaven
+        Loc.heaven_chomon.value             : RuleWrap(AccessRule.RCC),
 
     }
 

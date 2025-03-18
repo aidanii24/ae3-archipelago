@@ -283,6 +283,101 @@ class Loc(BaseEnum):
     ## boss3
     boss_monkey_yellow          = "Monkey Yellow"
 
+    ## heaven
+    heaven_ukkichi              = "Ukkichi"
+    heaven_chomon               = "Chomon"
+    heaven_ukkido               = "Ukkido"
+    heaven_kyamio               = "Kyamio"
+    heaven_talupon              = "Talupon"
+    heaven_bokitan              = "Bokitan"
+    heaven_tami                 = "Tami"
+    heaven_micchino             = "Micchino"
+    heaven_talurin              = "Talurin"
+    heaven_occhimon             = "Occhimon"
+    heaven_mikkurin             = "Mikkurin"
+    heaven_kicchino             = "Kicchino"
+    heaven_kimurin              = "Kimurin"
+    heaven_sakkano              = "Sakkano"
+    heaven_camino               = "Camino"
+    heaven_valuccha             = "Valuccha"
+    heaven_pisuke               = "Pisuke"
+    heaven_kansuke              = "Kansuke"
+    heaven_pohta                = "Pohta"
+    heaven_keisuke              = "Keisuke"
+
+    ## toyhouse
+    toyhouse_pikkori            = "Pikkori"
+    toyhouse_talukki            = "TalUkki"
+    toyhouse_pinkino            = "Pinkino"
+    toyhouse_bon_mota           = "Bon Mota"
+    toyhouse_bon_verna          = "Bon Verna"
+    toyhouse_bon_papa           = "Bon Papa"
+    toyhouse_bon_mama           = "Bon Mama"
+    toyhouse_kalkin             = "Kalkin"
+    toyhouse_pakun              = "Pakun"
+    toyhouse_ukki_x             = "Ukki X"
+    toyhouse_mon_gareji         = "Mon Gareji"
+    toyhouse_shouji             = "Shouji"
+    toyhouse_woo_makka          = "Woo Makka"
+    toyhouse_monto              = "Monto"
+    toyhouse_mokitani           = "Mokitani"
+    toyhouse_namigo             = "Namigo"
+    toyhouse_pipotron_red       = "Piptron Red"
+    toyhouse_master_loafy       = "Master Loaft"
+    toyhouse_golonero           = "Golonero"
+    toyhouse_kocho              = "Kocho"
+    toyhouse_tam_konta          = "Tam Konta"
+    toyhouse_tam_mimiko         = "Tam Mimiko"
+    toyhouse_tam_papa           = "Tam Papa"
+    toyhouse_tam_mama           = "Tam Mama"
+
+    ## iceland
+    iceland_bikupuri            = "Bikupuri"
+    iceland_ukkisu              = "Ukkisu"
+    iceland_ukki_ami            = "Ukki Ami"
+    iceland_balio               = "Balio"
+    iceland_kimkon              = "Kimkon"
+    iceland_ukkina              = "Ukkina"
+    iceland_kushachin           = "Kushachin"
+    iceland_malikko             = "Malikko"
+    iceland_bolikko             = "Bolikko"
+    iceland_iceymon             = "Iceymon"
+    iceland_mokkidon            = "Mokkidon"
+    iceland_jolly_mon           = "Jolly-mon"
+    iceland_hikkori             = "Hikkori"
+    iceland_rammy               = "Rammy"
+    iceland_monkino             = "Monkino"
+    iceland_kyam                = "Kyam"
+    iceland_kappino             = "Kappino"
+    iceland_kris_krimon         = "Kris Krimon"
+
+    ## arabian
+    arabian_scorpi_mon          = "Sccorpi-mon"
+    arabian_minimon             = "Minimon"
+    arabian_moontero            = "Moontero"
+    arabian_ukki_son            = "Ukki Son"
+    arabian_ukki_jeff           = "Ukki Jeff"
+    arabian_saru_maru           = "Ukki Saru Maru"
+    arabian_genghis_mon         = "Genghis Mon"
+    arabian_cup_o_mon           = "Cup-o-mon"
+    arabian_nijal               = "Nijal"
+    arabian_apey_jones          = "Apey Jones"
+    arabian_ukki_mamba          = "Ukki Mamba"
+    arabian_golden_mon          = "Golden Mon"
+    arabian_crazy_ol_mon        = "Crazy 'ol Mon"
+    arabian_shamila             = "Shamila"
+    arabian_tamiyanya           = "Tamiyanya"
+    arabian_salteenz            = "Salteenz"
+    arabian_dancing_mia         = "Dancing Mia"
+    arabian_miccho              = "Miccho"
+    arabian_kisha               = "Kisha"
+    arabian_gimuccho            = "Gimuccho"
+    arabian_wojin               = "Wojin"
+    arabian_princess_judy       = "Princess Judy"
+
+    ## boss4
+    boss_monkey_pink            = "Monkey Pink"
+
 class Stage(BaseEnum):
     """Strings for the various stages of Ape Escape 3. This refers to the names of all the rooms in the game."""
 
@@ -385,6 +480,34 @@ class Stage(BaseEnum):
     edotown_f =                 "The Emperor's Castle - Break Room"
 
     boss3 =                     "Monkey Yellow Battle!"
+
+    heaven =                    "Mount Amazing"
+    heaven_a =                  "Mount Amazing - Mountain Climb"
+    heaven_a1 =                 "Mount Amazing - Mountain Entrance"
+    heaven_a2 =                 "Mount Amazing - Ruins Entrance"
+    heaven_b =                  "Mount Amazing - Ruins"
+    heaven_c =                  "Mount Amazing - Citadel"
+    heaven_d =                  "Mount Amazing - Planetarium"
+    heaven_e =                  "Mount Amazing - Break Room"
+
+    toyhouse =                  "Toytown"
+    toyhouse_a =                "Toytown - Town Centre"
+    toyhouse_b =                "Toytown - Bunny House"
+    toyhouse_c =                "Toytown - City Race"
+    toyhouse_d =                "Toytown - Playroom"
+    toyhouse_e =                "Toytown - Treasure Cave"
+    toyhouse_f =                "Toytown - Western Diorama"
+    toyhouse_g =                "Toytown - Brick House"
+    toyhouse_h =                "Toytown - Break Room"
+
+
+    iceland =                   "Arctic Wonderland"
+
+
+    arabian =                   "Mirage Town"
+
+
+    boss4 =                     "Monkey Pink Battle!"
 
 class Game(BaseEnum):
     # Player
