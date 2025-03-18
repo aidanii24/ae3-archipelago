@@ -650,7 +650,7 @@ MONKEYS_HEAVEN_B : Sequence[str] = [
 
 MONKEYS_HEAVEN_C : Sequence[str] = [
     Loc.heaven_talurin.value, Loc.heaven_occhimon.value, Loc.heaven_mikkurin.value, Loc.heaven_kicchino.value,
-    Loc.heaven_kimurin.heaven_kicchino, Loc.heaven_sakkano.value
+    Loc.heaven_kimurin.value, Loc.heaven_sakkano.value
 ]
 
 MONKEYS_HEAVEN_D : Sequence[str] = [
@@ -667,50 +667,106 @@ MONKEYS_HEAVEN : Sequence[str] = [
 
 # Toyhouse
 MONKEYS_TOYHOUSE_A : Sequence[str] = [
-    Loc.toyhouse_pikkori.value
+    Loc.toyhouse_pikkori.value, Loc.toyhouse_talukki.value, Loc.toyhouse_pinkino.value
 ]
 
-MONKEYS_TOYHOUSE_B : Sequence[str] = []
+MONKEYS_TOYHOUSE_B : Sequence[str] = [
+    Loc.toyhouse_bon_mota.value, Loc.toyhouse_bon_verna.value, Loc.toyhouse_bon_papa.value, Loc.toyhouse_bon_mama.value,
+    Loc.toyhouse_kalkin.value
+]
 
-MONKEYS_TOYHOUSE_C : Sequence[str] = []
+MONKEYS_TOYHOUSE_C : Sequence[str] = [
+    Loc.toyhouse_pakun.value, Loc.toyhouse_ukki_x.value, Loc.toyhouse_mon_gareji.value, Loc.toyhouse_shouji.value,
+    Loc.toyhouse_woo_makka.value
+]
 
-MONKEYS_TOYHOUSE_D : Sequence[str] = []
+MONKEYS_TOYHOUSE_D : Sequence[str] = [
+    Loc.toyhouse_monto.value, Loc.toyhouse_mokitani.value, Loc.toyhouse_namigo.value, Loc.toyhouse_pipotron_red.value
+]
 
-MONKEYS_TOYHOUSE_E : Sequence[str] = []
+MONKEYS_TOYHOUSE_E1 : Sequence[str] = [
+    Loc.toyhouse_master_loafy.value
+]
 
-MONKEYS_TOYHOUSE_F : Sequence[str] = []
+MONKEYS_TOYHOUSE_F : Sequence[str] = [
+    Loc.toyhouse_golonero.value
+]
 
-MONKEYS_TOYHOUSE_G : Sequence[str] = []
+MONKEYS_TOYHOUSE_G : Sequence[str] = [
+    Loc.toyhouse_kocho.value
+]
 
-MONKEYS_TOYHOUSE_H : Sequence[str] = []
+MONKEYS_TOYHOUSE_H : Sequence[str] = [
+    Loc.toyhouse_tam_konta.value, Loc.toyhouse_tam_mimiko.value, Loc.toyhouse_tam_papa.value,
+    Loc.toyhouse_tam_mama.value
+]
 
-MONKEYS_TOYHOUSE : Sequence[str] = []
+MONKEYS_TOYHOUSE : Sequence[str] = [
+    *MONKEYS_TOYHOUSE_A, *MONKEYS_TOYHOUSE_B, *MONKEYS_TOYHOUSE_C, *MONKEYS_TOYHOUSE_D, *MONKEYS_TOYHOUSE_E1,
+    *MONKEYS_TOYHOUSE_F, *MONKEYS_TOYHOUSE_G, *MONKEYS_TOYHOUSE_H,
+]
 
 # Iceland
-MONKEYS_ICELAND_A : Sequence[str] = []
+MONKEYS_ICELAND_A : Sequence[str] = [
+    Loc.iceland_bikupuri.value, Loc.iceland_ukkisu.value, Loc.iceland_ukki_ami.value, Loc.iceland_balio.value
+]
 
-MONKEYS_ICELAND_B : Sequence[str] = []
+MONKEYS_ICELAND_B : Sequence[str] = [
+    Loc.iceland_kimkon.value, Loc.iceland_ukkina.value, Loc.iceland_kushachin.value
+]
 
-MONKEYS_ICELAND_C : Sequence[str] = []
+MONKEYS_ICELAND_C : Sequence[str] = [
+    Loc.iceland_malikko.value, Loc.iceland_bolikko.value
+]
 
-MONKEYS_ICELAND_D : Sequence[str] = []
+MONKEYS_ICELAND_D : Sequence[str] = [
+    Loc.iceland_iceymon.value, Loc.iceland_mokkidon.value
+]
 
-MONKEYS_ICELAND_E : Sequence[str] = []
+MONKEYS_ICELAND_E : Sequence[str] = [
+    Loc.iceland_jolly_mon.value, Loc.iceland_hikkori.value, Loc.iceland_rammy.value
+]
 
-MONKEYS_ICELAND : Sequence[str] = []
+MONKEYS_ICELAND_F : Sequence[str] = [
+    Loc.iceland_monkino.value, Loc.iceland_kyam.value, Loc.iceland_kappino.value, Loc.iceland_kris_krimon.value
+]
+
+MONKEYS_ICELAND : Sequence[str] = [
+    *MONKEYS_ICELAND_A, *MONKEYS_ICELAND_B, *MONKEYS_ICELAND_C, *MONKEYS_ICELAND_D, *MONKEYS_ICELAND_E,
+    *MONKEYS_ICELAND_F
+]
 
 # Arabian
-MONKEYS_ARABIAN_A : Sequence[str] = []
+MONKEYS_ARABIAN_A : Sequence[str] = [
+    Loc.arabian_scorpi_mon.value, Loc.arabian_minimon.value, Loc.arabian_moontero.value
+]
 
-MONKEYS_ARABIAN_B : Sequence[str] = []
+MONKEYS_ARABIAN_B : Sequence[str] = [
+    Loc.arabian_ukki_son.value, Loc.arabian_ukki_jeff.value, Loc.arabian_saru_maru.value, Loc.arabian_genghis_mon.value,
+    Loc.arabian_cup_o_mon.value
+]
 
-MONKEYS_ARABIAN_C : Sequence[str] = []
+MONKEYS_ARABIAN_C : Sequence[str] = [
+    Loc.arabian_nijal.value, Loc.arabian_apey_jones.value, Loc.arabian_golden_mon.value
+]
 
-MONKEYS_ARABIAN_D : Sequence[str] = []
+MONKEYS_ARABIAN_C1 : Sequence[str] = [
+Loc.arabian_ukki_mamba.value, Loc.arabian_crazy_ol_mon.value
+]
 
-MONKEYS_ARABIAN_E : Sequence[str] = []
+MONKEYS_ARABIAN_E : Sequence[str] = [
+    Loc.arabian_shamila.value, Loc.arabian_tamiyanya.value, Loc.arabian_salteenz.value,
+    Loc.arabian_dancing_mia.value, Loc.arabian_princess_judy.value
+]
 
-MONKEYS_ARABIAN : Sequence[str] = []
+MONKEYS_ARABIAN_F : Sequence[str] = [
+    Loc.arabian_miccho.value, Loc.arabian_kisha.value, Loc.arabian_gimuccho.value, Loc.arabian_wojin.value
+]
+
+MONKEYS_ARABIAN : Sequence[str] = [
+    *MONKEYS_ARABIAN_A, *MONKEYS_ARABIAN_B, *MONKEYS_ARABIAN_C, *MONKEYS_ARABIAN_C1, *MONKEYS_ARABIAN_E,
+    *MONKEYS_ARABIAN_F
+]
 
 # Boss4
 MONKEYS_BOSS4 : Sequence[str] = [
@@ -718,12 +774,13 @@ MONKEYS_BOSS4 : Sequence[str] = [
 ]
 
 MONKEYS_BOSSES : Sequence[str] = [
-    *MONKEYS_BOSS1, *MONKEYS_BOSS2, *MONKEYS_BOSS3
+    *MONKEYS_BOSS1, *MONKEYS_BOSS2, *MONKEYS_BOSS3, *MONKEYS_BOSS4
 ]
 
 MONKEYS_MASTER : Sequence[str] = [
     *MONKEYS_ZERO, *MONKEYS_SEASIDE, *MONKEYS_WOODS, *MONKEYS_CASTLE, *MONKEYS_CISCOCITY, *MONKEYS_STUDIO,
-    *MONKEYS_HALLOWEEN, *MONKEYS_WESTERN, *MONKEYS_ONSEN, *MONKEYS_SNOWFESTA, *MONKEYS_EDOTOWN, *MONKEYS_BOSSES
+    *MONKEYS_HALLOWEEN, *MONKEYS_WESTERN, *MONKEYS_ONSEN, *MONKEYS_SNOWFESTA, *MONKEYS_EDOTOWN, *MONKEYS_HEAVEN,
+    *MONKEYS_TOYHOUSE, *MONKEYS_ICELAND, *MONKEYS_ARABIAN, *MONKEYS_BOSSES
 ]
 MONKEYS_INDEX : dict[str, Sequence] = {
     # Zero
@@ -815,8 +872,44 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.edotown_e.value       : MONKEYS_EDOTOWN_E,
     Stage.edotown_f.value       : MONKEYS_EDOTOWN_F,
 
-    #Boss3
+    # Boss3
     Stage.boss3.value           : MONKEYS_BOSS3,
+
+    # Heaven
+    Stage.heaven_a.value        : MONKEYS_HEAVEN_A,
+    Stage.heaven_b.value        : MONKEYS_HEAVEN_B,
+    Stage.heaven_c.value        : MONKEYS_HEAVEN_C,
+    Stage.heaven_d.value        : MONKEYS_HEAVEN_D,
+    Stage.heaven_e.value        : MONKEYS_HEAVEN_E,
+
+    # Toyhouse
+    Stage.toyhouse_a.value      : MONKEYS_TOYHOUSE_A,
+    Stage.toyhouse_b.value      : MONKEYS_TOYHOUSE_B,
+    Stage.toyhouse_c.value      : MONKEYS_TOYHOUSE_C,
+    Stage.toyhouse_d.value      : MONKEYS_TOYHOUSE_D,
+    Stage.toyhouse_e1.value     : MONKEYS_TOYHOUSE_E1,
+    Stage.toyhouse_f.value      : MONKEYS_TOYHOUSE_F,
+    Stage.toyhouse_g.value      : MONKEYS_TOYHOUSE_G,
+    Stage.toyhouse_h.value      : MONKEYS_TOYHOUSE_H,
+
+    # Iceland
+    Stage.iceland_a.value       : MONKEYS_ICELAND_A,
+    Stage.iceland_b.value       : MONKEYS_ICELAND_B,
+    Stage.iceland_c.value       : MONKEYS_ICELAND_C,
+    Stage.iceland_d.value       : MONKEYS_ICELAND_D,
+    Stage.iceland_e.value       : MONKEYS_ICELAND_E,
+    Stage.iceland_f.value       : MONKEYS_ICELAND_F,
+
+    # Arabian
+    Stage.arabian_a.value       : MONKEYS_ARABIAN_A,
+    Stage.arabian_b.value       : MONKEYS_ARABIAN_B,
+    Stage.arabian_c.value       : MONKEYS_ARABIAN_C,
+    Stage.arabian_c1.value      : MONKEYS_ARABIAN_C1,
+    Stage.arabian_e.value       : MONKEYS_ARABIAN_E,
+    Stage.arabian_f.value       : MONKEYS_ARABIAN_F,
+
+    # Boss4
+    Stage.boss4.value           : MONKEYS_BOSS4,
 }
 
 EVENTS_STUDIO_A1 : Sequence[EventMeta] = [
@@ -827,7 +920,23 @@ EVENTS_EDOTOWN_E : Sequence[EventMeta] = [
     EventMeta(Game.shortcut_edotown_eb.value)
 ]
 
+EVENTS_ICELAND_E : Sequence[EventMeta] = [
+    EventMeta(Game.trigger_iceland_e.value, AccessRule.SLING)
+]
+
+EVENTS_ARABIAN_C : Sequence[EventMeta] = [
+    EventMeta(Game.trigger_arabian_c.value, AccessRule.CATCH)
+]
+
+EVENTS_ARABIAN_E1 : Sequence[EventMeta] = [
+    EventMeta(Game.trigger_arabian_e1.value, AccessRule.GENIE)
+]
+
 EVENTS_INDEX : dict[str, Sequence[EventMeta]] = {
+    Stage.iceland_e.value        : EVENTS_ICELAND_E,
+    Stage.arabian_c.value        : EVENTS_ARABIAN_C,
+    Stage.arabian_e1.value       : EVENTS_ARABIAN_E1,
+
     Stage.studio_a1.value        : EVENTS_STUDIO_A1,
     Stage.edotown_e.value        : EVENTS_EDOTOWN_E
 }

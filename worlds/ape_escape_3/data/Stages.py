@@ -412,18 +412,39 @@ STAGES_EDOTOWN : Sequence[str] = [
     Stage.edotown_c.value, Stage.edotown_d.value, Stage.edotown_e.value, Stage.edotown_f.value
 ]
 
+STAGES_HEAVEN : Sequence[str] = [
+    Stage.heaven_a.value, Stage.heaven_a1.value, Stage.heaven_a2.value, Stage.heaven_b.value, Stage.heaven_c.value,
+    Stage.heaven_d.value, Stage.heaven_e.value
+]
+
+STAGES_TOYHOUSE : Sequence[str] = [
+    Stage.toyhouse_a.value, Stage.toyhouse_b.value, Stage.toyhouse_c.value, Stage.toyhouse_d.value,
+    Stage.toyhouse_e.value, Stage.toyhouse_e1.value, Stage.toyhouse_f.value, Stage.toyhouse_g.value,
+    Stage.toyhouse_h.value
+]
+
+STAGES_ICELAND : Sequence[str] = [
+    Stage.iceland_a.value, Stage.iceland_b.value, Stage.iceland_c.value, Stage.iceland_d.value, Stage.iceland_e.value,
+    Stage.iceland_f.value
+]
+
+STAGES_ARABIAN : Sequence[str] = [
+    Stage.arabian_a.value, Stage.arabian_b.value, Stage.arabian_c.value, Stage.arabian_c1.value, Stage.arabian_e.value,
+    Stage.arabian_e1.value, Stage.arabian_f.value
+]
+
 STAGES_BOSSES : Sequence[str] = [
-    Stage.boss1.value, Stage.boss2.value, Stage.boss3.value
+    Stage.boss1.value, Stage.boss2.value, Stage.boss3.value, Stage.boss4.value
 ]
 
 STAGES_MASTER : Sequence[str] = [
     *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY, *STAGES_STUDIO,
-    *STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_ONSEN, *STAGES_SNOWFESTA, *STAGES_EDOTOWN, *STAGES_BOSSES,
-    *STAGES_TITLE, *STAGES_HUB
+    *STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_ONSEN, *STAGES_SNOWFESTA, *STAGES_EDOTOWN, *STAGES_HEAVEN,
+    *STAGES_TOYHOUSE, *STAGES_ICELAND, *STAGES_ARABIAN, *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB
 ]
 
 STAGES_INDEX : Sequence[Sequence[str]] = [
     STAGES_MASTER, STAGES_ZERO, STAGES_SEASIDE, STAGES_WOODS, STAGES_CASTLE, STAGES_CISCOCITY, STAGES_STUDIO,
-    STAGES_HALLOWEEN, STAGES_WESTERN, STAGES_ONSEN, STAGES_SNOWFESTA, STAGES_EDOTOWN, STAGES_BOSSES, STAGES_TITLE,
-    STAGES_HUB,
+    STAGES_HALLOWEEN, STAGES_WESTERN, STAGES_ONSEN, STAGES_SNOWFESTA, STAGES_EDOTOWN, STAGES_HEAVEN,
+    STAGES_TOYHOUSE, STAGES_ICELAND, STAGES_ARABIAN, STAGES_BOSSES, STAGES_TITLE, STAGES_HUB,
 ]

@@ -73,6 +73,23 @@ class Casual(RuleType):
         # Heaven
         Loc.heaven_chomon.value             : RuleWrap(AccessRule.RCC),
 
+        # Toyhouse
+        Loc.toyhouse_monto.value            : RuleWrap(AccessRule.SHOOT, AccessRule.NINJA),
+        Loc.toyhouse_mokitani.value         : RuleWrap(AccessRule.RCC),
+
+        # Iceland
+        Loc.iceland_jolly_mon.value         : RuleWrap(event_invoked(Game.trigger_iceland_e.value)),
+        Loc.iceland_hikkori.value           : RuleWrap(event_invoked(Game.trigger_iceland_e.value)),
+        Loc.iceland_rammy.value             : RuleWrap(event_invoked(Game.trigger_iceland_e.value)),
+
+        # Arabian
+        Loc.arabian_minimon.value           : RuleWrap(AccessRule.GENIE),
+
+        # Bosses
+        Loc.boss_monkey_white.value         : RuleWrap(AccessRule.ATTACK),
+        Loc.boss_monkey_blue.value          : RuleWrap(AccessRule.ATTACK),
+        Loc.boss_monkey_yellow.value        : RuleWrap(AccessRule.ATTACK),
+        Loc.boss_monkey_pink.value          : RuleWrap(AccessRule.ATTACK),
     }
 
     entrances = {
@@ -98,7 +115,14 @@ class Casual(RuleType):
                                                StageEntranceMeta(Stage.snowfesta_a.value, has_keys(4)),
                                                StageEntranceMeta(Stage.edotown_a.value, has_keys(4)),
 
-                                               StageEntranceMeta(Stage.boss3.value, has_keys(5))],
+                                               StageEntranceMeta(Stage.boss3.value, has_keys(5)),
+
+                                               StageEntranceMeta(Stage.heaven_a1.value, has_keys(6)),
+                                               StageEntranceMeta(Stage.toyhouse_a.value, has_keys(6)),
+                                               StageEntranceMeta(Stage.iceland_a.value, has_keys(6)),
+                                               StageEntranceMeta(Stage.arabian_a.value, has_keys(6)),
+
+                                               StageEntranceMeta(Stage.boss4.value, has_keys(7)),],
 
         Stage.travel_station_b.value        : [StageEntranceMeta(Stage.travel_station_a.value)],
 
@@ -176,7 +200,9 @@ class Casual(RuleType):
                                                                  AccessRule.SWIM, AccessRule.HERO),
                                                StageEntranceMeta(Stage.halloween_b.value)],
         Stage.halloween_b.value             : [StageEntranceMeta(Stage.halloween_a.value),
-                                               StageEntranceMeta(Stage.halloween_f.value)],
+                                               StageEntranceMeta(Stage.halloween_f.value,
+                                                                 AccessRule.CLUB, AccessRule.SLING,
+                                                                 AccessRule.MORPH_NO_MONKEY)],
         Stage.halloween_c.value             : [StageEntranceMeta(Stage.halloween_c1.value),
                                                StageEntranceMeta(Stage.halloween_d.value)],
         Stage.halloween_c1.value            : [StageEntranceMeta(Stage.halloween_c.value,
@@ -274,5 +300,74 @@ class Casual(RuleType):
         Stage.edotown_f.value               : [StageEntranceMeta(Stage.edotown_d.value)],
 
         # Boss3
-        Stage.boss3.value                   : None
+        Stage.boss3.value                   : None,
+
+        # Heaven
+        Stage.heaven_a1.value               : [StageEntranceMeta(Stage.heaven_a.value, AccessRule.GLIDE)],
+        Stage.heaven_a.value                : [StageEntranceMeta(Stage.heaven_a1.value, AccessRule.GLIDE),
+                                               StageEntranceMeta(Stage.heaven_a2.value, AccessRule.GLIDE)],
+        Stage.heaven_a2.value               : [StageEntranceMeta(Stage.heaven_a.value, AccessRule.GLIDE),
+                                               StageEntranceMeta(Stage.heaven_b.value)],
+        Stage.heaven_b.value                : [StageEntranceMeta(Stage.heaven_a2.value, AccessRule.GLIDE),
+                                               StageEntranceMeta(Stage.heaven_c.value)],
+        Stage.heaven_c.value                : [StageEntranceMeta(Stage.heaven_b.value),
+                                               StageEntranceMeta(Stage.heaven_d.value),
+                                               StageEntranceMeta(Stage.heaven_e.value, AccessRule.MONKEY)],
+        Stage.heaven_d.value                : [StageEntranceMeta(Stage.heaven_c.value)],
+        Stage.heaven_e.value                : [StageEntranceMeta(Stage.heaven_c.value)],
+
+        # Toyhouse
+        Stage.toyhouse_a.value              : [StageEntranceMeta(Stage.toyhouse_b.value),
+                                               StageEntranceMeta(Stage.toyhouse_c.value),
+                                               StageEntranceMeta(Stage.toyhouse_d.value),
+                                               StageEntranceMeta(Stage.toyhouse_e.value),
+                                               StageEntranceMeta(Stage.toyhouse_g.value)],
+        Stage.toyhouse_b.value              : [StageEntranceMeta(Stage.toyhouse_a.value)],
+        Stage.toyhouse_c.value              : [StageEntranceMeta(Stage.toyhouse_a.value)],
+        Stage.toyhouse_d.value              : [StageEntranceMeta(Stage.toyhouse_a.value),
+                                               StageEntranceMeta(Stage.toyhouse_h.value, AccessRule.MONKEY)],
+        Stage.toyhouse_e.value              : [StageEntranceMeta(Stage.toyhouse_a.value),
+                                               StageEntranceMeta(Stage.toyhouse_e1.value, AccessRule.NINJA)],
+        Stage.toyhouse_e1.value             : [StageEntranceMeta(Stage.toyhouse_f.value)],
+        Stage.toyhouse_f.value              : [StageEntranceMeta(Stage.toyhouse_a.value),
+                                               StageEntranceMeta(Stage.toyhouse_e1.value)],
+        Stage.toyhouse_g.value              : [StageEntranceMeta(Stage.toyhouse_a.value)],
+        Stage.toyhouse_h.value              : [StageEntranceMeta(Stage.toyhouse_d.value)],
+
+        # Iceland
+        Stage.iceland_a.value               : [StageEntranceMeta(Stage.iceland_d.value)],
+        Stage.iceland_b.value               : [StageEntranceMeta(Stage.iceland_c.value),
+                                               StageEntranceMeta(Stage.iceland_e.value)],
+        Stage.iceland_c.value               : [StageEntranceMeta(Stage.iceland_b.value,
+                                                                 AccessRule.CLUB, AccessRule.SLING,
+                                                                 AccessRule.MORPH_NO_MONKEY),
+                                               StageEntranceMeta(Stage.iceland_d.value)],
+        Stage.iceland_d.value               : [StageEntranceMeta(Stage.iceland_a.value),
+                                               StageEntranceMeta(Stage.iceland_c.value)],
+        Stage.iceland_e.value               : [StageEntranceMeta(Stage.iceland_a.value,
+                                                                 event_invoked(Game.trigger_iceland_e.value)),
+                                               StageEntranceMeta(Stage.iceland_b.value),
+                                               StageEntranceMeta(Stage.iceland_f.value, AccessRule.MONKEY)],
+        Stage.iceland_f.value               : [StageEntranceMeta(Stage.iceland_e.value)],
+
+        # Arabian
+        Stage.arabian_a.value               : [StageEntranceMeta(Stage.arabian_c.value,
+                                                                 frozenset({AccessRule.SLING, AccessRule.RCC})),
+                                               StageEntranceMeta(Stage.arabian_b.value)],
+        Stage.arabian_b.value               : [StageEntranceMeta(Stage.arabian_a.value),
+                                               StageEntranceMeta(Stage.arabian_e1.value),
+                                               StageEntranceMeta(Stage.arabian_f.value, AccessRule.MONKEY)],
+        Stage.arabian_c.value               : [StageEntranceMeta(Stage.arabian_a.value),
+                                               StageEntranceMeta(Stage.arabian_c1.value,
+                                                                 event_invoked(Game.trigger_arabian_c.value))],
+        Stage.arabian_c1.value              : [StageEntranceMeta(Stage.arabian_a.value),
+                                               StageEntranceMeta(Stage.arabian_c.value)],
+        Stage.arabian_e1.value               : [StageEntranceMeta(Stage.arabian_b.value),
+                                                StageEntranceMeta(Stage.arabian_e.value,
+                                                                  event_invoked(Game.trigger_arabian_e1.value))],
+        Stage.arabian_e.value               : [StageEntranceMeta(Stage.arabian_e1.value)],
+        Stage.arabian_f.value               : [StageEntranceMeta(Stage.arabian_b.value)],
+
+        # Boss4
+        Stage.boss4.value                   : None
     }

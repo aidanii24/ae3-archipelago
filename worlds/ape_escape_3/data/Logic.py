@@ -19,32 +19,6 @@ def can_morph(state : CollectionState, player : int):
 def can_morph_not_monkey(state : CollectionState, player : int):
     return state.has(APHelper.morphs_no_monkey.value, player)
 
-# General Ability Checks
-## Check if player has the ability to move fast
-def can_dash(state : CollectionState, player : int):
-    return (state.has(Itm.gadget_hoop.value, player) or
-
-            state.has(Itm.morph_ninja.value, player) or
-            state.has(Itm.morph_hero.value, player))
-
-## Check if Player can use long-ranged attacks
-def can_shoot(state : CollectionState, player : int):
-    return (state.has(Itm.gadget_sling.value, player) or
-
-            state.has(Itm.morph_cowboy.value, player) or
-            state.has(Itm.morph_hero.value, player))
-
-## Check if Player can fly (can gain height)
-def can_fly(state : CollectionState, player : int):
-    return (state.has(Itm.gadget_fly.value, player) or
-
-            state.has(Itm.morph_ninja.value, player))
-
-## Check if the Player can glide
-def can_glide(state : CollectionState, player : int):
-    return (can_fly(state, player) or
-            state.has(Itm.morph_hero.value, player))
-
 # Gadget Checks
 def has_club(state : CollectionState, player : int):
     return state.has(Itm.gadget_club.value, player)
@@ -74,6 +48,38 @@ def can_hero(state : CollectionState, player : int):
 def can_monkey(state : CollectionState, player : int):
     return state.has(Itm.morph_monkey.value, player)
 
+# General Ability Checks
+## Check if player can hit beyond basic hip drops
+def can_attack_well(state : CollectionState, player : int):
+    return (has_club(state, player) or can_sling(state, player) or
+
+            can_morph_not_monkey(state, player))
+
+## Check if player has the ability to move fast
+def can_dash(state : CollectionState, player : int):
+    return (state.has(Itm.gadget_hoop.value, player) or
+
+            state.has(Itm.morph_ninja.value, player) or
+            state.has(Itm.morph_hero.value, player))
+
+## Check if Player can use long-ranged attacks
+def can_shoot(state : CollectionState, player : int):
+    return (state.has(Itm.gadget_sling.value, player) or
+
+            state.has(Itm.morph_cowboy.value, player) or
+            state.has(Itm.morph_hero.value, player))
+
+## Check if Player can fly (can gain height)
+def can_fly(state : CollectionState, player : int):
+    return (state.has(Itm.gadget_fly.value, player) or
+
+            state.has(Itm.morph_ninja.value, player))
+
+## Check if the Player can glide
+def can_glide(state : CollectionState, player : int):
+    return (can_fly(state, player) or
+            state.has(Itm.morph_hero.value, player))
+
 # Event Checks
 def has_enough_keys(state : CollectionState, player : int, keys : int):
     return state.has(APHelper.channel_key.value, player, keys)
@@ -95,8 +101,10 @@ class AccessRule:
 
     # General
     CATCH = can_catch                           # Monkey Net unlocked or any Morph that can Catch Monkeys
+    NET = can_net                               # Monkey Net Unlocked
     MORPH = can_morph
     MORPH_NO_MONKEY = can_morph_not_monkey      # Unlocked any morph that is not Super Monkey
+    ATTACK = can_attack_well                    # Can attack reasonably
     CLUB = has_club                             # Unlocked Stun Club
     DASH = can_dash                             # Unlocked Super Hoop or any fast moving Morph
     SHOOT = can_shoot                           # Slingback Shooter unlocked or has any morph with long range attacks
