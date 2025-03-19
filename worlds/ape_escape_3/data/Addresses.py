@@ -389,7 +389,7 @@ class NTSCU(VersionAddresses):
         Loc.iceland_kris_krimon.value           : 0x649b98,
 
         ## Mirage Town
-        Loc.arabian_scorpi_mon.value            : 0x649bbb,
+        Loc.arabian_scorpi_mon.value            : 0x649a86,
         Loc.arabian_minimon.value               : 0x649a87,
         Loc.arabian_moontero.value              : 0x649a88,
         Loc.arabian_ukki_son.value              : 0x649a89,
