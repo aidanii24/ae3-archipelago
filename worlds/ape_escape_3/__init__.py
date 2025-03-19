@@ -99,11 +99,11 @@ class AE3World(World):
             del gadgets[self.options.starting_gadget - 1]
 
         self.multiworld.push_precollected(monkey_net)
-        self.multiworld.push_precollected(rc_car)
-        self.multiworld.push_precollected(slingback_shooter)
-        self.multiworld.push_precollected(ninja)
-        self.multiworld.push_precollected(magician)
-        self.multiworld.push_precollected(monkey)
+        # self.multiworld.push_precollected(rc_car)
+        # self.multiworld.push_precollected(slingback_shooter)
+        # self.multiworld.push_precollected(ninja)
+        # self.multiworld.push_precollected(magician)
+        # self.multiworld.push_precollected(monkey)
 
         self.item_pool += gadgets
         self.item_pool += [knight, cowboy, ninja, magician, kungfu, hero, monkey]

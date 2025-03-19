@@ -427,7 +427,7 @@ class NTSCU(VersionAddresses):
         Game.current_stage.value        : 0x8519f0,
 
         # Resources
-        Game.nothing.value               : 0x200000,  # Arbitrary Number
+        Game.nothing.value              : 0x200000,  # Arbitrary Number
 
         Game.jackets.value              : 0x649914,
         Game.cookies.value              : 0x649918,

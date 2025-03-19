@@ -364,7 +364,7 @@ class Casual(RuleType):
                                                StageEntranceMeta(Stage.arabian_c.value)],
         Stage.arabian_e1.value               : [StageEntranceMeta(Stage.arabian_b.value),
                                                 StageEntranceMeta(Stage.arabian_e.value,
-                                                                  event_invoked(Game.trigger_arabian_e1.value))],
+                                                                  AccessRule.GENIE)],
         Stage.arabian_e.value               : [StageEntranceMeta(Stage.arabian_e1.value)],
         Stage.arabian_f.value               : [StageEntranceMeta(Stage.arabian_b.value)],
 

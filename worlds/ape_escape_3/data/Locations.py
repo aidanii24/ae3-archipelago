@@ -928,14 +928,9 @@ EVENTS_ARABIAN_C : Sequence[EventMeta] = [
     EventMeta(Game.trigger_arabian_c.value, AccessRule.CATCH)
 ]
 
-EVENTS_ARABIAN_E1 : Sequence[EventMeta] = [
-    EventMeta(Game.trigger_arabian_e1.value, AccessRule.GENIE)
-]
-
 EVENTS_INDEX : dict[str, Sequence[EventMeta]] = {
     Stage.iceland_e.value        : EVENTS_ICELAND_E,
     Stage.arabian_c.value        : EVENTS_ARABIAN_C,
-    Stage.arabian_e1.value       : EVENTS_ARABIAN_E1,
 
     Stage.studio_a1.value        : EVENTS_STUDIO_A1,
     Stage.edotown_e.value        : EVENTS_EDOTOWN_E

@@ -559,7 +559,6 @@ class Game(BaseEnum):
     # Environment
     trigger_iceland_e =     "Christmas Tree Button"
     trigger_arabian_c =     "Golden-mon Captured"
-    trigger_arabian_e1 =    "Infiltrated Palace with Genie"
 
     shortcut_studio_ad =    "Shortcut to Specter TV Studio - Buildings Set"
     shortcut_edotown_eb =   "Shortcut to The Emperor's Castle - Castle Grounds"
