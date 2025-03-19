@@ -375,8 +375,93 @@ class Loc(BaseEnum):
     arabian_wojin               = "Wojin - Mirage Town"
     arabian_princess_judy       = "Princess Judy - Mirage Town"
 
-    ## boss4
+    ## Monkey Pink Battle!
     boss_monkey_pink            = "Monkey Pink"
+
+    ## Eversummer Island
+    asia_ukki_mat               = "Ukki Mat - Eversummer Island",
+    asia_salumani               = "Salumani - Eversummer Island",
+    asia_salulu                 = "Salulu - Eversummer Island",
+    asia_baku                   = "Baku - Eversummer Island",
+    asia_salunch                = "Salunch - Eversummer Island",
+    asia_pincher_mon            = "Pincher-mon - Eversummer Island",
+    asia_mong_popo              = "Mong Popo - Eversummer Island",
+    asia_mohcha                 = "Mohcha - Eversummer Island",
+    asia_kamcha                 = "Kamcha - Eversummer Island",
+    asia_bimocha                = "Bimocha - Eversummer Island",
+    asia_gimchin                = "Gimchin - Eversummer Island",
+    asia_kamaccha               = "Kamaccha - Eversummer Island",
+    asia_gyamu                  = "Gyamu - Eversummer Island",
+    asia_takumon                = "Takumon - Eversummer Island",
+    asia_ukki_ether             = "Ukki Ether - Eversummer Island",
+    asia_tartan                 = "Tartan - Eversummer Island",
+    asia_molzone                = "Molzone - Eversummer Island",
+    asia_chappio                = "Chappio - Eversummer Island",
+    asia_pomoah                 = "Pomoah - Eversummer Island",
+    asia_gucchai                = "Gucchai - Eversummer Island",
+    asia_makaccho               = "Makaccho - Eversummer Island",
+    asia_gamaran                = "Gamaran - Eversummer Island",
+    asia_larry                  = "Larry - Eversummer Island",
+
+    # Airplane Squadron
+    plane_romo                  = "Romo - Airplane Squadron"
+    plane_temko                 = "Temko - Airplane Squadron"
+    plane_ukkigawa              = "Ukkigawa - Airplane Squadron"
+    plane_mokkido               = "Mokkido - Airplane Squadron"
+    plane_pont                  = "Pont - Airplane Squadron"
+    plane_gamish                = "Gamish - Airplane Squadron"
+    plane_prince_bertus         = "Prince Bertus - Airplane Squadron"
+    plane_takmon                = "Takmon - Airplane Squadron"
+    plane_chai_bunny            = "Chai Bunny - Airplane Squadron"
+    plane_mukita                = "Mukita - Airplane Squadron"
+    plane_tamrai                = "Tamrai - Airplane Squadron"
+    plane_kemunpa               = "Kemunpa - Airplane Squadron"
+    plane_pipotron_blue         = "Pipotron Blue - Airplane Squadron"
+    plane_mabaras               = "Mabaras - Airplane Squadron"
+    plane_tamoos                = "Tamoos - Airplane Squadron"
+    plane_kimoto                = "Kimoto - Airplane Squadron"
+    plane_octavian              = "Octavian - Airplane Squadron"
+    plane_samuel                = "Samuel - Airplane Squadron"
+    plane_coril                 = "Coril - Airplane Squadron"
+    plane_bont                  = "Bont - Airplane Squadron"
+    plane_delly                 = "Delly - Airplane Squadron"
+    plane_jeloh                 = "Jeloh- Airplane Squadron"
+    plane_bongo                 = "Bongo - Airplane Squadron"
+
+    # Kung-Fu Alley
+    hong_dally                  = "Dally - Kung-Fu Alley"
+    hong_nak_nayo               = "Nak Nayo - Kung-Fu Alley"
+    hong_donto_koi              = "Donto Koi - Kung-Fu Alley"
+    hong_po_kin_ki              = "Po Kin Ki - Kung-Fu Alley"
+    hong_ukki_chan              = "Ukki Chan - Kung-Fu Alley"
+    hong_uki_uki                = "Uki Uki - Kung-Fu Alley"
+    hong_muki_muki              = "Muki Muki - Kung-Fu Alley"
+    hong_shinchi                = "Shinchi - Kung-Fu Alley"
+    hong_doh_tsuitaro           = "Doh Tsuitaro - Kung-Fu Alley"
+    hong_hi_uchi_ishi           = "Hi Uchi Ishi - Kung-Fu Alley"
+    hong_gala_waruo             = "Gala Waruo - Kung-Fu Alley"
+    hong_bassili_ukki           = "Bassili Ukki - Kung-Fu Alley"
+    hong_danchi                 = "Danchi - Kung-Fu Alley"
+    hong_pikon                  = "Pikon - Kung-Fu Alley"
+    hong_bankan                 = "Bankan - Kung-Fu Alley"
+    hong_sukei                  = "Sukei - Kung-Fu Alley"
+    hong_giyan                  = "Giyan - Kung-Fu Alley"
+    hong_muchaki                = "Muchaki - Kung-Fu Alley"
+    hong_yoh_kitana             = "Yoh Kitana - Kung-Fu Alley"
+    hong_goshi_andos            = "Goshi Andos - Kung-Fu Alley"
+    hong_pukuman                = "Pukuman - Kung-Fu Alley"
+    hong_block_master           = "Block Master - Kung-Fu Alley"
+    hong_tompo                  = "Tompo - Kung-Fu Alley"
+    hong_wootan                 = "Wootan - Kung-Fu Alley"
+    hong_chechin                = "Chechin - Kung-Fu Alley"
+    hong_hapcho                 = "Hapcho - Kung-Fu Alley"
+    hong_bonmos                 = "Bonmos - Kung-Fu Alley"
+    hong_dark_master            = "Dark Master - Kung-Fu Alley"
+    hong_teh_isu                = "Teh Isu - Kung-Fu Alley"
+    hong_ponja                  = "Ponja - Kung-Fu Alley"
+
+    # Monkey Red Battle!
+    boss_monkey_red             = "Monkey Red"
 
 class Stage(BaseEnum):
     """Strings for the various stages of Ape Escape 3. This refers to the names of all the rooms in the game."""
@@ -521,6 +606,50 @@ class Stage(BaseEnum):
     arabian_f =                 "Mirage Town - Break Room"
 
     boss4 =                     "Monkey Pink Battle!"
+
+    asia =                      "Eversummer Island"
+    asia_a =                    "Eversummer Island - Low Islands"
+    asia_a1 =                   "Eversummer Island - High Islands"
+    asia_a2 =                   "Eversummer Island - Cliffs"
+    asia_a3 =                   "Eversummer Island - Sunken Ruins"
+    asia_a4 =                   "Eversummer Island - Stranded"
+    asia_b =                    "Eversummer Island - Village Canals"
+    asia_b1 =                   "Eversummer Island - Village Roofs"
+    asia_b2 =                   "Eversummer Island - Village Blades"
+    asia_d =                    "Eversummer Island - Higher Jungle"
+    asia_d1 =                   "Eversummer Island - Jungle Rivers"
+    asia_e =                    "Eversummer Island - Temple Ruins"
+    asia_e1 =                   "Eversummer Island - Temple Entrance"
+    asia_f =                    "Eversummer Island - Break Room"
+
+    plane =                     "Airplane Squadron"
+    plane_a =                   "Airplane Squadron - Rear Squadron"
+    plane_a1 =                  "Airplane Squadron - Front Squadron"
+    plane_b =                   "Airplane Squadron - Lower Engine Room"
+    plane_b1 =                  "Airplane Squadron - Higher Engine Room"
+    plane_c =                   "Airplane Squadron - Economy Cabin"
+    plane_c1 =                  "Airplane Squadron - Casino Cabin"
+    plane_d =                   "Airplane Squadron - Military Squadron"
+    plane_e =                   "Airplane Squadron - Hangar"
+    plane_f =                   "Airplane Squadron - Main Deck"
+    plane_f1 =                  "Airplane Squadron - Power Generator"
+    plane_g =                   "Airplane Squadron - Break Room"
+    plane_h =                   "Airplane Squadron - Bow"
+
+    hong =                      "Kung-Fu Alley"
+    hong_a =                    "Kung-Fu Alley - Cliffs"
+    hong_b =                    "Kung-Fu Alley - Alleys"
+    hong_b1 =                   "Kung-Fu Alley - Alleys Entrance"
+    hong_c =                    "Kung-Fu Alley - City"
+    hong_c1 =                   "Kung-Fu Alley - Abandoned Building"
+    hong_d =                    "Kung-Fu Alley - Apartments"
+    hong_e =                    "Kung-Fu Alley - Restaurant"
+    hong_e1 =                   "Kung-Fu Alley - Mahjong Room"
+    hong_f =                    "Kung-Fu Alley - Break Room"
+    hong_g =                    "Kung-Fu Alley - Triad Headquarters"
+    hong_h =                    "Kung-Fu Alley - Dentist's Clinic"
+
+    boss5 =                     "Monkey Red Battle!"
 
 class Game(BaseEnum):
     # Player
