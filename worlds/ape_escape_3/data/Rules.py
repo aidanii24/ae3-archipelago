@@ -1,7 +1,7 @@
 from typing import Callable, Set
 from dataclasses import dataclass
 
-from .Logic import Rulesets, AccessRule, has_keys, event_invoked
+from .Logic import Rulesets, AccessRule, event_not_invoked, has_keys, event_invoked
 from .Strings import Loc, Stage, Game
 from .Stages import StageEntranceMeta
 
@@ -59,7 +59,7 @@ class Casual(RuleType):
 
         # Onsen
         Loc.onsen_chabimon.value            : RuleWrap(AccessRule.RCC),
-        Loc.onsen_mujakin.value             : RuleWrap(AccessRule.SWIM, AccessRule.HERO, AccessRule.NINJA),
+        Loc.onsen_mujakin.value             : RuleWrap(AccessRule.ATTACK),
         Loc.onsen_fuji_chan.value           : RuleWrap(AccessRule.SHOOT, AccessRule.NINJA),
 
         # Snowfesta
@@ -85,11 +85,35 @@ class Casual(RuleType):
         # Arabian
         Loc.arabian_minimon.value           : RuleWrap(AccessRule.GENIE),
 
+        # Asia
+        Loc.asia_baku.value                 : RuleWrap(frozenset({AccessRule.SHOOT, AccessRule.SWIM})),
+        Loc.asia_mohcha.value               : RuleWrap(AccessRule.RCC),
+        Loc.asia_gimchin.value              : RuleWrap(AccessRule.FLY, AccessRule.SHOOT),
+        Loc.asia_takumon.value              : RuleWrap(AccessRule.SWIM, AccessRule.NINJA, AccessRule.HERO,
+                                                       AccessRule.COWBOY),
+        Loc.asia_ukki_ether.value           : RuleWrap(AccessRule.SWIM),
+
+        # Plane
+        Loc.plane_pont.value                : RuleWrap(AccessRule.RCC, AccessRule.HERO),
+        Loc.plane_gamish.value              : RuleWrap(AccessRule.RCC, AccessRule.HERO),
+        Loc.plane_mukita.value              : RuleWrap(AccessRule.GENIE),
+        Loc.plane_jeloh.value               : RuleWrap(AccessRule.ATTACK),
+        Loc.plane_bongo.value               : RuleWrap(AccessRule.ATTACK),
+
+        # Hong
+        Loc.hong_ukki_chan.value            : RuleWrap(AccessRule.SHOOT),
+        Loc.hong_uki_uki.value              : RuleWrap(AccessRule.SHOOT, AccessRule.FLY),
+        Loc.hong_muki_muki.value            : RuleWrap(AccessRule.SHOOT, AccessRule.FLY),
+        Loc.hong_bankan.value               : RuleWrap(AccessRule.NINJA, AccessRule.HERO),
+        Loc.hong_sukei.value                : RuleWrap(AccessRule.SHOOT, AccessRule.NINJA),
+        Loc.hong_block_master.value         : RuleWrap(frozenset({AccessRule.GLIDE, AccessRule.KUNGFU})),
+
         # Bosses
         Loc.boss_monkey_white.value         : RuleWrap(AccessRule.ATTACK),
         Loc.boss_monkey_blue.value          : RuleWrap(AccessRule.ATTACK),
         Loc.boss_monkey_yellow.value        : RuleWrap(AccessRule.ATTACK),
         Loc.boss_monkey_pink.value          : RuleWrap(AccessRule.ATTACK),
+        Loc.boss_monkey_red.value           : RuleWrap(AccessRule.ATTACK)
     }
 
     entrances = {
@@ -122,7 +146,13 @@ class Casual(RuleType):
                                                StageEntranceMeta(Stage.iceland_a.value, has_keys(6)),
                                                StageEntranceMeta(Stage.arabian_a.value, has_keys(6)),
 
-                                               StageEntranceMeta(Stage.boss4.value, has_keys(7)),],
+                                               StageEntranceMeta(Stage.boss4.value, has_keys(7)),
+
+                                               StageEntranceMeta(Stage.asia_a.value, has_keys(8)),
+                                               StageEntranceMeta(Stage.plane_a.value, has_keys(8)),
+                                               StageEntranceMeta(Stage.hong_a.value, has_keys(8)),
+
+                                               StageEntranceMeta(Stage.boss5.value, has_keys(9))],
 
         Stage.travel_station_b.value        : [StageEntranceMeta(Stage.travel_station_a.value)],
 
@@ -369,5 +399,163 @@ class Casual(RuleType):
         Stage.arabian_f.value               : [StageEntranceMeta(Stage.arabian_b.value)],
 
         # Boss4
-        Stage.boss4.value                   : None
+        Stage.boss4.value                   : None,
+
+        # Asia
+        Stage.asia_a.value                  : [StageEntranceMeta(Stage.asia_a1.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_a3.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_a4.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_a5.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_b.value,
+                                                                 AccessRule.SWIM, AccessRule.HERO)],
+        Stage.asia_a1.value                 : [StageEntranceMeta(Stage.asia_a.value,
+                                                                 AccessRule.SWIM, AccessRule.HERO),
+                                               StageEntranceMeta(Stage.asia_a2.value, AccessRule.HERO),
+                                               StageEntranceMeta(Stage.asia_a3.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_a4.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_a5.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_b2.value,
+                                                                 event_invoked(Game.shortcut_asia_b2b.value)),
+                                               StageEntranceMeta(Stage.asia_e1.value,frozenset({
+                                                                     event_invoked(Game.trigger_asia_a1.value),
+                                                                     event_invoked(Game.trigger_asia_a2.value)
+                                                                 }))],
+        Stage.asia_a2.value                 : [StageEntranceMeta(Stage.asia_a1.value,
+                                                                 AccessRule.SWIM, AccessRule.HERO),
+                                               StageEntranceMeta(Stage.asia_a3.value,
+                                                                 AccessRule.SWIM, AccessRule.HERO),
+                                               StageEntranceMeta(Stage.asia_d.value),
+                                               StageEntranceMeta(Stage.asia_e1.value,
+                                                                 frozenset({
+                                                                     event_invoked(Game.trigger_asia_a1.value),
+                                                                     event_invoked(Game.trigger_asia_a2.value)
+                                                                 }))],
+        Stage.asia_a3.value                 : [StageEntranceMeta(Stage.asia_a.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_a1.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_a4.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_a5.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_d1.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_e1.value,
+                                                                 frozenset({
+                                                                     event_invoked(Game.trigger_asia_a1.value),
+                                                                     event_invoked(Game.trigger_asia_a2.value)
+                                                                 }))
+                                               ],
+        Stage.asia_a4.value                 : [StageEntranceMeta(Stage.asia_a.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_a1.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_a3.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_a5.value, AccessRule.SWIM)],
+        Stage.asia_a5.value                 : [StageEntranceMeta(Stage.asia_a.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_a1.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_a3.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_a4.value, AccessRule.SWIM)],
+        Stage.asia_b.value                  : [StageEntranceMeta(Stage.asia_a.value,
+                                                                 AccessRule.SWIM, AccessRule.HERO),
+                                               StageEntranceMeta(Stage.asia_b1.value,
+                                                                 AccessRule.SHOOT, AccessRule.GLIDE),
+                                               StageEntranceMeta(Stage.asia_b2.value, AccessRule.HERO,
+                                                                 event_invoked(Game.shortcut_asia_b2b.value))],
+        Stage.asia_b1.value                 : [StageEntranceMeta(Stage.asia_b.value),
+                                               StageEntranceMeta(Stage.asia_b2.value, AccessRule.SWIM)],
+        Stage.asia_b2.value                 : [StageEntranceMeta(Stage.asia_a1.value),
+                                               StageEntranceMeta(Stage.asia_b.value),
+                                               StageEntranceMeta(Stage.asia_b1.value, AccessRule.SWIM)],
+        Stage.asia_d.value                  : [StageEntranceMeta(Stage.asia_d2.value),
+                                               StageEntranceMeta(Stage.asia_a2.value)],
+        Stage.asia_d1.value                 : [StageEntranceMeta(Stage.asia_a3.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.asia_d2.value, AccessRule.SWIM)],
+        Stage.asia_d2.value                 : [StageEntranceMeta(Stage.asia_d.value),
+                                               StageEntranceMeta(Stage.asia_d1.value, AccessRule.SWIM)],
+        Stage.asia_e.value                  : [StageEntranceMeta(Stage.asia_e2.value,frozenset({
+                                                                     AccessRule.SWIM, AccessRule.RCC
+                                                                 }),
+                                                                 frozenset({
+                                                                     AccessRule.SWIM, AccessRule.SHOOT
+                                                                 }),
+
+                                                                 critical={AccessRule.FLY})],
+        Stage.asia_e1.value                 : [StageEntranceMeta(Stage.asia_a1.value),
+                                               StageEntranceMeta(Stage.asia_a2.value),
+                                               StageEntranceMeta(Stage.asia_a3.value),
+                                               StageEntranceMeta(Stage.asia_e.value,
+                                                                 AccessRule.DASH, AccessRule.FLY,
+                                                                 critical={
+                                                                     event_not_invoked(Game.trigger_asia_e.value)
+                                                                 }),
+                                               StageEntranceMeta(Stage.asia_a2.value,
+                                                                 frozenset({
+                                                                     AccessRule.SWIM,
+                                                                     event_invoked(Game.trigger_asia_e.value)
+                                                                 })),
+                                               StageEntranceMeta(Stage.asia_f.value, AccessRule.MONKEY)],
+        Stage.asia_e2.value                 : [StageEntranceMeta(Stage.asia_e1.value, AccessRule.SWIM,
+                                                                 critical={
+                                                                     event_invoked(Game.trigger_asia_e.value)
+                                                                 }),
+                                               StageEntranceMeta(Stage.asia_a5.value)],
+        Stage.asia_f.value                  : [StageEntranceMeta(Stage.asia_e1.value)],
+
+        # Plane
+        Stage.plane_a.value                 : [StageEntranceMeta(Stage.plane_a1.value, AccessRule.NINJA),
+                                               StageEntranceMeta(Stage.plane_c.value, AccessRule.DASH)],
+        Stage.plane_a1.value                : [StageEntranceMeta(Stage.plane_a.value)],
+        Stage.plane_b.value                 : [StageEntranceMeta(Stage.plane_f.value),
+                                               StageEntranceMeta(Stage.plane_h.value)],
+        Stage.plane_b1.value                : [StageEntranceMeta(Stage.plane_b.value),
+                                               StageEntranceMeta(Stage.plane_f1.value),
+                                               StageEntranceMeta(Stage.plane_h.value)],
+        Stage.plane_c.value                 : [StageEntranceMeta(Stage.plane_a.value),
+                                               StageEntranceMeta(Stage.plane_c1.value, AccessRule.GENIE),
+                                               StageEntranceMeta(Stage.plane_g.value, AccessRule.MONKEY)],
+        Stage.plane_c1.value                : [StageEntranceMeta(Stage.plane_c.value),
+                                               StageEntranceMeta(Stage.plane_d.value)],
+        Stage.plane_d.value                 : [StageEntranceMeta(Stage.plane_c1.value),
+                                               StageEntranceMeta(Stage.plane_e.value)],
+        Stage.plane_e.value                 : [StageEntranceMeta(Stage.plane_d.value),
+                                               StageEntranceMeta(Stage.plane_f.value)],
+        Stage.plane_f.value                 : [StageEntranceMeta(Stage.plane_b.value),
+                                               StageEntranceMeta(Stage.plane_e.value)],
+        Stage.plane_f1.value                : [StageEntranceMeta(Stage.plane_b1.value),
+                                               StageEntranceMeta(Stage.plane_f.value)],
+        Stage.plane_g.value                 : [StageEntranceMeta(Stage.plane_c.value)],
+        Stage.plane_h.value                 : [StageEntranceMeta(Stage.plane_b.value),
+                                               StageEntranceMeta(Stage.plane_b1.value)],
+
+        # Hong
+        Stage.hong_a.value                  : [StageEntranceMeta(Stage.hong_a1.value,
+                                                                 AccessRule.KUNGFU, AccessRule.HERO)],
+        Stage.hong_a1.value                 : [StageEntranceMeta(Stage.hong_a.value),
+                                               StageEntranceMeta(Stage.hong_a2.value)],
+        Stage.hong_a2.value                 : [StageEntranceMeta(Stage.hong_a.value),
+                                               StageEntranceMeta(Stage.hong_a1.value),
+                                               StageEntranceMeta(Stage.hong_b1.value)],
+        Stage.hong_b.value                  : [StageEntranceMeta(Stage.hong_b1.value),
+                                               StageEntranceMeta(Stage.hong_c.value, AccessRule.KUNGFU),
+                                               StageEntranceMeta(Stage.hong_f.value, AccessRule.MONKEY)],
+        Stage.hong_b1.value                 : [StageEntranceMeta(Stage.hong_a2.value),
+                                               StageEntranceMeta(Stage.hong_b.value, AccessRule.KUNGFU)],
+        Stage.hong_c.value                  : [StageEntranceMeta(Stage.hong_b.value),
+                                               StageEntranceMeta(Stage.hong_c1.value, AccessRule.GLIDE),
+                                               StageEntranceMeta(Stage.hong_d.value),
+                                               StageEntranceMeta(Stage.hong_e.value),
+                                               StageEntranceMeta(Stage.hong_h.value)],
+        Stage.hong_c1.value                 : [StageEntranceMeta(Stage.hong_c.value),
+                                               StageEntranceMeta(Stage.hong_c2.value,
+                                                                 AccessRule.NINJA, AccessRule.HERO)],
+        Stage.hong_c2.value                 : [StageEntranceMeta(Stage.hong_c.value),
+                                               StageEntranceMeta(Stage.hong_c1.value,
+                                                                 AccessRule.NINJA, AccessRule.HERO)],
+        Stage.hong_d.value                  : [StageEntranceMeta(Stage.hong_c.value),
+                                               StageEntranceMeta(Stage.hong_g.value, AccessRule.KUNGFU)],
+        Stage.hong_e.value                  : [StageEntranceMeta(Stage.hong_c.value),
+                                               StageEntranceMeta(Stage.hong_e1.value, frozenset({
+                                                   AccessRule.GLIDE, AccessRule.KUNGFU
+                                               }))],
+        Stage.hong_e1.value                 : [StageEntranceMeta(Stage.hong_e.value)],
+        Stage.hong_f.value                  : [StageEntranceMeta(Stage.hong_b.value)],
+        Stage.hong_g.value                  : [StageEntranceMeta(Stage.hong_d.value, AccessRule.KUNGFU)],
+        Stage.hong_h.value                  : [StageEntranceMeta(Stage.hong_c.value)],
+
+        # boss5
+        Stage.boss5.value                   : None
     }

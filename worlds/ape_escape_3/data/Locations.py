@@ -773,15 +773,190 @@ MONKEYS_BOSS4 : Sequence[str] = [
     Loc.boss_monkey_pink.value
 ]
 
+# Asia
+MONKEYS_ASIA_A : Sequence[str] = [
+    Loc.asia_pincher_mon.value
+]
+
+MONKEYS_ASIA_A1 : Sequence[str] = [
+    Loc.asia_salumani.value, Loc.asia_salulu.value
+]
+
+MONKEYS_ASIA_A3 : Sequence[str] = [
+    Loc.asia_baku.value
+]
+
+MONKEYS_ASIA_A4 : Sequence[str] = [
+    Loc.asia_ukki_mat.value, Loc.asia_salunch.value
+]
+
+MONKEYS_ASIA_B : Sequence[str] = [
+    Loc.asia_mong_popo.value, Loc.asia_mohcha.value, Loc.asia_kamcha.value
+]
+
+MONKEYS_ASIA_B1 : Sequence[str] = [
+    Loc.asia_bimocha.value, Loc.asia_gimchin.value
+]
+
+MONKEYS_ASIA_B2 : Sequence[str] = [
+    Loc.asia_kamaccha.value
+]
+
+MONKEYS_ASIA_D : Sequence[str] = [
+    Loc.asia_gyamu.value, Loc.asia_tartan.value
+]
+
+MONKEYS_ASIA_D2 : Sequence[str] = [
+    Loc.asia_takumon.value, Loc.asia_ukki_ether.value
+]
+
+MONKEYS_ASIA_E1 : Sequence[str] = [
+    Loc.asia_molzone.value
+]
+
+MONKEYS_ASIA_E2 : Sequence[str] = [
+    Loc.asia_chappio.value, Loc.asia_pomoah.value
+]
+
+MONKEYS_ASIA_F : Sequence[str] = [
+    Loc.asia_gucchai.value, Loc.asia_makaccho.value, Loc.asia_gamaran.value, Loc.asia_larry.value
+]
+
+MONKEYS_ASIA : Sequence[str] = [
+    *MONKEYS_ASIA_A, *MONKEYS_ASIA_A1, *MONKEYS_ASIA_A3, *MONKEYS_ASIA_A4, *MONKEYS_ASIA_B, *MONKEYS_ASIA_B1,
+    *MONKEYS_ASIA_B1, *MONKEYS_ASIA_B2, *MONKEYS_ASIA_D, *MONKEYS_ASIA_D2, *MONKEYS_ASIA_E1, *MONKEYS_ASIA_E2,
+    *MONKEYS_ASIA_F
+]
+
+# Plane
+MONKEYS_PLANE_A : Sequence[str] = [
+    Loc.plane_romo.value, Loc.plane_temko.value
+]
+
+MONKEYS_PLANE_A1 : Sequence[str] = [
+    Loc.plane_ukkigawa.value
+]
+
+MONKEYS_PLANE_B : Sequence[str] = [
+    Loc.plane_mokkido.value
+]
+
+MONKEYS_PLANE_B1 : Sequence[str] = [
+    Loc.plane_pont.value, Loc.plane_gamish.value,
+]
+
+MONKEYS_PLANE_C : Sequence[str] = [
+    Loc.plane_takmon.value, Loc.plane_mukita.value
+]
+
+MONKEYS_PLANE_C1 : Sequence[str] = [
+    Loc.plane_prince_bertus.value, Loc.plane_chai_bunny.value
+]
+
+MONKEYS_PLANE_D : Sequence[str] = [
+    Loc.plane_tamrai.value, Loc.plane_kemunpa.value, Loc.plane_pipotron_blue.value
+]
+
+MONKEYS_PLANE_E : Sequence[str] = [
+    Loc.plane_mabaras.value, Loc.plane_tamoos.value, Loc.plane_kimoto.value
+]
+
+MONKEYS_PLANE_F1 : Sequence[str] = [
+    Loc.plane_octavian.value
+]
+
+MONKEYS_PLANE_G : Sequence[str] = [
+    Loc.plane_samuel.value, Loc.plane_coril.value, Loc.plane_bont.value, Loc.plane_delly.value
+]
+
+MONKEYS_PLANE_H : Sequence[str] = [
+    Loc.plane_jeloh.value, Loc.plane_bongo.value
+]
+
+MONKEYS_PLANE : Sequence[str] = [
+    *MONKEYS_PLANE_A, *MONKEYS_PLANE_A1, *MONKEYS_PLANE_B, *MONKEYS_PLANE_B1, *MONKEYS_PLANE_C, *MONKEYS_PLANE_C1,
+    *MONKEYS_PLANE_D, *MONKEYS_PLANE_E, *MONKEYS_PLANE_F1, *MONKEYS_PLANE_G, *MONKEYS_PLANE_H
+]
+
+# Hong
+MONKEYS_HONG_A : Sequence[str] = [
+    Loc.hong_dally.value, Loc.hong_nak_nayo.value,
+]
+
+MONKEYS_HONG_A1 : Sequence[str] = [
+    Loc.hong_donto_koi.value, Loc.hong_po_kin_ki.value
+]
+
+MONKEYS_HONG_A2 : Sequence[str] = [
+    Loc.hong_dally.value,
+]
+
+MONKEYS_HONG_B : Sequence[str] = [
+    Loc.hong_ukki_chan.value, Loc.hong_uki_uki.value, Loc.hong_muki_muki.value, Loc.hong_hi_uchi_ishi.value
+]
+
+MONKEYS_HONG_B1 : Sequence[str] = [
+    Loc.hong_shinchi.value, Loc.hong_doh_tsuitaro.value
+]
+
+MONKEYS_HONG_C : Sequence[str] = [
+    Loc.hong_bassili_ukki.value, Loc.hong_pikon.value, Loc.hong_bankan.value, Loc.hong_sukei.value,
+    Loc.hong_giyan.value
+]
+
+MONKEYS_HONG_C1 : Sequence[str] = [
+    Loc.hong_danchi.value
+]
+
+MONKEYS_HONG_C2 : Sequence[str] = [
+    Loc.hong_gala_waruo.value
+]
+
+MONKEYS_HONG_D : Sequence[str] = [
+    Loc.hong_muchaki.value
+]
+
+MONKEYS_HONG_E : Sequence[str] = [
+    Loc.hong_yoh_kitana.value, Loc.hong_goshi_andos.value, Loc.hong_pukuman.value
+]
+
+MONKEYS_HONG_E1 : Sequence[str] = [
+    Loc.hong_block_master.value
+]
+
+MONKEYS_HONG_F : Sequence[str] = [
+    Loc.hong_tompo.value, Loc.hong_wootan.value, Loc.hong_chechin.value, Loc.hong_hapcho.value
+]
+
+MONKEYS_HONG_G : Sequence[str] = [
+    Loc.hong_bonmos.value, Loc.hong_dark_master.value
+]
+
+MONKEYS_HONG_H : Sequence[str] = [
+    Loc.hong_teh_isu.value, Loc.hong_ponja.value
+]
+
+MONKEYS_HONG : Sequence[str] = [
+    *MONKEYS_HONG_A, *MONKEYS_HONG_A1, *MONKEYS_HONG_B, *MONKEYS_HONG_B1, *MONKEYS_HONG_C, *MONKEYS_HONG_C1,
+    *MONKEYS_HONG_D, *MONKEYS_HONG_E, *MONKEYS_HONG_E1, *MONKEYS_HONG_F, *MONKEYS_HONG_G, *MONKEYS_HONG_H
+]
+
+# boss5
+MONKEYS_BOSS5 : Sequence[str] = [
+    Loc.boss_monkey_red.value
+]
+
 MONKEYS_BOSSES : Sequence[str] = [
-    *MONKEYS_BOSS1, *MONKEYS_BOSS2, *MONKEYS_BOSS3, *MONKEYS_BOSS4
+    *MONKEYS_BOSS1, *MONKEYS_BOSS2, *MONKEYS_BOSS3, *MONKEYS_BOSS4, *MONKEYS_BOSS5
 ]
 
 MONKEYS_MASTER : Sequence[str] = [
     *MONKEYS_ZERO, *MONKEYS_SEASIDE, *MONKEYS_WOODS, *MONKEYS_CASTLE, *MONKEYS_CISCOCITY, *MONKEYS_STUDIO,
     *MONKEYS_HALLOWEEN, *MONKEYS_WESTERN, *MONKEYS_ONSEN, *MONKEYS_SNOWFESTA, *MONKEYS_EDOTOWN, *MONKEYS_HEAVEN,
-    *MONKEYS_TOYHOUSE, *MONKEYS_ICELAND, *MONKEYS_ARABIAN, *MONKEYS_BOSSES
+    *MONKEYS_TOYHOUSE, *MONKEYS_ICELAND, *MONKEYS_ARABIAN, *MONKEYS_ASIA, *MONKEYS_PLANE, *MONKEYS_HONG,
+    *MONKEYS_BOSSES
 ]
+
 MONKEYS_INDEX : dict[str, Sequence] = {
     # Zero
     Stage.zero.value            : MONKEYS_ZERO,
@@ -910,6 +1085,50 @@ MONKEYS_INDEX : dict[str, Sequence] = {
 
     # Boss4
     Stage.boss4.value           : MONKEYS_BOSS4,
+
+    # Asia
+    Stage.asia_a.value          : MONKEYS_ASIA_A,
+    Stage.asia_a1.value         : MONKEYS_ASIA_A1,
+    Stage.asia_a3.value         : MONKEYS_ASIA_A3,
+    Stage.asia_a4.value         : MONKEYS_ASIA_A4,
+    Stage.asia_b.value          : MONKEYS_ASIA_B,
+    Stage.asia_b1.value         : MONKEYS_ASIA_B1,
+    Stage.asia_b2.value         : MONKEYS_ASIA_B2,
+    Stage.asia_d.value          : MONKEYS_ASIA_D,
+    Stage.asia_d2.value         : MONKEYS_ASIA_D2,
+    Stage.asia_e1.value         : MONKEYS_ASIA_E1,
+    Stage.asia_e2.value         : MONKEYS_ASIA_E2,
+    Stage.asia_f.value          : MONKEYS_ASIA_F,
+
+    # Plane
+    Stage.plane_a.value         : MONKEYS_PLANE_A,
+    Stage.plane_a1.value        : MONKEYS_PLANE_A1,
+    Stage.plane_b.value         : MONKEYS_PLANE_B,
+    Stage.plane_b1.value        : MONKEYS_PLANE_B1,
+    Stage.plane_c.value         : MONKEYS_PLANE_C,
+    Stage.plane_c1.value        : MONKEYS_PLANE_C1,
+    Stage.plane_d.value         : MONKEYS_PLANE_D,
+    Stage.plane_e.value         : MONKEYS_PLANE_E,
+    Stage.plane_f1.value        : MONKEYS_PLANE_F1,
+    Stage.plane_g.value         : MONKEYS_PLANE_G,
+    Stage.plane_h.value         : MONKEYS_PLANE_H,
+
+    # Hong
+    Stage.hong_a.value          : MONKEYS_HONG_A,
+    Stage.hong_b.value          : MONKEYS_HONG_B,
+    Stage.hong_b1.value         : MONKEYS_HONG_B1,
+    Stage.hong_c.value          : MONKEYS_HONG_C,
+    Stage.hong_c1.value         : MONKEYS_HONG_C1,
+    Stage.hong_c2.value         : MONKEYS_HONG_C2,
+    Stage.hong_d.value          : MONKEYS_HONG_D,
+    Stage.hong_e.value          : MONKEYS_HONG_E,
+    Stage.hong_e1.value         : MONKEYS_HONG_E1,
+    Stage.hong_f.value          : MONKEYS_HONG_F,
+    Stage.hong_g.value          : MONKEYS_HONG_G,
+    Stage.hong_h.value          : MONKEYS_HONG_H,
+
+    # boss5
+    Stage.boss5.value           : MONKEYS_BOSS5
 }
 
 EVENTS_STUDIO_A1 : Sequence[EventMeta] = [
@@ -928,12 +1147,32 @@ EVENTS_ARABIAN_C : Sequence[EventMeta] = [
     EventMeta(Game.trigger_arabian_c.value, AccessRule.CATCH)
 ]
 
-EVENTS_INDEX : dict[str, Sequence[EventMeta]] = {
-    Stage.iceland_e.value        : EVENTS_ICELAND_E,
-    Stage.arabian_c.value        : EVENTS_ARABIAN_C,
+EVENTS_ASIA_A1 : Sequence[EventMeta] = [
+    EventMeta(Game.trigger_asia_a1.value)
+]
 
-    Stage.studio_a1.value        : EVENTS_STUDIO_A1,
-    Stage.edotown_e.value        : EVENTS_EDOTOWN_E
+EVENTS_ASIA_A2 : Sequence[EventMeta] = [
+    EventMeta(Game.trigger_asia_a2.value)
+]
+
+EVENTS_ASIA_B2 : Sequence[EventMeta] = [
+    EventMeta(Game.shortcut_asia_b2b.value)
+]
+
+EVENTS_ASIA_E : Sequence[EventMeta] = [
+    EventMeta(Game.trigger_asia_e.value)
+]
+
+EVENTS_INDEX : dict[str, Sequence[EventMeta]] = {
+    Stage.iceland_e.value       : EVENTS_ICELAND_E,
+    Stage.arabian_c.value       : EVENTS_ARABIAN_C,
+    Stage.asia_a1.value         : EVENTS_ASIA_A1,
+    Stage.asia_a2.value         : EVENTS_ASIA_A2,
+    Stage.asia_e.value          : EVENTS_ASIA_E,
+
+    Stage.studio_a1.value       : EVENTS_STUDIO_A1,
+    Stage.edotown_e.value       : EVENTS_EDOTOWN_E,
+    Stage.asia_b2.value         : EVENTS_ASIA_B2
 }
 
 def generate_name_to_id() -> dict[str, int]:

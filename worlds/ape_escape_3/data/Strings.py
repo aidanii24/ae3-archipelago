@@ -379,29 +379,29 @@ class Loc(BaseEnum):
     boss_monkey_pink            = "Monkey Pink"
 
     ## Eversummer Island
-    asia_ukki_mat               = "Ukki Mat - Eversummer Island",
-    asia_salumani               = "Salumani - Eversummer Island",
-    asia_salulu                 = "Salulu - Eversummer Island",
-    asia_baku                   = "Baku - Eversummer Island",
-    asia_salunch                = "Salunch - Eversummer Island",
-    asia_pincher_mon            = "Pincher-mon - Eversummer Island",
-    asia_mong_popo              = "Mong Popo - Eversummer Island",
-    asia_mohcha                 = "Mohcha - Eversummer Island",
-    asia_kamcha                 = "Kamcha - Eversummer Island",
-    asia_bimocha                = "Bimocha - Eversummer Island",
-    asia_gimchin                = "Gimchin - Eversummer Island",
-    asia_kamaccha               = "Kamaccha - Eversummer Island",
-    asia_gyamu                  = "Gyamu - Eversummer Island",
-    asia_takumon                = "Takumon - Eversummer Island",
-    asia_ukki_ether             = "Ukki Ether - Eversummer Island",
-    asia_tartan                 = "Tartan - Eversummer Island",
-    asia_molzone                = "Molzone - Eversummer Island",
-    asia_chappio                = "Chappio - Eversummer Island",
-    asia_pomoah                 = "Pomoah - Eversummer Island",
-    asia_gucchai                = "Gucchai - Eversummer Island",
-    asia_makaccho               = "Makaccho - Eversummer Island",
-    asia_gamaran                = "Gamaran - Eversummer Island",
-    asia_larry                  = "Larry - Eversummer Island",
+    asia_ukki_mat               = "Ukki Mat - Eversummer Island"
+    asia_salumani               = "Salumani - Eversummer Island"
+    asia_salulu                 = "Salulu - Eversummer Island"
+    asia_baku                   = "Baku - Eversummer Island"
+    asia_salunch                = "Salunch - Eversummer Island"
+    asia_pincher_mon            = "Pincher-mon - Eversummer Island"
+    asia_mong_popo              = "Mong Popo - Eversummer Island"
+    asia_mohcha                 = "Mohcha - Eversummer Island"
+    asia_kamcha                 = "Kamcha - Eversummer Island"
+    asia_bimocha                = "Bimocha - Eversummer Island"
+    asia_gimchin                = "Gimchin - Eversummer Island"
+    asia_kamaccha               = "Kamaccha - Eversummer Island"
+    asia_gyamu                  = "Gyamu - Eversummer Island"
+    asia_takumon                = "Takumon - Eversummer Island"
+    asia_ukki_ether             = "Ukki Ether - Eversummer Island"
+    asia_tartan                 = "Tartan - Eversummer Island"
+    asia_molzone                = "Molzone - Eversummer Island"
+    asia_chappio                = "Chappio - Eversummer Island"
+    asia_pomoah                 = "Pomoah - Eversummer Island"
+    asia_gucchai                = "Gucchai - Eversummer Island"
+    asia_makaccho               = "Makaccho - Eversummer Island"
+    asia_gamaran                = "Gamaran - Eversummer Island"
+    asia_larry                  = "Larry - Eversummer Island"
 
     # Airplane Squadron
     plane_romo                  = "Romo - Airplane Squadron"
@@ -425,7 +425,7 @@ class Loc(BaseEnum):
     plane_coril                 = "Coril - Airplane Squadron"
     plane_bont                  = "Bont - Airplane Squadron"
     plane_delly                 = "Delly - Airplane Squadron"
-    plane_jeloh                 = "Jeloh- Airplane Squadron"
+    plane_jeloh                 = "Jeloh - Airplane Squadron"
     plane_bongo                 = "Bongo - Airplane Squadron"
 
     # Kung-Fu Alley
@@ -613,13 +613,16 @@ class Stage(BaseEnum):
     asia_a2 =                   "Eversummer Island - Cliffs"
     asia_a3 =                   "Eversummer Island - Sunken Ruins"
     asia_a4 =                   "Eversummer Island - Stranded"
+    asia_a5 =                   "Eversummer Island - Temple Rear"
     asia_b =                    "Eversummer Island - Village Canals"
     asia_b1 =                   "Eversummer Island - Village Roofs"
     asia_b2 =                   "Eversummer Island - Village Blades"
     asia_d =                    "Eversummer Island - Higher Jungle"
     asia_d1 =                   "Eversummer Island - Jungle Rivers"
-    asia_e =                    "Eversummer Island - Temple Ruins"
-    asia_e1 =                   "Eversummer Island - Temple Entrance"
+    asia_d2 =                   "Eversummer Island - Jungle Pond"
+    asia_e =                    "Eversummer Island - Lower Temple Ruins"
+    asia_e1 =                   "Eversummer Island - Temple Ruins Entrance"
+    asia_e2 =                   "Eversummer Island - Higher Temple Ruins"
     asia_f =                    "Eversummer Island - Break Room"
 
     plane =                     "Airplane Squadron"
@@ -638,10 +641,13 @@ class Stage(BaseEnum):
 
     hong =                      "Kung-Fu Alley"
     hong_a =                    "Kung-Fu Alley - Cliffs"
+    hong_a1 =                   "Kung-Fu Alley - Training Grounds"
+    hong_a2 =                   "Kung-Fu Alley - Mountain Trail"
     hong_b =                    "Kung-Fu Alley - Alleys"
     hong_b1 =                   "Kung-Fu Alley - Alleys Entrance"
     hong_c =                    "Kung-Fu Alley - City"
-    hong_c1 =                   "Kung-Fu Alley - Abandoned Building"
+    hong_c1 =                   "Kung-Fu Alley - Private Roof"
+    hong_c2 =                   "Kung-Fu Alley - Abandoned Building"
     hong_d =                    "Kung-Fu Alley - Apartments"
     hong_e =                    "Kung-Fu Alley - Restaurant"
     hong_e1 =                   "Kung-Fu Alley - Mahjong Room"
@@ -688,9 +694,13 @@ class Game(BaseEnum):
     # Environment
     trigger_iceland_e =     "Christmas Tree Button"
     trigger_arabian_c =     "Golden-mon Captured"
+    trigger_asia_a1 =       "Higher Islands Block Inserted"
+    trigger_asia_a2 =       "Cliffs Block Inserted"
+    trigger_asia_e =        "Temple Fully Flooded"
 
     shortcut_studio_ad =    "Shortcut to Specter TV Studio - Buildings Set"
     shortcut_edotown_eb =   "Shortcut to The Emperor's Castle - Castle Grounds"
+    shortcut_asia_b2b =     "Shortcut to Eversummer Island - Village Canals"
 
     @classmethod
     def get_buttons_by_internal_index(cls) -> Sequence[str]:
