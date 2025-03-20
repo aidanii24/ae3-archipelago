@@ -108,13 +108,12 @@ class AE3World(World):
         self.multiworld.push_precollected(monkey)
 
         self.multiworld.push_precollected(Channel_Key.to_item(self.player))
-        self.multiworld.push_precollected(Channel_Key.to_item(self.player))
-        self.multiworld.push_precollected(Channel_Key.to_item(self.player))
-        self.multiworld.push_precollected(Channel_Key.to_item(self.player))
-        self.multiworld.push_precollected(Channel_Key.to_item(self.player))
-        self.multiworld.push_precollected(Channel_Key.to_item(self.player))
-        self.multiworld.push_precollected(Channel_Key.to_item(self.player))
-        self.multiworld.push_precollected(Channel_Key.to_item(self.player))
+        self.get_location(Loc.seaside_salurin.value).place_locked_item(Channel_Key.to_item(self.player))
+        self.get_location(Loc.seaside_nessal.value).place_locked_item(Channel_Key.to_item(self.player))
+        self.get_location(Loc.seaside_ukkitan.value).place_locked_item(Channel_Key.to_item(self.player))
+        self.get_location(Loc.seaside_ukki_ben.value).place_locked_item(Channel_Key.to_item(self.player))
+        self.get_location(Loc.seaside_ukki_pia.value).place_locked_item(Channel_Key.to_item(self.player))
+        self.get_location(Loc.seaside_sarubo.value).place_locked_item(Channel_Key.to_item(self.player))
 
         self.item_pool += gadgets
         self.item_pool += [knight, cowboy, ninja, magician, kungfu, hero, monkey]
@@ -138,11 +137,14 @@ class AE3World(World):
         self.get_location(Loc.boss_monkey_blue.value).place_locked_item(Channel_Key.to_item(self.player))
         self.get_location(Loc.boss_monkey_yellow.value).place_locked_item(Channel_Key.to_item(self.player))
         self.get_location(Loc.boss_monkey_pink.value).place_locked_item(Channel_Key.to_item(self.player))
+        self.get_location(Loc.boss_monkey_red.value).place_locked_item(Channel_Key.to_item(self.player))
 
         # <!> DEBUG - Temporarily preset Password Monkeys with Nothing Items for now
+        self.get_location(Loc.castle_sal_1000.value).place_locked_item(Nothing.to_item(self.player))
         self.get_location(Loc.woods_spork.value).place_locked_item(Nothing.to_item(self.player))
         self.get_location(Loc.snowfesta_pipotron_yellow.value).place_locked_item(Nothing.to_item(self.player))
         self.get_location(Loc.toyhouse_pipotron_red.value).place_locked_item(Nothing.to_item(self.player))
+        self.get_location(Loc.hong_dark_master.value).place_locked_item(Nothing.to_item(self.player))
 
         # Fill remaining locations with Collectables
         unfilled : int = len(self.multiworld.get_unfilled_locations()) - len(self.item_pool)

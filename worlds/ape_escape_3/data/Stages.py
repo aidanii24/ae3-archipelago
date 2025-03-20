@@ -17,7 +17,8 @@ class StageEntranceMeta:
     rules : Rulesets
 
     def __init__(self, destination : str,
-                 *rules : Callable | frozenset[Callable] | Set[frozenset[Callable]] | Rulesets):
+                 *rules : Callable | frozenset[Callable] | Set[frozenset[Callable]] | Rulesets,
+                 critical : set = None):
         self.destination = destination
         self.rules = Rulesets()
 
@@ -31,6 +32,9 @@ class StageEntranceMeta:
                     self.rules.Rules.update(frozenset(rule))
                 elif isinstance(rule, frozenset):
                     self.rules.Rules.add(rule)
+
+        if isinstance(critical, set):
+            self.rules.Critical.update(critical)
 
 class AE3StageMeta:
     """
@@ -433,18 +437,39 @@ STAGES_ARABIAN : Sequence[str] = [
     Stage.arabian_e1.value, Stage.arabian_f.value
 ]
 
+STAGES_ASIA : Sequence[str] = [
+    Stage.asia_a.value, Stage.asia_a1.value, Stage.asia_a2.value, Stage.asia_a3.value, Stage.asia_a4.value,
+    Stage.asia_a5.value, Stage.asia_b.value, Stage.asia_b1.value, Stage.asia_b2.value, Stage.asia_d.value,
+    Stage.asia_d1.value, Stage.asia_d2.value, Stage.asia_e.value, Stage.asia_e1.value, Stage.asia_e2.value,
+    Stage.asia_f.value
+]
+
+STAGES_PLANE : Sequence[str] = [
+    Stage.plane_a.value, Stage.plane_a1.value, Stage.plane_b.value, Stage.plane_b1.value, Stage.plane_c.value,
+    Stage.plane_c1.value, Stage.plane_d.value, Stage.plane_e.value, Stage.plane_f.value, Stage.plane_f1.value,
+    Stage.plane_g.value, Stage.plane_h.value
+]
+
+STAGES_HONG : Sequence[str] = [
+    Stage.hong_a.value, Stage.hong_a1.value, Stage.hong_a2.value, Stage.hong_b.value, Stage.hong_b1.value,
+    Stage.hong_c.value, Stage.hong_c1.value, Stage.hong_c2.value, Stage.hong_d.value, Stage.hong_e.value,
+    Stage.hong_e1.value, Stage.hong_f.value, Stage.hong_g.value, Stage.hong_h.value
+]
+
 STAGES_BOSSES : Sequence[str] = [
-    Stage.boss1.value, Stage.boss2.value, Stage.boss3.value, Stage.boss4.value
+    Stage.boss1.value, Stage.boss2.value, Stage.boss3.value, Stage.boss4.value, Stage.boss5.value
 ]
 
 STAGES_MASTER : Sequence[str] = [
     *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY, *STAGES_STUDIO,
     *STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_ONSEN, *STAGES_SNOWFESTA, *STAGES_EDOTOWN, *STAGES_HEAVEN,
-    *STAGES_TOYHOUSE, *STAGES_ICELAND, *STAGES_ARABIAN, *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB
+    *STAGES_TOYHOUSE, *STAGES_ICELAND, *STAGES_ARABIAN, *STAGES_ASIA, *STAGES_PLANE, *STAGES_HONG, *STAGES_BOSSES,
+    *STAGES_TITLE, *STAGES_HUB
 ]
 
 STAGES_INDEX : Sequence[Sequence[str]] = [
     STAGES_MASTER, STAGES_ZERO, STAGES_SEASIDE, STAGES_WOODS, STAGES_CASTLE, STAGES_CISCOCITY, STAGES_STUDIO,
     STAGES_HALLOWEEN, STAGES_WESTERN, STAGES_ONSEN, STAGES_SNOWFESTA, STAGES_EDOTOWN, STAGES_HEAVEN,
-    STAGES_TOYHOUSE, STAGES_ICELAND, STAGES_ARABIAN, STAGES_BOSSES, STAGES_TITLE, STAGES_HUB,
+    STAGES_TOYHOUSE, STAGES_ICELAND, STAGES_ARABIAN, STAGES_ASIA, STAGES_PLANE, STAGES_HONG, STAGES_BOSSES,
+    STAGES_TITLE, STAGES_HUB
 ]

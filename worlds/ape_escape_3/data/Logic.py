@@ -36,11 +36,17 @@ def can_rcc(state : CollectionState, player : int):
     return state.has(Itm.gadget_rcc.value, player)
 
 # Morph Checks
+def can_cowboy(state : CollectionState, player : int):
+    return state.has(Itm.morph_cowboy.value, player)
+
 def can_ninja(state : CollectionState, player : int):
     return state.has(Itm.morph_ninja.value, player)
 
 def can_genie(state : CollectionState, player : int):
     return state.has(Itm.morph_magician.value, player)
+
+def can_kungfu(state : CollectionState, player : int):
+    return state.has(Itm.morph_kungfu.value, player)
 
 def can_hero(state : CollectionState, player : int):
     return state.has(Itm.morph_hero.value, player)
@@ -90,8 +96,14 @@ def has_keys(keys : int):
 def is_event_invoked(state : CollectionState, player : int, event_name : str):
     return state.has(event_name, player)
 
+def is_event_not_invoked(state : CollectionState, player : int, event_name : str):
+    return not state.has(event_name, player)
+
 def event_invoked(event_name : str):
     return lambda state, player : is_event_invoked(state, player, event_name)
+
+def event_not_invoked(event_name : str):
+    return lambda state, player : is_event_not_invoked(state, player, event_name)
 
 ### [< --- WRAPPER SHORTHAND --- >]
 class AccessRule:
@@ -117,8 +129,10 @@ class AccessRule:
     RCC = can_rcc
 
     # Morph
+    COWBOY = can_cowboy
     NINJA = can_ninja
     GENIE = can_genie
+    KUNGFU = can_kungfu
     HERO = can_hero
     MONKEY = can_monkey
 
