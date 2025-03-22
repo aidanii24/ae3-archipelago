@@ -1246,12 +1246,40 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.hong_h.value          : MONKEYS_HONG_H,
 
     # boss5
-    Stage.boss5.value           : MONKEYS_BOSS5
+    Stage.boss5.value           : MONKEYS_BOSS5,
 
-    #bay
+    # bay
+    Stage.bay_a.value           : MONKEYS_BAY_A,
+    Stage.bay_a1.value          : MONKEYS_BAY_A1,
+    Stage.bay_a5.value          : MONKEYS_BAY_A5,
+    Stage.bay_b.value           : MONKEYS_BAY_B,
+    Stage.bay_c.value           : MONKEYS_BAY_C,
+    Stage.bay_d.value           : MONKEYS_BAY_D,
+    Stage.bay_d1.value          : MONKEYS_BAY_D1,
+    Stage.bay_e.value           : MONKEYS_BAY_E,
+    Stage.bay_e1.value          : MONKEYS_BAY_E1,
+    Stage.bay_e2.value          : MONKEYS_BAY_E2,
+    Stage.bay_e3.value          : MONKEYS_BAY_E3,
+    Stage.bay_f.value           : MONKEYS_BAY_F,
 
+    # tomo
+    Stage.tomo_a.value          : MONKEYS_TOMO_A,
+    Stage.tomo_b.value          : MONKEYS_TOMO_B,
+    Stage.tomo_c.value          : MONKEYS_TOMO_C,
+    Stage.tomo_e1.value         : MONKEYS_TOMO_E1,
+    Stage.tomo_e2.value         : MONKEYS_TOMO_E2,
+    Stage.tomo_f1.value         : MONKEYS_TOMO_F1,
+    Stage.tomo_f2.value         : MONKEYS_TOMO_F2,
+    Stage.tomo_g.value          : MONKEYS_TOMO_G,
+    Stage.tomo_g1.value         : MONKEYS_TOMO_G1,
+    Stage.tomo_h.value          : MONKEYS_TOMO_H,
+    Stage.tomo_j.value          : MONKEYS_TOMO_J,
+
+    # boss6
+    Stage.boss6.value           : MONKEYS_BOSS6
 }
 
+### [< --- EVENT GROUPS --- >]
 EVENTS_STUDIO_A1 : Sequence[EventMeta] = [
     EventMeta(Game.shortcut_studio_ad.value)
 ]
@@ -1284,13 +1312,25 @@ EVENTS_ASIA_E : Sequence[EventMeta] = [
     EventMeta(Game.trigger_asia_e.value)
 ]
 
+EVENTS_BAY_A4 : Sequence[EventMeta] = [
+    EventMeta(Game.trigger_bay_a4.value)
+]
+
+EVENTS_BAY_E1 : Sequence[EventMeta] = [
+    EventMeta(Game.trigger_bay_e1.value, AccessRule.SLING)
+]
+
 EVENTS_INDEX : dict[str, Sequence[EventMeta]] = {
+    # Triggers
     Stage.iceland_e.value       : EVENTS_ICELAND_E,
     Stage.arabian_c.value       : EVENTS_ARABIAN_C,
     Stage.asia_a1.value         : EVENTS_ASIA_A1,
     Stage.asia_a2.value         : EVENTS_ASIA_A2,
     Stage.asia_e.value          : EVENTS_ASIA_E,
+    Stage.bay_a4.value          : EVENTS_BAY_A4,
+    Stage.bay_e1.value          : EVENTS_BAY_E1,
 
+    # Shortcuts
     Stage.studio_a1.value       : EVENTS_STUDIO_A1,
     Stage.edotown_e.value       : EVENTS_EDOTOWN_E,
     Stage.asia_b2.value         : EVENTS_ASIA_B2
