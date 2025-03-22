@@ -1266,6 +1266,7 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.tomo_a.value          : MONKEYS_TOMO_A,
     Stage.tomo_b.value          : MONKEYS_TOMO_B,
     Stage.tomo_c.value          : MONKEYS_TOMO_C,
+    Stage.tomo_e.value          : MONKEYS_TOMO_E,
     Stage.tomo_e1.value         : MONKEYS_TOMO_E1,
     Stage.tomo_e2.value         : MONKEYS_TOMO_E2,
     Stage.tomo_f1.value         : MONKEYS_TOMO_F1,
@@ -1273,6 +1274,7 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.tomo_g.value          : MONKEYS_TOMO_G,
     Stage.tomo_g1.value         : MONKEYS_TOMO_G1,
     Stage.tomo_h.value          : MONKEYS_TOMO_H,
+    Stage.tomo_i.value          : MONKEYS_TOMO_I,
     Stage.tomo_j.value          : MONKEYS_TOMO_J,
 
     # boss6

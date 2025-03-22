@@ -11,42 +11,66 @@ from .data import Items
 if TYPE_CHECKING:
     from .AE3_Client import AE3Context
 
-### [< --- CHECKS --- >]
 
+### [< --- CHECKS --- >]
 async def check_states(ctx : 'AE3Context'):
     # Get current stage; remove null bytes if present
-    ctx.current_stage = ctx.ipc.get_stage().removesuffix("\x00")
+    new_stage = ctx.ipc.get_stage().removesuffix("\x00")
 
     # Get which Monkey Group to actively check at the moment based on the stage
-    if ctx.current_stage == "" or ctx.current_stage is None:
+    if new_stage != APHelper.travel_station.value and new_stage == ctx.current_stage:
         return
-    elif ctx.current_stage in MONKEYS_DIRECTORY:
-        ctx.monkeys_checklist = MONKEYS_DIRECTORY[ctx.current_stage]
-    elif "b" in ctx.current_stage:
+    if new_stage == "" or new_stage is None :
+        pass
+    elif new_stage in MONKEYS_DIRECTORY:
+        ctx.monkeys_checklist = MONKEYS_DIRECTORY[new_stage]
+    elif "b" in new_stage:
         ctx.monkeys_checklist = MONKEYS_BOSSES
-    # Iteratively check when in TV Station or Shopping Disctrict
+    # Iteratively check when in TV Station or Shopping District
     else:
-        ctx.monkeys_checklist_count = min(max(0, ctx.monkeys_checklist_count), len(MONKEYS_DIRECTORY.keys()))
+        if ctx.monkeys_checklist_count >= len(MONKEYS_DIRECTORY.values()):
+            ctx.monkeys_checklist_count = 0
 
-        ctx.monkeys_checklist = [*MONKEYS_DIRECTORY.keys()][ctx.monkeys_checklist_count]
+        ctx.monkeys_checklist = [*MONKEYS_DIRECTORY.values()][ctx.monkeys_checklist_count]
         ctx.monkeys_checklist_count += 1
+
+    ctx.current_stage = new_stage
 
 # Ensure game is always set to "round2"
 async def correct_progress(ctx : 'AE3Context'):
     ctx.ipc.set_progress()
 
 async def setup_level_select(ctx : 'AE3Context'):
-    # Force Unlocked Levels to be in sync with the player's chosen option,
+    # Force Unlocked Stages to be in sync with the player's chosen option,
     # maxing out at 0x1B as supported by the game
-    if ctx.ipc.get_unlocked_stages() > min(ctx.unlocked_stages, 0x1B):
-        ctx.ipc.set_unlocked_levels(ctx.unlocked_stages)
+    if ctx.ipc.get_unlocked_stages() > max(0, min(ctx.unlocked_stages, 0x1B)):
+        ctx.ipc.set_unlocked_stages(ctx.unlocked_stages)
+
+    progress : str = ctx.ipc.get_progress()
+    selected_stage: int = ctx.ipc.get_selected_stage()
+
+    # In case player scrolls beyond intended levels before unlocked stages are enforced,
+    # force selected level to be the latest unlocked stage
+    if selected_stage > ctx.unlocked_stages:
+        ctx.ipc.set_selected_stage(ctx.unlocked_stages)
+
+    # Allow players to select Dr. Tomoki Battle by temporarily setting the game progress to boss6
+    # Set back to round2 otherwise, or when exiting level select
+    if not ctx.tomoki_defeated:
+        if ctx.ipc.check_warp_gate_state():
+            if selected_stage == 0x18:
+                ctx.ipc.set_progress(APHelper.pr_boss6.value)
+            elif progress != APHelper.pr_round2.value:
+                ctx.ipc.set_progress()
+        elif progress != APHelper.pr_round2.value:
+            ctx.ipc.set_progress()
 
     # If Super Monkey isn't properly unlocked yet, temporarily do so during level select to prevent Aki from
     # introducing and giving it to the player.
     if not ctx.has_morph_monkey:
         ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
 
-        if ctx.ipc.check_level_confirmed_state():
+        if ctx.ipc.check_stage_confirmed_state():
             ctx.ipc.lock_equipment(Itm.morph_monkey.value)
 
 async def check_items(ctx : 'AE3Context'):

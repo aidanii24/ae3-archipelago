@@ -763,6 +763,7 @@ class Game(BaseEnum):
     character =             "Character"
     progress =              "Progress"
     levels_unlocked =       "Levels Unlocked"
+    level_selected =        "Level Selected"
     on_warp_gate =          "On Warp Gate"
     level_confirmed =       "Level Confirmed"
     current_stage =         "Current Stage"
@@ -877,7 +878,8 @@ class APHelper(BaseEnum):
     specter1 =              "b_7"
     specter2 =              "b_8"
 
-    round2 =                "round2"
+    pr_boss6 =              "boss6"
+    pr_round2 =             "round2"
 
     # AP Options
     progression_type =      "progression_type"
