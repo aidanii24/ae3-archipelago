@@ -456,20 +456,33 @@ STAGES_HONG : Sequence[str] = [
     Stage.hong_e1.value, Stage.hong_f.value, Stage.hong_g.value, Stage.hong_h.value
 ]
 
+STAGES_BAY : Sequence[str] = [
+    Stage.bay_a.value, Stage.bay_a1.value, Stage.bay_a2.value, Stage.bay_a3.value, Stage.bay_a4.value,
+    Stage.bay_a5.value, Stage.bay_b.value, Stage.bay_c.value, Stage.bay_d.value, Stage.bay_d1.value,
+    Stage.bay_e.value, Stage.bay_e1.value, Stage.bay_e2.value, Stage.bay_a3.value, Stage.bay_f.value
+]
+
+STAGES_TOMO : Sequence[str] = [
+    Stage.tomo_a.value, Stage.tomo_a1.value, Stage.tomo_b.value, Stage.tomo_c.value, Stage.tomo_e.value,
+    Stage.tomo_e1.value, Stage.tomo_e2.value, Stage.tomo_f.value, Stage.tomo_f1.value, Stage.tomo_f2.value,
+    Stage.tomo_g.value, Stage.tomo_g1.value, Stage.tomo_h.value, Stage.tomo_h1.value, Stage.tomo_i.value,
+    Stage.tomo_j.value,
+]
+
 STAGES_BOSSES : Sequence[str] = [
-    Stage.boss1.value, Stage.boss2.value, Stage.boss3.value, Stage.boss4.value, Stage.boss5.value
+    Stage.boss1.value, Stage.boss2.value, Stage.boss3.value, Stage.boss4.value, Stage.boss5.value, Stage.boss6.value
 ]
 
 STAGES_MASTER : Sequence[str] = [
     *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY, *STAGES_STUDIO,
     *STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_ONSEN, *STAGES_SNOWFESTA, *STAGES_EDOTOWN, *STAGES_HEAVEN,
-    *STAGES_TOYHOUSE, *STAGES_ICELAND, *STAGES_ARABIAN, *STAGES_ASIA, *STAGES_PLANE, *STAGES_HONG, *STAGES_BOSSES,
-    *STAGES_TITLE, *STAGES_HUB
+    *STAGES_TOYHOUSE, *STAGES_ICELAND, *STAGES_ARABIAN, *STAGES_ASIA, *STAGES_PLANE, *STAGES_HONG,
+    *STAGES_BAY, *STAGES_TOMO, *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB
 ]
 
 STAGES_INDEX : Sequence[Sequence[str]] = [
     STAGES_MASTER, STAGES_ZERO, STAGES_SEASIDE, STAGES_WOODS, STAGES_CASTLE, STAGES_CISCOCITY, STAGES_STUDIO,
     STAGES_HALLOWEEN, STAGES_WESTERN, STAGES_ONSEN, STAGES_SNOWFESTA, STAGES_EDOTOWN, STAGES_HEAVEN,
-    STAGES_TOYHOUSE, STAGES_ICELAND, STAGES_ARABIAN, STAGES_ASIA, STAGES_PLANE, STAGES_HONG, STAGES_BOSSES,
-    STAGES_TITLE, STAGES_HUB
+    STAGES_TOYHOUSE, STAGES_ICELAND, STAGES_ARABIAN, STAGES_ASIA, STAGES_PLANE, STAGES_HONG, STAGES_BAY,
+    STAGES_TOMO, STAGES_BOSSES, STAGES_TITLE, STAGES_HUB
 ]
