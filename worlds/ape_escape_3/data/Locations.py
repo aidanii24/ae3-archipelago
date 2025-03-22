@@ -946,6 +946,124 @@ MONKEYS_BOSS5 : Sequence[str] = [
     Loc.boss_monkey_red.value
 ]
 
+# Bay
+MONKEYS_BAY_A : Sequence[str] = [
+    Loc.bay_nadamon.value, Loc.bay_patoya.value
+]
+
+MONKEYS_BAY_A1 : Sequence[str] = [
+    Loc.bay_gumbo.value, Loc.bay_pehyan.value
+]
+
+MONKEYS_BAY_A5 : Sequence[str] = [
+    Loc.bay_mokito.value
+]
+
+MONKEYS_BAY_B : Sequence[str] = [
+    Loc.bay_pipo_kate.value, Loc.bay_samtan.value, Loc.bay_pokkine.value, Loc.bay_daban.value
+]
+
+MONKEYS_BAY_C : Sequence[str] = [
+    Loc.bay_shiny_pete.value, Loc.bay_keiichi.value, Loc.bay_landon.value, Loc.bay_mcbreezy.value,
+    Loc.bay_ronson.value, Loc.bay_gimo.value
+]
+
+MONKEYS_BAY_D : Sequence[str] = [
+    Loc.bay_hiroshi.value, Loc.bay_mibon.value, Loc.bay_bololon.value
+]
+
+MONKEYS_BAY_D1 : Sequence[str] = [
+    Loc.bay_nakabi.value
+]
+
+MONKEYS_BAY_E : Sequence[str] = [
+    Loc.bay_doemos.value
+]
+
+MONKEYS_BAY_E1 : Sequence[str] = [
+    Loc.bay_kazuo.value
+]
+
+MONKEYS_BAY_E2 : Sequence[str] = [
+    Loc.bay_gimi_gimi.value, Loc.bay_pokkini.value, Loc.bay_bokino.value
+]
+
+MONKEYS_BAY_E3 : Sequence[str] = [
+    Loc.bay_jimo.value
+]
+
+MONKEYS_BAY_F : Sequence[str] = [
+    Loc.bay_makidon.value, Loc.bay_dogy.value, Loc.bay_gibdon.value, Loc.bay_buligie.value
+]
+
+MONKEYS_BAY : Sequence[str] = [
+    *MONKEYS_BAY_A, *MONKEYS_BAY_A1, *MONKEYS_BAY_A5, *MONKEYS_BAY_B, *MONKEYS_BAY_C, *MONKEYS_BAY_D, *MONKEYS_BAY_D1,
+    *MONKEYS_BAY_E, *MONKEYS_BAY_E1, *MONKEYS_BAY_E2, *MONKEYS_BAY_E3, *MONKEYS_BAY_F,
+]
+
+# Tomo
+MONKEYS_TOMO_A : Sequence[str] = [
+    Loc.tomo_kichibeh.value, Loc.tomo_bonchicchi.value, Loc.tomo_mikibon.value
+]
+
+MONKEYS_TOMO_B : Sequence[str] = [
+    Loc.tomo_dj_tamo.value, Loc.tomo_ukkinaka.value, Loc.tomo_ukkine.value, Loc.tomo_pon_jiro.value
+]
+
+MONKEYS_TOMO_C : Sequence[str] = [
+    Loc.tomo_chimpy.value, Loc.tomo_kajitan.value, Loc.tomo_uka_uka.value, Loc.tomo_mil_mil.value
+]
+
+MONKEYS_TOMO_E : Sequence[str] = [
+    Loc.tomo_taimon.value, Loc.tomo_goro_san.value
+]
+
+MONKEYS_TOMO_E1 : Sequence[str] = [
+    Loc.tomo_reiji.value
+]
+
+MONKEYS_TOMO_E2 : Sequence[str] = [
+    Loc.tomo_ponta.value, Loc.tomo_tomio.value, Loc.tomo_gario.value
+]
+
+MONKEYS_TOMO_F1 : Sequence[str] = [
+    Loc.tomo_dj_pari.value
+]
+
+MONKEYS_TOMO_F2 : Sequence[str] = [
+    Loc.tomo_mitsuo.value
+]
+
+MONKEYS_TOMO_G : Sequence[str] = [
+    Loc.tomo_pipo_ron.value, Loc.tomo_mikita.value,
+]
+
+MONKEYS_TOMO_G1 : Sequence[str] = [
+    Loc.tomo_riley.value,
+]
+
+MONKEYS_TOMO_H : Sequence[str] = [
+    Loc.tomo_sal_13.value, Loc.tomo_sal_12.value
+]
+
+MONKEYS_TOMO_I : Sequence[str] = [
+    Loc.tomo_tomu.value, Loc.tomo_breadacus.value, Loc.tomo_ukkigoro.value, Loc.tomo_ukiji.value
+]
+
+MONKEYS_TOMO_J : Sequence[str] = [
+    Loc.tomo_tomimon.value
+]
+
+MONKEYS_TOMO : Sequence[str] = [
+    *MONKEYS_TOMO_A,*MONKEYS_TOMO_B, *MONKEYS_TOMO_C, *MONKEYS_TOMO_E, *MONKEYS_TOMO_E1, *MONKEYS_TOMO_E2,
+    *MONKEYS_TOMO_F1, *MONKEYS_TOMO_F2, *MONKEYS_TOMO_G, *MONKEYS_TOMO_G1, *MONKEYS_TOMO_H, *MONKEYS_TOMO_J
+]
+
+# boss6
+MONKEYS_BOSS6 : Sequence[str] = [
+    Loc.boss_tomoki.value
+]
+
 MONKEYS_BOSSES : Sequence[str] = [
     *MONKEYS_BOSS1, *MONKEYS_BOSS2, *MONKEYS_BOSS3, *MONKEYS_BOSS4, *MONKEYS_BOSS5
 ]
@@ -1129,6 +1247,9 @@ MONKEYS_INDEX : dict[str, Sequence] = {
 
     # boss5
     Stage.boss5.value           : MONKEYS_BOSS5
+
+    #bay
+
 }
 
 EVENTS_STUDIO_A1 : Sequence[EventMeta] = [

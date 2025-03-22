@@ -744,7 +744,7 @@ class Stage(BaseEnum):
     tomo_c =                    "Tomoki City - Tomoki Tower Entrance"
     tomo_e =                    "Tomoki City - Tomoki Tower Lower Abdomen"
     tomo_e1 =                   "Tomoki City - Tomoki Tower Higher Abdomen Elevator"
-    tomo_e1 =                   "Tomoki City - Tomoki Tower Higher Abdomen"
+    tomo_e2 =                   "Tomoki City - Tomoki Tower Higher Abdomen"
     tomo_f =                    "Tomoki City - Tomoki Tower Lower Coat"
     tomo_f1 =                   "Tomoki City - Tomoki Tower Lower Coat Stairs"
     tomo_f2 =                   "Tomoki City - Tomoki Tower Higher Coat"
