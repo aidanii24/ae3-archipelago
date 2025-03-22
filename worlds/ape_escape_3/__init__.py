@@ -101,19 +101,19 @@ class AE3World(World):
         self.multiworld.push_precollected(monkey_net)
 
         # <!> Push important items early for easy testing
-        self.multiworld.push_precollected(rc_car)
-        self.multiworld.push_precollected(slingback_shooter)
-        self.multiworld.push_precollected(ninja)
-        self.multiworld.push_precollected(magician)
-        self.multiworld.push_precollected(monkey)
-
-        self.multiworld.push_precollected(Channel_Key.to_item(self.player))
-        self.get_location(Loc.seaside_salurin.value).place_locked_item(Channel_Key.to_item(self.player))
-        self.get_location(Loc.seaside_nessal.value).place_locked_item(Channel_Key.to_item(self.player))
-        self.get_location(Loc.seaside_ukkitan.value).place_locked_item(Channel_Key.to_item(self.player))
-        self.get_location(Loc.seaside_ukki_ben.value).place_locked_item(Channel_Key.to_item(self.player))
-        self.get_location(Loc.seaside_ukki_pia.value).place_locked_item(Channel_Key.to_item(self.player))
-        self.get_location(Loc.seaside_sarubo.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.multiworld.push_precollected(rc_car)
+        # self.multiworld.push_precollected(slingback_shooter)
+        # self.multiworld.push_precollected(ninja)
+        # self.multiworld.push_precollected(magician)
+        # self.multiworld.push_precollected(monkey)
+        #
+        # self.multiworld.push_precollected(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.seaside_salurin.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.seaside_nessal.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.seaside_ukkitan.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.seaside_ukki_ben.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.seaside_ukki_pia.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.seaside_sarubo.value).place_locked_item(Channel_Key.to_item(self.player))
 
         self.item_pool += gadgets
         self.item_pool += [knight, cowboy, ninja, magician, kungfu, hero, monkey]
