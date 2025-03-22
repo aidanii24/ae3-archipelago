@@ -499,6 +499,68 @@ class NTSCU(VersionAddresses):
 
         ## Monkey Red Battle!
         Loc.boss_monkey_red.value               : 0x649b44,
+
+        Loc.bay_nadamon.value                   : 0x649ae0,
+        Loc.bay_patoya.value                    : 0x649ae1,
+        Loc.bay_gumbo.value                     : 0x649ae2,
+        Loc.bay_pehyan.value                    : 0x649ae3,
+        Loc.bay_mokito.value                    : 0x649ae4,
+        Loc.bay_pipo_kate.value                 : 0x649ae5,
+        Loc.bay_samtan.value                    : 0x649ae6,
+        Loc.bay_pokkine.value                   : 0x649ae7,
+        Loc.bay_daban.value                     : 0x649ae8,
+        Loc.bay_shiny_pete.value                : 0x649aa9,
+        Loc.bay_keiichi.value                   : 0x649ae9,
+        Loc.bay_landon.value                    : 0x649aea,
+        Loc.bay_mcbreezy.value                  : 0x649aeb,
+        Loc.bay_ronson.value                    : 0x649aec,
+        Loc.bay_gimo.value                      : 0x649aed,
+        Loc.bay_hiroshi.value                   : 0x649aee,
+        Loc.bay_nakabi.value                    : 0x649aef,
+        Loc.bay_mibon.value                     : 0x649af0,
+        Loc.bay_bololon.value                   : 0x649af1,
+        Loc.bay_gimi_gimi.value                 : 0x649acc,
+        Loc.bay_doemos.value                    : 0x649af2,
+        Loc.bay_kazuo.value                     : 0x649af3,
+        Loc.bay_pokkini.value                   : 0x649af4,
+        Loc.bay_jimo.value                      : 0x649af5,
+        Loc.bay_bokino.value                    : 0x649af6,
+        Loc.bay_makidon.value                   : 0x649bcb,
+        Loc.bay_dogy.value                      : 0x649bcc,
+        Loc.bay_gibdon.value                    : 0x649bcd,
+        Loc.bay_buligie.value                   : 0x649bce,
+
+        Loc.tomo_kichibeh.value                 : 0x649af8,
+        Loc.tomo_bonchicchi.value               : 0x649af9,
+        Loc.tomo_mikibon.value                  : 0x649afa,
+        Loc.tomo_dj_tamo.value                  : 0x649afb,
+        Loc.tomo_ukkinaka.value                 : 0x649afc,
+        Loc.tomo_ukkine.value                   : 0x649afd,
+        Loc.tomo_pon_jiro.value                 : 0x649aff,
+        Loc.tomo_chimpy.value                   : 0x649b00,
+        Loc.tomo_kajitan.value                  : 0x649b01,
+        Loc.tomo_uka_uka.value                  : 0x649b02,
+        Loc.tomo_mil_mil.value                  : 0x649b03,
+        Loc.tomo_taimon.value                   : 0x649b07,
+        Loc.tomo_goro_san.value                 : 0x649b08,
+        Loc.tomo_reiji.value                    : 0x649b09,
+        Loc.tomo_ponta.value                    : 0x649b0a,
+        Loc.tomo_tomio.value                    : 0x649b0b,
+        Loc.tomo_gario.value                    : 0x649b0c,
+        Loc.tomo_dj_pari.value                  : 0x649b0d,
+        Loc.tomo_mitsuo.value                   : 0x649b0e,
+        Loc.tomo_riley.value                    : 0x649b0f,
+        Loc.tomo_pipo_ron.value                 : 0x649b10,
+        Loc.tomo_mikita.value                   : 0x649b11,
+        Loc.tomo_sal_13.value                   : 0x649b12,
+        Loc.tomo_sal_12.value                   : 0x649b13,
+        Loc.tomo_tomu.value                     : 0x649bcf,
+        Loc.tomo_breadacus.value                : 0x649bd0,
+        Loc.tomo_ukkigoro.value                 : 0x649bd1,
+        Loc.tomo_ukiji.value                    : 0x649bd2,
+        Loc.tomo_tomimon.value                  : 0x649af7,
+
+        Loc.boss_tomoki.value                   : 0x647a58,
     }
 
     GameStates: Dict[str, int] = {
@@ -538,7 +600,8 @@ class NTSCU(VersionAddresses):
     ### [< --- POINTER CHAINS --- >]
     Pointers: Dict[int, Sequence[int]] = {
         GameStates[Game.progress.value]             : [0x04, 0x1A0, 0x20, 0x0],
-        GameStates[Game.morph_gauge_active.value]   : [0x44, 0x24, 0x38, 0x18]
+        GameStates[Game.morph_gauge_active.value]   : [0x44, 0x24, 0x38, 0x18],
+        Locations[Loc.boss_tomoki.value]            : [0x2c, 0x1AC4]
     }
 
 AP : dict[str, int] = {
