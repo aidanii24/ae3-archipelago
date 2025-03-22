@@ -838,6 +838,45 @@ class APHelper(BaseEnum):
     # Game Groups
     travel_station =        "o_1"
 
+    zero =                  "s_0"
+    seaside =               "s_1"
+    woods =                 "s_2"
+    castle =                "s_3"
+    castle_2 =              "s_4"
+    ciscocity =             "s_5"
+    studio =                "s_6"
+    studio_2 =              "s_7"
+    halloween =             "s_8"
+    halloween_2 =           "s_9"
+    western =               "s_10"
+    western_2 =             "s_11"
+    onsen =                 "s_12"
+    onsen_2 =               "s_13"
+    snowfesta =             "s_14"
+    snowfesta_2 =           "s_15"
+    edotown =               "s_16"
+    edotown_2 =             "s_17"
+    heaven =                "s_18"
+    heaven_2 =              "s_19"
+    toyhouse =              "s_20"
+    toyhouse_2 =            "s_21"
+    iceland =               "s_22"
+    iceland_2 =             "s_24"
+    arabian =               "s_23"
+    asia =                  "s_25"
+    asia_2 =                "s_26"
+    plane =                 "s_27"
+    hong =                  "s_28"
+    hong_2 =                "s_29"
+    bay =                   "s_30"
+    tomo =                  "s_31"
+    tomo_2 =                "s_32"
+    boss6 =                 "b_6"
+    space =                 "s_33"
+    space_2 =               "s_34"
+    specter1 =              "b_7"
+    specter2 =              "b_8"
+
     round2 =                "round2"
 
     # AP Options
@@ -885,38 +924,3 @@ class APConsole:
         game_no =       " [!!!] PCSX2 is not running a game. Please run a supported version of Ape Escape 3"
         game_wrong =    " [!!!] PCSX2 is running, but the loaded game is different or is an unsupported version."
         conf_game =     " [!!!] Please load a supported version of Ape Escape 3."
-
-class Groups:
-    STAGES_TITLE : Sequence[str] = [
-        Stage.title_screen.value
-    ]
-
-    STAGES_SEASIDE : Sequence[str] = [
-        Stage.seaside_a.value, Stage.seaside_b, Stage.seaside_c
-    ]
-
-    STAGES_WOODS : Sequence[str] = [
-        Stage.woods_a.value, Stage.woods_b.value, Stage.woods_c.value, Stage.woods_d.value
-    ]
-
-    STAGES_CASTLE : Sequence[str] = [
-        Stage.castle_a.value, Stage.castle_b.value, Stage.castle_c.value, Stage.castle_d.value, Stage.castle_e.value,
-        Stage.castle_f.value
-    ]
-
-    STAGES_CISCOCITY : Sequence[str] = []
-    STAGES_STUDIO : Sequence[str] = []
-    STAGES_HALLOWEEN : Sequence[str] = []
-    STAGES_WESTERN : Sequence[str] = []
-    STAGES_BOSSES: Sequence[str] = []
-
-    STAGES_MASTER : Sequence[str] = [
-        *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE##, *STAGES_CISCOCITY, *STAGES_STUDIO,
-        ##*STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_BOSSES
-    ]
-
-    STAGES_INDEX : Sequence[Sequence[str]] = [
-        STAGES_MASTER, STAGES_SEASIDE, STAGES_WOODS, STAGES_CASTLE##, STAGES_CISCOCITY, STAGES_STUDIO,
-        ##STAGES_HALLOWEEN, STAGES_WESTERN, STAGES_BOSSES
-    ]
-

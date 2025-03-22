@@ -4,7 +4,7 @@ from enum import Enum
 import struct
 
 from .data.Addresses import VersionAddresses, get_version_addresses
-from .data.Strings import APHelper, Meta, Game, APConsole
+from .data.Strings import Loc, Meta, Game, APHelper, APConsole
 from .interface.pine import Pine
 
 
@@ -161,6 +161,19 @@ class AEPS2Interface:
     def is_monkey_captured(self, name : str) -> bool:
         address : int = self.addresses.Locations[name]
         return self.pine.read_int8(address) == 0x01
+
+    def is_tomoki_defeated(self) -> bool:
+        address : int = self.follow_pointer_chain(self.addresses.Locations[Loc.boss_tomoki.value])
+
+        # Return false if pointer is still not initialized
+        if address == 0x0:
+            return False
+
+        value_raw : int = self.pine.read_int32(address)
+
+        value : float = hex_int32_to_float(value_raw)
+
+        return value <= 0.0
 
     # { Game Manipulation }
     def set_progress(self, progress : str = APHelper.round2.value):
