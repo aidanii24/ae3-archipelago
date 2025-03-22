@@ -459,7 +459,7 @@ STAGES_HONG : Sequence[str] = [
 STAGES_BAY : Sequence[str] = [
     Stage.bay_a.value, Stage.bay_a1.value, Stage.bay_a2.value, Stage.bay_a3.value, Stage.bay_a4.value,
     Stage.bay_a5.value, Stage.bay_b.value, Stage.bay_c.value, Stage.bay_d.value, Stage.bay_d1.value,
-    Stage.bay_e.value, Stage.bay_e1.value, Stage.bay_e2.value, Stage.bay_a3.value, Stage.bay_f.value
+    Stage.bay_e.value, Stage.bay_e1.value, Stage.bay_e2.value, Stage.bay_e3.value, Stage.bay_f.value
 ]
 
 STAGES_TOMO : Sequence[str] = [

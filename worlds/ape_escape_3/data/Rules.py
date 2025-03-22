@@ -43,6 +43,9 @@ class Casual(RuleType):
         Loc.seaside_morella.value           : RuleWrap(AccessRule.SHOOT, AccessRule.FLY,
                                                        frozenset({AccessRule.GENIE, AccessRule.CLUB})),
 
+        # Woods
+        Loc.woods_kreemon.value             : RuleWrap(AccessRule.ATTACK),
+
         # Castle
         Loc.castle_monga.value              : RuleWrap(AccessRule.SHOOT, AccessRule.FLY),
 
@@ -72,6 +75,7 @@ class Casual(RuleType):
 
         # Heaven
         Loc.heaven_chomon.value             : RuleWrap(AccessRule.RCC),
+        Loc.heaven_tami.value               : RuleWrap(AccessRule.ATTACK),
 
         # Toyhouse
         Loc.toyhouse_monto.value            : RuleWrap(AccessRule.SHOOT, AccessRule.NINJA),
@@ -107,6 +111,28 @@ class Casual(RuleType):
         Loc.hong_bankan.value               : RuleWrap(AccessRule.NINJA, AccessRule.HERO),
         Loc.hong_sukei.value                : RuleWrap(AccessRule.SHOOT, AccessRule.NINJA),
         Loc.hong_block_master.value         : RuleWrap(frozenset({AccessRule.GLIDE, AccessRule.KUNGFU})),
+
+        # Bay
+        Loc.bay_shiny_pete.value            : RuleWrap(AccessRule.SHOOT),
+        Loc.bay_gimo.value                  : RuleWrap(AccessRule.SHOOT),
+        Loc.bay_nakabi.value                : RuleWrap(AccessRule.ATTACK),
+        Loc.bay_gimi_gimi.value             : RuleWrap(AccessRule.ATTACK),
+        Loc.bay_pokkini.value               : RuleWrap(AccessRule.ATTACK),
+
+        # Tomo
+        Loc.tomo_kichibeh.value             : RuleWrap(AccessRule.ATTACK),
+        Loc.tomo_bonchicchi.value           : RuleWrap(AccessRule.ATTACK),
+        Loc.tomo_mikibon.value              : RuleWrap(AccessRule.ATTACK),
+        Loc.tomo_chimpy.value               : RuleWrap(AccessRule.NINJA),
+        Loc.tomo_kajitan.value              : RuleWrap(AccessRule.NINJA),
+        Loc.tomo_uka_uka.value              : RuleWrap(AccessRule.NINJA),
+        Loc.tomo_mil_mil.value              : RuleWrap(AccessRule.NINJA),
+        Loc.tomo_tomio.value                : RuleWrap(AccessRule.ATTACK),
+        Loc.tomo_gario.value                : RuleWrap(AccessRule.ATTACK),
+        Loc.tomo_riley.value                : RuleWrap(AccessRule.GENIE),
+        Loc.tomo_pipo_ron.value             : RuleWrap(AccessRule.KUNGFU),
+        Loc.tomo_sal_13.value               : RuleWrap(AccessRule.ATTACK),
+        Loc.tomo_sal_12.value               : RuleWrap(AccessRule.ATTACK),
 
         # Bosses
         Loc.boss_monkey_white.value         : RuleWrap(AccessRule.ATTACK),
@@ -152,7 +178,12 @@ class Casual(RuleType):
                                                StageEntranceMeta(Stage.plane_a.value, has_keys(8)),
                                                StageEntranceMeta(Stage.hong_a.value, has_keys(8)),
 
-                                               StageEntranceMeta(Stage.boss5.value, has_keys(9))],
+                                               StageEntranceMeta(Stage.boss5.value, has_keys(9)),
+
+                                               StageEntranceMeta(Stage.bay_a.value, has_keys(10)),
+                                               StageEntranceMeta(Stage.tomo_a1.value, has_keys(10)),
+
+                                               StageEntranceMeta(Stage.boss6.value, has_keys(11))],
 
         Stage.travel_station_b.value        : [StageEntranceMeta(Stage.travel_station_a.value)],
 
@@ -557,5 +588,85 @@ class Casual(RuleType):
         Stage.hong_h.value                  : [StageEntranceMeta(Stage.hong_c.value)],
 
         # boss5
-        Stage.boss5.value                   : None
+        Stage.boss5.value                   : None,
+
+        # Bay
+        Stage.bay_a.value                   : [StageEntranceMeta(Stage.bay_a1.value,
+                                                                 frozenset({AccessRule.SHOOT, AccessRule.SWIM}),
+                                                                 AccessRule.HERO)],
+        Stage.bay_a1.value                  : [StageEntranceMeta(Stage.bay_a.value,
+                                                                 AccessRule.SWIM, AccessRule.FLY),
+                                               StageEntranceMeta(Stage.bay_a2.value),
+                                               StageEntranceMeta(Stage.bay_b.value, AccessRule.RCC),
+                                               StageEntranceMeta(Stage.bay_e.value, AccessRule.SWIM)],
+        Stage.bay_a2.value                  : [StageEntranceMeta(Stage.bay_a.value,
+                                                                 AccessRule.SWIM, AccessRule.FLY),
+                                               StageEntranceMeta(Stage.bay_a1.value),
+                                               StageEntranceMeta(Stage.bay_a3.value),
+                                               StageEntranceMeta(Stage.bay_a5.value,
+                                                                 event_invoked(Game.trigger_bay_a4.value)),
+                                               StageEntranceMeta(Stage.bay_c.value),
+                                               StageEntranceMeta(Stage.bay_e.value, AccessRule.SWIM)],
+        Stage.bay_a3.value                  : [StageEntranceMeta(Stage.bay_a2.value),
+                                               StageEntranceMeta(Stage.bay_d1.value, AccessRule.SLING)],
+        Stage.bay_a4.value                  : [StageEntranceMeta(Stage.bay_a2.value)],
+        Stage.bay_a5.value                  : [StageEntranceMeta(Stage.bay_a2.value),
+                                               StageEntranceMeta(Stage.bay_f.value, AccessRule.MONKEY)],
+        Stage.bay_b.value                   : [StageEntranceMeta(Stage.bay_a1.value)],
+        Stage.bay_c.value                   : [StageEntranceMeta(Stage.bay_a2.value),
+                                               StageEntranceMeta(Stage.bay_a4.value)],
+        Stage.bay_d.value                   : [StageEntranceMeta(Stage.bay_d1.value)],
+        Stage.bay_d1.value                  : [StageEntranceMeta(Stage.bay_d.value, AccessRule.KUNGFU)],
+        Stage.bay_e.value                   : [StageEntranceMeta(Stage.bay_a1.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.bay_a2.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.bay_e1.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.bay_e2.value,
+                                                                 event_invoked(Game.trigger_bay_a4.value))],
+        Stage.bay_e1.value                  : [StageEntranceMeta(Stage.bay_e.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.bay_e2.value,
+                                                                 event_invoked(Game.trigger_bay_a4.value))],
+        Stage.bay_e2.value                  : [StageEntranceMeta(Stage.bay_e.value),
+                                               StageEntranceMeta(Stage.bay_e1.value),
+                                               StageEntranceMeta(Stage.bay_e3.value, AccessRule.FLY)],
+        Stage.bay_e3.value                  : [StageEntranceMeta(Stage.bay_e2.value)],
+        Stage.bay_f.value                   : [StageEntranceMeta(Stage.bay_a5.value)],
+
+        # Tomo
+        Stage.tomo_a1.value                 : [StageEntranceMeta(Stage.tomo_a.value, AccessRule.HERO)],
+        Stage.tomo_a.value                  : [StageEntranceMeta(Stage.tomo_a1.value, AccessRule.HERO),
+                                               StageEntranceMeta(Stage.tomo_j.value)],
+        Stage.tomo_b.value                  : [StageEntranceMeta(Stage.tomo_j.value),
+                                               StageEntranceMeta(Stage.tomo_c.value)],
+        Stage.tomo_c.value                  : [StageEntranceMeta(Stage.tomo_b.value),
+                                               StageEntranceMeta(Stage.tomo_e.value)],
+        Stage.tomo_e.value                  : [StageEntranceMeta(Stage.tomo_c.value),
+                                               StageEntranceMeta(Stage.tomo_e1.value, AccessRule.RCC),
+                                               StageEntranceMeta(Stage.tomo_i.value, frozenset({
+                                                   AccessRule.MONKEY, AccessRule.KNIGHT
+                                               }))],
+        Stage.tomo_e1.value                 : [StageEntranceMeta(Stage.tomo_e.value),
+                                               StageEntranceMeta(Stage.tomo_e2.value, AccessRule.KUNGFU)],
+        Stage.tomo_e2.value                 : [StageEntranceMeta(Stage.tomo_e1.value),
+                                               StageEntranceMeta(Stage.tomo_f.value)],
+        Stage.tomo_f.value                  : [StageEntranceMeta(Stage.tomo_e2.value),
+                                               StageEntranceMeta(Stage.tomo_f1.value,
+                                                                 AccessRule.NINJA, AccessRule.HERO)],
+        Stage.tomo_f1.value                 : [StageEntranceMeta(Stage.tomo_f.value,
+                                                                 AccessRule.NINJA, AccessRule.HERO),
+                                               StageEntranceMeta(Stage.tomo_g.value)],
+        Stage.tomo_f2.value                 : [StageEntranceMeta(Stage.tomo_g1.value),
+                                               StageEntranceMeta(Stage.tomo_h.value)],
+        Stage.tomo_g.value                  : [StageEntranceMeta(Stage.tomo_f1.value),
+                                               StageEntranceMeta(Stage.tomo_g1.value, AccessRule.KUNGFU)],
+        Stage.tomo_g1.value                 : [StageEntranceMeta(Stage.tomo_g.value),
+                                               StageEntranceMeta(Stage.tomo_f2.value, AccessRule.RCC)],
+        Stage.tomo_h.value                  : [StageEntranceMeta(Stage.tomo_f2.value),
+                                               StageEntranceMeta(Stage.tomo_h1.value, AccessRule.SHOOT)],
+        Stage.tomo_h1.value                 : [StageEntranceMeta(Stage.travel_station_a.value)],
+        Stage.tomo_i.value                  : [StageEntranceMeta(Stage.tomo_e.value)],
+        Stage.tomo_j.value                  : [StageEntranceMeta(Stage.tomo_a.value),
+                                               StageEntranceMeta(Stage.tomo_b.value)],
+
+        # boss6
+        Stage.boss6.value                   : None
     }
