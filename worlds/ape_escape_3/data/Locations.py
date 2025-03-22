@@ -4,7 +4,7 @@ from abc import ABC
 
 from BaseClasses import Location, Region, ItemClassification
 
-from .Strings import Loc, Stage, Game, Meta
+from .Strings import Loc, Stage, Game, Meta, APHelper
 from .Logic import AccessRule, Rulesets
 from .Addresses import NTSCU
 from .Items import AE3Item
@@ -1065,14 +1065,14 @@ MONKEYS_BOSS6 : Sequence[str] = [
 ]
 
 MONKEYS_BOSSES : Sequence[str] = [
-    *MONKEYS_BOSS1, *MONKEYS_BOSS2, *MONKEYS_BOSS3, *MONKEYS_BOSS4, *MONKEYS_BOSS5
+    *MONKEYS_BOSS1, *MONKEYS_BOSS2, *MONKEYS_BOSS3, *MONKEYS_BOSS4, *MONKEYS_BOSS5, *MONKEYS_BOSS6
 ]
 
 MONKEYS_MASTER : Sequence[str] = [
     *MONKEYS_ZERO, *MONKEYS_SEASIDE, *MONKEYS_WOODS, *MONKEYS_CASTLE, *MONKEYS_CISCOCITY, *MONKEYS_STUDIO,
     *MONKEYS_HALLOWEEN, *MONKEYS_WESTERN, *MONKEYS_ONSEN, *MONKEYS_SNOWFESTA, *MONKEYS_EDOTOWN, *MONKEYS_HEAVEN,
     *MONKEYS_TOYHOUSE, *MONKEYS_ICELAND, *MONKEYS_ARABIAN, *MONKEYS_ASIA, *MONKEYS_PLANE, *MONKEYS_HONG,
-    *MONKEYS_BOSSES
+    *MONKEYS_BAY, *MONKEYS_TOMO, *MONKEYS_BOSSES
 ]
 
 MONKEYS_INDEX : dict[str, Sequence] = {
@@ -1277,6 +1277,47 @@ MONKEYS_INDEX : dict[str, Sequence] = {
 
     # boss6
     Stage.boss6.value           : MONKEYS_BOSS6
+}
+
+MONKEYS_DIRECTORY : dict[str, Sequence[str]] = {
+    APHelper.zero.value                 : MONKEYS_ZERO,
+    APHelper.seaside.value              : MONKEYS_SEASIDE,
+    APHelper.woods.value                : MONKEYS_WOODS,
+    APHelper.castle.value               : MONKEYS_CASTLE,
+    APHelper.castle_2.value             : MONKEYS_CASTLE,
+    APHelper.ciscocity.value            : MONKEYS_CISCOCITY,
+    APHelper.studio.value               : MONKEYS_STUDIO,
+    APHelper.studio_2.value             : MONKEYS_STUDIO,
+    APHelper.halloween.value            : MONKEYS_HALLOWEEN,
+    APHelper.halloween_2.value          : MONKEYS_HALLOWEEN,
+    APHelper.western.value              : MONKEYS_WESTERN,
+    APHelper.western_2.value            : MONKEYS_WESTERN,
+    APHelper.onsen.value                : MONKEYS_ONSEN,
+    APHelper.onsen_2.value              : MONKEYS_ONSEN,
+    APHelper.snowfesta.value            : MONKEYS_SNOWFESTA,
+    APHelper.snowfesta_2.value          : MONKEYS_SNOWFESTA,
+    APHelper.edotown.value              : MONKEYS_EDOTOWN,
+    APHelper.edotown_2.value            : MONKEYS_EDOTOWN,
+    APHelper.heaven.value               : MONKEYS_HEAVEN,
+    APHelper.heaven_2.value             : MONKEYS_HEAVEN,
+    APHelper.toyhouse.value             : MONKEYS_TOYHOUSE,
+    APHelper.toyhouse_2.value           : MONKEYS_TOYHOUSE,
+    APHelper.iceland.value              : MONKEYS_ICELAND,
+    APHelper.iceland_2.value            : MONKEYS_ICELAND,
+    APHelper.arabian.value              : MONKEYS_ARABIAN,
+    APHelper.asia.value                 : MONKEYS_ASIA,
+    APHelper.asia_2.value               : MONKEYS_ASIA,
+    APHelper.plane.value                : MONKEYS_PLANE,
+    APHelper.hong.value                 : MONKEYS_HONG,
+    APHelper.hong_2.value               : MONKEYS_HONG,
+    APHelper.bay.value                  : MONKEYS_BAY,
+    APHelper.tomo.value                 : MONKEYS_TOMO,
+    APHelper.tomo_2.value               : MONKEYS_TOMO,
+    APHelper.boss6.value                : MONKEYS_BOSS6,
+    APHelper.space.value                : MONKEYS_TOMO,
+    APHelper.space_2.value              : MONKEYS_TOMO,
+    APHelper.specter1.value             : MONKEYS_BOSS6,
+    APHelper.specter2.value             : MONKEYS_BOSS6,
 }
 
 ### [< --- EVENT GROUPS --- >]

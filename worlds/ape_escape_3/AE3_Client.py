@@ -1,5 +1,5 @@
 from argparse import ArgumentParser, Namespace
-from typing import Optional
+from typing import Optional, Sequence
 import multiprocessing
 import traceback
 import asyncio
@@ -9,7 +9,7 @@ import Utils
 
 from .data.Strings import Meta, APConsole
 from .data.Items import ProgressionType
-from .data.Locations import generate_name_to_id
+from .data.Locations import MONKEYS_MASTER, generate_name_to_id
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
 from .Checker import *
 
@@ -44,6 +44,8 @@ class AE3Context(CommonContext):
     cached_received_items : Set[NetworkItem]
 
     monkeys_name_to_id : dict[str, int] = generate_name_to_id()
+    monkeys_checklist : Sequence[str] = MONKEYS_MASTER
+    monkeys_checklist_count : int = 0
 
     keys : int = 0
     unlocked_stages : int = 0

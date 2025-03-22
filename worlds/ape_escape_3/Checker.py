@@ -5,7 +5,7 @@ from NetUtils import NetworkItem
 from .data.Items import ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem
 from .data.Strings import Game, Itm, APHelper
 from .data.Addresses import NTSCU, AP
-from .data.Locations import MONKEYS_MASTER
+from .data.Locations import MONKEYS_BOSSES, MONKEYS_DIRECTORY
 from .data import Items
 
 if TYPE_CHECKING:
@@ -16,6 +16,20 @@ if TYPE_CHECKING:
 async def check_states(ctx : 'AE3Context'):
     # Get current stage; remove null bytes if present
     ctx.current_stage = ctx.ipc.get_stage().removesuffix("\x00")
+
+    # Get which Monkey Group to actively check at the moment based on the stage
+    if ctx.current_stage == "" or ctx.current_stage is None:
+        return
+    elif ctx.current_stage in MONKEYS_DIRECTORY:
+        ctx.monkeys_checklist = MONKEYS_DIRECTORY[ctx.current_stage]
+    elif "b" in ctx.current_stage:
+        ctx.monkeys_checklist = MONKEYS_BOSSES
+    # Iteratively check when in TV Station or Shopping Disctrict
+    else:
+        ctx.monkeys_checklist_count = min(max(0, ctx.monkeys_checklist_count), len(MONKEYS_DIRECTORY.keys()))
+
+        ctx.monkeys_checklist = [*MONKEYS_DIRECTORY.keys()][ctx.monkeys_checklist_count]
+        ctx.monkeys_checklist_count += 1
 
 # Ensure game is always set to "round2"
 async def correct_progress(ctx : 'AE3Context'):
@@ -87,7 +101,13 @@ async def check_items(ctx : 'AE3Context'):
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
 
-    for monkey in MONKEYS_MASTER:
+    for monkey in ctx.monkeys_checklist:
+        # Special Case for Tomoki
+        if ctx.current_stage == APHelper.boss6.value:
+            if ctx.ipc.is_tomoki_defeated():
+                cleared.add(ctx.monkeys_name_to_id[monkey])
+                continue
+
         if ctx.ipc.is_monkey_captured(monkey):
             cleared.add(ctx.monkeys_name_to_id[monkey])
 
