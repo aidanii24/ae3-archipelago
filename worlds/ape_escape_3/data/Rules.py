@@ -118,6 +118,7 @@ class Casual(RuleType):
         Loc.bay_nakabi.value                : RuleWrap(AccessRule.ATTACK),
         Loc.bay_gimi_gimi.value             : RuleWrap(AccessRule.ATTACK),
         Loc.bay_pokkini.value               : RuleWrap(AccessRule.ATTACK),
+        Loc.bay_jimo.value                  : RuleWrap(AccessRule.SWIM),
 
         # Tomo
         Loc.tomo_kichibeh.value             : RuleWrap(AccessRule.ATTACK),
@@ -616,7 +617,8 @@ class Casual(RuleType):
         Stage.bay_c.value                   : [StageEntranceMeta(Stage.bay_a2.value),
                                                StageEntranceMeta(Stage.bay_a4.value)],
         Stage.bay_d.value                   : [StageEntranceMeta(Stage.bay_d1.value)],
-        Stage.bay_d1.value                  : [StageEntranceMeta(Stage.bay_d.value, AccessRule.KUNGFU)],
+        Stage.bay_d1.value                  : [StageEntranceMeta(Stage.bay_a3.value),
+                                               StageEntranceMeta(Stage.bay_d.value, AccessRule.KUNGFU)],
         Stage.bay_e.value                   : [StageEntranceMeta(Stage.bay_a1.value, AccessRule.SWIM),
                                                StageEntranceMeta(Stage.bay_a2.value, AccessRule.SWIM),
                                                StageEntranceMeta(Stage.bay_e1.value, AccessRule.SWIM),

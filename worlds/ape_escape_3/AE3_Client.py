@@ -52,6 +52,7 @@ class AE3Context(CommonContext):
     player_control : bool = False
     current_stage : str = None
     has_morph_monkey : bool = False
+    tomoki_defeated : bool = False
 
     auto_equip : bool = False
     progression : ProgressionType = ProgressionType.BOSS

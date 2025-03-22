@@ -134,6 +134,9 @@ class AEPS2Interface:
     def get_unlocked_stages(self) -> int:
         return self.pine.read_int32(self.addresses.GameStates[Game.levels_unlocked.value])
 
+    def get_selected_stage(self) -> int:
+        return self.pine.read_int32(self.addresses.GameStates[Game.level_selected.value])
+
     def get_stage(self) -> str:
         stage_as_bytes : bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_stage.value], 4)
         return stage_as_bytes.decode("utf-8")
@@ -146,7 +149,7 @@ class AEPS2Interface:
         value : int = self.pine.read_int8(self.addresses.GameStates[Game.on_warp_gate.value])
         return value != 0
 
-    def check_level_confirmed_state(self) -> bool:
+    def check_stage_confirmed_state(self) -> bool:
         value: int = self.pine.read_int8(self.addresses.GameStates[Game.level_confirmed.value])
         return value != 0
 
@@ -176,7 +179,7 @@ class AEPS2Interface:
         return value <= 0.0
 
     # { Game Manipulation }
-    def set_progress(self, progress : str = APHelper.round2.value):
+    def set_progress(self, progress : str = APHelper.pr_round2.value):
         addr : int = self.addresses.GameStates[Game.progress.value]
         addr = self.follow_pointer_chain(addr)
 
@@ -186,8 +189,11 @@ class AEPS2Interface:
         as_bytes : bytes = progress.encode() + b'\x00'
         self.pine.write_bytes(addr, as_bytes)
 
-    def set_unlocked_levels(self, index : int):
+    def set_unlocked_stages(self, index : int):
         self.pine.write_int32(self.addresses.GameStates[Game.levels_unlocked.value], index)
+
+    def set_selected_stage(self, index : int):
+        self.pine.write_int32(self.addresses.GameStates[Game.level_selected.value], index)
 
     def clear_equipment(self):
         for button in self.addresses.BUTTONS_BY_INTERNAL:
