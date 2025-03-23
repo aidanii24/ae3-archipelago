@@ -72,7 +72,7 @@ class Loc(BaseEnum):
 
     # Monkeys
     ## TV Station/Zero
-    zero_ukki_pan               = "Ukki Pan"
+    zero_ukki_pan               = "Ukki Pan - TV Station"
 
     ## Seaside Resort
     seaside_nessal              = "Nessal - Seaside Resort"
@@ -768,6 +768,9 @@ class Game(BaseEnum):
     level_confirmed =       "Level Confirmed"
     current_stage =         "Current Stage"
 
+    ## Special States
+    in_pink_stage =         "Monkey Pink Battle! Stage"
+
     # Resources
     jackets =               "Jackets"
     cookies =               "Cookies"
@@ -864,6 +867,7 @@ class APHelper(BaseEnum):
     iceland =               "s_22"
     iceland_2 =             "s_24"
     arabian =               "s_23"
+    boss4 =                 "b_4"
     asia =                  "s_25"
     asia_2 =                "s_26"
     plane =                 "s_27"
@@ -878,6 +882,7 @@ class APHelper(BaseEnum):
     specter1 =              "b_7"
     specter2 =              "b_8"
 
+    # Game Progress
     pr_boss6 =              "boss6"
     pr_round2 =             "round2"
 
@@ -902,8 +907,8 @@ class APConsole:
         greet =         " Welcome to Ape Escape 3 Archipelago!"
         game_name =     " Ape Escape 3 Archipelago"
         client_name =   " Ape Escape 3 Client"
-        client_ver =    " Client v0.3a"
-        world_ver =     " World v0.3b"
+        client_ver =    " Client v0.3.33a R-PA"
+        world_ver =     " World v0.3.33a R-PA"
 
         p_check =       " [|?|] Confirming PCSX2 Status..."
         p_init =        " [...] Starting PINE Interface. Connecting to PCSX2..."

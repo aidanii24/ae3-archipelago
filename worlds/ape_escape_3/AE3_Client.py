@@ -3,6 +3,7 @@ from typing import Optional, Sequence
 import multiprocessing
 import traceback
 import asyncio
+import datetime
 
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled
 import Utils
@@ -24,7 +25,6 @@ class AE3CommandProcessor(ClientCommandProcessor):
                         f"{APConsole.Info.init.value if self.ctx.is_connected else APConsole.Info.exit.value}")
 
 class AE3Context(CommonContext):
-    # Feature/Refactor Release : Patch/Minor Release : Minor Patch Release
     client_version: str = APConsole.Info.client_ver.value
     world_version : str = APConsole.Info.world_ver.value
 
@@ -177,9 +177,10 @@ async def check_game(ctx : AE3Context):
             await asyncio.sleep(1)
             return
 
-        # Setup Stage when needed
+        # Setup Stage when needed and double check locations
         if ctx.current_stage == APHelper.travel_station.value:
             await setup_level_select(ctx)
+            await recheck_location_groups(ctx)
 
         # Check Progression
         await check_items(ctx)

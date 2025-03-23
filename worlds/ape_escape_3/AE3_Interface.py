@@ -139,13 +139,14 @@ class AEPS2Interface:
 
     def get_stage(self) -> str:
         stage_as_bytes : bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_stage.value], 4)
-        return stage_as_bytes.decode("utf-8")
+        # Decode to String and remove null bytes if present
+        return stage_as_bytes.decode("utf-8").replace("\x00", "")
 
     def check_in_stage(self) -> bool:
         value : int = self.pine.read_int8(self.addresses.GameStates[Game.current_stage.value])
         return value > 0
 
-    def check_warp_gate_state(self) -> bool:
+    def is_on_warp_gate(self) -> bool:
         value : int = self.pine.read_int8(self.addresses.GameStates[Game.on_warp_gate.value])
         return value != 0
 
@@ -164,6 +165,9 @@ class AEPS2Interface:
     def is_monkey_captured(self, name : str) -> bool:
         address : int = self.addresses.Locations[name]
         return self.pine.read_int8(address) == 0x01
+
+    def is_in_pink_boss(self) -> bool:
+        return self.pine.read_int8(self.addresses.GameStates[Game.in_pink_stage.value]) == 0x02
 
     def is_tomoki_defeated(self) -> bool:
         address : int = self.follow_pointer_chain(self.addresses.Locations[Loc.boss_tomoki.value])
