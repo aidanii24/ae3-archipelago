@@ -14,27 +14,37 @@ if TYPE_CHECKING:
 
 ### [< --- CHECKS --- >]
 async def check_states(ctx : 'AE3Context'):
-    # Get current stage; remove null bytes if present
-    new_stage = ctx.ipc.get_stage().removesuffix("\x00")
+    # Get current stage
+    new_stage = ctx.ipc.get_stage()
 
     # Get which Monkey Group to actively check at the moment based on the stage
-    if new_stage != APHelper.travel_station.value and new_stage == ctx.current_stage:
-        return
-    if new_stage == "" or new_stage is None :
-        pass
-    elif new_stage in MONKEYS_DIRECTORY:
-        ctx.monkeys_checklist = MONKEYS_DIRECTORY[new_stage]
-    elif "b" in new_stage:
-        ctx.monkeys_checklist = MONKEYS_BOSSES
-    # Iteratively check when in TV Station or Shopping District
-    else:
-        if ctx.monkeys_checklist_count >= len(MONKEYS_DIRECTORY.values()):
-            ctx.monkeys_checklist_count = 0
+    if not new_stage or new_stage is None and not ctx.current_stage:
+        # Special Check for Monkey Pink as her boss stage does not provide a Stage ID
+        if ctx.ipc.is_in_pink_boss():
+            ctx.monkeys_checklist = MONKEYS_BOSSES
+            ctx.current_stage = APHelper.boss4.value
+        # Recheck locations by each stage while loading
+        else:
+            await recheck_location_groups(ctx)
+            await check_locations(ctx)
 
-        ctx.monkeys_checklist = [*MONKEYS_DIRECTORY.values()][ctx.monkeys_checklist_count]
-        ctx.monkeys_checklist_count += 1
+        return
+    elif new_stage != ctx.current_stage:
+        if new_stage in MONKEYS_DIRECTORY:
+            ctx.monkeys_checklist = MONKEYS_DIRECTORY[new_stage]
+        elif "b" in new_stage:
+            ctx.monkeys_checklist = MONKEYS_BOSSES
+    else:
+        return
 
     ctx.current_stage = new_stage
+
+async def recheck_location_groups(ctx : 'AE3Context'):
+    if ctx.monkeys_checklist_count >= len(MONKEYS_DIRECTORY.values()):
+        ctx.monkeys_checklist_count = 0
+
+    ctx.monkeys_checklist = [*MONKEYS_DIRECTORY.values()][ctx.monkeys_checklist_count]
+    ctx.monkeys_checklist_count += 1
 
 # Ensure game is always set to "round2"
 async def correct_progress(ctx : 'AE3Context'):
@@ -57,7 +67,7 @@ async def setup_level_select(ctx : 'AE3Context'):
     # Allow players to select Dr. Tomoki Battle by temporarily setting the game progress to boss6
     # Set back to round2 otherwise, or when exiting level select
     if not ctx.tomoki_defeated:
-        if ctx.ipc.check_warp_gate_state():
+        if ctx.ipc.is_on_warp_gate():
             if selected_stage == 0x18:
                 ctx.ipc.set_progress(APHelper.pr_boss6.value)
             elif progress != APHelper.pr_round2.value:

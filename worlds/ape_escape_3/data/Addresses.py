@@ -596,6 +596,9 @@ class NTSCU(VersionAddresses):
         Game.equip_chassis_active.value : 0x6499ac,
         Game.equip_quick_morph.value    : 0x7954b0,
         Game.equip_morph_target.value   : 0x692018,
+
+        # Special States
+        Game.in_pink_stage.value        : 0x8519e0,
     }
 
     ### [< --- POINTER CHAINS --- >]

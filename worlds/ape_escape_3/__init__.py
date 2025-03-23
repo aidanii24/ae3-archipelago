@@ -105,10 +105,13 @@ class AE3World(World):
         self.multiworld.push_precollected(slingback_shooter)
         self.multiworld.push_precollected(ninja)
         self.multiworld.push_precollected(magician)
+        self.multiworld.push_precollected(hero)
         self.multiworld.push_precollected(monkey)
 
         self.multiworld.push_precollected(Channel_Key.to_item(self.player))
+        self.get_location(Loc.zero_ukki_pan.value).place_locked_item(Channel_Key.to_item(self.player))
         self.get_location(Loc.seaside_salurin.value).place_locked_item(Channel_Key.to_item(self.player))
+        self.get_location(Loc.seaside_morella.value).place_locked_item(Channel_Key.to_item(self.player))
         self.get_location(Loc.seaside_nessal.value).place_locked_item(Channel_Key.to_item(self.player))
         self.get_location(Loc.seaside_ukkitan.value).place_locked_item(Channel_Key.to_item(self.player))
         self.get_location(Loc.seaside_ukki_ben.value).place_locked_item(Channel_Key.to_item(self.player))
