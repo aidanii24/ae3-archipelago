@@ -469,20 +469,28 @@ STAGES_TOMO : Sequence[str] = [
     Stage.tomo_j.value,
 ]
 
+STAGES_SPACE : Sequence[str] = [
+    Stage.space_a.value, Stage.space_b.value, Stage.space_d.value, Stage.space_e.value, Stage.space_e1.value,
+    Stage.space_f.value, Stage.space_f1.value, Stage.space_f2.value, Stage.space_g.value, Stage.space_g1.value,
+    Stage.space_g2.value, Stage.space_h.value, Stage.space_i.value, Stage.space_j.value, Stage.space_k.value,
+    Stage.space_l.value,
+]
+
 STAGES_BOSSES : Sequence[str] = [
-    Stage.boss1.value, Stage.boss2.value, Stage.boss3.value, Stage.boss4.value, Stage.boss5.value, Stage.boss6.value
+    Stage.boss1.value, Stage.boss2.value, Stage.boss3.value, Stage.boss4.value, Stage.boss5.value, Stage.boss6.value,
+    Stage.specter1.value, Stage.specter2.value
 ]
 
 STAGES_MASTER : Sequence[str] = [
     *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY, *STAGES_STUDIO,
     *STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_ONSEN, *STAGES_SNOWFESTA, *STAGES_EDOTOWN, *STAGES_HEAVEN,
     *STAGES_TOYHOUSE, *STAGES_ICELAND, *STAGES_ARABIAN, *STAGES_ASIA, *STAGES_PLANE, *STAGES_HONG,
-    *STAGES_BAY, *STAGES_TOMO, *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB
+    *STAGES_BAY, *STAGES_TOMO, *STAGES_SPACE, *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB
 ]
 
 STAGES_INDEX : Sequence[Sequence[str]] = [
     STAGES_MASTER, STAGES_ZERO, STAGES_SEASIDE, STAGES_WOODS, STAGES_CASTLE, STAGES_CISCOCITY, STAGES_STUDIO,
     STAGES_HALLOWEEN, STAGES_WESTERN, STAGES_ONSEN, STAGES_SNOWFESTA, STAGES_EDOTOWN, STAGES_HEAVEN,
     STAGES_TOYHOUSE, STAGES_ICELAND, STAGES_ARABIAN, STAGES_ASIA, STAGES_PLANE, STAGES_HONG, STAGES_BAY,
-    STAGES_TOMO, STAGES_BOSSES, STAGES_TITLE, STAGES_HUB
+    STAGES_TOMO, STAGES_BOSSES, STAGES_SPACE, STAGES_TITLE, STAGES_HUB
 ]

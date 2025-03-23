@@ -1064,15 +1064,78 @@ MONKEYS_BOSS6 : Sequence[str] = [
     Loc.boss_tomoki.value
 ]
 
+# Space
+MONKEYS_SPACE_A : Sequence[str] = [
+    Loc.space_poko.value, Loc.space_gamuo.value, Loc.space_mukikko.value
+]
+
+MONKEYS_SPACE_B : Sequence[str] = [
+    Loc.space_moto_ukki.value, Loc.space_jimi_jami.value, Loc.space_genbo.value, Loc.space_twin_mitty.value
+]
+
+MONKEYS_SPACE_D : Sequence[str] = [
+    Loc.space_uttey.value, Loc.space_emma.value, Loc.space_dokicchi.value, Loc.space_kamicchi.value,
+    Loc.space_ukki_monda.value, Loc.space_porokko.value, Loc.space_zonelin.value
+]
+MONKEYS_SPACE_E : Sequence[str] = [
+    Loc.space_tamano.value, Loc.space_nelson.value, Loc.space_koloneh.value, Loc.space_miluchy.value,
+    Loc.space_robert.value, Loc.space_fronson.value, Loc.space_demekin.value
+]
+
+MONKEYS_SPACE_F : Sequence[str] = [
+    Loc.space_kikuyoshi.value, Loc.space_freet.value, Loc.space_chico.value
+]
+
+MONKEYS_SPACE_F1 : Sequence[str] = [
+    Loc.space_gamurin.value
+]
+
+MONKEYS_SPACE_F2 : Sequence[str] = [
+    Loc.space_pipo_mon.value, Loc.space_gam_gam.value, Loc.space_doronbo.value, Loc.space_benja.value
+]
+MONKEYS_SPACE_G : Sequence[str] = [
+    Loc.space_macchan.value, Loc.space_rokkun.value
+]
+
+MONKEYS_SPACE_G2 : Sequence[str] = [
+    Loc.space_ukki_love.value, Loc.space_momongo.value, Loc.space_moepi.value, Loc.space_pumon.value,
+    Loc.space_makiban.value
+]
+
+MONKEYS_SPACE_H : Sequence[str] = [
+    Loc.space_upis.value, Loc.space_mondatta.value, Loc.space_gicchom.value, Loc.space_barire.value
+]
+
+MONKEYS_SPACE_I : Sequence[str] = [
+    Loc.space_sal_10.value, Loc.space_sal_11.value
+]
+MONKEYS_SPACE_K : Sequence[str] = [
+    Loc.space_sal_3000.value
+]
+
+MONKEYS_SPACE : Sequence[str] = [
+    *MONKEYS_SPACE_A, *MONKEYS_SPACE_B, *MONKEYS_SPACE_D, *MONKEYS_SPACE_E, *MONKEYS_SPACE_F, *MONKEYS_SPACE_F1,
+    *MONKEYS_SPACE_F2, *MONKEYS_SPACE_G, *MONKEYS_SPACE_G2, *MONKEYS_SPACE_H, *MONKEYS_SPACE_I, *MONKEYS_SPACE_K
+]
+
+MONKEYS_SPECTER : Sequence[str] = [
+    Loc.boss_specter.value
+]
+
+MONKEYS_SPECTER_FINALE : Sequence[str] = [
+    Loc.boss_specter_final.value
+]
+
 MONKEYS_BOSSES : Sequence[str] = [
-    *MONKEYS_BOSS1, *MONKEYS_BOSS2, *MONKEYS_BOSS3, *MONKEYS_BOSS4, *MONKEYS_BOSS5, *MONKEYS_BOSS6
+    *MONKEYS_BOSS1, *MONKEYS_BOSS2, *MONKEYS_BOSS3, *MONKEYS_BOSS4, *MONKEYS_BOSS5, *MONKEYS_BOSS6, *MONKEYS_SPECTER,
+    *MONKEYS_SPECTER_FINALE
 ]
 
 MONKEYS_MASTER : Sequence[str] = [
     *MONKEYS_ZERO, *MONKEYS_SEASIDE, *MONKEYS_WOODS, *MONKEYS_CASTLE, *MONKEYS_CISCOCITY, *MONKEYS_STUDIO,
     *MONKEYS_HALLOWEEN, *MONKEYS_WESTERN, *MONKEYS_ONSEN, *MONKEYS_SNOWFESTA, *MONKEYS_EDOTOWN, *MONKEYS_HEAVEN,
     *MONKEYS_TOYHOUSE, *MONKEYS_ICELAND, *MONKEYS_ARABIAN, *MONKEYS_ASIA, *MONKEYS_PLANE, *MONKEYS_HONG,
-    *MONKEYS_BAY, *MONKEYS_TOMO, *MONKEYS_BOSSES
+    *MONKEYS_BAY, *MONKEYS_TOMO, *MONKEYS_SPACE, *MONKEYS_BOSSES
 ]
 
 MONKEYS_INDEX : dict[str, Sequence] = {
@@ -1278,7 +1341,25 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.tomo_j.value          : MONKEYS_TOMO_J,
 
     # boss6
-    Stage.boss6.value           : MONKEYS_BOSS6
+    Stage.boss6.value           : MONKEYS_BOSS6,
+
+    # Space
+    Stage.space_a.value         : MONKEYS_SPACE_A,
+    Stage.space_b.value         : MONKEYS_SPACE_B,
+    Stage.space_d.value         : MONKEYS_SPACE_D,
+    Stage.space_e.value         : MONKEYS_SPACE_E,
+    Stage.space_f.value         : MONKEYS_SPACE_F,
+    Stage.space_f1.value        : MONKEYS_SPACE_F1,
+    Stage.space_f2.value        : MONKEYS_SPACE_F2,
+    Stage.space_g.value         : MONKEYS_SPACE_G,
+    Stage.space_g2.value        : MONKEYS_SPACE_G2,
+    Stage.space_h.value         : MONKEYS_SPACE_H,
+    Stage.space_i.value         : MONKEYS_SPACE_I,
+    Stage.space_k.value         : MONKEYS_SPACE_K,
+
+    # Specter
+    Stage.specter1.value        : MONKEYS_SPECTER,
+    Stage.specter2.value        : MONKEYS_SPECTER_FINALE
 }
 
 MONKEYS_DIRECTORY : dict[str, Sequence[str]] = {
@@ -1316,10 +1397,10 @@ MONKEYS_DIRECTORY : dict[str, Sequence[str]] = {
     APHelper.tomo.value                 : MONKEYS_TOMO,
     APHelper.tomo_2.value               : MONKEYS_TOMO,
     APHelper.boss6.value                : MONKEYS_BOSS6,
-    APHelper.space.value                : MONKEYS_TOMO,
-    APHelper.space_2.value              : MONKEYS_TOMO,
-    APHelper.specter1.value             : MONKEYS_BOSS6,
-    APHelper.specter2.value             : MONKEYS_BOSS6,
+    APHelper.space.value                : MONKEYS_SPACE,
+    APHelper.space_2.value              : MONKEYS_SPACE,
+    APHelper.specter1.value             : MONKEYS_BOSSES,
+    APHelper.specter2.value             : MONKEYS_BOSSES,
 }
 
 ### [< --- EVENT GROUPS --- >]
@@ -1363,6 +1444,22 @@ EVENTS_BAY_E1 : Sequence[EventMeta] = [
     EventMeta(Game.trigger_bay_e1.value, AccessRule.SLING)
 ]
 
+EVENTS_SPACE_E : Sequence[EventMeta] = [
+    EventMeta(Game.trigger_space_e.value)
+]
+
+EVENTS_SPACE_F2 : Sequence[EventMeta] = [
+    EventMeta(Game.trigger_space_f2.value)
+]
+
+EVENTS_SPACE_G1 : Sequence[EventMeta] = [
+    EventMeta(Game.trigger_space_g1.value)
+]
+
+EVENTS_SPACE_G2 : Sequence[EventMeta] = [
+    EventMeta(Game.trigger_space_g2.value)
+]
+
 EVENTS_INDEX : dict[str, Sequence[EventMeta]] = {
     # Triggers
     Stage.iceland_e.value       : EVENTS_ICELAND_E,
@@ -1372,6 +1469,10 @@ EVENTS_INDEX : dict[str, Sequence[EventMeta]] = {
     Stage.asia_e.value          : EVENTS_ASIA_E,
     Stage.bay_a4.value          : EVENTS_BAY_A4,
     Stage.bay_e1.value          : EVENTS_BAY_E1,
+    Stage.space_e.value         : EVENTS_SPACE_E,
+    Stage.space_f2.value        : EVENTS_SPACE_F2,
+    Stage.space_g1.value        : EVENTS_SPACE_G1,
+    Stage.space_g2.value        : EVENTS_SPACE_G2,
 
     # Shortcuts
     Stage.studio_a1.value       : EVENTS_STUDIO_A1,

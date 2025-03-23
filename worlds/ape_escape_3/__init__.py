@@ -4,8 +4,10 @@ from BaseClasses import MultiWorld, Tutorial
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 
-from .data.Items import AE3Item, Channel_Key, Nothing, Morph_Hero, Morph_Monkey,ProgressionType, generate_collectables
+from .data.Items import AE3Item, Channel_Key, Nothing, Morph_Hero, Morph_Monkey, ProgressionType, Victory, \
+    generate_collectables
 from .data.Strings import Loc, Meta, APHelper, APConsole
+from .data.Logic import is_goal_achieved, are_goals_achieved
 from .AE3_Options import AE3Options
 from .Regions import create_regions
 from .data import Items, Locations
@@ -101,22 +103,22 @@ class AE3World(World):
         self.multiworld.push_precollected(monkey_net)
 
         # <!> Push important items early for easy testing
-        self.multiworld.push_precollected(rc_car)
-        self.multiworld.push_precollected(slingback_shooter)
-        self.multiworld.push_precollected(ninja)
-        self.multiworld.push_precollected(magician)
-        self.multiworld.push_precollected(hero)
-        self.multiworld.push_precollected(monkey)
-
-        self.multiworld.push_precollected(Channel_Key.to_item(self.player))
-        self.get_location(Loc.zero_ukki_pan.value).place_locked_item(Channel_Key.to_item(self.player))
-        self.get_location(Loc.seaside_salurin.value).place_locked_item(Channel_Key.to_item(self.player))
-        self.get_location(Loc.seaside_morella.value).place_locked_item(Channel_Key.to_item(self.player))
-        self.get_location(Loc.seaside_nessal.value).place_locked_item(Channel_Key.to_item(self.player))
-        self.get_location(Loc.seaside_ukkitan.value).place_locked_item(Channel_Key.to_item(self.player))
-        self.get_location(Loc.seaside_ukki_ben.value).place_locked_item(Channel_Key.to_item(self.player))
-        self.get_location(Loc.seaside_ukki_pia.value).place_locked_item(Channel_Key.to_item(self.player))
-        self.get_location(Loc.seaside_sarubo.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.multiworld.push_precollected(rc_car)
+        # self.multiworld.push_precollected(slingback_shooter)
+        # self.multiworld.push_precollected(ninja)
+        # self.multiworld.push_precollected(magician)
+        # self.multiworld.push_precollected(hero)
+        # self.multiworld.push_precollected(monkey)
+        #
+        # self.multiworld.push_precollected(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.zero_ukki_pan.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.seaside_salurin.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.seaside_morella.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.seaside_nessal.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.seaside_ukkitan.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.seaside_ukki_ben.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.seaside_ukki_pia.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.seaside_sarubo.value).place_locked_item(Channel_Key.to_item(self.player))
 
         self.item_pool += gadgets
         self.item_pool += [knight, cowboy, ninja, magician, kungfu, hero, monkey]
@@ -133,7 +135,7 @@ class AE3World(World):
 
         # Add Archipelago Items
         progression : ProgressionType = ProgressionType.get_progression_type(self.options.progression_type.value)
-        self.item_pool += progression.generate_keys(self.player, 4)
+        self.item_pool += progression.generate_keys(self.player, 6)
 
         # Manually Set Items
         self.get_location(Loc.boss_monkey_white.value).place_locked_item(Channel_Key.to_item(self.player))
@@ -141,6 +143,8 @@ class AE3World(World):
         self.get_location(Loc.boss_monkey_yellow.value).place_locked_item(Channel_Key.to_item(self.player))
         self.get_location(Loc.boss_monkey_pink.value).place_locked_item(Channel_Key.to_item(self.player))
         self.get_location(Loc.boss_monkey_red.value).place_locked_item(Channel_Key.to_item(self.player))
+        self.get_location(Loc.boss_tomoki.value).place_locked_item(Channel_Key.to_item(self.player))
+        self.get_location(Loc.boss_specter.value).place_locked_item(Victory.to_item(self.player))
 
         # <!> DEBUG - Temporarily preset Password Monkeys with Nothing Items for now
         self.get_location(Loc.castle_sal_1000.value).place_locked_item(Nothing.to_item(self.player))
@@ -148,10 +152,14 @@ class AE3World(World):
         self.get_location(Loc.snowfesta_pipotron_yellow.value).place_locked_item(Nothing.to_item(self.player))
         self.get_location(Loc.toyhouse_pipotron_red.value).place_locked_item(Nothing.to_item(self.player))
         self.get_location(Loc.hong_dark_master.value).place_locked_item(Nothing.to_item(self.player))
+        self.get_location(Loc.space_sal_3000.value).place_locked_item(Nothing.to_item(self.player))
 
         # Fill remaining locations with Collectables
         unfilled : int = len(self.multiworld.get_unfilled_locations()) - len(self.item_pool)
         self.item_pool += generate_collectables(self.player, unfilled)
+
+        # Set Win Condition
+        self.multiworld.completion_condition[self.player] = lambda state : is_goal_achieved(state, self.player)
 
         # Add Items to ItemPool
         self.multiworld.itempool = self.item_pool

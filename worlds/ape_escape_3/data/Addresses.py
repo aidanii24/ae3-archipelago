@@ -608,7 +608,7 @@ class NTSCU(VersionAddresses):
 
         # Specter
         Loc.boss_specter.value                  : 0x649bec,
-        Loc.boss_specter_final.value            : 0x649b46,
+        Loc.boss_specter_final.value            : 0x649b46
     }
 
     GameStates: Dict[str, int] = {
