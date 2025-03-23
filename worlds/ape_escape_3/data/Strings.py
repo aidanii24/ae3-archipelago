@@ -813,7 +813,6 @@ class Stage(BaseEnum):
     space_d =                   "Space-TV Fortress - Studio 4 Galaxy"
     space_e =                   "Space-TV Fortress - Studio 1 Prison"
     space_e1 =                  "Space-TV Fortress - Studio 1 Prison Entrance"
-    space_e2 =                  "Space-TV Fortress - Studio 1 Prison Control Room"
     space_f =                   "Space-TV Fortress - Studio 3 City"
     space_f1 =                  "Space-TV Fortress - Studio 3 Higher City"
     space_f2 =                  "Space-TV Fortress - Studio 3 City Control Room"
@@ -875,6 +874,10 @@ class Game(BaseEnum):
     trigger_asia_e =        "Temple Fully Flooded"
     trigger_bay_a4 =        "Ship Rear Door Open"
     trigger_bay_e1 =        "Sewer Drained"
+    trigger_space_e =       "Studio 1 Controls Unlock"
+    trigger_space_f2 =      "Studio 3 Controls Unlock"
+    trigger_space_g1 = "Studio 2 Barrier Unlock"
+    trigger_space_g2 =      "Studio 2 Controls Unlock"
 
     shortcut_studio_ad =    "Shortcut to Specter TV Studio - Buildings Set"
     shortcut_edotown_eb =   "Shortcut to The Emperor's Castle - Castle Grounds"

@@ -108,6 +108,12 @@ def event_invoked(event_name : str):
 def event_not_invoked(event_name : str):
     return lambda state, player : is_event_not_invoked(state, player, event_name)
 
+def is_goal_achieved(state : CollectionState, player : int, count : int = 1):
+    return state.has(APHelper.victory.value, player, count)
+
+def are_goals_achieved(goal_count : int):
+    return lambda state, player : is_goal_achieved(state, player, goal_count)
+
 ### [< --- WRAPPER SHORTHAND --- >]
 class AccessRule:
     """
@@ -143,6 +149,9 @@ class AccessRule:
     # Glitches
     GLITCH_FLY = 0
     GLITCH_FLOAT = 0
+
+    # Victory
+    GOAL = is_goal_achieved
 
 ### [< --- MANAGING CLASS --- >]
 class Rulesets:

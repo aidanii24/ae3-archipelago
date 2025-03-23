@@ -135,12 +135,24 @@ class Casual(RuleType):
         Loc.tomo_sal_13.value               : RuleWrap(AccessRule.ATTACK),
         Loc.tomo_sal_12.value               : RuleWrap(AccessRule.ATTACK),
 
+        # Space
+        Loc.space_miluchy.value             : RuleWrap(AccessRule.SHOOT, AccessRule.FLY),
+        Loc.space_freet.value               : RuleWrap(AccessRule.ATTACK),
+        Loc.space_chico.value               : RuleWrap(AccessRule.ATTACK),
+        Loc.space_rokkun.value              : RuleWrap(AccessRule.RCC),
+        Loc.space_ukki_love.value           : RuleWrap(AccessRule.GENIE),
+        Loc.space_sal_10.value              : RuleWrap(AccessRule.ATTACK),
+        Loc.space_sal_11.value              : RuleWrap(AccessRule.ATTACK),
+        Loc.space_sal_3000.value            : RuleWrap(AccessRule.ATTACK),
+
         # Bosses
         Loc.boss_monkey_white.value         : RuleWrap(AccessRule.ATTACK),
         Loc.boss_monkey_blue.value          : RuleWrap(AccessRule.ATTACK),
         Loc.boss_monkey_yellow.value        : RuleWrap(AccessRule.ATTACK),
         Loc.boss_monkey_pink.value          : RuleWrap(AccessRule.ATTACK),
-        Loc.boss_monkey_red.value           : RuleWrap(AccessRule.ATTACK)
+        Loc.boss_monkey_red.value           : RuleWrap(AccessRule.ATTACK),
+        Loc.boss_specter.value              : RuleWrap(AccessRule.SHOOT),
+        Loc.boss_specter_final.value        : RuleWrap(AccessRule.ATTACK),
     }
 
     entrances = {
@@ -184,7 +196,12 @@ class Casual(RuleType):
                                                StageEntranceMeta(Stage.bay_a.value, has_keys(10)),
                                                StageEntranceMeta(Stage.tomo_a1.value, has_keys(10)),
 
-                                               StageEntranceMeta(Stage.boss6.value, has_keys(11))],
+                                               StageEntranceMeta(Stage.boss6.value, has_keys(11)),
+
+                                               StageEntranceMeta(Stage.space_a.value, has_keys(12)),
+
+                                               StageEntranceMeta(Stage.specter1.value, has_keys(13)),
+                                               StageEntranceMeta(Stage.specter2.value, has_keys(13))],
 
         Stage.travel_station_b.value        : [StageEntranceMeta(Stage.travel_station_a.value)],
 
@@ -670,5 +687,49 @@ class Casual(RuleType):
                                                StageEntranceMeta(Stage.tomo_b.value)],
 
         # boss6
-        Stage.boss6.value                   : None
+        Stage.boss6.value                   : None,
+
+        # Space
+        Stage.space_a.value                 : [StageEntranceMeta(Stage.space_b.value)],
+        Stage.space_b.value                 : [StageEntranceMeta(Stage.space_a.value),
+                                               StageEntranceMeta(Stage.space_d.value),
+                                               StageEntranceMeta(Stage.space_e1.value),
+                                               StageEntranceMeta(Stage.space_f.value),
+                                               StageEntranceMeta(Stage.space_g.value),
+                                               StageEntranceMeta(Stage.space_i.value, frozenset({
+                                                   event_invoked(Game.trigger_space_e.value),
+                                                   event_invoked(Game.trigger_space_f2.value),
+                                                   event_invoked(Game.trigger_space_g2.value),
+                                               }))],
+        Stage.space_d.value                 : [StageEntranceMeta(Stage.space_b.value)],
+        Stage.space_e.value                 : [StageEntranceMeta(Stage.space_e1.value),
+                                               StageEntranceMeta(Stage.space_h.value, AccessRule.MONKEY)],
+        Stage.space_e1.value                : [StageEntranceMeta(Stage.space_b.value),
+                                               StageEntranceMeta(Stage.space_e.value, frozenset({
+                                                   AccessRule.MORPH_NO_MONKEY, AccessRule.SHOOT
+                                               }))],
+        Stage.space_f.value                 : [StageEntranceMeta(Stage.space_b.value),
+                                               StageEntranceMeta(Stage.space_f1.value, AccessRule.GLIDE)],
+        Stage.space_f1.value                : [StageEntranceMeta(Stage.space_f.value),
+                                               StageEntranceMeta(Stage.space_f2.value, AccessRule.KUNGFU)],
+        Stage.space_f2.value                : [StageEntranceMeta(Stage.space_f1.value),
+                                               StageEntranceMeta(Stage.space_f.value)],
+        Stage.space_g.value                 : [StageEntranceMeta(Stage.space_b.value),
+                                               StageEntranceMeta(Stage.space_g1.value, AccessRule.SWIM),
+                                               StageEntranceMeta(Stage.space_g2.value,
+                                                                 event_invoked(Game.trigger_space_g1.value))],
+        Stage.space_g1.value                : [StageEntranceMeta(Stage.space_g1.value)],
+        Stage.space_g2.value                : [StageEntranceMeta(Stage.space_g.value)],
+        Stage.space_h.value                 : [StageEntranceMeta(Stage.space_e.value),
+                                               StageEntranceMeta(Stage.space_k.value)],
+        Stage.space_i.value                 : [StageEntranceMeta(Stage.space_b.value),
+                                               StageEntranceMeta(Stage.space_j.value)],
+        Stage.space_j.value                 : [StageEntranceMeta(Stage.space_i.value),
+                                               StageEntranceMeta(Stage.space_l.value, AccessRule.GLIDE)],
+        Stage.space_k.value                 : [StageEntranceMeta(Stage.space_h.value)],
+        Stage.space_l.value                 : [StageEntranceMeta(Stage.travel_station_a.value)],
+
+        # Specter
+        Stage.specter1.value                : None,
+        Stage.specter2.value                : None
     }
