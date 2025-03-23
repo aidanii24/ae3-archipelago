@@ -494,6 +494,7 @@ class Loc(BaseEnum):
     bay_gibdon                  = "Gibdon - Midnight Bay"
     bay_buligie                 = "Buligie - Midnight Bay"
 
+    # Tomoki City
     tomo_kichibeh               = "Kichibeh - Tomoki City"
     tomo_bonchicchi             = "Bonchicchi - Tomoki City"
     tomo_mikibon                = "Mikibon - Tomoki City"
@@ -524,7 +525,56 @@ class Loc(BaseEnum):
     tomo_ukiji                  = "Ukiji - Tomoki City"
     tomo_tomimon                = "Tomimon - Tomoki City"
 
+    # Dr. Tomoki Battle!
     boss_tomoki                 = "Dr. Tomoki"
+
+    space_poko                  = "Poko"
+    space_gamuo                 = "Gamuo"
+    space_mukikko               = "Mukikko"
+    space_moto_ukki             = "Moto Ukki"
+    space_jimi_jami             = "Jimi Jami"
+    space_genbo                 = "Genbo"
+    space_twin_mitty            = "Twin Mitty"
+    space_uttey                 = "Uttey"
+    space_emma                  = "Emma"
+    space_dokicchi              = "Dokicchi"
+    space_kamicchi              = "Kamicchi"
+    space_ukki_monda            = "Ukki Monda"
+    space_porokko               = "Porokko"
+    space_zonelin               = "Zonelin"
+    space_tamano                = "Tamano"
+    space_nelson                = "Nelson"
+    space_koloneh               = "Koloneh"
+    space_miluchy               = "Miluchy"
+    space_robert                = "Robert"
+    space_fronson               = "Fronson"
+    space_demekin               = "Demekin"
+    space_kikuyoshi             = "Kikuyoshi"
+    space_freet                 = "Freet"
+    space_chico                 = "Chico"
+    space_gamurin               = "Gamurin"
+    space_pipo_mon              = "Pipo Mon"
+    space_gam_gam               = "Gam Gam"
+    space_doronbo               = "Doronbo"
+    space_benja                 = "Benja"
+    space_macchan               = "Macchan"
+    space_rokkun                = "Rokkun"
+    space_ukki_love             = "Ukki Love"
+    space_momongo               = "Momongo"
+    space_moepi                 = "Moepi"
+    space_pumon                 = "Pumon"
+    space_makiban               = "Makiban"
+    space_upis                  = "Upis"
+    space_mondatta              = "Mondatta"
+    space_gicchom               = "Gicchom"
+    space_barire                = "Barire"
+    space_sal_10                = "SAL-10"
+    space_sal_11                = "SAL-11"
+    space_sal_3000              = "SAL-3000"
+
+    # Specter
+    boss_specter                = "Specter"
+    boss_specter_final          = "Specter Finale"
 
 class Stage(BaseEnum):
     """Strings for the various stages of Ape Escape 3. This refers to the names of all the rooms in the game."""
@@ -756,6 +806,28 @@ class Stage(BaseEnum):
     tomo_j =                    "Tomoki City - Laser Fountains"
 
     boss6 =                     "Dr. Tomoki Battle!"
+
+    space =                     "Space-TV Fortress"
+    space_a =                   "Space-TV Fortress - Entrance"
+    space_b =                   "Space-TV Fortress - Studio Zone"
+    space_d =                   "Space-TV Fortress - Studio 4 Galaxy"
+    space_e =                   "Space-TV Fortress - Studio 1 Prison"
+    space_e1 =                  "Space-TV Fortress - Studio 1 Prison Entrance"
+    space_e2 =                  "Space-TV Fortress - Studio 1 Prison Control Room"
+    space_f =                   "Space-TV Fortress - Studio 3 City"
+    space_f1 =                  "Space-TV Fortress - Studio 3 Higher City"
+    space_f2 =                  "Space-TV Fortress - Studio 3 City Control Room"
+    space_g =                   "Space-TV Fortress - Studio 2"
+    space_g1 =                  "Space-TV Fortress - Studio 2 Corals Controls"
+    space_g2 =                  "Space-TV Fortress - Studio 2 Corals Control Room"
+    space_h =                   "Space-TV Fortress - Break Room"
+    space_i =                   "Space-TV Fortress - Lava Room"
+    space_j =                   "Space-TV Fortress - Station Scale Model"
+    space_k =                   "Space-TV Fortress - Number Shooting Room"
+    space_l =                   "Space-TV Fortress - Exit"
+
+    specter1 =                  "Specter Battle!"
+    specter2 =                  "Specter's Final Battle!"
 
 class Game(BaseEnum):
     # Player
