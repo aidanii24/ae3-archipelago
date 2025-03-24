@@ -4,10 +4,9 @@ from BaseClasses import MultiWorld, Tutorial
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 
-from .data.Items import AE3Item, Channel_Key, Nothing, Morph_Hero, Morph_Monkey, ProgressionType, Victory, \
-    generate_collectables
+from .data.Items import AE3Item, Channel_Key, Nothing, Morph_Hero, Morph_Monkey, Victory, generate_collectables
 from .data.Strings import Loc, Meta, APHelper, APConsole
-from .data.Logic import is_goal_achieved, are_goals_achieved
+from .data.Logic import is_goal_achieved, are_goals_achieved, GameMode
 from .AE3_Options import AE3Options
 from .Regions import create_regions
 from .data import Items, Locations
@@ -58,6 +57,8 @@ class AE3World(World):
 
     item_name_groups = Items.generate_item_groups()
 
+    progression : GameMode
+
     def __init__(self, multiworld : MultiWorld, player: int):
         self.auto_equip : bool = False
 
@@ -67,6 +68,7 @@ class AE3World(World):
 
     def generate_early(self):
         self.auto_equip = self.options.auto_equip
+        self.progression = GameMode.get_gamemode(self.options.progression_type.value)
 
         self.item_pool = []
 
@@ -134,16 +136,9 @@ class AE3World(World):
         self.item_pool += Items.Acc_Morph_Stock.to_items(self.player)
 
         # Add Archipelago Items
-        progression : ProgressionType = ProgressionType.get_progression_type(self.options.progression_type.value)
-        self.item_pool += progression.generate_keys(self.player, 6)
+        self.item_pool += self.progression.generate_keys(self)
 
         # Manually Set Items
-        self.get_location(Loc.boss_monkey_white.value).place_locked_item(Channel_Key.to_item(self.player))
-        self.get_location(Loc.boss_monkey_blue.value).place_locked_item(Channel_Key.to_item(self.player))
-        self.get_location(Loc.boss_monkey_yellow.value).place_locked_item(Channel_Key.to_item(self.player))
-        self.get_location(Loc.boss_monkey_pink.value).place_locked_item(Channel_Key.to_item(self.player))
-        self.get_location(Loc.boss_monkey_red.value).place_locked_item(Channel_Key.to_item(self.player))
-        self.get_location(Loc.boss_tomoki.value).place_locked_item(Channel_Key.to_item(self.player))
         self.get_location(Loc.boss_specter.value).place_locked_item(Victory.to_item(self.player))
 
         # <!> DEBUG - Temporarily preset Password Monkeys with Nothing Items for now

@@ -1,14 +1,11 @@
 from collections.abc import Sequence
 from dataclasses import dataclass
-from enum import Enum
 from abc import ABC
 import random
 
 from BaseClasses import Item, ItemClassification
-
 from .Strings import Itm, Game, Meta, APHelper
 from .Addresses import NTSCU, AP
-
 
 ### [< --- HELPERS --- >]
 class AE3Item(Item):
@@ -212,37 +209,6 @@ MASTER : Sequence[AE3ItemMeta] = [
 INDEX : Sequence[Sequence] = [
     MASTER, GADGETS, MORPHS, EQUIPMENT, ACCESSORIES, UPGRADEABLES, COLLECTABLES, ARCHIPELAGO
 ]
-
-### [< --- ITEM DATA HELPERS --- >]
-class ProgressionType(Enum):
-    """
-    Defines how levels should be unlocked throughout the game..
-    """
-
-    # Seaside Resort is unlocked at value 0, so starting unlocked levels are 1 less than actually represented.
-    SINGLES =       [1 for _ in range(31)]
-    BOSS =          [2, 1, 4, 1, 3, 1, 4, 1, 3, 1, 2, 1, 1, 1]
-    BOSS_INCL =     [3, 5, 4, 5, 4, 3, 1, 1]
-
-    def generate_keys(self, player : int, offset : int = 0) -> list[AE3Item]:
-        return Channel_Key.to_items(player, len(self.value) - offset)
-
-    def get_current_progress(self, keys : int):
-        unlocks : int = 0
-        for i, unlocked in enumerate(self.value):
-            unlocks += unlocked
-
-            if i >= keys:
-                return unlocks
-
-    @classmethod
-    def get_progression_type(cls, index : int):
-        if index == 1:
-            return cls.BOSS
-        elif index == 2:
-            return cls.BOSS_INCL
-
-        return cls.SINGLES
 
 ### [< --- METHODS --- >]
 def from_id(item_id = int, category : int = 0):

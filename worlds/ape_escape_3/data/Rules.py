@@ -1,9 +1,9 @@
-from typing import Callable, Set
 from dataclasses import dataclass
+from typing import Callable, Set
 
-from .Logic import Rulesets, AccessRule, event_not_invoked, has_keys, event_invoked
+from .Logic import Rulesets, AccessRule, GameMode, event_not_invoked, has_keys, event_invoked
 from .Strings import Loc, Stage, Game
-from .Stages import AE3EntranceMeta
+from .Stages import AE3EntranceMeta, LEVELS_BY_ORDER
 
 
 @dataclass
@@ -32,6 +32,33 @@ class RuleType:
     entrances : dict[str, list[AE3EntranceMeta]]
 
     default_critical_rule : Set[Callable] = [AccessRule.CATCH]
+    final_level_rule : Set[Callable] = {AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC,
+                                        AccessRule.GENIE, AccessRule.KUNGFU, AccessRule.HERO, AccessRule.MONKEY}
+
+    # Set Required Keys for each level depending on the Progression Type
+    def set_keys_rules(self, progression : GameMode):
+        self.entrances.setdefault(Stage.travel_station_a.value, []).clear()
+        self.entrances.setdefault(Stage.travel_station_a.value, []).append(
+            AE3EntranceMeta(Stage.travel_station_b.value))
+
+        levels_count = 0
+        for sets, levels in enumerate(progression.value):
+            extra : int = 0
+            if sets < 1:
+                extra = 1
+
+            for _ in range(levels + extra):
+                access_rule : Callable | frozenset[Callable] | Set[Callable] | None = None
+
+                if sets > 0:
+                    access_rule = has_keys(sets)
+                elif sets == len(progression.value):
+                    access_rule = frozenset({*self.final_level_rule.add(has_keys(sets - 1))})
+
+                entrance : AE3EntranceMeta = AE3EntranceMeta(LEVELS_BY_ORDER[levels_count], access_rule)
+                self.entrances.setdefault(Stage.travel_station_a.value, []).append(entrance)
+
+                levels_count += 1
 
 class Casual(RuleType):
     """

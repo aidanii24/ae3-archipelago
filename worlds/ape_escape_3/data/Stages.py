@@ -1,4 +1,3 @@
-from .Logic import has_keys
 from .Locations import *
 
 
@@ -37,6 +36,50 @@ class AE3EntranceMeta:
             self.rules.Critical.update(critical)
 
 ### [< --- STAGE GROUPS --- >]
+LEVELS_BY_ORDER : Sequence[str] = [
+    Stage.seaside_a.value,
+    Stage.woods_a.value,
+    Stage.castle_a.value,
+
+    Stage.boss1.value,
+
+    Stage.ciscocity_a.value,
+    Stage.studio_a.value,
+    Stage.halloween_a1.value,
+    Stage.western_a.value,
+
+    Stage.boss2.value,
+
+    Stage.onsen_a.value,
+    Stage.snowfesta_a.value,
+    Stage.edotown_a.value,
+
+    Stage.boss3.value,
+
+    Stage.heaven_a1.value,
+    Stage.toyhouse_a.value,
+    Stage.iceland_a.value,
+    Stage.arabian_a.value,
+
+    Stage.boss4.value,
+
+    Stage.asia_a.value,
+    Stage.plane_a.value,
+    Stage.hong_a.value,
+
+    Stage.boss5.value,
+
+    Stage.bay_a.value,
+    Stage.tomo_a1.value,
+
+    Stage.boss6.value,
+
+    Stage.space_a.value,
+
+    Stage.specter1.value,
+    Stage.specter2.value
+]
+
 STAGES_TITLE : Sequence[str] = [
     Stage.title_screen.value
 ]
