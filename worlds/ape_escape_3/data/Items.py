@@ -5,7 +5,7 @@ import random
 
 from BaseClasses import Item, ItemClassification
 from .Strings import Itm, Game, Meta, APHelper
-from .Addresses import NTSCU, AP
+from .Addresses import NTSCU, Capacities, AP
 
 ### [< --- HELPERS --- >]
 class AE3Item(Item):
@@ -54,7 +54,6 @@ class CollectableItem(AE3ItemMeta):
         name : Name of Item from Strings.py
         resource : Name of resource affected by Item from Strings.py
         amount : Amount of the Item to give
-        capacity : Maximum amount of the item the player can hold
         weight : How often to be chosen to fill a location
         id_offset : (default : 0) Added Offset to ID for Items that target the same Memory Address
     """
@@ -64,8 +63,7 @@ class CollectableItem(AE3ItemMeta):
     capacity : int
     weight : int
 
-    def __init__(self, name : str, resource : str, amount : int | float,
-                 capacity : int, weight : int, id_offset : int = 0):
+    def __init__(self, name : str, resource : str, amount : int | float, weight : int, id_offset : int = 0):
         self.name = name
         # Collectables can be assumed to always be in Addresses.Items. NTSCU version will be used as basis for the ID.
         self.address = NTSCU.GameStates[resource]
@@ -73,7 +71,7 @@ class CollectableItem(AE3ItemMeta):
         self.resource = resource
 
         self.amount = amount
-        self.capacity = capacity
+        self.capacity = Capacities[resource]
         self.weight = weight
 
 class UpgradeableItem(AE3ItemMeta):
@@ -145,29 +143,24 @@ Chassis_Black = EquipmentItem(Itm.chassis_black.value)
 Chassis_Pudding = EquipmentItem(Itm.chassis_pudding.value)
 
 # Upgradeables
-Acc_Morph_Stock = UpgradeableItem(Game.morph_stocks.value, Game.morph_stocks.value, 100.0, 10)
+Acc_Morph_Stock = UpgradeableItem(Itm.acc_morph_stock.value, Game.morph_stocks.value, 100.0, 10)
+Acc_Morph_Ext = UpgradeableItem(Itm.acc_morph_ext.value, Game.morph_stocks.value, 2.0, 10)
 
 # Collectables
-Nothing = CollectableItem(Itm.nothing.value, Game.nothing.value, 0,0, 1)
+Nothing = CollectableItem(Itm.nothing.value, Game.nothing.value,0, 1)
 
-Cookie = CollectableItem(Itm.cookie.value, Game.cookies.value, 20.0, 100, 20)
-Cookie_Giant = CollectableItem(Itm.cookie_giant.value, Game.cookies.value, 100.0, 100, 10,
-                               0x01)
-Jacket = CollectableItem(Itm.jacket.value, Game.jackets.value, 1, 0x63, 5)
-Chip_1x = CollectableItem(Itm.chip_1x.value, Game.chips.value, 1, 0x270F, 35)
-Chip_5x = CollectableItem(Itm.chip_5x.value, Game.chips.value, 5, 0x270F, 30,
-                          0x01)
-Chip_10x = CollectableItem(Itm.chip_10x.value, Game.chips.value, 10, 0x270F, 25,
-                            0x02)
-Energy = CollectableItem(Itm.energy.value, Game.morph_gauge_active.value, 3.0, 30,25,
-                         0x0)
-Energy_Mega = CollectableItem(Itm.energy_mega.value, Game.morph_gauge_active.value, 30.0, 30, 10,
+Cookie = CollectableItem(Itm.cookie.value, Game.cookies.value, 20.0, 20)
+Cookie_Giant = CollectableItem(Itm.cookie_giant.value, Game.cookies.value, 100.0, 10, 0x01)
+Jacket = CollectableItem(Itm.jacket.value, Game.jackets.value, 1, 5)
+Chip_1x = CollectableItem(Itm.chip_1x.value, Game.chips.value, 1, 40)
+Chip_5x = CollectableItem(Itm.chip_5x.value, Game.chips.value, 5, 35, 0x01)
+Chip_10x = CollectableItem(Itm.chip_10x.value, Game.chips.value, 10, 30, 0x02)
+Energy = CollectableItem(Itm.energy.value, Game.morph_gauge_active.value, 3.0, 40,25)
+Energy_Mega = CollectableItem(Itm.energy_mega.value, Game.morph_gauge_active.value, 30.0, 10,
                               0x01)
 
-Ammo_Boom = CollectableItem(Itm.ammo_boom.value, Game.ammo_boom.value, 1, 0x9,
-                            25)
-Ammo_Homing = CollectableItem(Itm.ammo_homing.value, Game.ammo_homing.value, 1, 0x9,
-                              25)
+Ammo_Boom = CollectableItem(Itm.ammo_boom.value, Game.ammo_boom.value, 1, 25)
+Ammo_Homing = CollectableItem(Itm.ammo_homing.value, Game.ammo_homing.value, 1, 25)
 
 # Archipelago
 Channel_Key = ArchipelagoItem(APHelper.channel_key.value)

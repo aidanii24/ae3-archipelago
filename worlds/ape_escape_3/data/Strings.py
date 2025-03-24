@@ -49,7 +49,7 @@ class Itm(BaseEnum):
     # Collectables
     nothing =           "Nothing"
     jacket =            "Jacket"
-    cookie =            "Cookies"
+    cookie =            "Cookie"
     cookie_giant =      "Giant Cookie"
     chip_1x =           "1 Coin"
     chip_5x =           "5 Coins"
@@ -57,6 +57,7 @@ class Itm(BaseEnum):
     energy =            "Energy"
     energy_mega =       "Mega Energy"
     acc_morph_stock =   "Morph Stock"
+    acc_morph_ext   =   "Morph Extension"
     ammo_boom =         "Explosive Pellet"
     ammo_homing =       "Guided Pellet"
 
@@ -838,6 +839,21 @@ class Game(BaseEnum):
     on_warp_gate =          "On Warp Gate"
     level_confirmed =       "Level Confirmed"
     current_stage =         "Current Stage"
+
+    # Stats
+    duration_knight_b =     "Fantasy Knight Duration - Kei"
+    duration_cowboy_b =     "Wild West Kid Duration - Kei"
+    duration_ninja_b =      "Miracle Ninja Duration - Kei"
+    duration_genie_b =      "Genie Dancer Duration - Kei"
+    duration_kungfu_b =     "Dragon Kung Fu Fighter Duration - Kei"
+    duration_hero_b =       "Thunder Ace Duration - Kei"
+
+    duration_knight_g =     "Fantasy Knight Duration - Yumi"
+    duration_cowboy_g =     "Wild West Kid Duration - Yumi"
+    duration_ninja_g =      "Miracle Ninja Duration - Yumi"
+    duration_genie_g =      "Genie Dancer Duration - Yumi"
+    duration_kungfu_g =     "Dragon Kung Fu Fighter Duration - Yumi"
+    duration_hero_g =       "Princess Ace Duration - Yumi"
 
     ## Special States
     in_pink_stage =         "Monkey Pink Battle! Stage"

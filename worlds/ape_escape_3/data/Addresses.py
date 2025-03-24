@@ -622,6 +622,22 @@ class NTSCU(VersionAddresses):
         Game.level_confirmed.value      : 0x73FF3c,  # boolean (0x00 - 0x01)
         Game.current_stage.value        : 0x8519f0,
 
+        # Stats
+        # TODO - Double check these address; they could be wrong
+        Game.duration_knight_b.value    : 0x0152cf10,
+        Game.duration_cowboy_b.value    : 0x0152d030,
+        Game.duration_ninja_b.value     : 0x0152d090,
+        Game.duration_genie_b.value     : 0x0152d270,
+        Game.duration_kungfu_b.value    : 0x0152d390,
+        Game.duration_hero_b.value      : 0x0152d4b0,
+
+        Game.duration_knight_g.value    : 0x0152cf70,
+        Game.duration_cowboy_g.value    : 0x0152d090,
+        Game.duration_ninja_g.value     : 0x0152d1b0,
+        Game.duration_genie_g.value     : 0x0152d2d0,
+        Game.duration_kungfu_g.value    : 0x0152d3f0,
+        Game.duration_hero_g.value      : 0x0152d510,
+
         # Resources
         Game.nothing.value              : 0x200000,  # Arbitrary Number
 
@@ -655,6 +671,18 @@ class NTSCU(VersionAddresses):
         GameStates[Game.morph_gauge_active.value]   : [0x44, 0x24, 0x38, 0x18],
         Locations[Loc.boss_tomoki.value]            : [0x2c, 0x1AC4]
     }
+
+Capacities : dict[str, int | float] = {
+    Game.morph_stocks.value         : 1100.0,
+
+    Game.nothing.value              : 0x0,
+    Game.cookies.value              : 100.0,
+    Game.jackets.value              : 0x63,
+    Game.chips.value                : 0x270F,
+    Game.morph_gauge_active.value   : 30.0,
+    Game.ammo_boom.value            : 0x9,
+    Game.ammo_homing.value          : 0x9,
+}
 
 AP : dict[str, int] = {
     APHelper.channel_key.value      : 0x100,
