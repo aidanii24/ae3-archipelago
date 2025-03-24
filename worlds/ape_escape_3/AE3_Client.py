@@ -102,10 +102,6 @@ class AE3Context(CommonContext):
         self.ui = AE3Manager(self)
         self.ui_task = asyncio.create_task(self.ui.async_run(), name = "ui")
 
-    def add_key(self):
-        self.keys += 1
-        self.unlocked_stages = self.progression.get_current_progress(self.keys)
-
 def update_connection_status(ctx : AE3Context, status : bool):
     if ctx.is_connected == status:
         return
