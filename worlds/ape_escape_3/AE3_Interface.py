@@ -235,19 +235,19 @@ class AEPS2Interface:
         if target >= 0:
             self.pine.write_int32(target, gadget_id)
 
-    def give_collectable(self, address_name : str, amount : int | float = 0x1):
+    def give_collectable(self, address_name : str, amount : int | float = 0x1, maximum : int | float = 0):
         address : int = self.addresses.GameStates[address_name]
         current : int = self.pine.read_int32(address)
 
         if isinstance(amount, int):
-            self.pine.write_int32(address, current + amount)
+            self.pine.write_int32(address, min(current + amount, maximum))
         elif isinstance(amount, float):
             # Workaround for now; pine.write_float() seems to be broken
             ## Reinterpret read value as float
             current_as_float : float = hex_int32_to_float(current)
 
             ## Convert new value to an int that will be represented as the same hexadecimal value as the float
-            new_as_int : int = float_to_hex_int32(current_as_float + amount)
+            new_as_int : int = float_to_hex_int32(min(current_as_float + amount, maximum))
 
             self.pine.write_int32(address, new_as_int)
 

@@ -117,6 +117,10 @@ async def check_items(ctx : 'AE3Context'):
         ## Handle Collectables
         elif isinstance(item, CollectableItem) or isinstance(item, UpgradeableItem):
             i = item
+            maximum : int | float = 0x0
+
+            if isinstance(item, CollectableItem):
+                maximum = item.capacity
 
             ### <!> NTSC-U Addresses are used when identifying Items regardless of region
             if item.address == NTSCU.GameStates[Game.nothing.value]:
@@ -128,7 +132,7 @@ async def check_items(ctx : 'AE3Context'):
 
             ### Handle Generic Items
             else:
-                ctx.ipc.give_collectable(item.resource, i.amount)
+                ctx.ipc.give_collectable(item.resource, i.amount, maximum)
 
         # Add to temporary container; to be cached as a single batched after
         cache_batch_items.add(server_item)
