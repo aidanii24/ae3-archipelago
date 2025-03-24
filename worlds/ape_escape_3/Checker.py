@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Set, List
 
-from NetUtils import NetworkItem
+from NetUtils import ClientStatus, NetworkItem
 
 from .data.Items import ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem
 from .data.Strings import Game, Itm, APHelper
@@ -102,6 +102,10 @@ async def check_items(ctx : 'AE3Context'):
             if item.item_id == AP[APHelper.channel_key.value]:
                 ctx.keys += 1
                 ctx.unlocked_stages = ctx.progression.get_current_progress(ctx.keys)
+
+            # Update Server about Goal Achieved when Victory is achieved
+            if item.item_id == AP[APHelper.victory.value]:
+                await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
 
         ## Unlock Morphs and Gadgets
         elif isinstance(item, EquipmentItem):
