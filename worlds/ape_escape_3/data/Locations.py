@@ -1,4 +1,4 @@
-from typing import Callable, Set, Sequence
+from typing import Callable, Set, Sequence, TYPE_CHECKING
 from dataclasses import dataclass
 from abc import ABC
 
@@ -7,7 +7,6 @@ from BaseClasses import Location, Region, ItemClassification
 from .Strings import Loc, Stage, Game, Meta, APHelper
 from .Logic import AccessRule, Rulesets
 from .Addresses import NTSCU
-from .Items import AE3Item
 
 
 ### [< --- HELPERS --- >]
@@ -74,6 +73,8 @@ class EventMeta(AE3LocationMeta):
                     self.rules.Rules.add(rule)
 
     def to_event_location(self, player : int, parent : Region) -> Location:
+        from .Items import AE3Item
+
         event : Location = Location(player, self.name, None, parent)
         item : AE3Item = AE3Item(self.name, ItemClassification.progression, None, player)
 

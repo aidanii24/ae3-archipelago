@@ -9,7 +9,7 @@ from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser,
 import Utils
 
 from .data.Strings import Meta, APConsole
-from .data.Items import ProgressionType
+from .data.Logic import GameMode
 from .data.Locations import MONKEYS_MASTER, generate_name_to_id
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
 from .Checker import *
@@ -55,7 +55,7 @@ class AE3Context(CommonContext):
     tomoki_defeated : bool = False
 
     auto_equip : bool = False
-    progression : ProgressionType = ProgressionType.BOSS
+    progression : GameMode = GameMode.BOSS
 
     def __init__(self, address, password):
         super().__init__(address, password)
@@ -84,7 +84,7 @@ class AE3Context(CommonContext):
         # Get Relevant Runtime options
         ## Progression Type
         if APHelper.progression_type.value in args["slot_data"]:
-            self.progression = ProgressionType.get_progression_type(args["slot_data"][APHelper.progression_type.value])
+            self.progression = GameMode.get_gamemode(args["slot_data"][APHelper.progression_type.value])
             self.unlocked_stages = self.progression.get_current_progress(0)
 
         ## Auto-Equip

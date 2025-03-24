@@ -1,8 +1,13 @@
-from typing import Set, Callable
+from typing import TYPE_CHECKING, Set, Callable
+from enum import Enum
 
 from BaseClasses import CollectionState
 
+from .Items import AE3Item, Channel_Key
 from .Strings import Itm, APHelper
+
+if TYPE_CHECKING:
+    from .. import AE3World
 
 ### [< --- ACCESS RULES --- >]
 ## Check if Player can Catch Monkeys
@@ -179,3 +184,43 @@ class Rulesets:
 
     def __bool__(self):
         return bool(self.Critical) or bool(self.Rules)
+
+from .Locations import MONKEYS_BOSSES
+class GameMode(Enum):
+    """
+    Defines how the game should progress and the goal to achieve
+    """
+
+    # Seaside Resort is unlocked at value 0, so starting unlocked levels are 1 less than actually represented.
+    SINGLES =       [1 for _ in range(27)]
+    BOSS =          [2, 1, 4, 1, 3, 1, 4, 1, 3, 1, 2, 1, 1, 1, 1]
+    BOSS_INCL =     [3, 5, 4, 5, 4, 3, 1, 1, 1]
+
+    def generate_keys(self, world : "AE3World") -> list[AE3Item]:
+        amt : int = len(self.value)
+        auto_set : bool = False
+
+        if self == self.BOSS:
+            auto_set = True
+
+        # Automatically assign to bosses (except both Specter bosses) if autoset_bosses is True
+        if auto_set:
+            bosses : int = len(MONKEYS_BOSSES) - 2
+            for _ in range(0, bosses):
+                world.get_location(MONKEYS_BOSSES[_]).place_locked_item(Channel_Key.to_item(world.player))
+
+            amt -= bosses
+
+        return Channel_Key.to_items(world.player, amt)
+
+    def get_current_progress(self, keys : int):
+        unlocks : int = 0
+        for i, unlocked in enumerate(self.value):
+            unlocks += unlocked
+
+            if i >= keys:
+                return unlocks
+
+    @classmethod
+    def get_gamemode(cls, index : int):
+        return [*cls][index]
