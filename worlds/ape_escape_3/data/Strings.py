@@ -900,6 +900,15 @@ class Game(BaseEnum):
     shortcut_asia_b2b =     "Shortcut to Eversummer Island - Village Canals"
 
     @classmethod
+    def get_morph_duration(cls, girl : bool = False):
+        if not girl:
+            return [cls.duration_knight_b.value, cls.duration_cowboy_b.value, cls.duration_ninja_b.value,
+                    cls.duration_genie_b.value, cls.duration_kungfu_b.value, cls.duration_hero_b.value]
+        else:
+            return [cls.duration_knight_g.value, cls.duration_cowboy_g.value, cls.duration_ninja_g.value,
+                    cls.duration_genie_g.value, cls.duration_kungfu_g.value, cls.duration_hero_g.value]
+
+    @classmethod
     def get_buttons_by_internal_index(cls) -> Sequence[str]:
         return [cls.equip_circle.value, cls.equip_cross.value, cls.equip_square.value, cls.equip_triangle.value]
 
