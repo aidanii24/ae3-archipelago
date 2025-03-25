@@ -66,6 +66,17 @@ class Itm(BaseEnum):
         return [cls.gadget_swim.value, cls.gadget_club.value, cls.gadget_net.value, cls.gadget_radar.value,
                 cls.gadget_hoop.value, cls.gadget_sling.value, cls.gadget_rcc.value, cls.gadget_fly.value]
 
+    # RC Car as a Gadget is added as first item to ensure Black and Pudding are on the correct index
+    @classmethod
+    def get_chassis_by_id(self, character : int = 0) -> Sequence[str]:
+        chassis : list[str] = [self.gadget_rcc.value, self.chassis_twin.value]
+
+        if character != 0:
+            chassis.reverse()
+
+        chassis.extend([self.chassis_black.value, self.chassis_pudding.value])
+        return [*chassis]
+
 class Loc(BaseEnum):
     """
     Strings for all the Locations of Ape Escape 3. This includes Monkeys, Cellphones, Cameras, and Points of Interest.
@@ -984,14 +995,18 @@ class APHelper(BaseEnum):
 
     # Game Progress
     pr_boss6 =              "boss6"
+    pr_specter1 =           "specter1"
     pr_round2 =             "round2"
 
     # AP Options
-    progression_type =      "progression_type"
+    game_mode =             "game_mode"
 
     starting_gadget =       "starting_gadget"
+    base_morph_duration =   "base_morph_duration"
     shuffle_net =           "shuffle_net"
     shuffle_chassis =       "shuffle_chassis"
+    shuffle_morph_stocks =  "shuffle_morph_stocks"
+    add_morph_extensions =  "add_morph_extensions"
 
     auto_equip =            "auto_equip"
 

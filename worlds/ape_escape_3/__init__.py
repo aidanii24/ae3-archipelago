@@ -4,7 +4,7 @@ from BaseClasses import MultiWorld, Tutorial
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 
-from .data.Items import AE3Item, Channel_Key, Nothing, Morph_Hero, Morph_Monkey, Victory, generate_collectables
+from .data.Items import (AE3Item, Channel_Key, Nothing, Victory, generate_collectables)
 from .data.Strings import Loc, Meta, APHelper, APConsole
 from .data.Logic import is_goal_achieved, are_goals_achieved, GameMode
 from .AE3_Options import AE3Options
@@ -68,7 +68,7 @@ class AE3World(World):
 
     def generate_early(self):
         self.auto_equip = self.options.auto_equip
-        self.progression = GameMode.get_gamemode(self.options.progression_type.value)
+        self.progression = GameMode.get_gamemode(self.options.game_mode.value)
 
         self.item_pool = []
 
@@ -105,22 +105,17 @@ class AE3World(World):
         self.multiworld.push_precollected(monkey_net)
 
         # <!> Push important items early for easy testing
-        # self.multiworld.push_precollected(rc_car)
-        # self.multiworld.push_precollected(slingback_shooter)
-        # self.multiworld.push_precollected(ninja)
-        # self.multiworld.push_precollected(magician)
-        # self.multiworld.push_precollected(hero)
-        # self.multiworld.push_precollected(monkey)
+        self.multiworld.push_precollected(ninja)
         #
         # self.multiworld.push_precollected(Channel_Key.to_item(self.player))
         # self.get_location(Loc.zero_ukki_pan.value).place_locked_item(Channel_Key.to_item(self.player))
-        # self.get_location(Loc.seaside_salurin.value).place_locked_item(Channel_Key.to_item(self.player))
-        # self.get_location(Loc.seaside_morella.value).place_locked_item(Channel_Key.to_item(self.player))
-        # self.get_location(Loc.seaside_nessal.value).place_locked_item(Channel_Key.to_item(self.player))
         # self.get_location(Loc.seaside_ukkitan.value).place_locked_item(Channel_Key.to_item(self.player))
-        # self.get_location(Loc.seaside_ukki_ben.value).place_locked_item(Channel_Key.to_item(self.player))
         # self.get_location(Loc.seaside_ukki_pia.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.seaside_nessal.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.seaside_salurin.value).place_locked_item(Channel_Key.to_item(self.player))
         # self.get_location(Loc.seaside_sarubo.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.seaside_morella.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.seaside_ukki_ben.value).place_locked_item(Channel_Key.to_item(self.player))
 
         self.item_pool += gadgets
         self.item_pool += [knight, cowboy, ninja, magician, kungfu, hero, monkey]
@@ -133,7 +128,11 @@ class AE3World(World):
             self.item_pool += [chassis_twin, chassis_pudding, chassis_black]
 
         # Add Upgradeables
-        self.item_pool += Items.Acc_Morph_Stock.to_items(self.player)
+        if self.options.shuffle_morph_stocks:
+            self.item_pool += Items.Acc_Morph_Stock.to_items(self.player)
+
+        if self.options.add_morph_extensions:
+            self.item_pool += Items.Acc_Morph_Ext.to_items(self.player)
 
         # Add Archipelago Items
         self.item_pool += self.progression.generate_keys(self)
@@ -161,9 +160,13 @@ class AE3World(World):
 
     def fill_slot_data(self):
         return self.options.as_dict(
-            APHelper.progression_type.value,
+            APHelper.game_mode.value,
+
             APHelper.starting_gadget.value,
+            APHelper.base_morph_duration.value,
             APHelper.shuffle_chassis.value,
+            APHelper.shuffle_morph_stocks.value,
+            APHelper.add_morph_extensions.value,
 
             APHelper.auto_equip.value
         )

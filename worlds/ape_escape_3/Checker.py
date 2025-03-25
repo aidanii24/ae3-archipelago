@@ -5,7 +5,7 @@ from NetUtils import ClientStatus, NetworkItem
 from .data.Items import ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem
 from .data.Strings import Game, Itm, APHelper
 from .data.Addresses import NTSCU, AP
-from .data.Locations import MONKEYS_BOSSES, MONKEYS_DIRECTORY
+from .data.Locations import Loc, MONKEYS_BOSSES, MONKEYS_DIRECTORY
 from .data import Items
 
 if TYPE_CHECKING:
@@ -16,6 +16,17 @@ if TYPE_CHECKING:
 async def check_states(ctx : 'AE3Context'):
     # Get current stage
     new_stage = ctx.ipc.get_stage()
+
+    # Enforce Morph Duration
+    if ctx.character >= 0:
+        if ctx.ipc.get_morph_duration(ctx.character) != ctx.morph_duration:
+            ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration)
+
+        # Character could be wrong if morph duration still is not equal after the first set
+        if ctx.ipc.get_morph_duration(ctx.character) != ctx.morph_duration:
+            ctx.character = ctx.ipc.get_character()
+            ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration)
+
 
     # Get which Monkey Group to actively check at the moment based on the stage
     if not new_stage or new_stage is None and not ctx.current_stage:
@@ -64,16 +75,18 @@ async def setup_level_select(ctx : 'AE3Context'):
     if selected_stage > ctx.unlocked_stages:
         ctx.ipc.set_selected_stage(ctx.unlocked_stages)
 
-    # Allow players to select Dr. Tomoki Battle by temporarily setting the game progress to boss6
-    # Set back to round2 otherwise, or when exiting level select
-    if not ctx.tomoki_defeated:
-        if ctx.ipc.is_on_warp_gate():
-            if selected_stage == 0x18:
-                ctx.ipc.set_progress(APHelper.pr_boss6.value)
-            elif progress != APHelper.pr_round2.value:
-                ctx.ipc.set_progress()
+    # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
+    if ctx.ipc.is_on_warp_gate():
+        # Dr. Tomoki Battle!
+        if selected_stage == 0x18 and not ctx.tomoki_defeated:
+            ctx.ipc.set_progress(APHelper.pr_boss6.value)
+        # Specter Battle!
+        elif selected_stage == 0x1A and not ctx.specter1_defeated:
+            ctx.ipc.set_progress(APHelper.pr_specter1.value)
         elif progress != APHelper.pr_round2.value:
             ctx.ipc.set_progress()
+    elif progress != APHelper.pr_round2.value:
+        ctx.ipc.set_progress()
 
     # If Super Monkey isn't properly unlocked yet, temporarily do so during level select to prevent Aki from
     # introducing and giving it to the player.
@@ -98,18 +111,18 @@ async def check_items(ctx : 'AE3Context'):
         # Handle Item depending on category
         ## Handle Archipelago Items
         if isinstance(item, ArchipelagoItem):
-            # Add Key Count and unlock levels accordingly
+            ### Add Key Count and unlock levels accordingly
             if item.item_id == AP[APHelper.channel_key.value]:
                 ctx.keys += 1
                 ctx.unlocked_stages = ctx.progression.get_current_progress(ctx.keys)
 
-            # Update Server about Goal Achieved when Victory is achieved
+            ### Update Server about Goal Achieved when Victory is achieved
             if item.item_id == AP[APHelper.victory.value]:
                 await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
 
         ## Unlock Morphs and Gadgets
         elif isinstance(item, EquipmentItem):
-            ctx.ipc.unlock_equipment(item.name, auto_equip)
+            ctx.ipc.unlock_equipment(item.name, ctx.character, auto_equip)
 
             if not ctx.has_morph_monkey and item.address == NTSCU.Items[Itm.morph_monkey.value]:
                 ctx.has_morph_monkey = True
@@ -130,6 +143,11 @@ async def check_items(ctx : 'AE3Context'):
             elif item.resource == Game.morph_gauge_active.value:
                 ctx.ipc.give_morph_energy(i.amount)
 
+            ### Handle Morph Extension
+            elif item.resource == Game.duration_knight_b.value:
+                ctx.morph_duration += item.amount
+                ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration)
+
             ### Handle Generic Items
             else:
                 ctx.ipc.give_collectable(item.resource, i.amount, maximum)
@@ -147,11 +165,14 @@ async def check_locations(ctx : 'AE3Context'):
         # Special Case for Tomoki
         if ctx.current_stage == APHelper.boss6.value:
             if ctx.ipc.is_tomoki_defeated():
-                cleared.add(ctx.monkeys_name_to_id[monkey])
+                cleared.add(ctx.monkeys_name_to_id[Loc.boss_tomoki.value])
                 continue
 
         if ctx.ipc.is_monkey_captured(monkey):
             cleared.add(ctx.monkeys_name_to_id[monkey])
+
+            if monkey == Loc.boss_specter.value:
+                ctx.specter1_defeated = True
 
     # Get newly checked locations
     cleared = cleared.difference(ctx.checked_locations)
