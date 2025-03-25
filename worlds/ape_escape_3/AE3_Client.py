@@ -49,6 +49,7 @@ class AE3Context(CommonContext):
 
     keys : int = 0
     unlocked_stages : int = 0
+    character : int = 0
     player_control : bool = False
     current_stage : str = None
     has_morph_monkey : bool = False
