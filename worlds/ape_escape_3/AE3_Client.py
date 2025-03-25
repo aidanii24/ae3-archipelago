@@ -51,6 +51,8 @@ class AE3Context(CommonContext):
     current_stage: str = None
     character : int = -1
     player_control : bool = False
+    # Each byte corresponds to the unlocked chassis, in the same order as their ID's (excluding default)
+    rcc_unlocked : bool = False
     has_morph_monkey : bool = False
     tomoki_defeated : bool = False
     specter1_defeated : bool = False
@@ -157,7 +159,7 @@ async def main_sync_task(ctx : AE3Context):
 async def check_game(ctx : AE3Context):
     # Check if Game State is safe for Further Checking
     if not ctx.player_control:
-        if ctx.ipc.check_control():
+        if ctx.ipc.is_in_control():
             ctx.player_control = True
 
             await asyncio.sleep(1)
@@ -168,7 +170,7 @@ async def check_game(ctx : AE3Context):
 
         await asyncio.sleep(0.5)
         return
-    elif not ctx.ipc.check_control():
+    elif not ctx.ipc.is_in_control():
         ctx.player_control = False
         return
 

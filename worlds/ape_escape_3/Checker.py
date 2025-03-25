@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING, Set, List
 
+from more_itertools.more import SequenceView
+
 from NetUtils import ClientStatus, NetworkItem
 
 from .data.Items import ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem
@@ -93,8 +95,22 @@ async def setup_level_select(ctx : 'AE3Context'):
     if not ctx.has_morph_monkey:
         ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
 
-        if ctx.ipc.check_stage_confirmed_state():
-            ctx.ipc.lock_equipment(Itm.morph_monkey.value)
+    # Temporarily unlock all Chassis when not in Travel Station to make sure their models load correctly when obtained
+    # RC Car Chassis can't be changed in levels, so it is safe to keep them on until the next Travel Station visit
+    if not ctx.rcc_unlocked:
+        if not ctx.ipc.is_a_level_confirmed():
+            for _ in range(3):
+                ctx.ipc.lock_chassis_direct(_)
+        else:
+            for _ in range(3):
+                ctx.ipc.unlock_chassis_direct(_)
+
+async def setup_area(ctx : 'AE3Context'):
+    if ctx.ipc.is_screen_fading() and ctx.ipc.get_player_state() != 0x03:
+        # Temporarily give a morph during transitions to keep Morph Gauge visible
+        ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
+    else:
+        ctx.ipc.lock_equipment(Itm.morph_monkey.value)
 
 async def check_items(ctx : 'AE3Context'):
     cache_batch_items : Set[NetworkItem] = set()
@@ -124,6 +140,18 @@ async def check_items(ctx : 'AE3Context'):
         elif isinstance(item, EquipmentItem):
             ctx.ipc.unlock_equipment(item.name, ctx.character, auto_equip)
 
+            ### Check if RC Car or any Chassis is unlocked
+            if ctx.rcc_unlocked and item.name in Itm.get_chassis_by_id(ctx.character):
+                ctx.rcc_unlocked = True
+
+                # Relock all other RC cars
+                for idx, name in Itm.get_chassis_by_id(no_default=True):
+                    if name == item.name:
+                        continue
+
+                    ctx.ipc.lock_chassis_direct(idx)
+
+            ### Check if Super Monkey is properly unlocked
             if not ctx.has_morph_monkey and item.address == NTSCU.Items[Itm.morph_monkey.value]:
                 ctx.has_morph_monkey = True
 
