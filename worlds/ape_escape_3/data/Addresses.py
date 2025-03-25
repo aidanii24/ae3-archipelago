@@ -49,13 +49,17 @@ class VersionAddresses(ABC):
                 morphs_b.clear()
                 break
 
+        self.MORPHS_B = morphs_b
+
         # Create Sequence of Morph Duration Addresses for Sayaka/Yumi
-        for morph in Game.get_morph_duration():
+        for morph in Game.get_morph_duration(True):
             if morph in self.GameStates:
-                morphs_b.append(self.GameStates[morph])
+                morphs_g.append(self.GameStates[morph])
             else:
-                morphs_b.clear()
+                morphs_g.clear()
                 break
+
+        self.MORPHS_G = morphs_g
 
         # Get Face Buttons in order of ID used by Gadget Selected (Circle, Cross, Square, Triangle)
         for button in Game.get_buttons_by_internal_index():
@@ -90,8 +94,14 @@ class VersionAddresses(ABC):
         if gadget_id <= 7:
             return gadget_id
 
-        # Last 3 items are RC Car variants, so return thr RC Car Address for them
+        # Last 3 items are RC Car variants, so return the RC Car Address for them
         return self.GADGETS.index(self.Items[Itm.gadget_rcc.value])
+
+    def get_morph_duration_addresses(self, character : int = 0):
+        if character == 0:
+            return self.MORPHS_B
+        else:
+            return self.MORPHS_G
 
 ### [< --- ADDRESSES --- >]
 class NTSCU(VersionAddresses):
@@ -643,19 +653,18 @@ class NTSCU(VersionAddresses):
         Game.current_stage.value        : 0x8519f0,
 
         # Stats
-        # TODO - Double check these address; they could be wrong
-        Game.duration_knight_b.value    : 0x0152cef0,
-        Game.duration_cowboy_b.value    : 0x0152d010,
-        Game.duration_ninja_b.value     : 0x0152d130,
-        Game.duration_genie_b.value     : 0x0152d250,
-        Game.duration_kungfu_b.value    : 0x0152d370,
-        Game.duration_hero_b.value      : 0x0152d490,
+        Game.duration_knight_b.value    : 0x0152cf10,
+        Game.duration_cowboy_b.value    : 0x0152d030,
+        Game.duration_ninja_b.value     : 0x0152d150,
+        Game.duration_genie_b.value     : 0x0152d270,
+        Game.duration_kungfu_b.value    : 0x0152d390,
+        Game.duration_hero_b.value      : 0x0152d4b0,
 
-        Game.duration_knight_g.value    : 0x0152cf50,
-        Game.duration_cowboy_g.value    : 0x0152d070,
-        Game.duration_ninja_g.value     : 0x0152d190,
-        Game.duration_genie_g.value     : 0x0152d2b0,
-        Game.duration_kungfu_g.value    : 0x0152d4f0,
+        Game.duration_knight_g.value    : 0x0152cf70,
+        Game.duration_cowboy_g.value    : 0x0152d090,
+        Game.duration_ninja_g.value     : 0x0152d1b0,
+        Game.duration_genie_g.value     : 0x0152d2d0,
+        Game.duration_kungfu_g.value    : 0x0152d3f0,
         Game.duration_hero_g.value      : 0x0152d510,
 
         # Resources

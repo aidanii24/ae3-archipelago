@@ -3,7 +3,6 @@ from typing import Optional, Sequence
 import multiprocessing
 import traceback
 import asyncio
-import datetime
 
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled
 import Utils
@@ -49,13 +48,15 @@ class AE3Context(CommonContext):
 
     keys : int = 0
     unlocked_stages : int = 0
-    character : int = 0
+    current_stage: str = None
+    character : int = -1
     player_control : bool = False
-    current_stage : str = None
     has_morph_monkey : bool = False
     tomoki_defeated : bool = False
+    specter1_defeated : bool = False
 
     auto_equip : bool = False
+    morph_duration : float = 10.0
     progression : GameMode = GameMode.BOSS
 
     def __init__(self, address, password):
@@ -83,10 +84,14 @@ class AE3Context(CommonContext):
         self.slot_data = args["slot_data"]
 
         # Get Relevant Runtime options
-        ## Progression Type
-        if APHelper.progression_type.value in args["slot_data"]:
-            self.progression = GameMode.get_gamemode(args["slot_data"][APHelper.progression_type.value])
+        ## Game Mode
+        if APHelper.game_mode.value in args["slot_data"]:
+            self.progression = GameMode.get_gamemode(args["slot_data"][APHelper.game_mode.value])
             self.unlocked_stages = self.progression.get_current_progress(0)
+
+        ## Get Base Morph Duration
+        if APHelper.base_morph_duration.value in args["slot_data"]:
+            self.morph_duration = float(args["slot_data"][APHelper.base_morph_duration.value])
 
         ## Auto-Equip
         if APHelper.auto_equip.value in args["slot_data"]:
@@ -176,6 +181,10 @@ async def check_game(ctx : AE3Context):
 
         # Setup Stage when needed and double check locations
         if ctx.current_stage == APHelper.travel_station.value:
+            # Get character after Tutorial
+            if ctx.character < 0:
+                ctx.character = ctx.ipc.get_character()
+
             await setup_level_select(ctx)
             await recheck_location_groups(ctx)
 

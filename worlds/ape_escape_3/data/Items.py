@@ -144,7 +144,7 @@ Chassis_Pudding = EquipmentItem(Itm.chassis_pudding.value)
 
 # Upgradeables
 Acc_Morph_Stock = UpgradeableItem(Itm.acc_morph_stock.value, Game.morph_stocks.value, 100.0, 10)
-Acc_Morph_Ext = UpgradeableItem(Itm.acc_morph_ext.value, Game.morph_stocks.value, 2.0, 10)
+Acc_Morph_Ext = UpgradeableItem(Itm.acc_morph_ext.value, Game.duration_knight_b.value, 2.0, 10)
 
 # Collectables
 Nothing = CollectableItem(Itm.nothing.value, Game.nothing.value,0, 1)
@@ -184,7 +184,7 @@ ACCESSORIES : Sequence[EquipmentItem] = [
 ]
 
 UPGRADEABLES : Sequence[UpgradeableItem] = [
-    Acc_Morph_Stock
+    Acc_Morph_Stock, Acc_Morph_Ext
 ]
 
 COLLECTABLES : Sequence[CollectableItem] = [

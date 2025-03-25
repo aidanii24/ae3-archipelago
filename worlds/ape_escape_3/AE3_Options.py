@@ -3,17 +3,15 @@ from dataclasses import dataclass
 from Options import Toggle, Choice, PerGameCommonOptions
 
 # Item Options
-class ProgressionType(Choice):
+class GameMode(Choice):
     """
     Choose how the progression of the randomizer should be.
 
-    > Singles - Each Stage will be unlocked one by one, as long as you find the Channel Key. (Not Implemented)
-    > Boss - Stages between bosses are all unlocked together. Finding a Channel Key in them will lead to their
-    following boss stage being unlocked. After beating the boss, the next set of stages are unlocked.
+    > Singles - Each Stage will be unlocked one by one, as long as you find the Channel Key.
+    > Boss - Alternate between unlocking groups of stages and the bosses in between.
     > Boss_Inclusive - Progression is similar to Boss, but the bosses are unlocked along with their preceding stages.
-    Finding a Channel Key will simply unlock the next set of Stages. (Not Implemented)
     """
-    display_name : str = "Progression Type"
+    display_name : str = "Game Mode"
     default = 1
 
     option_singles : int = 0
@@ -33,9 +31,22 @@ class StartingGadget(Choice):
     option_monkey_radar : int = 2
     option_super_hoop : int = 3
     option_slingback_shooter : int = 4
-    option_water_net = 5
-    option_rc_car = 6
-    option_sky_flyer = 7
+    option_water_net : int = 5
+    option_rc_car : int = 6
+    option_sky_flyer : int = 7
+
+class BaseMorphDuration(Choice):
+    """
+    Choose the base duration of morphs. This does not affect recharge durations.
+    """
+    display_name : str = "Base Morph Duration"
+    default = 30
+
+    option_10s : int = 10
+    option_15s : int = 15
+    option_30s : int = 30
+    option_40s : int = 40
+    option_60s : int = 60
 
 class ShuffleMonkeyNet(Toggle):
     """
@@ -48,7 +59,26 @@ class ShuffleRCCarChassis(Toggle):
     Choose if the various RC Car Chassis should also be included in the pool. Unlocking any chassis will
     automatically unlock the RC Car Gadget if it hasn't yet.
     """
-    display_name : str = "Include RC Car Chassis in Randomizer"
+    display_name : str = "Shuffle RC Car Chassis"
+
+class ShuffleMorphStocks(Toggle):
+    """
+    Choose if Morph Stocks should also be included in the pool.
+    """
+    display_name : str = "Shuffle Morph Stocks"
+
+class AddMorphExtensions(Toggle):
+    """
+    Choose if Morph Extensions should also be included in the pool. Each Morph Extension adds 2 seconds to your morph
+    duration, up to a maximum of an additional 20 seconds added to your base morph duration.
+    """
+    display_name : str = "Add Morph Extensions"
+
+class EnableShoppingArea(Toggle):
+    """
+    Choose if the Shopping Area should be able to sell (relevant) items.
+    """
+    display_name : str = "Enable Shopping Area"
 
 # QoL/Bonus Options
 class AutoEquipOnUnlock(Toggle):
@@ -59,9 +89,12 @@ class AutoEquipOnUnlock(Toggle):
 
 @dataclass
 class AE3Options(PerGameCommonOptions):
-    progression_type : ProgressionType
+    game_mode               : GameMode
 
-    starting_gadget : StartingGadget
-    shuffle_chassis : ShuffleRCCarChassis
+    starting_gadget         : StartingGadget
+    base_morph_duration     : BaseMorphDuration
+    shuffle_chassis         : ShuffleRCCarChassis
+    shuffle_morph_stocks    : ShuffleMorphStocks
+    add_morph_extensions    : AddMorphExtensions
 
-    auto_equip : AutoEquipOnUnlock
+    auto_equip              : AutoEquipOnUnlock

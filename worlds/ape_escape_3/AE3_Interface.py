@@ -4,7 +4,7 @@ from enum import Enum
 import struct
 
 from .data.Addresses import VersionAddresses, get_version_addresses
-from .data.Strings import Loc, Meta, Game, APHelper, APConsole
+from .data.Strings import Itm, Loc, Meta, Game, APHelper, APConsole
 from .interface.pine import Pine
 
 
@@ -154,6 +154,13 @@ class AEPS2Interface:
         value: int = self.pine.read_int8(self.addresses.GameStates[Game.level_confirmed.value])
         return value != 0
 
+    def get_character(self) -> int:
+        value : int = self.pine.read_int32(self.addresses.GameStates[Game.character.value])
+        return value
+
+    def get_morph_duration(self, character : int = 0) -> float:
+        return self.pine.read_int32(self.addresses.get_morph_duration_addresses(character)[0])
+
     def get_player_state(self) -> int:
         value : int = self.pine.read_int32(self.addresses.GameStates[Game.state.value])
         return value
@@ -203,15 +210,41 @@ class AEPS2Interface:
         for button in self.addresses.BUTTONS_BY_INTERNAL:
             self.pine.write_int32(button, 0x0)
 
-    def unlock_equipment(self, address_name : str, auto_equip : bool = False):
-        address : int = self.addresses.Items[address_name]
+    def unlock_equipment(self, address_name : str, character : int = 0, auto_equip : bool = False):
+        is_equipped : bool = False
+
+        # Redirect address to RC Car if the unlocked equipment is an RC Car Chassis
+        if "Chassis" in address_name:
+            address : int = self.addresses.Items[Itm.gadget_rcc.value]
+            is_equipped = self.unlock_chassis(address_name, character)
+            print("Chassis")
+        else:
+            address : int = self.addresses.Items[address_name]
+
         self.pine.write_int32(self.addresses.Items[address_name], 0x2)
 
-        if auto_equip:
+        if auto_equip and not is_equipped:
             self.auto_equip(self.addresses.get_gadget_id(address))
 
     def lock_equipment(self, address_name : str):
         self.pine.write_int32(self.addresses.Items[address_name], 0x1)
+
+    def unlock_chassis(self, address_name : str, character : int) -> bool:
+        self.pine.write_int8(self.addresses.Items[address_name], 0x1)
+
+        is_rcc_unlocked : bool = self.pine.read_int32(self.addresses.Items[Itm.gadget_rcc.value]) == 0x2
+        active_chassis : int = self.pine.read_int32(self.addresses.Items[Itm.gadget_rcc.value])
+        is_active_chassis_default: bool = character != active_chassis
+
+        # Unlock RC Car if not already, equipping this chassis as well
+        if not is_rcc_unlocked:
+            if is_active_chassis_default:
+                print(Itm.get_chassis_by_id(character))
+                chassis_id : int = Itm.get_chassis_by_id(character).index(address_name)
+
+                self.pine.write_int32(self.addresses.GameStates[Game.equip_chassis_active.value], chassis_id)
+
+        return is_rcc_unlocked
 
     def auto_equip(self, gadget_id: int):
         if gadget_id <= 0:
@@ -234,6 +267,18 @@ class AEPS2Interface:
 
         if target >= 0:
             self.pine.write_int32(target, gadget_id)
+
+    def set_morph_duration(self, character : int, duration : float):
+        if character < 0:
+            return
+
+        durations : Sequence[int] = self.addresses.get_morph_duration_addresses(character)
+        if not durations:
+            return
+
+        for morph in durations:
+            self.pine.write_int32(morph, float_to_hex_int32(duration))
+
 
     def give_collectable(self, address_name : str, amount : int | float = 0x1, maximum : int | float = 0):
         address : int = self.addresses.GameStates[address_name]
