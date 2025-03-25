@@ -652,6 +652,8 @@ class NTSCU(VersionAddresses):
         Game.level_confirmed.value      : 0x73FF3c,  # boolean (0x00 - 0x01)
         Game.current_stage.value        : 0x8519f0,
 
+        Game.screen_fade.value          : 0xce6024,  # 0x01 when not fading
+
         # Stats
         Game.duration_knight_b.value    : 0x0152cf10,
         Game.duration_cowboy_b.value    : 0x0152d030,

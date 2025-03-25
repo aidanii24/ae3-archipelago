@@ -68,11 +68,18 @@ class Itm(BaseEnum):
 
     # RC Car as a Gadget is added as first item to ensure Black and Pudding are on the correct index
     @classmethod
-    def get_chassis_by_id(self, character : int = 0) -> Sequence[str]:
-        chassis : list[str] = [self.gadget_rcc.value, self.chassis_twin.value]
+    def get_chassis_by_id(self, character : int = 0, no_default : bool = False) -> Sequence[str]:
+        if character < 0:
+            return
 
-        if character != 0:
-            chassis.reverse()
+        chassis : list[str] = [self.chassis_twin.value]
+
+        if not no_default:
+            chassis.append(self.gadget_rcc.value)
+
+            # Reverse for Satoru/Kei to better align index with ID
+            if character == 0:
+                chassis.reverse()
 
         chassis.extend([self.chassis_black.value, self.chassis_pudding.value])
         return [*chassis]
@@ -850,6 +857,8 @@ class Game(BaseEnum):
     on_warp_gate =          "On Warp Gate"
     level_confirmed =       "Level Confirmed"
     current_stage =         "Current Stage"
+
+    screen_fade =           "Screen Fade"
 
     # Stats
     duration_knight_b =     "Fantasy Knight Duration - Kei"

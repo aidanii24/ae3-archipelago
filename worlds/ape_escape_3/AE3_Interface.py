@@ -150,7 +150,7 @@ class AEPS2Interface:
         value : int = self.pine.read_int8(self.addresses.GameStates[Game.on_warp_gate.value])
         return value != 0
 
-    def check_stage_confirmed_state(self) -> bool:
+    def is_a_level_confirmed(self) -> bool:
         value: int = self.pine.read_int8(self.addresses.GameStates[Game.level_confirmed.value])
         return value != 0
 
@@ -165,9 +165,15 @@ class AEPS2Interface:
         value : int = self.pine.read_int32(self.addresses.GameStates[Game.state.value])
         return value
 
-    def check_control(self) -> bool:
+    def is_in_control(self) -> bool:
         value : int = self.get_player_state()
         return value != 0x00 and value != 0x02
+
+    def is_selecting_morph(self) -> bool:
+        return self.get_player_state() == 0x03
+
+    def is_screen_fading(self) -> bool:
+        return self.pine.read_int8(self.addresses.GameStates[Game.screen_fade.value]) != 0x01
 
     def is_monkey_captured(self, name : str) -> bool:
         address : int = self.addresses.Locations[name]
@@ -211,13 +217,12 @@ class AEPS2Interface:
             self.pine.write_int32(button, 0x0)
 
     def unlock_equipment(self, address_name : str, character : int = 0, auto_equip : bool = False):
-        is_equipped : bool = False
+        is_equipped : int = False
 
         # Redirect address to RC Car if the unlocked equipment is an RC Car Chassis
         if "Chassis" in address_name:
             address : int = self.addresses.Items[Itm.gadget_rcc.value]
             is_equipped = self.unlock_chassis(address_name, character)
-            print("Chassis")
         else:
             address : int = self.addresses.Items[address_name]
 
@@ -226,25 +231,34 @@ class AEPS2Interface:
         if auto_equip and not is_equipped:
             self.auto_equip(self.addresses.get_gadget_id(address))
 
-    def lock_equipment(self, address_name : str):
-        self.pine.write_int32(self.addresses.Items[address_name], 0x1)
-
     def unlock_chassis(self, address_name : str, character : int) -> bool:
         self.pine.write_int8(self.addresses.Items[address_name], 0x1)
 
         is_rcc_unlocked : bool = self.pine.read_int32(self.addresses.Items[Itm.gadget_rcc.value]) == 0x2
         active_chassis : int = self.pine.read_int32(self.addresses.Items[Itm.gadget_rcc.value])
-        is_active_chassis_default: bool = character != active_chassis
+        is_active_chassis_default: bool = character == active_chassis
 
         # Unlock RC Car if not already, equipping this chassis as well
         if not is_rcc_unlocked:
             if is_active_chassis_default:
-                print(Itm.get_chassis_by_id(character))
                 chassis_id : int = Itm.get_chassis_by_id(character).index(address_name)
 
                 self.pine.write_int32(self.addresses.GameStates[Game.equip_chassis_active.value], chassis_id)
 
         return is_rcc_unlocked
+
+    def unlock_chassis_direct(self, chassis_idx):
+        chassis : str = Itm.get_chassis_by_id(no_default=True)[chassis_idx]
+        self.pine.write_int8(self.addresses.Items[chassis], 0x1)
+
+    def lock_chassis_direct(self, chassis_idx):
+        chassis : str = Itm.get_chassis_by_id(no_default=True)[chassis_idx]
+
+        if chassis:
+            self.pine.write_int8(self.addresses.Items[chassis], 0x0)
+
+    def lock_equipment(self, address_name : str):
+        self.pine.write_int32(self.addresses.Items[address_name], 0x1)
 
     def auto_equip(self, gadget_id: int):
         if gadget_id <= 0:
