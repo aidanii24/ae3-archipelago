@@ -4,7 +4,7 @@ from BaseClasses import MultiWorld, Tutorial
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 
-from .data.Items import (AE3Item, Channel_Key, Nothing, Victory, generate_collectables)
+from .data.Items import (AE3Item, Chassis_Pudding, Nothing, Channel_Key, Victory, generate_collectables)
 from .data.Strings import Loc, Meta, APHelper, APConsole
 from .data.Logic import is_goal_achieved, are_goals_achieved, GameMode
 from .AE3_Options import AE3Options
@@ -116,6 +116,8 @@ class AE3World(World):
         # self.get_location(Loc.seaside_sarubo.value).place_locked_item(Channel_Key.to_item(self.player))
         # self.get_location(Loc.seaside_morella.value).place_locked_item(Channel_Key.to_item(self.player))
         # self.get_location(Loc.seaside_ukki_ben.value).place_locked_item(Channel_Key.to_item(self.player))
+
+        self.get_location(Loc.seaside_ukkitan.value).place_locked_item(Chassis_Pudding.to_item(self.player))
 
         self.item_pool += gadgets
         self.item_pool += [knight, cowboy, ninja, magician, kungfu, hero, monkey]
