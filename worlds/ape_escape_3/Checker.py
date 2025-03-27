@@ -121,7 +121,7 @@ async def check_items(ctx : 'AE3Context'):
 
     for server_item in received:
         item = Items.from_id(server_item.item)
-
+        print(item.name, isinstance(item, EquipmentItem), "Chassis" in item.name)
         # Handle Item depending on category
         ## Handle Archipelago Items
         if isinstance(item, ArchipelagoItem):

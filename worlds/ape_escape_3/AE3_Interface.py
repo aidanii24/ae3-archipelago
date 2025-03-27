@@ -235,14 +235,15 @@ class AEPS2Interface:
         self.pine.write_int8(self.addresses.Items[address_name], 0x1)
 
         is_rcc_unlocked : bool = self.pine.read_int32(self.addresses.Items[Itm.gadget_rcc.value]) == 0x2
-        active_chassis : int = self.pine.read_int32(self.addresses.Items[Itm.gadget_rcc.value])
+        active_chassis : int = self.pine.read_int32(self.addresses.GameStates[Game.equip_chassis_active.value])
         is_active_chassis_default: bool = character == active_chassis
 
         # Unlock RC Car if not already, equipping this chassis as well
+        print("RC Car Unlocked yet?", is_rcc_unlocked)
         if not is_rcc_unlocked:
             if is_active_chassis_default:
                 chassis_id : int = Itm.get_chassis_by_id(character).index(address_name)
-
+                print("Chassis ID:", chassis_id)
                 self.pine.write_int32(self.addresses.GameStates[Game.equip_chassis_active.value], chassis_id)
 
         return is_rcc_unlocked

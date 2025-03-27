@@ -91,7 +91,7 @@ class AE3Context(CommonContext):
             self.progression = GameMode.get_gamemode(args["slot_data"][APHelper.game_mode.value])
             self.unlocked_stages = self.progression.get_current_progress(0)
 
-        ## Get Base Morph Duration
+        ## Morph Duration
         if APHelper.base_morph_duration.value in args["slot_data"]:
             self.morph_duration = float(args["slot_data"][APHelper.base_morph_duration.value])
 
@@ -189,6 +189,8 @@ async def check_game(ctx : AE3Context):
 
             await setup_level_select(ctx)
             await recheck_location_groups(ctx)
+        else:
+            await setup_area(ctx)
 
         # Check Progression
         await check_items(ctx)
