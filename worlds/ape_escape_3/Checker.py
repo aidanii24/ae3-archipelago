@@ -1,7 +1,5 @@
 from typing import TYPE_CHECKING, Set, List
 
-from more_itertools.more import SequenceView
-
 from NetUtils import ClientStatus, NetworkItem
 
 from .data.Items import ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem
