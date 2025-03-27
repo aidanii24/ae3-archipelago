@@ -131,19 +131,19 @@ class AEPS2Interface:
         value_decoded: str = bytes.decode(value)
         return value_decoded
 
-    def get_unlocked_stages(self) -> int:
-        return self.pine.read_int32(self.addresses.GameStates[Game.levels_unlocked.value])
+    def get_unlocked_channels(self) -> int:
+        return self.pine.read_int32(self.addresses.GameStates[Game.channels_unlocked.value])
 
-    def get_selected_stage(self) -> int:
-        return self.pine.read_int32(self.addresses.GameStates[Game.level_selected.value])
+    def get_selected_channel(self) -> int:
+        return self.pine.read_int32(self.addresses.GameStates[Game.channel_selected.value])
 
-    def get_stage(self) -> str:
-        stage_as_bytes : bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_stage.value], 4)
+    def get_channel(self) -> str:
+        channel_as_bytes : bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_channel.value], 4)
         # Decode to String and remove null bytes if present
-        return stage_as_bytes.decode("utf-8").replace("\x00", "")
+        return channel_as_bytes.decode("utf-8").replace("\x00", "")
 
     def check_in_stage(self) -> bool:
-        value : int = self.pine.read_int8(self.addresses.GameStates[Game.current_stage.value])
+        value : int = self.pine.read_int8(self.addresses.GameStates[Game.current_channel.value])
         return value > 0
 
     def is_on_warp_gate(self) -> bool:
@@ -151,7 +151,7 @@ class AEPS2Interface:
         return value != 0
 
     def is_a_level_confirmed(self) -> bool:
-        value: int = self.pine.read_int8(self.addresses.GameStates[Game.level_confirmed.value])
+        value: int = self.pine.read_int8(self.addresses.GameStates[Game.channel_confirmed.value])
         return value != 0
 
     def get_character(self) -> int:
@@ -174,6 +174,9 @@ class AEPS2Interface:
 
     def is_screen_fading(self) -> bool:
         return self.pine.read_int8(self.addresses.GameStates[Game.screen_fade.value]) != 0x01
+
+    def get_screen_fade_count(self) -> int:
+        return self.pine.read_int8(self.addresses.GameStates[Game.screen_fade_count.value])
 
     def is_monkey_captured(self, name : str) -> bool:
         address : int = self.addresses.Locations[name]
@@ -207,10 +210,10 @@ class AEPS2Interface:
         self.pine.write_bytes(addr, as_bytes)
 
     def set_unlocked_stages(self, index : int):
-        self.pine.write_int32(self.addresses.GameStates[Game.levels_unlocked.value], index)
+        self.pine.write_int32(self.addresses.GameStates[Game.channels_unlocked.value], index)
 
     def set_selected_stage(self, index : int):
-        self.pine.write_int32(self.addresses.GameStates[Game.level_selected.value], index)
+        self.pine.write_int32(self.addresses.GameStates[Game.channel_selected.value], index)
 
     def clear_equipment(self):
         for button in self.addresses.BUTTONS_BY_INTERNAL:
@@ -235,15 +238,13 @@ class AEPS2Interface:
         self.pine.write_int8(self.addresses.Items[address_name], 0x1)
 
         is_rcc_unlocked : bool = self.pine.read_int32(self.addresses.Items[Itm.gadget_rcc.value]) == 0x2
+        # Default Chassis ID is 0
         active_chassis : int = self.pine.read_int32(self.addresses.GameStates[Game.equip_chassis_active.value])
-        is_active_chassis_default: bool = character == active_chassis
 
         # Unlock RC Car if not already, equipping this chassis as well
-        print("RC Car Unlocked yet?", is_rcc_unlocked)
         if not is_rcc_unlocked:
-            if is_active_chassis_default:
+            if active_chassis == 0x0:
                 chassis_id : int = Itm.get_chassis_by_id(character).index(address_name)
-                print("Chassis ID:", chassis_id)
                 self.pine.write_int32(self.addresses.GameStates[Game.equip_chassis_active.value], chassis_id)
 
         return is_rcc_unlocked

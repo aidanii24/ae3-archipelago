@@ -68,20 +68,16 @@ class Itm(BaseEnum):
 
     # RC Car as a Gadget is added as first item to ensure Black and Pudding are on the correct index
     @classmethod
-    def get_chassis_by_id(self, character : int = 0, no_default : bool = False) -> Sequence[str]:
+    def get_chassis_by_id(cls, character : int = 0, no_default : bool = False) -> Sequence[str]:
         if character < 0:
             return
 
-        chassis : list[str] = [self.chassis_twin.value]
+        chassis : list[str] = []
 
         if not no_default:
-            chassis.append(self.gadget_rcc.value)
+            chassis.append(cls.gadget_rcc.value)
 
-            # Reverse for Satoru/Kei to better align index with ID
-            if character == 0:
-                chassis.reverse()
-
-        chassis.extend([self.chassis_black.value, self.chassis_pudding.value])
+        chassis.extend([cls.chassis_twin.value, cls.chassis_black.value, cls.chassis_pudding.value])
         return [*chassis]
 
 class Loc(BaseEnum):
@@ -852,13 +848,15 @@ class Game(BaseEnum):
     state =                 "Player State"
     character =             "Character"
     progress =              "Progress"
-    levels_unlocked =       "Levels Unlocked"
-    level_selected =        "Level Selected"
+    channels_unlocked =     "Channels Unlocked"
+    channel_selected =      "CHannel Selected"
     on_warp_gate =          "On Warp Gate"
-    level_confirmed =       "Level Confirmed"
+    channel_confirmed =     "Channel Confirmed"
+    current_channel =       "Current Channel"
     current_stage =         "Current Stage"
 
     screen_fade =           "Screen Fade"
+    screen_fade_count =     "Screen Fade Count"
 
     # Stats
     duration_knight_b =     "Fantasy Knight Duration - Kei"

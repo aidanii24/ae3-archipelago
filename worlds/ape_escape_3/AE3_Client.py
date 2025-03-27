@@ -47,8 +47,8 @@ class AE3Context(CommonContext):
     monkeys_checklist_count : int = 0
 
     keys : int = 0
-    unlocked_stages : int = 0
-    current_stage: str = None
+    unlocked_channels : int = 0
+    current_channel: str = None
     character : int = -1
     player_control : bool = False
     # Each byte corresponds to the unlocked chassis, in the same order as their ID's (excluding default)
@@ -89,7 +89,7 @@ class AE3Context(CommonContext):
         ## Game Mode
         if APHelper.game_mode.value in args["slot_data"]:
             self.progression = GameMode.get_gamemode(args["slot_data"][APHelper.game_mode.value])
-            self.unlocked_stages = self.progression.get_current_progress(0)
+            self.unlocked_channels = self.progression.get_current_progress(0)
 
         ## Morph Duration
         if APHelper.base_morph_duration.value in args["slot_data"]:
@@ -182,7 +182,7 @@ async def check_game(ctx : AE3Context):
             return
 
         # Setup Stage when needed and double check locations
-        if ctx.current_stage == APHelper.travel_station.value:
+        if ctx.current_channel == APHelper.travel_station.value:
             # Get character after Tutorial
             if ctx.character < 0:
                 ctx.character = ctx.ipc.get_character()
