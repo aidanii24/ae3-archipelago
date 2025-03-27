@@ -643,16 +643,18 @@ class NTSCU(VersionAddresses):
 
     GameStates: Dict[str, int] = {
         # Status
-        Game.state.value                : 0x8519e4,  # int32 (0x00 - 0x04)
-        Game.character.value            : 0x649910,  # int32 (0x00 - 0x01)
-        Game.progress.value             : 0x73f810,  # Pointer Lead - End Value is 64bit
-        Game.on_warp_gate.value         : 0x698298,  # boolean (0x00 - 0x01)
-        Game.levels_unlocked.value      : 0x73ff2c,  # int32 (0x00 - 0x1B)
-        Game.level_selected.value       : 0x73ff28,  # int32 (0x00 - 0x1B)
-        Game.level_confirmed.value      : 0x73FF3c,  # boolean (0x00 - 0x01)
-        Game.current_stage.value        : 0x8519f0,
+        Game.state.value                : 0x8519e4,     # int32 (0x00 - 0x04)
+        Game.character.value            : 0x649910,     # int32 (0x00 - 0x01)
+        Game.progress.value             : 0x73f810,     # Pointer Lead - End Value is 64bit
+        Game.on_warp_gate.value         : 0x698298,     # boolean (0x00 - 0x01)
+        Game.channels_unlocked.value    : 0x73ff2c,     # int32 (0x00 - 0x1B)
+        Game.channel_selected.value     : 0x73ff28,     # int32 (0x00 - 0x1B)
+        Game.channel_confirmed.value    : 0x73FF3c,     # boolean (0x00 - 0x01)
+        Game.current_channel.value      : 0x8519f0,
+        Game.current_stage.value        : 0x649548,     # String
 
-        Game.screen_fade.value          : 0xce6024,  # 0x01 when not fading
+        Game.screen_fade.value          : 0xce6024,     # 0x01 when not fading
+        Game.screen_fade_count.value    : 0x851a50,     # 0x01 when not fading
 
         # Stats
         Game.duration_knight_b.value    : 0x0152cf10,

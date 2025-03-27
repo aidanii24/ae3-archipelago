@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 ### [< --- CHECKS --- >]
 async def check_states(ctx : 'AE3Context'):
     # Get current stage
-    new_stage = ctx.ipc.get_stage()
+    new_stage = ctx.ipc.get_channel()
 
     # Enforce Morph Duration
     if ctx.character >= 0:
@@ -29,18 +29,18 @@ async def check_states(ctx : 'AE3Context'):
 
 
     # Get which Monkey Group to actively check at the moment based on the stage
-    if not new_stage or new_stage is None and not ctx.current_stage:
+    if not new_stage or new_stage is None and not ctx.current_channel:
         # Special Check for Monkey Pink as her boss stage does not provide a Stage ID
         if ctx.ipc.is_in_pink_boss():
             ctx.monkeys_checklist = MONKEYS_BOSSES
-            ctx.current_stage = APHelper.boss4.value
+            ctx.current_channel = APHelper.boss4.value
         # Recheck locations by each stage while loading
         else:
             await recheck_location_groups(ctx)
             await check_locations(ctx)
 
         return
-    elif new_stage != ctx.current_stage:
+    elif new_stage != ctx.current_channel:
         if new_stage in MONKEYS_DIRECTORY:
             ctx.monkeys_checklist = MONKEYS_DIRECTORY[new_stage]
         elif "b" in new_stage:
@@ -48,7 +48,7 @@ async def check_states(ctx : 'AE3Context'):
     else:
         return
 
-    ctx.current_stage = new_stage
+    ctx.current_channel = new_stage
 
 async def recheck_location_groups(ctx : 'AE3Context'):
     if ctx.monkeys_checklist_count >= len(MONKEYS_DIRECTORY.values()):
@@ -64,16 +64,16 @@ async def correct_progress(ctx : 'AE3Context'):
 async def setup_level_select(ctx : 'AE3Context'):
     # Force Unlocked Stages to be in sync with the player's chosen option,
     # maxing out at 0x1B as supported by the game
-    if ctx.ipc.get_unlocked_stages() > max(0, min(ctx.unlocked_stages, 0x1B)):
-        ctx.ipc.set_unlocked_stages(ctx.unlocked_stages)
+    if ctx.ipc.get_unlocked_channels() > max(0, min(ctx.unlocked_channels, 0x1B)):
+        ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
     progress : str = ctx.ipc.get_progress()
-    selected_stage: int = ctx.ipc.get_selected_stage()
+    selected_stage: int = ctx.ipc.get_selected_channel()
 
     # In case player scrolls beyond intended levels before unlocked stages are enforced,
     # force selected level to be the latest unlocked stage
-    if selected_stage > ctx.unlocked_stages:
-        ctx.ipc.set_selected_stage(ctx.unlocked_stages)
+    if selected_stage > ctx.unlocked_channels:
+        ctx.ipc.set_selected_stage(ctx.unlocked_channels)
 
     # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
     if ctx.ipc.is_on_warp_gate():
@@ -104,9 +104,12 @@ async def setup_level_select(ctx : 'AE3Context'):
                 ctx.ipc.unlock_chassis_direct(_)
 
 async def setup_area(ctx : 'AE3Context'):
-    if ctx.ipc.is_screen_fading() and ctx.ipc.get_player_state() != 0x03:
+    if ctx.ipc.is_screen_fading():
+        if ctx.ipc.get_screen_fade_count() > 0x0:
+            ctx.ipc.lock_equipment(Itm.morph_monkey.value)
         # Temporarily give a morph during transitions to keep Morph Gauge visible
-        ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
+        else:
+            ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
     else:
         ctx.ipc.lock_equipment(Itm.morph_monkey.value)
 
@@ -121,14 +124,14 @@ async def check_items(ctx : 'AE3Context'):
 
     for server_item in received:
         item = Items.from_id(server_item.item)
-        print(item.name, isinstance(item, EquipmentItem), "Chassis" in item.name)
+
         # Handle Item depending on category
         ## Handle Archipelago Items
         if isinstance(item, ArchipelagoItem):
             ### Add Key Count and unlock levels accordingly
             if item.item_id == AP[APHelper.channel_key.value]:
                 ctx.keys += 1
-                ctx.unlocked_stages = ctx.progression.get_current_progress(ctx.keys)
+                ctx.unlocked_channels = ctx.progression.get_current_progress(ctx.keys)
 
             ### Update Server about Goal Achieved when Victory is achieved
             if item.item_id == AP[APHelper.victory.value]:
@@ -189,7 +192,7 @@ async def check_locations(ctx : 'AE3Context'):
 
     for monkey in ctx.monkeys_checklist:
         # Special Case for Tomoki
-        if ctx.current_stage == APHelper.boss6.value:
+        if ctx.current_channel == APHelper.boss6.value:
             if ctx.ipc.is_tomoki_defeated():
                 cleared.add(ctx.monkeys_name_to_id[Loc.boss_tomoki.value])
                 continue
