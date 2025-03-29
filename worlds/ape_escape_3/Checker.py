@@ -139,10 +139,10 @@ async def check_items(ctx : 'AE3Context'):
 
         ## Unlock Morphs and Gadgets
         elif isinstance(item, EquipmentItem):
-            ctx.ipc.unlock_equipment(item.name, ctx.character, auto_equip)
+            ctx.ipc.unlock_equipment(item.name, auto_equip)
 
             ### Check if RC Car or any Chassis is unlocked
-            if ctx.rcc_unlocked and item.name in Itm.get_chassis_by_id(ctx.character):
+            if ctx.rcc_unlocked and item.name in Itm.get_chassis_by_id():
                 ctx.rcc_unlocked = True
 
                 # Relock all other RC cars

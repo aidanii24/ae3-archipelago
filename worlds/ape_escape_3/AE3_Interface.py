@@ -219,13 +219,13 @@ class AEPS2Interface:
         for button in self.addresses.BUTTONS_BY_INTERNAL:
             self.pine.write_int32(button, 0x0)
 
-    def unlock_equipment(self, address_name : str, character : int = 0, auto_equip : bool = False):
+    def unlock_equipment(self, address_name : str, auto_equip : bool = False):
         is_equipped : int = False
 
         # Redirect address to RC Car if the unlocked equipment is an RC Car Chassis
         if "Chassis" in address_name:
             address : int = self.addresses.Items[Itm.gadget_rcc.value]
-            is_equipped = self.unlock_chassis(address_name, character)
+            is_equipped = self.unlock_chassis(address_name)
         else:
             address : int = self.addresses.Items[address_name]
 
@@ -234,7 +234,7 @@ class AEPS2Interface:
         if auto_equip and not is_equipped:
             self.auto_equip(self.addresses.get_gadget_id(address))
 
-    def unlock_chassis(self, address_name : str, character : int) -> bool:
+    def unlock_chassis(self, address_name : str) -> bool:
         self.pine.write_int8(self.addresses.Items[address_name], 0x1)
 
         is_rcc_unlocked : bool = self.pine.read_int32(self.addresses.Items[Itm.gadget_rcc.value]) == 0x2
@@ -244,7 +244,7 @@ class AEPS2Interface:
         # Unlock RC Car if not already, equipping this chassis as well
         if not is_rcc_unlocked:
             if active_chassis == 0x0:
-                chassis_id : int = Itm.get_chassis_by_id(character).index(address_name)
+                chassis_id : int = Itm.get_chassis_by_id().index(address_name)
                 self.pine.write_int32(self.addresses.GameStates[Game.equip_chassis_active.value], chassis_id)
 
         return is_rcc_unlocked

@@ -68,10 +68,7 @@ class Itm(BaseEnum):
 
     # RC Car as a Gadget is added as first item to ensure Black and Pudding are on the correct index
     @classmethod
-    def get_chassis_by_id(cls, character : int = 0, no_default : bool = False) -> Sequence[str]:
-        if character < 0:
-            return
-
+    def get_chassis_by_id(cls, no_default : bool = False) -> Sequence[str]:
         chassis : list[str] = []
 
         if not no_default:
