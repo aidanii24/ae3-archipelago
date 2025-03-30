@@ -933,6 +933,7 @@ class Game(BaseEnum):
 
 class Meta:
     game : str =                            "Ape Escape 3"
+    game_acr : str =                        "AE3"
     platform : str =                        "PS2"
     supported_versions : Sequence[str] =    ["SCUS-97501"]  # NTSC-U, PAL, NTSC-J
 
@@ -1035,6 +1036,9 @@ class APConsole:
         p_init_s =      " [...] Connecting to an Archipelago Server..."
         p_init_sre =    " [...] Waiting for player to reconnect to server..."
 
+        saving =        " [|.|] Saving current Archipelago game session..."
+        saved =         " [-/-] Archipelago Session saved!"
+
         init =          " [-/-] Successfully connected to PCSX2"
         init_game =     " [-/-] Connected to Ape Escape 3!"
         exit =          " [-/-] Disconnected from PCSX2."
@@ -1050,3 +1054,7 @@ class APConsole:
         game_no =       " [!!!] PCSX2 is not running a game. Please run a supported version of Ape Escape 3"
         game_wrong =    " [!!!] PCSX2 is running, but the loaded game is different or is an unsupported version."
         conf_game =     " [!!!] Please load a supported version of Ape Escape 3."
+
+        save_fail =     " [!!!] There was an error saving the current Archipelago Session."
+        save_no_init =  (" [!!!] The Client must have connected to the server at least once during the active session "
+                         "to save.")

@@ -1,8 +1,11 @@
+import io
+import os.path
 from argparse import ArgumentParser, Namespace
 from typing import Optional, Sequence
 import multiprocessing
 import traceback
 import asyncio
+import json
 
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled
 import Utils
@@ -30,8 +33,9 @@ class AE3Context(CommonContext):
     game: str = Meta.game
     platform: str = Meta.platform
 
-    command_processor = AE3CommandProcessor
-    items_handling = 0b111
+    command_processor : ClientCommandProcessor = AE3CommandProcessor
+    items_handling : int = 0b111
+    save_data_path : str = None
 
     ipc : AEPS2Interface = AEPS2Interface
     is_connected : bool = ConnectionStatus.DISCONNECTED
@@ -80,10 +84,17 @@ class AE3Context(CommonContext):
         await self.send_connect()
 
     def on_package(self, cmd: str, args: dict):
-        if cmd != "Connected":
-            return
-
         self.slot_data = args["slot_data"]
+
+        # Initial Session Connection Check
+        if "seed_name" in args:
+            seed : str = args["seed_name"]
+            if self.seed_name != seed:
+                self.seed_name = seed
+
+            self.save_data_path = Meta.game_acr + self.seed_name
+            if self.check_session_save():
+                self.load_session()
 
         # Get Relevant Runtime options
         ## Game Mode
@@ -99,6 +110,40 @@ class AE3Context(CommonContext):
         if APHelper.auto_equip.value in args["slot_data"]:
             self.auto_equip = bool(args["slot_data"][APHelper.auto_equip.value])
 
+    def check_session_save(self):
+        """Check for valid save file"""
+        if not self.save_data_path:
+            return False
+
+        os.path.isfile(self.save_data_path) and os.access(self.save_data_path, os.R_OK)
+
+    def load_session(self):
+        """Load existing session"""
+        if not self.check_session_save():
+            return
+
+        with io.open(self.save_data_path, 'r') as save:
+            data : dict = json.load(save)
+
+            if "Keys" in data:
+                self.keys = data["Keys"]
+                self.progression.get_current_progress(self.keys)
+
+    def save_session(self):
+        """Save current session progress"""
+        logger.info(APConsole.Info.saving.value)
+
+        if not self.save_data_path:
+            logger.warning(APConsole.Err.save_no_init.value)
+            return
+
+        data = {
+            "Keys" : self.keys
+        }
+
+        with io.open(self.save_data_path, 'w') as save:
+            save.write(json.dumps(data))
+
     # Client Command GUI
     def run_gui(self):
         from kvui import GameManager
@@ -109,6 +154,7 @@ class AE3Context(CommonContext):
 
         self.ui = AE3Manager(self)
         self.ui_task = asyncio.create_task(self.ui.async_run(), name = "ui")
+
 
 def update_connection_status(ctx : AE3Context, status : bool):
     if ctx.is_connected == status:
