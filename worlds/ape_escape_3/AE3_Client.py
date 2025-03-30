@@ -92,7 +92,7 @@ class AE3Context(CommonContext):
             if self.seed_name != seed:
                 self.seed_name = seed
 
-            self.save_data_path = Meta.game_acr + self.seed_name
+            self.save_data_path = Meta.game_acr + "_" + self.seed_name + ".json"
             if self.check_session_save():
                 self.load_session()
 
