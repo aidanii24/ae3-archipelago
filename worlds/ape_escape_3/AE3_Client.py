@@ -40,7 +40,7 @@ class AE3Context(CommonContext):
     ipc : AEPS2Interface = AEPS2Interface
     is_connected : bool = ConnectionStatus.DISCONNECTED
     interface_sync_task : asyncio.tasks = None
-    last_error_message : Optional[str] = None
+    last_message : Optional[str] = None
 
     slot_data : dict[str, Utils.Any]
     cached_locations_checked : Set[int]
@@ -84,38 +84,41 @@ class AE3Context(CommonContext):
         await self.send_connect()
 
     def on_package(self, cmd: str, args: dict):
-        self.slot_data = args["slot_data"]
+        # First Connection Check
+        if cmd == "Connected":
+            self.slot_data = args["slot_data"]
 
-        # Initial Session Connection Check
-        if "seed_name" in args:
-            seed : str = args["seed_name"]
+            ## Game Mode
+            if APHelper.game_mode.value in args["slot_data"]:
+                self.progression = GameMode.get_gamemode(args["slot_data"][APHelper.game_mode.value])
+                self.unlocked_channels = self.progression.get_current_progress(0)
+
+            ## Morph Duration
+            if APHelper.base_morph_duration.value in args["slot_data"]:
+                self.morph_duration = float(args["slot_data"][APHelper.base_morph_duration.value])
+
+            ## Auto-Equip
+            if APHelper.auto_equip.value in args["slot_data"]:
+                self.auto_equip = bool(args["slot_data"][APHelper.auto_equip.value])
+
+            ## Load Local Session Save Data
+            if self.check_session_save():
+                self.load_session()
+
+        # Initialize Session on receive of RoomInfo Packet
+        elif cmd == "RoomInfo":
+            seed: str = args["seed_name"]
             if self.seed_name != seed:
                 self.seed_name = seed
 
             self.save_data_path = Meta.game_acr + "_" + self.seed_name + ".json"
-            if self.check_session_save():
-                self.load_session()
-
-        # Get Relevant Runtime options
-        ## Game Mode
-        if APHelper.game_mode.value in args["slot_data"]:
-            self.progression = GameMode.get_gamemode(args["slot_data"][APHelper.game_mode.value])
-            self.unlocked_channels = self.progression.get_current_progress(0)
-
-        ## Morph Duration
-        if APHelper.base_morph_duration.value in args["slot_data"]:
-            self.morph_duration = float(args["slot_data"][APHelper.base_morph_duration.value])
-
-        ## Auto-Equip
-        if APHelper.auto_equip.value in args["slot_data"]:
-            self.auto_equip = bool(args["slot_data"][APHelper.auto_equip.value])
 
     def check_session_save(self):
         """Check for valid save file"""
         if not self.save_data_path:
             return False
 
-        os.path.isfile(self.save_data_path) and os.access(self.save_data_path, os.R_OK)
+        return os.path.isfile(self.save_data_path) and os.access(self.save_data_path, os.R_OK)
 
     def load_session(self):
         """Load existing session"""
@@ -127,11 +130,14 @@ class AE3Context(CommonContext):
 
             if "Keys" in data:
                 self.keys = data["Keys"]
-                self.progression.get_current_progress(self.keys)
+                self.unlocked_channels = self.progression.get_current_progress(self.keys)
 
     def save_session(self):
         """Save current session progress"""
-        logger.info(APConsole.Info.saving.value)
+        # Prevent Spammed Messages
+        if not self.last_message == APConsole.Info.saving.value:
+            logger.info(APConsole.Info.saving.value)
+            self.last_message = APConsole.Info.saving.value
 
         if not self.save_data_path:
             logger.warning(APConsole.Err.save_no_init.value)
@@ -177,7 +183,7 @@ async def main_sync_task(ctx : AE3Context):
     logger.info("\n")
     logger.info(APConsole.Info.p_init.value)
     ctx.ipc.connect_game()
-
+    print("Unlocked Channels", ctx.unlocked_channels)
     while not ctx.exit_event.is_set():
         try:
             # Check connection to PCSX2 first
@@ -222,7 +228,7 @@ async def check_game(ctx : AE3Context):
 
     # Check for Archipelago Connection Errors
     if ctx.server:
-        ctx.last_error_message = None
+        ctx.last_message = None
         if not ctx.slot:
             await asyncio.sleep(1)
             return
@@ -247,9 +253,9 @@ async def check_game(ctx : AE3Context):
 
     else:
         message : str = APConsole.Info.p_init_sre.value
-        if ctx.last_error_message is not message:
+        if ctx.last_message is not message:
             logger.info(APConsole.Info.p_init_sre.value)
-            ctx.last_error_message = message
+            ctx.last_message = message
 
         await asyncio.sleep(1)
 

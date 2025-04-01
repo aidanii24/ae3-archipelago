@@ -64,6 +64,9 @@ async def correct_progress(ctx : 'AE3Context'):
 async def setup_level_select(ctx : 'AE3Context'):
     # Force Unlocked Stages to be in sync with the player's chosen option,
     # maxing out at 0x1B as supported by the game
+    if ctx.unlocked_channels is None:
+        ctx.unlocked_channels = ctx.progression.get_current_progress(ctx.keys)
+
     if ctx.ipc.get_unlocked_channels() > max(0, min(ctx.unlocked_channels, 0x1B)):
         ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
@@ -104,14 +107,15 @@ async def setup_level_select(ctx : 'AE3Context'):
                 ctx.ipc.unlock_chassis_direct(_)
 
 async def setup_area(ctx : 'AE3Context'):
-    if ctx.ipc.is_screen_fading():
-        if ctx.ipc.get_screen_fade_count() > 0x0:
-            ctx.ipc.lock_equipment(Itm.morph_monkey.value)
-        # Temporarily give a morph during transitions to keep Morph Gauge visible
+    if not ctx.has_morph_monkey:
+        if ctx.ipc.is_screen_fading():
+            if ctx.ipc.get_screen_fade_count() > 0x0:
+                ctx.ipc.lock_equipment(Itm.morph_monkey.value)
+            # Temporarily give a morph during transitions to keep Morph Gauge visible
+            else:
+                ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
         else:
-            ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
-    else:
-        ctx.ipc.lock_equipment(Itm.morph_monkey.value)
+            ctx.ipc.lock_equipment(Itm.morph_monkey.value)
 
 async def check_items(ctx : 'AE3Context'):
     cache_batch_items : Set[NetworkItem] = set()
