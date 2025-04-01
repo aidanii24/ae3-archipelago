@@ -213,14 +213,16 @@ class GameMode(Enum):
 
         return Channel_Key.to_items(world.player, amt)
 
-    def get_current_progress(self, keys : int):
+    def get_current_progress(self, keys : int) -> int:
         unlocks : int = 0
         for i, unlocked in enumerate(self.value):
             unlocks += unlocked
 
             if i >= keys:
-                return unlocks
+                break
+
+        return unlocks
 
     @classmethod
-    def get_gamemode(cls, index : int):
+    def get_gamemode(cls, index : int) -> set:
         return [*cls][index]
