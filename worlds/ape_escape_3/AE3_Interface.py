@@ -172,8 +172,10 @@ class AEPS2Interface:
     def is_selecting_morph(self) -> bool:
         return self.get_player_state() == 0x03
 
-    def is_screen_fading(self) -> bool:
-        return self.pine.read_int8(self.addresses.GameStates[Game.screen_fade.value]) != 0x01
+    def check_screen_fading(self) -> int:
+        value = self.pine.read_int8(self.addresses.GameStates[Game.screen_fade.value])
+        print("Screen Fade State Value:", value)
+        return value
 
     def get_screen_fade_count(self) -> int:
         return self.pine.read_int8(self.addresses.GameStates[Game.screen_fade_count.value])
@@ -303,7 +305,7 @@ class AEPS2Interface:
         for idx, morph in enumerate(durations):
             duration_to_set : float = duration
             # Set duration to 0 if not specified in morphs and exclusive is false
-            if not exclusive and morphs and not idx in morphs:
+            if not exclusive and morphs and idx not in morphs:
                 duration_to_set = 0.0
 
             self.pine.write_int32(morph, float_to_hex_int32(duration_to_set))

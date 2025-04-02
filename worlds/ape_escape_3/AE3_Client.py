@@ -191,7 +191,7 @@ async def main_sync_task(ctx : AE3Context):
     logger.info("\n")
     logger.info(APConsole.Info.p_init.value)
     ctx.ipc.connect_game()
-    print("Unlocked Channels", ctx.unlocked_channels)
+
     while not ctx.exit_event.is_set():
         try:
             # Check connection to PCSX2 first

@@ -227,5 +227,5 @@ class GameMode(Enum):
         return unlocks
 
     @classmethod
-    def get_gamemode(cls, index : int) -> set:
+    def get_gamemode(cls, index : int):
         return [*cls][index]
