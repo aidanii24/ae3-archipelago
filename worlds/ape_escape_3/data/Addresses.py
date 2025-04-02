@@ -663,6 +663,7 @@ class NTSCU(VersionAddresses):
         Game.duration_genie_b.value     : 0x0152d270,
         Game.duration_kungfu_b.value    : 0x0152d390,
         Game.duration_hero_b.value      : 0x0152d4b0,
+        Game.duration_ape_b.value       : 0x0152D5D0,
 
         Game.duration_knight_g.value    : 0x0152cf70,
         Game.duration_cowboy_g.value    : 0x0152d090,
@@ -670,6 +671,7 @@ class NTSCU(VersionAddresses):
         Game.duration_genie_g.value     : 0x0152d2d0,
         Game.duration_kungfu_g.value    : 0x0152d3f0,
         Game.duration_hero_g.value      : 0x0152d510,
+        Game.duration_ape_g.value       : 0x0152D610,
 
         # Resources
         Game.nothing.value              : 0x200000,  # Arbitrary Number

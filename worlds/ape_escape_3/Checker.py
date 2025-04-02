@@ -93,7 +93,7 @@ async def setup_level_select(ctx : 'AE3Context'):
 
     # If Super Monkey isn't properly unlocked yet, temporarily do so during level select to prevent Aki from
     # introducing and giving it to the player.
-    if not ctx.has_morph_monkey:
+    if not ctx.morphs_unlocked[-1]:
         ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
 
     # Temporarily unlock all Chassis when not in Travel Station to make sure their models load correctly when obtained
@@ -107,7 +107,7 @@ async def setup_level_select(ctx : 'AE3Context'):
                 ctx.ipc.unlock_chassis_direct(_)
 
 async def setup_area(ctx : 'AE3Context'):
-    if not ctx.has_morph_monkey:
+    if not ctx.morphs_unlocked[-1]:
         if ctx.ipc.is_screen_fading():
             if ctx.ipc.get_screen_fade_count() > 0x0:
                 ctx.ipc.lock_equipment(Itm.morph_monkey.value)
@@ -158,9 +158,11 @@ async def check_items(ctx : 'AE3Context'):
 
                     ctx.ipc.lock_chassis_direct(idx)
 
-            ### Check if Super Monkey is properly unlocked
-            if not ctx.has_morph_monkey and item.address == NTSCU.Items[Itm.morph_monkey.value]:
-                ctx.has_morph_monkey = True
+            ### Track Morphs Unlocked
+            if item.name in Itm.get_morphs_ordered():
+                index : int = Itm.get_morphs_ordered().index(item.name)
+                ctx.morphs_unlocked[index] = True
+                ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration, [index], True)
 
         ## Handle Collectables
         elif isinstance(item, CollectableItem) or isinstance(item, UpgradeableItem):

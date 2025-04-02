@@ -66,6 +66,11 @@ class Itm(BaseEnum):
         return [cls.gadget_swim.value, cls.gadget_club.value, cls.gadget_net.value, cls.gadget_radar.value,
                 cls.gadget_hoop.value, cls.gadget_sling.value, cls.gadget_rcc.value, cls.gadget_fly.value]
 
+    @classmethod
+    def get_morphs_ordered(cls) -> Sequence[str]:
+        return [cls.morph_knight.value, cls.morph_cowboy.value, cls.morph_ninja.value, cls.morph_magician.value,
+                cls.morph_kungfu.value, cls.morph_hero.value, cls.morph_monkey.value]
+
     # RC Car as a Gadget is added as first item to ensure Black and Pudding are on the correct index
     @classmethod
     def get_chassis_by_id(cls, no_default : bool = False) -> Sequence[str]:
@@ -862,6 +867,7 @@ class Game(BaseEnum):
     duration_genie_b =      "Genie Dancer Duration - Kei"
     duration_kungfu_b =     "Dragon Kung Fu Fighter Duration - Kei"
     duration_hero_b =       "Thunder Ace Duration - Kei"
+    duration_ape_b =        "Super Monkey - Kei"
 
     duration_knight_g =     "Fantasy Knight Duration - Yumi"
     duration_cowboy_g =     "Wild West Kid Duration - Yumi"
@@ -869,6 +875,7 @@ class Game(BaseEnum):
     duration_genie_g =      "Genie Dancer Duration - Yumi"
     duration_kungfu_g =     "Dragon Kung Fu Fighter Duration - Yumi"
     duration_hero_g =       "Princess Ace Duration - Yumi"
+    duration_ape_g =        "Super Monkey - Yumi"
 
     ## Special States
     in_pink_stage =         "Monkey Pink Battle! Stage"
@@ -918,10 +925,12 @@ class Game(BaseEnum):
     def get_morph_duration(cls, girl : bool = False):
         if not girl:
             return [cls.duration_knight_b.value, cls.duration_cowboy_b.value, cls.duration_ninja_b.value,
-                    cls.duration_genie_b.value, cls.duration_kungfu_b.value, cls.duration_hero_b.value]
+                    cls.duration_genie_b.value, cls.duration_kungfu_b.value, cls.duration_hero_b.value,
+                    cls.duration_ape_b.value]
         else:
             return [cls.duration_knight_g.value, cls.duration_cowboy_g.value, cls.duration_ninja_g.value,
-                    cls.duration_genie_g.value, cls.duration_kungfu_g.value, cls.duration_hero_g.value]
+                    cls.duration_genie_g.value, cls.duration_kungfu_g.value, cls.duration_hero_g.value,
+                    cls.duration_ape_g.value]
 
     @classmethod
     def get_buttons_by_internal_index(cls) -> Sequence[str]:
