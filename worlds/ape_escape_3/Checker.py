@@ -19,14 +19,17 @@ async def check_states(ctx : 'AE3Context'):
 
     # Enforce Morph Duration
     if ctx.character >= 0:
-        if ctx.ipc.get_morph_duration(ctx.character) != ctx.morph_duration:
-            ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration)
+        current_morph_duration : float = ctx.ipc.get_morph_duration(ctx.character)
+        unlocked_morphs : list[int] = [idx for idx, _ in enumerate(ctx.morphs_unlocked) if _]
+
+        if current_morph_duration != ctx.morph_duration or current_morph_duration != 0.0:
+            ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration, unlocked_morphs)
 
         # Character could be wrong if morph duration still is not equal after the first set
-        if ctx.ipc.get_morph_duration(ctx.character) != ctx.morph_duration:
+        current_morph_duration = ctx.ipc.get_morph_duration(ctx.character)
+        if current_morph_duration != ctx.morph_duration or current_morph_duration != 0.0:
             ctx.character = ctx.ipc.get_character()
-            ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration)
-
+            ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration, unlocked_morphs)
 
     # Get which Monkey Group to actively check at the moment based on the stage
     if not new_stage or new_stage is None and not ctx.current_channel:
@@ -108,8 +111,10 @@ async def setup_level_select(ctx : 'AE3Context'):
 
 async def setup_area(ctx : 'AE3Context'):
     if not ctx.morphs_unlocked[-1]:
-        if ctx.ipc.is_screen_fading():
-            if ctx.ipc.get_screen_fade_count() > 0x0:
+        screen_fade_state : int = ctx.ipc.check_screen_fading()
+        if screen_fade_state != 0x01 and ctx.ipc.get_player_state() != 0x03:
+            count : int = ctx.ipc.get_screen_fade_count()
+            if count > 0x1:
                 ctx.ipc.lock_equipment(Itm.morph_monkey.value)
             # Temporarily give a morph during transitions to keep Morph Gauge visible
             else:
@@ -183,7 +188,9 @@ async def check_items(ctx : 'AE3Context'):
             ### Handle Morph Extension
             elif item.resource == Game.duration_knight_b.value:
                 ctx.morph_duration += item.amount
-                ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration)
+
+                unlocked_morphs = [idx for idx, _ in enumerate(ctx.morphs_unlocked) if _]
+                ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration, unlocked_morphs, True)
 
             ### Handle Generic Items
             else:
