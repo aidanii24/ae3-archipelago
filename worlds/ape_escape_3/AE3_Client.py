@@ -27,42 +27,50 @@ class AE3CommandProcessor(ClientCommandProcessor):
                         f"{APConsole.Info.init.value if self.ctx.is_connected else APConsole.Info.exit.value}")
 
 class AE3Context(CommonContext):
+    # Archipelago Meta
     client_version: str = APConsole.Info.client_ver.value
     world_version : str = APConsole.Info.world_ver.value
 
+    # Game Details
     game: str = Meta.game
     platform: str = Meta.platform
 
+    # Client Properties
     command_processor : ClientCommandProcessor = AE3CommandProcessor
     items_handling : int = 0b111
     save_data_path : str = None
 
+    # Interface Properties
     ipc : AEPS2Interface = AEPS2Interface
     is_connected : bool = ConnectionStatus.DISCONNECTED
     interface_sync_task : asyncio.tasks = None
     last_message : Optional[str] = None
 
+    # Server Properties and Cache
     slot_data : dict[str, Utils.Any]
     cached_locations_checked : Set[int]
     cached_received_items : Set[NetworkItem]
 
+    # APWorld Properties
     monkeys_name_to_id : dict[str, int] = generate_name_to_id()
     monkeys_checklist : Sequence[str] = MONKEYS_MASTER
     monkeys_checklist_count : int = 0
 
+    # Session Properties
     keys : int = 0
     unlocked_channels : int = 0
     current_channel: str = None
     character : int = -1
     player_control : bool = False
-    # Each byte corresponds to the unlocked chassis, in the same order as their ID's (excluding default)
     rcc_unlocked : bool = False
+    morphs_unlocked : list[bool] = [False for _ in range(7)]
     has_morph_monkey : bool = False
     tomoki_defeated : bool = False
     specter1_defeated : bool = False
 
+    # Player Set Options
     auto_equip : bool = False
-    morph_duration : float = 10.0
+    morph_duration : float = 30.0
     progression : GameMode = GameMode.BOSS
 
     def __init__(self, address, password):
@@ -235,9 +243,10 @@ async def check_game(ctx : AE3Context):
 
         # Setup Stage when needed and double check locations
         if ctx.current_channel == APHelper.travel_station.value:
-            # Get character after Tutorial
+            # Initialize properties after tutorial
             if ctx.character < 0:
                 ctx.character = ctx.ipc.get_character()
+
 
             await setup_level_select(ctx)
             await recheck_location_groups(ctx)

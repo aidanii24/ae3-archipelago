@@ -284,7 +284,8 @@ class AEPS2Interface:
         if target >= 0:
             self.pine.write_int32(target, gadget_id)
 
-    def set_morph_duration(self, character : int, duration : float):
+    def set_morph_duration(self, character : int, duration : float, morphs : list[int] = None,
+                           exclusive : bool = False):
         if character < 0:
             return
 
@@ -292,9 +293,20 @@ class AEPS2Interface:
         if not durations:
             return
 
-        for morph in durations:
-            self.pine.write_int32(morph, float_to_hex_int32(duration))
+        # If exclusive is True, ONLY set for specified morphs and leave others as is
+        if morphs and exclusive:
+            if len(morphs) > len(durations):
+                return
 
+            durations = [durations[idx] for idx in morphs]
+
+        for idx, morph in enumerate(durations):
+            duration_to_set : float = duration
+            # Set duration to 0 if not specified in morphs and exclusive is false
+            if not exclusive and morphs and not idx in morphs:
+                duration_to_set = 0.0
+
+            self.pine.write_int32(morph, float_to_hex_int32(duration_to_set))
 
     def give_collectable(self, address_name : str, amount : int | float = 0x1, maximum : int | float = 0):
         address : int = self.addresses.GameStates[address_name]
