@@ -173,9 +173,7 @@ class AEPS2Interface:
         return self.get_player_state() == 0x03
 
     def check_screen_fading(self) -> int:
-        value = self.pine.read_int8(self.addresses.GameStates[Game.screen_fade.value])
-        print("Screen Fade State Value:", value)
-        return value
+        return self.pine.read_int8(self.addresses.GameStates[Game.screen_fade.value])
 
     def get_screen_fade_count(self) -> int:
         return self.pine.read_int8(self.addresses.GameStates[Game.screen_fade_count.value])

@@ -111,10 +111,8 @@ async def setup_level_select(ctx : 'AE3Context'):
 
 async def setup_area(ctx : 'AE3Context'):
     if not ctx.morphs_unlocked[-1]:
-        screen_fade_state : int = ctx.ipc.check_screen_fading()
-        if screen_fade_state != 0x01 and ctx.ipc.get_player_state() != 0x03:
-            count : int = ctx.ipc.get_screen_fade_count()
-            if count > 0x1:
+        if ctx.ipc.check_screen_fading() != 0x01 and ctx.ipc.get_player_state() != 0x03:
+            if ctx.ipc.get_screen_fade_count() > 0x1:
                 ctx.ipc.lock_equipment(Itm.morph_monkey.value)
             # Temporarily give a morph during transitions to keep Morph Gauge visible
             else:
