@@ -123,6 +123,8 @@ class AE3World(World):
         self.item_pool += [knight, cowboy, ninja, magician, kungfu, hero, monkey]
 
         if self.options.shuffle_chassis:
+            self.item_pool.remove(rc_car)
+
             chassis_twin = Items.Chassis_Twin.to_item(self.player)
             chassis_black = Items.Chassis_Black.to_item(self.player)
             chassis_pudding = Items.Chassis_Pudding.to_item(self.player)

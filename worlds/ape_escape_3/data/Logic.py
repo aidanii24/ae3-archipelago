@@ -38,7 +38,10 @@ def can_swim(state : CollectionState, player : int):
 
 ## Check if Player can use the RC Car
 def can_rcc(state : CollectionState, player : int):
-    return state.has(Itm.gadget_rcc.value, player)
+    return (state.has(Itm.gadget_rcc.value, player) or
+            state.has(Itm.chassis_twin.value, player) or
+            state.has(Itm.chassis_black.value, player) or
+            state.has(Itm.chassis_pudding.value, player))
 
 # Morph Checks
 def can_knight(state : CollectionState, player : int):
