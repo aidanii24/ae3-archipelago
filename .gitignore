@@ -4,56 +4,58 @@ _ae3-notes/*
 # Caches
 **__pycache__
 
-# Tests/Binaries
+# Tests/Helpers
 apworld/
 _generate.sh
 
 test/*
 _testing.py
-worlds/ape_escape_3/test/*
 
-# Archipelago Specific
-BaseClasses.py
-CommonClient.py
-Fill.py
-Main.py
-ModuleUpdate.py
-MultiServer.py
-NetUtils.py
-Options.py
-settings.py
-Utils.py
+worlds/ape_escape_3/test/*
+_region_diagram.puml
+
+# Archipelago
+/pytest.ini
+/requirements.txt
+
 _speedups*
+AutoSNIClient.py
+AutoWorld.py
+BaseClasses.py
 ChecksFinderClient.py
+CommonClient.py
 entrance_rando.py
+Files.py
+Fill.py
 Generate.py
 inno_setup.iss
 intset.h
 kvui.py
 Launcher.py
+LauncherComponents.py
+Main.py
 meta.yaml
-setup.py
-WebHost.py
-SNIClient.py
+ModuleUpdate.py
+MultiServer.py
+NetUtils.py
+Options.py
 Patch.py
+settings.py
+setup.py
+SNIClient.py
+Utils.py
+WebHost.py
 
-worlds/generic/*
-worlds/alttp/*
-worlds/__init__.py
+.run/*
+.venv/*
 data/*
 logs/*
 typings/*
 WebHostLib/*
-.run/*
-.venv/*
 
-AutoSNIClient.py
-AutoWorld.py
-Files.py
-LauncherComponents.py
-/requirements.txt
-
-_region_diagram.puml
+worlds/__init__.py
+worlds/alttp/*
+worlds/generic/*
 
 # IDE files
 .idea/*
