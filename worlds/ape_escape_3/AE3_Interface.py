@@ -242,6 +242,10 @@ class AEPS2Interface:
     def set_selected_stage(self, index : int):
         self.pine.write_int32(self.addresses.GameStates[Game.channel_selected.value], index)
 
+    def set_change_area_destination(self, area : str):
+        as_bytes : bytes = area.encode() + b'\x00'
+        self.pine.write_bytes(self.addresses.GameStates[Game.area_dest.value], as_bytes)
+
     def set_cookies(self, amount : float):
         as_int : int = float_to_hex_int32(amount)
         self.pine.write_int32(self.addresses.GameStates[Game.cookies.value], as_int)
@@ -389,4 +393,11 @@ class AEPS2Interface:
             cookies : float = self.get_cookies()
             self.set_cookies(max(0.0, cookies - cookies_lost))
 
-        self.send_command(Game.kill_player.value)
+        ### <!> EXPERIMENTAL
+        ## self.send_command(Game.kill_player.value) has a transition delay that takes too long
+        ## changeArea is more instantaneous, but introduces a buggy respawn when all cookies are depleted
+        self.change_area(self.get_room())
+
+    def change_area(self, destination : str):
+        self.set_change_area_destination(destination)
+        self.send_command(Game.change_area.value)
