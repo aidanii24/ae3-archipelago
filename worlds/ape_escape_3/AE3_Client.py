@@ -94,29 +94,25 @@ class AE3Context(CommonContext):
 
     def on_package(self, cmd: str, args: dict):
         # First Connection Check
-        if cmd == "ReceivedItems":
-            pass
-            #self.next_item_slot = args["index"]
-
-        elif cmd == "Connected":
-            self.slot_data = args["slot_data"]
+        if cmd == APHelper.connected.value:
+            self.slot_data = args[APHelper.slot_data.value]
 
             ## Load Local Session Save Data
             if self.check_session_save():
                 self.load_session()
 
             ## Game Mode
-            if not self.unlocked_channels and APHelper.game_mode.value in args["slot_data"]:
-                self.progression = GameMode.get_gamemode(args["slot_data"][APHelper.game_mode.value])
+            if not self.unlocked_channels and APHelper.game_mode.value in self.slot_data:
+                self.progression = GameMode.get_gamemode(self.slot_data[APHelper.game_mode.value])
                 self.unlocked_channels = self.progression.get_current_progress(0)
 
             ## Morph Duration
-            if self.morph_duration == 0 and APHelper.base_morph_duration.value in args["slot_data"]:
-                self.morph_duration = float(args["slot_data"][APHelper.base_morph_duration.value])
+            if self.morph_duration == 0 and APHelper.base_morph_duration.value in self.slot_data:
+                self.morph_duration = float(self.slot_data[APHelper.base_morph_duration.value])
 
             ## Auto-Equip
-            if APHelper.auto_equip.value in args["slot_data"]:
-                self.auto_equip = bool(args["slot_data"][APHelper.auto_equip.value])
+            if APHelper.auto_equip.value in self.slot_data:
+                self.auto_equip = bool(self.slot_data[APHelper.auto_equip.value])
 
         # Initialize Session on receive of RoomInfo Packet
         elif cmd == "RoomInfo":
