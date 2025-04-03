@@ -1027,6 +1027,13 @@ class APHelper(BaseEnum):
     # AP Client
     item_count =            "item_count"
 
+    # AP Server
+    connected =             "Connected"
+    room_info =             "RoomInfo"
+
+    slot_data =             "slot_data"
+    seed_name =             "seed_name"
+
 class APConsole:
     """
     Strings for all text to be used in the Archipelago Game Client

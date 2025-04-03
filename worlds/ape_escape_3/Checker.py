@@ -125,7 +125,6 @@ async def check_items(ctx : 'AE3Context'):
 
     # Get Difference to get only new items
     received : List[NetworkItem] = ctx.items_received[ctx.next_item_slot:]
-    print("Received:", len(received), "Next:", ctx.next_item_slot)
     ctx.next_item_slot += len(received)
 
     # Auto-equip if option is enabled or for handling the starting gadgets
