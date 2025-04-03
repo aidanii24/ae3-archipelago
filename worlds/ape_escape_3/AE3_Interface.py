@@ -17,6 +17,9 @@ class ConnectionStatus(Enum):
 
 # Workaround for now; pine.write_float() seems to be broken
 def hex_int32_to_float(value : int) -> float:
+    if value == 0:
+        return 0.0
+
     ## Reinterpret read value as float
     current_as_hex: str = f'{value:x}'
     current_as_float: float = struct.unpack('!f', bytes.fromhex(current_as_hex))[0]
