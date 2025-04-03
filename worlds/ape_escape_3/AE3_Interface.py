@@ -142,6 +142,21 @@ class AEPS2Interface:
         # Decode to String and remove null bytes if present
         return channel_as_bytes.decode("utf-8").replace("\x00", "")
 
+    def get_room(self) -> str:
+        address : int = self.addresses.GameStates[Game.current_room.value]
+        length : int = 4
+
+        # Check length of string in multiples of 4
+        for _ in range(2):
+            if self.pine.read_bytes(address + (4 * (_ + 1)), 1) == b'\x00':
+                break
+
+            length = max(length + 4, 12)
+
+        # Decode to string and remove null bytes
+        room_as_bytes : bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_room.value], length)
+        return room_as_bytes.decode("utf-8").replace("\x00", "")
+
     def check_in_stage(self) -> bool:
         value : int = self.pine.read_int8(self.addresses.GameStates[Game.current_channel.value])
         return value > 0
@@ -155,15 +170,27 @@ class AEPS2Interface:
         return value != 0
 
     def get_character(self) -> int:
-        value : int = self.pine.read_int32(self.addresses.GameStates[Game.character.value])
-        return value
+        return self.pine.read_int32(self.addresses.GameStates[Game.character.value])
+
+    def get_cookies(self) -> float:
+        return hex_int32_to_float(self.pine.read_int32(self.addresses.GameStates[Game.cookies.value]))
 
     def get_morph_duration(self, character : int = 0) -> float:
         return self.pine.read_int32(self.addresses.get_morph_duration_addresses(character)[0])
 
     def get_player_state(self) -> int:
-        value : int = self.pine.read_int32(self.addresses.GameStates[Game.state.value])
-        return value
+        return self.pine.read_int32(self.addresses.GameStates[Game.state.value])
+
+    def get_current_gadget(self) -> int:
+        address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.equip_current.value])
+
+        if address == 0x0:
+            return -1
+
+        return self.pine.read_int8(address)
+
+    def is_on_water(self) -> bool:
+        return self.get_current_gadget() == 0xB
 
     def is_in_control(self) -> bool:
         value : int = self.get_player_state()
@@ -214,6 +241,10 @@ class AEPS2Interface:
 
     def set_selected_stage(self, index : int):
         self.pine.write_int32(self.addresses.GameStates[Game.channel_selected.value], index)
+
+    def set_cookies(self, amount : float):
+        as_int : int = float_to_hex_int32(amount)
+        self.pine.write_int32(self.addresses.GameStates[Game.cookies.value], as_int)
 
     def clear_equipment(self):
         for button in self.addresses.BUTTONS_BY_INTERNAL:
@@ -348,3 +379,14 @@ class AEPS2Interface:
         value_as_float: float = hex_int32_to_float(value) + amount
         value = float_to_hex_int32(value_as_float)
         self.pine.write_int32(address, value)
+
+    def send_command(self, command : str):
+        as_bytes : bytes = command.encode() + b'\x00'
+        self.pine.write_bytes(self.addresses.GameStates[Game.command.value], as_bytes)
+
+    def kill_player(self, cookies_lost : float = 0.0):
+        if cookies_lost != 0.0:
+            cookies : float = self.get_cookies()
+            self.set_cookies(max(0.0, cookies - cookies_lost))
+
+        self.send_command(Game.kill_player.value)

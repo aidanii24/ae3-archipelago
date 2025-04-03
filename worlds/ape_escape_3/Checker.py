@@ -13,9 +13,9 @@ if TYPE_CHECKING:
 
 
 ### [< --- CHECKS --- >]
-async def check_states(ctx : 'AE3Context'):
+async def check_background_states(ctx : 'AE3Context'):
     # Get current stage
-    new_stage = ctx.ipc.get_channel()
+    new_channel = ctx.ipc.get_channel()
 
     # Enforce Morph Duration
     if ctx.character >= 0:
@@ -32,7 +32,7 @@ async def check_states(ctx : 'AE3Context'):
             ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration, unlocked_morphs)
 
     # Get which Monkey Group to actively check at the moment based on the stage
-    if not new_stage or new_stage is None and not ctx.current_channel:
+    if not new_channel or new_channel is None and not ctx.current_channel:
         # Special Check for Monkey Pink as her boss stage does not provide a Stage ID
         if ctx.ipc.is_in_pink_boss():
             ctx.monkeys_checklist = MONKEYS_BOSSES
@@ -43,15 +43,15 @@ async def check_states(ctx : 'AE3Context'):
             await check_locations(ctx)
 
         return
-    elif new_stage != ctx.current_channel:
-        if new_stage in MONKEYS_DIRECTORY:
-            ctx.monkeys_checklist = MONKEYS_DIRECTORY[new_stage]
-        elif "b" in new_stage:
+    elif new_channel != ctx.current_channel:
+        if new_channel in MONKEYS_DIRECTORY:
+            ctx.monkeys_checklist = MONKEYS_DIRECTORY[new_channel]
+        elif "b" in new_channel:
             ctx.monkeys_checklist = MONKEYS_BOSSES
     else:
         return
 
-    ctx.current_channel = new_stage
+    ctx.current_channel = new_channel
 
 async def recheck_location_groups(ctx : 'AE3Context'):
     if ctx.monkeys_checklist_count >= len(MONKEYS_DIRECTORY.values()):
@@ -117,8 +117,24 @@ async def setup_area(ctx : 'AE3Context'):
             # Temporarily give a morph during transitions to keep Morph Gauge visible
             else:
                 ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
+                ctx.command_state = 2
         else:
             ctx.ipc.lock_equipment(Itm.morph_monkey.value)
+            if ctx.command_state == 2:
+                ctx.command_state = 0
+
+async def check_states(ctx : 'AE3Context'):
+    # Check for DeathLinks
+    if not ctx.command_state:
+        if ctx.pending_deathlinks:
+            ctx.ipc.kill_player(100.0)
+            ctx.pending_deathlinks -= 1
+            ctx.command_state = 1
+
+        # Check Swimming State
+        if not ctx.swim_unlocked and ctx.ipc.is_on_water():
+            ctx.ipc.kill_player(20.0)
+            ctx.command_state = 1
 
 async def check_items(ctx : 'AE3Context'):
     cache_batch_items : Set[NetworkItem] = set()

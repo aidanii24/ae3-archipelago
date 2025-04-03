@@ -856,6 +856,7 @@ class Game(BaseEnum):
     channel_confirmed =     "Channel Confirmed"
     current_channel =       "Current Channel"
     current_stage =         "Current Stage"
+    current_room =          "Current Room"
 
     screen_fade =           "Screen Fade"
     screen_fade_count =     "Screen Fade Count"
@@ -898,7 +899,8 @@ class Game(BaseEnum):
     equip_cross =           "Gadget on Cross Button"
     equip_square =          "Gadget on Square Button"
     equip_triangle =        "Gadget on Triangle Button"
-    equip_active =          "Gadget in Current Use"
+    equip_active =          "Active Gadget Button"
+    equip_current =         "Current Gadget in Use"
     equip_pellet_active =   "Pellet Selected"
     equip_chassis_active =  "RC Car Chassis Selected"
     equip_quick_morph =     "Quick Morph Selected"
@@ -914,12 +916,20 @@ class Game(BaseEnum):
     trigger_bay_e1 =        "Sewer Drained"
     trigger_space_e =       "Studio 1 Controls Unlock"
     trigger_space_f2 =      "Studio 3 Controls Unlock"
-    trigger_space_g1 = "Studio 2 Barrier Unlock"
+    trigger_space_g1 =      "Studio 2 Barrier Unlock"
     trigger_space_g2 =      "Studio 2 Controls Unlock"
 
     shortcut_studio_ad =    "Shortcut to Specter TV Studio - Buildings Set"
     shortcut_edotown_eb =   "Shortcut to The Emperor's Castle - Castle Grounds"
     shortcut_asia_b2b =     "Shortcut to Eversummer Island - Village Canals"
+
+    # Commands
+    command =               "Command"
+    area_dest =             "Area Destination"
+    spawn =                 "Spawnpoint"
+
+    change_area =           "changeArea"
+    kill_player =           "killPlayer"
 
     @classmethod
     def get_morph_duration(cls, girl : bool = False):
@@ -1028,11 +1038,14 @@ class APHelper(BaseEnum):
     item_count =            "item_count"
 
     # AP Server
-    connected =             "Connected"
-    room_info =             "RoomInfo"
+    cmd_conn =              "Connected"
+    cmd_rminf =             "RoomInfo"
+    cmd_bounce =            "Bounced"
 
-    slot_data =             "slot_data"
-    seed_name =             "seed_name"
+    arg_sl_dt =             "slot_data"
+    arg_seed =              "seed_name"
+    arg_tags =              "tags"
+    arg_deathl =            "DeathLink"
 
 class APConsole:
     """
