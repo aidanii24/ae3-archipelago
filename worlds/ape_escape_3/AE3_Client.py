@@ -48,6 +48,7 @@ class AE3Context(CommonContext):
 
     # Server Properties and Cache
     slot_data : dict[str, Utils.Any]
+    next_item_slot : int = 0
     cached_locations_checked : Set[int]
     cached_received_items : Set[NetworkItem]
 
@@ -70,7 +71,7 @@ class AE3Context(CommonContext):
 
     # Player Set Options
     auto_equip : bool = False
-    morph_duration : float = 30.0
+    morph_duration : float = 0.0
     progression : GameMode = GameMode.BOSS
 
     def __init__(self, address, password):
@@ -93,25 +94,29 @@ class AE3Context(CommonContext):
 
     def on_package(self, cmd: str, args: dict):
         # First Connection Check
-        if cmd == "Connected":
+        if cmd == "ReceivedItems":
+            pass
+            #self.next_item_slot = args["index"]
+
+        elif cmd == "Connected":
             self.slot_data = args["slot_data"]
 
+            ## Load Local Session Save Data
+            if self.check_session_save():
+                self.load_session()
+
             ## Game Mode
-            if APHelper.game_mode.value in args["slot_data"]:
+            if not self.unlocked_channels and APHelper.game_mode.value in args["slot_data"]:
                 self.progression = GameMode.get_gamemode(args["slot_data"][APHelper.game_mode.value])
                 self.unlocked_channels = self.progression.get_current_progress(0)
 
             ## Morph Duration
-            if APHelper.base_morph_duration.value in args["slot_data"]:
+            if self.morph_duration == 0 and APHelper.base_morph_duration.value in args["slot_data"]:
                 self.morph_duration = float(args["slot_data"][APHelper.base_morph_duration.value])
 
             ## Auto-Equip
             if APHelper.auto_equip.value in args["slot_data"]:
                 self.auto_equip = bool(args["slot_data"][APHelper.auto_equip.value])
-
-            ## Load Local Session Save Data
-            if self.check_session_save():
-                self.load_session()
 
         # Initialize Session on receive of RoomInfo Packet
         elif cmd == "RoomInfo":
@@ -136,9 +141,23 @@ class AE3Context(CommonContext):
         with io.open(self.save_data_path, 'r') as save:
             data : dict = json.load(save)
 
-            if "Keys" in data:
-                self.keys = data["Keys"]
+            # Retrieve Next Item Slot/Amount of Items Received
+            if APHelper.item_count.value in data:
+                self.next_item_slot = data[APHelper.item_count.value]
+
+            # Retrieve Key
+            if APHelper.channel_key.value in data:
+                self.keys = data[APHelper.channel_key.value]
                 self.unlocked_channels = self.progression.get_current_progress(self.keys)
+
+            # Retrieve Character
+            if Game.character.value in data:
+                self.character = data[Game.character.value]
+
+                # Retrieve Morph Duration
+                if Game.duration_knight_b.value in data:
+                    self.morph_duration = data[Game.duration_knight_b.value]
+                    self.ipc.set_morph_duration(self.character, self.morph_duration)
 
     def save_session(self):
         """Save current session progress"""
@@ -152,7 +171,11 @@ class AE3Context(CommonContext):
             return
 
         data = {
-            "Keys" : self.keys
+            APHelper.item_count.value       : self.next_item_slot,
+
+            APHelper.channel_key.value      : self.keys,
+            Game.character.value            : self.character,
+            Game.duration_knight_b.value    : self.morph_duration
         }
 
         with io.open(self.save_data_path, 'w') as save:

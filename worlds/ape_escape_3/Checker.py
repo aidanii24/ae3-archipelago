@@ -124,7 +124,9 @@ async def check_items(ctx : 'AE3Context'):
     cache_batch_items : Set[NetworkItem] = set()
 
     # Get Difference to get only new items
-    received : List[NetworkItem] = list(set(ctx.items_received).difference(ctx.cached_received_items))
+    received : List[NetworkItem] = ctx.items_received[ctx.next_item_slot:]
+    print("Received:", len(received), "Next:", ctx.next_item_slot)
+    ctx.next_item_slot += len(received)
 
     # Auto-equip if option is enabled or for handling the starting gadgets
     auto_equip: bool = ctx.auto_equip or not ctx.cached_received_items
@@ -139,8 +141,6 @@ async def check_items(ctx : 'AE3Context'):
             if item.item_id == AP[APHelper.channel_key.value]:
                 ctx.keys += 1
                 ctx.unlocked_channels = ctx.progression.get_current_progress(ctx.keys)
-
-                ctx.save_session()
 
             ### Update Server about Goal Achieved when Victory is achieved
             if item.item_id == AP[APHelper.victory.value]:
@@ -199,6 +199,10 @@ async def check_items(ctx : 'AE3Context'):
 
     # Add to Cache
     ctx.cached_received_items.update(cache_batch_items)
+
+    # Save when new items appear
+    if received:
+        ctx.save_session()
 
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
