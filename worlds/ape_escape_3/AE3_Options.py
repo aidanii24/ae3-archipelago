@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import Toggle, Choice, PerGameCommonOptions
+from Options import Toggle, Choice, PerGameCommonOptions, DeathLink
 
 # Item Options
 class GameMode(Choice):
@@ -98,3 +98,5 @@ class AE3Options(PerGameCommonOptions):
     add_morph_extensions    : AddMorphExtensions
 
     auto_equip              : AutoEquipOnUnlock
+
+    death_link              : DeathLink

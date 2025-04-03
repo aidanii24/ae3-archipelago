@@ -1045,7 +1045,7 @@ class APHelper(BaseEnum):
     arg_sl_dt =             "slot_data"
     arg_seed =              "seed_name"
     arg_tags =              "tags"
-    arg_deathl =            "DeathLink"
+    arg_deathl =            "death_link"
 
 class APConsole:
     """

@@ -122,6 +122,11 @@ class AE3Context(CommonContext):
             if APHelper.auto_equip.value in self.slot_data:
                 self.auto_equip = bool(self.slot_data[APHelper.auto_equip.value])
 
+            ## DeathLink
+            if APHelper.arg_deathl.value in self.slot_data:
+                self.death_link = bool(self.slot_data[APHelper.arg_deathl.value])
+                Utils.async_start(self.update_death_link(self.death_link))
+
         # Initialize Session on receive of RoomInfo Packet
         elif cmd == APHelper.cmd_rminf.value:
             seed: str = args[APHelper.arg_seed.value]
