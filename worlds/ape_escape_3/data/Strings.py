@@ -1024,6 +1024,9 @@ class APHelper(BaseEnum):
 
     auto_equip =            "auto_equip"
 
+    # AP Client
+    item_count =            "item_count"
+
 class APConsole:
     """
     Strings for all text to be used in the Archipelago Game Client
