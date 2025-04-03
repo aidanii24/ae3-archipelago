@@ -1,5 +1,6 @@
 import io
 import os.path
+import typing
 from argparse import ArgumentParser, Namespace
 from typing import Optional, Sequence
 import multiprocessing
@@ -49,6 +50,7 @@ class AE3Context(CommonContext):
     # Server Properties and Cache
     slot_data : dict[str, Utils.Any]
     next_item_slot : int = 0
+    pending_deathlinks : int = 0
     cached_locations_checked : Set[int]
     cached_received_items : Set[NetworkItem]
 
@@ -63,9 +65,14 @@ class AE3Context(CommonContext):
     current_channel: str = None
     character : int = -1
     player_control : bool = False
+    ## Command State can be in either of 3 stages:
+    ##  0 - No Exclusive Command Sent
+    ##  1 - Command has been sent, awaiting confirmation of execution
+    ##  2 - Command Executed, awaiting confirmation to reset
+    command_state : int = 0
     rcc_unlocked : bool = False
+    swim_unlocked : bool = False
     morphs_unlocked : list[bool] = [False for _ in range(7)]
-    has_morph_monkey : bool = False
     tomoki_defeated : bool = False
     specter1_defeated : bool = False
 
@@ -73,6 +80,7 @@ class AE3Context(CommonContext):
     auto_equip : bool = False
     morph_duration : float = 0.0
     progression : GameMode = GameMode.BOSS
+    death_link : bool = False
 
     def __init__(self, address, password):
         super().__init__(address, password)
@@ -94,8 +102,8 @@ class AE3Context(CommonContext):
 
     def on_package(self, cmd: str, args: dict):
         # First Connection Check
-        if cmd == APHelper.connected.value:
-            self.slot_data = args[APHelper.slot_data.value]
+        if cmd == APHelper.cmd_conn.value:
+            self.slot_data = args[APHelper.arg_sl_dt.value]
 
             ## Load Local Session Save Data
             if self.check_session_save():
@@ -115,12 +123,17 @@ class AE3Context(CommonContext):
                 self.auto_equip = bool(self.slot_data[APHelper.auto_equip.value])
 
         # Initialize Session on receive of RoomInfo Packet
-        elif cmd == "RoomInfo":
-            seed: str = args["seed_name"]
+        elif cmd == APHelper.cmd_rminf.value:
+            seed: str = args[APHelper.arg_seed.value]
             if self.seed_name != seed:
                 self.seed_name = seed
 
             self.save_data_path = Meta.game_acr + "_" + self.seed_name + ".json"
+
+    def on_deathlink(self, data: typing.Dict[str, typing.Any]) -> None:
+        super().on_deathlink(data)
+
+        self.pending_deathlinks += 1
 
     def check_session_save(self):
         """Check for valid save file"""
@@ -155,6 +168,13 @@ class AE3Context(CommonContext):
                     self.morph_duration = data[Game.duration_knight_b.value]
                     self.ipc.set_morph_duration(self.character, self.morph_duration)
 
+            # Retrieve Important Items
+            if Itm.gadget_rcc.value in data:
+                self.rcc_unlocked = data[Itm.gadget_rcc.value]
+
+            if Itm.gadget_swim.value in data:
+                self.swim_unlocked = data[Itm.gadget_swim.value]
+
     def save_session(self):
         """Save current session progress"""
         # Prevent Spammed Messages
@@ -171,6 +191,8 @@ class AE3Context(CommonContext):
 
             APHelper.channel_key.value      : self.keys,
             Game.character.value            : self.character,
+            Itm.gadget_rcc.value            : self.rcc_unlocked,
+            Itm.gadget_swim.value           : self.swim_unlocked,
             Game.duration_knight_b.value    : self.morph_duration
         }
 
@@ -245,7 +267,7 @@ async def check_game(ctx : AE3Context):
 
         # Run maintenance game checks when not in player control
         await correct_progress(ctx)
-        await check_states(ctx)
+        await check_background_states(ctx)
 
         await asyncio.sleep(0.5)
         return
@@ -271,6 +293,8 @@ async def check_game(ctx : AE3Context):
             await recheck_location_groups(ctx)
         else:
             await setup_area(ctx)
+
+        await check_states(ctx)
 
         # Check Progression
         await check_items(ctx)
