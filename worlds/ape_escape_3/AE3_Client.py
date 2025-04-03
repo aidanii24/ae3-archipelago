@@ -70,6 +70,7 @@ class AE3Context(CommonContext):
     ##  1 - Command has been sent, awaiting confirmation of execution
     ##  2 - Command Executed, awaiting confirmation to reset
     command_state : int = 0
+    sending_death : bool = False
     rcc_unlocked : bool = False
     swim_unlocked : bool = False
     morphs_unlocked : list[bool] = [False for _ in range(7)]

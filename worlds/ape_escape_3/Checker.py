@@ -124,12 +124,21 @@ async def setup_area(ctx : 'AE3Context'):
                 ctx.command_state = 0
 
 async def check_states(ctx : 'AE3Context'):
-    # Check for DeathLinks
     if not ctx.command_state:
+        # Check for DeathLinks
         if ctx.pending_deathlinks:
             ctx.ipc.kill_player(100.0)
             ctx.pending_deathlinks -= 1
             ctx.command_state = 1
+        # Send DeathLinks
+        else:
+            cookies : float = ctx.ipc.get_cookies()
+
+            if not ctx.sending_death and cookies <= 0.0:
+                await ctx.send_death()
+                ctx.sending_death = True
+            elif ctx.sending_death and cookies > 0.0:
+                ctx.sending_death = False
 
         # Check Swimming State
         if not ctx.swim_unlocked and ctx.ipc.is_on_water():
