@@ -701,6 +701,9 @@ class NTSCU(VersionAddresses):
         # Special States
         Game.in_pink_stage.value        : 0x8519e0,
 
+        Game.interact_data.value        : 0x7720d4,
+        Game.pipo_camera.value          : -0x80,    # Offset from Interact Data Pointer
+        Game.cellphone.value            : 0x1CB,    # Offset from Interact Data Pointer
 
         # Commands
         Game.command.value              : 0x772030,
@@ -714,7 +717,9 @@ class NTSCU(VersionAddresses):
         Game.morph_gauge_active.value   : [0x44, 0x24, 0x38, 0x18],
         Game.equip_current.value        : [0x58, 0x44, 0x24, 0x38, 0x10],
 
-        Loc.boss_tomoki.value           : [0x2c, 0x1AC4]
+        Loc.boss_tomoki.value           : [0x2c, 0x1AC4],
+
+        Game.interact_data              : [0x0],
     }
 
 Capacities : dict[str, int | float] = {

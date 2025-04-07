@@ -882,8 +882,8 @@ class Game(BaseEnum):
     in_pink_stage =         "Monkey Pink Battle! Stage"
 
     interact_data =         "Interact Data"
-
-
+    pipo_camera =           "Pipo Camera"
+    cellphone =             "Cellphone"
 
     # Resources
     jackets =               "Jackets"
