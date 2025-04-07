@@ -851,7 +851,7 @@ class Game(BaseEnum):
     character =             "Character"
     progress =              "Progress"
     channels_unlocked =     "Channels Unlocked"
-    channel_selected =      "CHannel Selected"
+    channel_selected =      "Channel Selected"
     on_warp_gate =          "On Warp Gate"
     channel_confirmed =     "Channel Confirmed"
     current_channel =       "Current Channel"
@@ -880,6 +880,10 @@ class Game(BaseEnum):
 
     ## Special States
     in_pink_stage =         "Monkey Pink Battle! Stage"
+
+    interact_data =         "Interact Data"
+
+
 
     # Resources
     jackets =               "Jackets"
