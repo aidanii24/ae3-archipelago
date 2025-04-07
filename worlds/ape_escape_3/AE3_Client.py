@@ -106,9 +106,9 @@ class AE3Context(CommonContext):
         if cmd == APHelper.cmd_conn.value:
             self.slot_data = args[APHelper.arg_sl_dt.value]
 
-            # ## Load Local Session Save Data
-            # if self.check_session_save():
-            #     self.load_session()
+            ## Load Local Session Save Data
+            if self.check_session_save():
+                self.load_session()
 
             ## Game Mode
             if not self.unlocked_channels and APHelper.game_mode.value in self.slot_data:

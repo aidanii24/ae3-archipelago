@@ -701,6 +701,7 @@ class NTSCU(VersionAddresses):
         # Special States
         Game.in_pink_stage.value        : 0x8519e0,
 
+
         # Commands
         Game.command.value              : 0x772030,
         Game.area_dest.value            : 0x772050,

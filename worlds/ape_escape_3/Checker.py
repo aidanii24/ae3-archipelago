@@ -224,9 +224,9 @@ async def check_items(ctx : 'AE3Context'):
     # Add to Cache
     ctx.cached_received_items.update(cache_batch_items)
 
-    # # Save when new items appear
-    # if received:
-    #     ctx.save_session()
+    # Save when new items appear
+    if received:
+        ctx.save_session()
 
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
