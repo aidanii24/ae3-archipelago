@@ -36,7 +36,6 @@ class AEPS2Interface:
 
     loaded_game : Optional[str] = None
     addresses : VersionAddresses = None
-    cached_pointer_targets : dict[int, int] = {}
 
     sync_task = None
     logger : Logger
@@ -55,9 +54,6 @@ class AEPS2Interface:
                 return
 
             self.logger.info(APConsole.Info.init.value)
-
-            # Erase cache when reconnecting, to ensure its correct
-            self.cached_pointer_targets.clear()
 
         # Check for Game running in PCSX2
         try:
@@ -97,17 +93,15 @@ class AEPS2Interface:
             return False
 
     # { Generic }
-    def check_pointers_updated(self):
-        return bool(self.cached_pointer_targets)
 
-    def follow_pointer_chain(self, start_addr : int) -> int:
+    def follow_pointer_chain(self, start_address : int, pointer_chain : Sequence[int]) -> int:
         # Get first pointer
-        addr : int = self.pine.read_int32(start_addr)
+        addr : int = self.pine.read_int32(start_address)
 
         # Loop through remaining pointers and adding the offsets
-        ptrs : Sequence = self.addresses.Pointers[start_addr]
+        ptrs : Sequence = self.addresses.Pointers[start_address]
         amt : int = len(ptrs) - 1
-        for offset in self.addresses.Pointers[start_addr]:
+        for offset in self.addresses.Pointers[start_address]:
             addr += offset
 
             # Do not read value for the last offset
@@ -125,7 +119,7 @@ class AEPS2Interface:
     # { Game Check }
     def get_progress(self) -> str:
         addr : int = self.addresses.GameStates[Game.progress.value]
-        addr = self.follow_pointer_chain(addr)
+        addr = self.follow_pointer_chain(addr, Game.progress.value)
 
         if addr == 0:
             return "none"
@@ -185,7 +179,8 @@ class AEPS2Interface:
         return self.pine.read_int32(self.addresses.GameStates[Game.state.value])
 
     def get_current_gadget(self) -> int:
-        address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.equip_current.value])
+        address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.equip_current.value],
+                                                  Game.equip_current.value)
 
         if address == 0x0:
             return -1
@@ -216,7 +211,8 @@ class AEPS2Interface:
         return self.pine.read_int8(self.addresses.GameStates[Game.in_pink_stage.value]) == 0x02
 
     def is_tomoki_defeated(self) -> bool:
-        address : int = self.follow_pointer_chain(self.addresses.Locations[Loc.boss_tomoki.value])
+        address : int = self.follow_pointer_chain(self.addresses.Locations[Loc.boss_tomoki.value],
+                                                  Loc.boss_tomoki.value)
 
         # Return false if pointer is still not initialized
         if address == 0x0:
@@ -231,7 +227,7 @@ class AEPS2Interface:
     # { Game Manipulation }
     def set_progress(self, progress : str = APHelper.pr_round2.value):
         addr : int = self.addresses.GameStates[Game.progress.value]
-        addr = self.follow_pointer_chain(addr)
+        addr = self.follow_pointer_chain(addr, Game.progress.value)
 
         if addr == 0x0:
             return
@@ -376,7 +372,8 @@ class AEPS2Interface:
             return
 
         # If recharge state is 0, we check the active gauge, following its pointer chain
-        address = self.follow_pointer_chain(self.addresses.GameStates[Game.morph_gauge_active.value])
+        address = self.follow_pointer_chain(self.addresses.GameStates[Game.morph_gauge_active.value],
+                                            Game.morph_gauge_active.value)
 
         if address == 0x0:
             return

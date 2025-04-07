@@ -708,12 +708,12 @@ class NTSCU(VersionAddresses):
     }
 
     ### [< --- POINTER CHAINS --- >]
-    Pointers: Dict[int, Sequence[int]] = {
-        GameStates[Game.progress.value]             : [0x04, 0x1A0, 0x20, 0x0],
-        GameStates[Game.morph_gauge_active.value]   : [0x44, 0x24, 0x38, 0x18],
-        GameStates[Game.equip_current.value]        : [0x58, 0x44, 0x24, 0x38, 0x10],
+    Pointers: Dict[str, Sequence[int]] = {
+        Game.progress.value             : [0x04, 0x1A0, 0x20, 0x0],
+        Game.morph_gauge_active.value   : [0x44, 0x24, 0x38, 0x18],
+        Game.equip_current.value        : [0x58, 0x44, 0x24, 0x38, 0x10],
 
-        Locations[Loc.boss_tomoki.value]            : [0x2c, 0x1AC4]
+        Loc.boss_tomoki.value           : [0x2c, 0x1AC4]
     }
 
 Capacities : dict[str, int | float] = {
