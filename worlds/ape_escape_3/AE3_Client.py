@@ -183,8 +183,8 @@ class AE3Context(CommonContext):
                 self.character = data[Game.character.value]
 
                 # Retrieve Morph Duration
-                if Game.duration_knight_b.value in data:
-                    self.morph_duration = data[Game.duration_knight_b.value]
+                if Game.morph_duration.value in data:
+                    self.morph_duration = data[Game.morph_duration.value]
                     self.ipc.set_morph_duration(self.character, self.morph_duration)
 
             # Retrieve Important Items
@@ -212,7 +212,7 @@ class AE3Context(CommonContext):
             Game.character.value            : self.character,
             Itm.gadget_rcc.value            : self.rcc_unlocked,
             Itm.gadget_swim.value           : self.swim_unlocked,
-            Game.duration_knight_b.value    : self.morph_duration
+            Game.morph_duration.value       : self.morph_duration
         }
 
         with io.open(self.save_data_path + self.save_data_filename, 'w') as save:
