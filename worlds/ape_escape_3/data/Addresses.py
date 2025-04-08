@@ -10,7 +10,7 @@ class VersionAddresses(ABC):
     Items : Dict[str, int]
     Locations : Dict[str, int]
     GameStates : Dict[str, int]
-    Pointers : Dict[int, Sequence[int]]
+    Pointers : Dict[str, Sequence[int]]
 
     GADGETS : Sequence[int]
     MORPHS_B : Sequence[int]

@@ -94,14 +94,14 @@ class AEPS2Interface:
 
     # { Generic }
 
-    def follow_pointer_chain(self, start_address : int, pointer_chain : Sequence[int]) -> int:
+    def follow_pointer_chain(self, start_address : int, pointer_chain : str) -> int:
         # Get first pointer
         addr : int = self.pine.read_int32(start_address)
 
         # Loop through remaining pointers and adding the offsets
-        ptrs : Sequence = self.addresses.Pointers[start_address]
+        ptrs : Sequence = self.addresses.Pointers[pointer_chain]
         amt : int = len(ptrs) - 1
-        for offset in self.addresses.Pointers[start_address]:
+        for offset in self.addresses.Pointers[pointer_chain]:
             addr += offset
 
             # Do not read value for the last offset
@@ -122,7 +122,7 @@ class AEPS2Interface:
         addr = self.follow_pointer_chain(addr, Game.progress.value)
 
         if addr == 0:
-            return "none"
+            return "None"
 
         value: bytes = self.pine.read_bytes(addr, 8)
         value_decoded: str = bytes.decode(value)
