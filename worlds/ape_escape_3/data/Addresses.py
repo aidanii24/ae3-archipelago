@@ -638,7 +638,84 @@ class NTSCU(VersionAddresses):
 
         # Specter
         Loc.boss_specter.value                  : 0x649bec,
-        Loc.boss_specter_final.value            : 0x649b46
+        Loc.boss_specter_final.value            : 0x649b46,
+
+        # Pipo Camera
+        Loc.pipo_camera.value                   : 0x200,
+
+        # Cellphones
+        Loc.tele_000.value                      : 0x000,
+        Loc.tele_001.value                      : 0x001,
+        Loc.tele_002.value                      : 0x002,
+        Loc.tele_003.value                      : 0x003,
+        Loc.tele_004s.value                     : 0x004,
+        Loc.tele_004w.value                     : 0x004,
+        Loc.tele_005.value                      : 0x005,
+        Loc.tele_006.value                      : 0x006,
+        Loc.tele_007.value                      : 0x007,
+        Loc.tele_008.value                      : 0x008,
+        Loc.tele_009.value                      : 0x009,
+        Loc.tele_010.value                      : 0x00A,
+        Loc.tele_011.value                      : 0x00B,
+        Loc.tele_012.value                      : 0x00C,
+        Loc.tele_013.value                      : 0x00D,
+        Loc.tele_014.value                      : 0x00E,
+        Loc.tele_015.value                      : 0x00F,
+        Loc.tele_016.value                      : 0x010,
+        Loc.tele_017.value                      : 0x011,
+        Loc.tele_018.value                      : 0x012,
+        Loc.tele_019.value                      : 0x013,
+        Loc.tele_020.value                      : 0x014,
+        Loc.tele_021.value                      : 0x014,
+        Loc.tele_022.value                      : 0x015,
+        Loc.tele_023.value                      : 0x016,
+        Loc.tele_024.value                      : 0x017,
+        Loc.tele_025.value                      : 0x018,
+        Loc.tele_026.value                      : 0x019,
+        Loc.tele_027.value                      : 0x01A,
+        Loc.tele_028.value                      : 0x01B,
+        Loc.tele_029.value                      : 0x01C,
+        Loc.tele_030.value                      : 0x01D,
+        Loc.tele_031.value                      : 0x01E,
+        Loc.tele_032.value                      : 0x01F,
+        Loc.tele_033.value                      : 0x020,
+        Loc.tele_034.value                      : 0x021,
+        Loc.tele_035.value                      : 0x022,
+        Loc.tele_036.value                      : 0x023,
+        Loc.tele_037.value                      : 0x024,
+        Loc.tele_038.value                      : 0x024,
+        Loc.tele_039.value                      : 0x025,
+        Loc.tele_040.value                      : 0x026,
+        Loc.tele_041.value                      : 0x027,
+        Loc.tele_042.value                      : 0x028,
+        Loc.tele_043.value                      : 0x029,
+        Loc.tele_044.value                      : 0x02A,
+        Loc.tele_045.value                      : 0x02B,
+        Loc.tele_046.value                      : 0x02C,
+        Loc.tele_047.value                      : 0x02D,
+        Loc.tele_048.value                      : 0x02E,
+        Loc.tele_049.value                      : 0x02F,
+        Loc.tele_050.value                      : 0x030,
+        Loc.tele_051.value                      : 0x031,
+        Loc.tele_052.value                      : 0x032,
+        Loc.tele_053.value                      : 0x033,
+        Loc.tele_054.value                      : 0x034,
+        Loc.tele_055.value                      : 0x034,
+        Loc.tele_056.value                      : 0x035,
+        Loc.tele_057.value                      : 0x036,
+        Loc.tele_058.value                      : 0x037,
+        Loc.tele_059.value                      : 0x038,
+        Loc.tele_060.value                      : 0x039,
+        Loc.tele_061.value                      : 0x03A,
+        Loc.tele_062.value                      : 0x03B,
+        Loc.tele_063.value                      : 0x03C,
+        Loc.tele_064.value                      : 0x03D,
+        Loc.tele_065.value                      : 0x03E,
+        Loc.tele_066.value                      : 0x03F,
+        Loc.tele_067.value                      : 0x040,
+        Loc.tele_068.value                      : 0x041,
+        Loc.tele_069.value                      : 0x042,
+        Loc.tele_070.value                      : 0x043,
     }
 
     GameStates: Dict[str, int] = {
@@ -735,8 +812,8 @@ Capacities : dict[str, int | float] = {
 }
 
 AP : dict[str, int] = {
-    APHelper.channel_key.value      : 0x100,
-    APHelper.victory.value          : 0x500
+    APHelper.channel_key.value      : 0x3E8,
+    APHelper.victory.value          : 0x3E9
 }
 
 def get_version_addresses(game_id : str) -> VersionAddresses | None:
