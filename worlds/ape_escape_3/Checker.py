@@ -5,7 +5,7 @@ from NetUtils import ClientStatus, NetworkItem
 from .data.Items import ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem
 from .data.Strings import Game, Itm, APHelper
 from .data.Addresses import NTSCU, AP
-from .data.Locations import Loc, MONKEYS_BOSSES, MONKEYS_DIRECTORY
+from .data.Locations import CAMERAS_DIRECTORY, CAMERAS_MASTER, CELLPHONES_MASTER, Loc, MONKEYS_BOSSES, MONKEYS_DIRECTORY
 from .data import Items
 
 if TYPE_CHECKING:
@@ -231,18 +231,34 @@ async def check_items(ctx : 'AE3Context'):
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
 
+    # Monkey Check
     for monkey in ctx.monkeys_checklist:
-        # Special Case for Tomoki
+        ## Special Case for Tomoki
         if ctx.current_channel == APHelper.boss6.value:
             if ctx.ipc.is_tomoki_defeated():
-                cleared.add(ctx.monkeys_name_to_id[Loc.boss_tomoki.value])
+                cleared.add(ctx.locations_name_to_id[Loc.boss_tomoki.value])
                 continue
 
         if ctx.ipc.is_monkey_captured(monkey):
-            cleared.add(ctx.monkeys_name_to_id[monkey])
+            cleared.add(ctx.locations_name_to_id[monkey])
 
             if monkey == Loc.boss_specter.value:
                 ctx.specter1_defeated = True
+
+    if not ctx.current_channel == APHelper.travel_station.value:
+        # Camera Check
+        if ctx.current_channel in CAMERAS_MASTER:
+            if ctx.ipc.is_camera_interacted():
+                cleared.add(ctx.locations_name_to_id[CAMERAS_DIRECTORY[ctx.current_channel]])
+
+        # Cellphone Check
+        if ctx.current_channel in CELLPHONES_MASTER:
+            cell : str = ctx.ipc.get_cellphone_interacted()
+            if cell in CELLPHONES_MASTER:
+                if cell == Loc.tele_004w.value and ctx.current_channel == APHelper.woods.value:
+                    cleared.add(ctx.locations_name_to_id[Loc.tele_004w.value])
+                else:
+                    cleared.add(ctx.locations_name_to_id[cell])
 
     # Get newly checked locations
     cleared = cleared.difference(ctx.checked_locations)

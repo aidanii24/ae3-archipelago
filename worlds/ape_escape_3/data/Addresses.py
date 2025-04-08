@@ -641,7 +641,7 @@ class NTSCU(VersionAddresses):
         Loc.boss_specter_final.value            : 0x649b46,
 
         # Pipo Camera
-        Loc.pipo_camera.value                   : 0x200,
+        Loc.pipo_camera.value                   : 0x64,
 
         # Cellphones
         Loc.tele_000.value                      : 0x000,
@@ -649,7 +649,7 @@ class NTSCU(VersionAddresses):
         Loc.tele_002.value                      : 0x002,
         Loc.tele_003.value                      : 0x003,
         Loc.tele_004s.value                     : 0x004,
-        Loc.tele_004w.value                     : 0x004,
+        Loc.tele_004w.value                     : 0x068,
         Loc.tele_005.value                      : 0x005,
         Loc.tele_006.value                      : 0x006,
         Loc.tele_007.value                      : 0x007,
