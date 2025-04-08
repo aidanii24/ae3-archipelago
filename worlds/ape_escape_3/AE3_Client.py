@@ -40,6 +40,7 @@ class AE3Context(CommonContext):
     command_processor : ClientCommandProcessor = AE3CommandProcessor
     items_handling : int = 0b111
     save_data_path : str = None
+    save_data_filename : str = None
 
     # Interface Properties
     ipc : AEPS2Interface = AEPS2Interface
@@ -92,6 +93,15 @@ class AE3Context(CommonContext):
         self.cached_locations_checked = set()
         self.cached_received_items = set()
 
+        self.save_data_path = Utils.user_path() + "/data/saves"
+        if not os.path.isdir(self.save_data_path):
+            try:
+                os.mkdir(self.save_data_path)
+            except:
+                self.save_data_path = ""
+            finally:
+                self.save_data_path += "/"
+
     # Archipelago Server Authentication
     async def server_auth(self, password_requested : bool = False):
         # Ask for Password if Requested so
@@ -134,26 +144,29 @@ class AE3Context(CommonContext):
             if self.seed_name != seed:
                 self.seed_name = seed
 
-            self.save_data_path = Meta.game_acr + "_" + self.seed_name + ".json"
+            self.save_data_filename = Meta.game_acr + "_" + self.seed_name + ".json"
 
     def on_deathlink(self, data: typing.Dict[str, typing.Any]) -> None:
         super().on_deathlink(data)
 
         self.pending_deathlinks += 1
 
-    def check_session_save(self):
+    def check_session_save(self) -> bool:
         """Check for valid save file"""
-        if not self.save_data_path:
+        if not self.save_data_filename:
+            return False
+        elif not self.save_data_path:
             return False
 
-        return os.path.isfile(self.save_data_path) and os.access(self.save_data_path, os.R_OK)
+        return (os.path.isfile(self.save_data_path + self.save_data_filename) and
+                os.access(self.save_data_path + self.save_data_filename, os.R_OK))
 
     def load_session(self):
         """Load existing session"""
         if not self.check_session_save():
             return
 
-        with io.open(self.save_data_path, 'r') as save:
+        with io.open(self.save_data_path + self.save_data_filename, 'r') as save:
             data : dict = json.load(save)
 
             # Retrieve Next Item Slot/Amount of Items Received
@@ -188,7 +201,7 @@ class AE3Context(CommonContext):
             logger.info(APConsole.Info.saving.value)
             self.last_message = APConsole.Info.saving.value
 
-        if not self.save_data_path:
+        if not self.save_data_filename or not self.save_data_path:
             logger.warning(APConsole.Err.save_no_init.value)
             return
 
@@ -202,7 +215,7 @@ class AE3Context(CommonContext):
             Game.duration_knight_b.value    : self.morph_duration
         }
 
-        with io.open(self.save_data_path, 'w') as save:
+        with io.open(self.save_data_path + self.save_data_filename, 'w') as save:
             save.write(json.dumps(data))
 
     # Client Command GUI
