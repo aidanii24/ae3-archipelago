@@ -13,7 +13,7 @@ import Utils
 
 from .data.Strings import Meta, APConsole
 from .data.Logic import GameMode
-from .data.Locations import MONKEYS_MASTER, generate_name_to_id
+from .data.Locations import CELLPHONES_MASTER, MONKEYS_MASTER, generate_name_to_id
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
 from .Checker import *
 
@@ -56,9 +56,12 @@ class AE3Context(CommonContext):
     cached_received_items : Set[NetworkItem]
 
     # APWorld Properties
-    monkeys_name_to_id : dict[str, int] = generate_name_to_id()
+    locations_name_to_id : dict[str, int] = generate_name_to_id()
+
     monkeys_checklist : Sequence[str] = MONKEYS_MASTER
     monkeys_checklist_count : int = 0
+
+    cellphones_checklist : Sequence[str] = CELLPHONES_MASTER
 
     # Session Properties
     keys : int = 0

@@ -207,6 +207,28 @@ class AEPS2Interface:
         address : int = self.addresses.Locations[name]
         return self.pine.read_int8(address) == 0x01
 
+    def is_camera_interacted(self) -> bool:
+        address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
+                                                  Game.interact_data.value)
+        address += self.addresses.GameStates[Game.pipo_camera.value]
+
+        as_bytes : bytes = self.pine.read_bytes(address, 5)
+
+        return as_bytes.decode("utf-8").replace("\x00", "") == Game.conte.value
+
+    def get_cellphone_interacted(self) -> str:
+        address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
+                                                  Game.interact_data.value)
+        address += self.addresses.GameStates[Game.cellphone.value]
+
+        as_bytes : bytes = self.pine.read_bytes(address, 3)
+        as_string : str = as_bytes.decode().replace("\x00", "")
+
+        if not as_string.isdigit():
+            return ""
+        else:
+            return as_string
+
     def is_in_pink_boss(self) -> bool:
         return self.pine.read_int8(self.addresses.GameStates[Game.in_pink_stage.value]) == 0x02
 

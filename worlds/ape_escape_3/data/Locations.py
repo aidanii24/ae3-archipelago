@@ -1,4 +1,4 @@
-from typing import Callable, Set, Sequence, TYPE_CHECKING
+from typing import Callable, Set, Sequence
 from dataclasses import dataclass
 from abc import ABC
 
@@ -52,6 +52,28 @@ class MonkeyLocation(AE3LocationMeta):
     def to_location(self, player : int, parent : Region) -> Location:
         return Location(player, self.name, self.loc_id, parent)
 
+class CameraLocation(AE3LocationMeta):
+    def __init__(self, name : str, offset : int = 0):
+        self.name = name
+        # Locations can be assumed to always be in Addresses.Locations. NTSCU version will be used as basis for the ID.
+        self.loc_id = NTSCU.Locations[name] + offset
+        self.address = self.loc_id
+        self.rules = Rulesets()
+
+    def to_location(self, player : int, parent : Region) -> Location:
+        return Location(player, self.name, self.loc_id, parent)
+
+class CellphoneLocation(AE3LocationMeta):
+    def __init__(self, name : str):
+        self.name = name
+        # Locations can be assumed to always be in Addresses.Locations. NTSCU version will be used as basis for the ID.
+        self.loc_id = NTSCU.Locations[name]
+        self.address = self.loc_id
+        self.rules = Rulesets()
+
+    def to_location(self, player : int, parent : Region) -> Location:
+        return Location(player, self.name, self.loc_id, parent)
+
 class EventMeta(AE3LocationMeta):
     """Base Class for all events."""
     def __init__(self, name : str, *rules : Callable | frozenset[Callable] | Set[frozenset[Callable]] | Rulesets):
@@ -84,6 +106,7 @@ class EventMeta(AE3LocationMeta):
 
 ### [< --- STAGE GROUPS --- >]
 
+## Monkeys
 # Zero
 MONKEYS_ZERO : Sequence[str] = [
     Loc.zero_ukki_pan.value
@@ -1175,6 +1198,117 @@ MONKEYS_DIRECTORY : dict[str, Sequence[str]] = {
     APHelper.specter2.value             : MONKEYS_BOSSES,
 }
 
+## Cameras
+CAMERAS_MASTER : Sequence[str] = [
+    Loc.seaside_cam.value, Loc.woods_cam.value, Loc.castle_cam.value, Loc.ciscocity_cam.value, Loc.studio_cam.value,
+    Loc.halloween_cam.value, Loc.western_cam.value, Loc.onsen_cam.value, Loc.snowfesta_cam.value, Loc.edotown_cam.value,
+    Loc.edotown_cam.value, Loc.heaven_cam.value, Loc.toyhouse_cam.value, Loc.iceland_cam.value, Loc.arabian_cam.value,
+    Loc.asia_cam.value, Loc.plane_cam.value, Loc.hong_cam.value, Loc.bay_cam.value, Loc.tomo_cam.value,
+    Loc.space_cam.value
+]
+
+CAMERAS_DIRECTORY : dict[str, str] = {
+    APHelper.seaside.value              : Loc.seaside_cam.value,
+    APHelper.woods.value                : Loc.woods_cam.value,
+    APHelper.castle.value               : Loc.castle_cam.value,
+    APHelper.castle_2.value             : Loc.castle_cam.value,
+    APHelper.ciscocity.value            : Loc.ciscocity_cam.value,
+    APHelper.studio.value               : Loc.studio_cam.value,
+    APHelper.studio_2.value             : Loc.studio_cam.value,
+    APHelper.halloween.value            : Loc.halloween_cam.value,
+    APHelper.halloween_2.value          : Loc.halloween_cam.value,
+    APHelper.western.value              : Loc.western_cam.value,
+    APHelper.western_2.value            : Loc.western_cam.value,
+    APHelper.onsen.value                : Loc.onsen_cam.value,
+    APHelper.onsen_2.value              : Loc.onsen_cam.value,
+    APHelper.snowfesta.value            : Loc.snowfesta_cam.value,
+    APHelper.snowfesta_2.value          : Loc.snowfesta_cam.value,
+    APHelper.edotown.value              : Loc.edotown_cam.value,
+    APHelper.edotown_2.value            : Loc.edotown_cam.value,
+    APHelper.heaven.value               : Loc.heaven_cam.value,
+    APHelper.heaven_2.value             : Loc.heaven_cam.value,
+    APHelper.toyhouse.value             : Loc.toyhouse_cam.value,
+    APHelper.toyhouse_2.value           : Loc.toyhouse_cam.value,
+    APHelper.iceland.value              : Loc.iceland_cam.value,
+    APHelper.iceland_2.value            : Loc.iceland_cam.value,
+    APHelper.arabian.value              : Loc.arabian_cam.value,
+    APHelper.asia.value                 : Loc.asia_cam.value,
+    APHelper.asia_2.value               : Loc.asia_cam.value,
+    APHelper.plane.value                : Loc.plane_cam.value,
+    APHelper.hong.value                 : Loc.hong_cam.value,
+    APHelper.hong_2.value               : Loc.hong_cam.value,
+    APHelper.bay.value                  : Loc.bay_cam.value,
+    APHelper.tomo.value                 : Loc.tomo_cam.value,
+    APHelper.tomo_2.value               : Loc.tomo_cam.value,
+    APHelper.space.value                : Loc.space_cam.value,
+    APHelper.space_2.value              : Loc.space_cam.value,
+}
+
+## Cellphones
+CELLPHONES_SEASIDE_A : Sequence[str] = [
+    Loc.tele_000.value, Loc.tele_002.value, Loc.tele_003.value
+]
+
+CELLPHONES_SEASIDE_B : Sequence[str] = [
+    Loc.tele_004s.value
+]
+
+CELLPHONES_SEASIDE : Sequence[str] = [
+    *CELLPHONES_SEASIDE_A, *CELLPHONES_SEASIDE_B
+]
+
+CELLPHONES_WOODS_A : Sequence[str] = [
+    Loc.tele_001.value, Loc.tele_006.value, Loc.tele_007.value, Loc.tele_004w.value]
+
+CELLPHONES_WOODS_B : Sequence[str] = [
+    Loc.tele_008.value
+]
+
+CELLPHONES_WOODS : Sequence[str] = [
+    *CELLPHONES_WOODS_A, *CELLPHONES_WOODS_B
+]
+
+CELLPHONES_MASTER : Sequence[str] = [
+    *CELLPHONES_SEASIDE, *CELLPHONES_WOODS
+]
+
+CELLPHONES_DIRECTORY : dict[str, Sequence[str]] = {
+    APHelper.seaside.value              : CELLPHONES_SEASIDE,
+    APHelper.woods.value                : CELLPHONES_WOODS,
+    APHelper.castle.value               : [],
+    APHelper.castle_2.value             : [],
+    APHelper.ciscocity.value            : [],
+    APHelper.studio.value               : [],
+    APHelper.studio_2.value             : [],
+    APHelper.halloween.value            : [],
+    APHelper.halloween_2.value          : [],
+    APHelper.western.value              : [],
+    APHelper.western_2.value            : [],
+    APHelper.onsen.value                : [],
+    APHelper.onsen_2.value              : [],
+    APHelper.snowfesta.value            : [],
+    APHelper.snowfesta_2.value          : [],
+    APHelper.edotown.value              : [],
+    APHelper.edotown_2.value            : [],
+    APHelper.heaven.value               : [],
+    APHelper.heaven_2.value             : [],
+    APHelper.toyhouse.value             : [],
+    APHelper.toyhouse_2.value           : [],
+    APHelper.iceland.value              : [],
+    APHelper.iceland_2.value            : [],
+    APHelper.arabian.value              : [],
+    APHelper.asia.value                 : [],
+    APHelper.asia_2.value               : [],
+    APHelper.plane.value                : [],
+    APHelper.hong.value                 : [],
+    APHelper.hong_2.value               : [],
+    APHelper.bay.value                  : [],
+    APHelper.tomo.value                 : [],
+    APHelper.tomo_2.value               : [],
+    APHelper.space.value                : [],
+    APHelper.space_2.value              : [],
+}
+
 ### [< --- EVENT GROUPS --- >]
 EVENTS_STUDIO_A1 : Sequence[EventMeta] = [
     EventMeta(Game.shortcut_studio_ad.value)
@@ -1252,5 +1386,13 @@ EVENTS_INDEX : dict[str, Sequence[EventMeta]] = {
     Stage.asia_b2.value         : EVENTS_ASIA_B2
 }
 
-def generate_name_to_id() -> dict[str, int]:
-    return { name : MonkeyLocation(name).loc_id for name in MONKEYS_MASTER }
+def generate_name_to_id(cameras : bool = False, cellphones : bool = False) -> dict[str, int]:
+    name_to_id : dict[str, int] = { name : MonkeyLocation(name).loc_id for name in MONKEYS_MASTER }
+
+    if cameras:
+        name_to_id.update({name : CameraLocation(name).loc_id for name in CAMERAS_MASTER})
+
+    if cellphones:
+        name_to_id.update({name : CellphoneLocation(name).loc_id for name in CELLPHONES_MASTER})
+
+    return name_to_id
