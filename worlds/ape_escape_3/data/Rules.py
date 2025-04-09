@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Callable, Set
 
-from .Logic import Rulesets, AccessRule, GameMode, event_not_invoked, has_keys, event_invoked
+from .Logic import Rulesets, AccessRule, ProgressionMode, event_not_invoked, has_keys, event_invoked
 from .Strings import Loc, Stage, Game
 from .Stages import AE3EntranceMeta, LEVELS_BY_ORDER
 
@@ -36,7 +36,7 @@ class RuleType:
                                         AccessRule.GENIE, AccessRule.KUNGFU, AccessRule.HERO, AccessRule.MONKEY}
 
     # Set Required Keys for each level depending on the Progression Type
-    def set_keys_rules(self, progression : GameMode):
+    def set_keys_rules(self, progression : ProgressionMode):
         self.entrances.setdefault(Stage.travel_station_a.value, []).clear()
         self.entrances.setdefault(Stage.travel_station_a.value, []).append(
             AE3EntranceMeta(Stage.travel_station_b.value))

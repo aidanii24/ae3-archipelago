@@ -1128,16 +1128,26 @@ class APHelper(BaseEnum):
     pr_round2 =             "round2\x00\x00"
 
     # AP Options
-    game_mode =             "game_mode"
+    progression_mode =      "progression_mode"
+    monkeysanity =          "monkeysanity"
+    camerasanity =          "camerasanity"
+    cellphonesanity =       "cellphonesanity"
 
     starting_gadget =       "starting_gadget"
+    starting_morph =        "starting_morph"
     base_morph_duration =   "base_morph_duration"
+
     shuffle_net =           "shuffle_net"
     shuffle_chassis =       "shuffle_chassis"
     shuffle_morph_stocks =  "shuffle_morph_stocks"
     add_morph_extensions =  "add_morph_extensions"
 
+    early_free_play =       "early_free_play"
+    enable_shopping_area =  "enable_shopping_area"
+
     auto_equip =            "auto_equip"
+
+    death_link =            "death_link"
 
     # AP Client
     item_count =            "item_count"
@@ -1150,7 +1160,6 @@ class APHelper(BaseEnum):
     arg_sl_dt =             "slot_data"
     arg_seed =              "seed_name"
     arg_tags =              "tags"
-    arg_deathl =            "death_link"
 
 class APConsole:
     """

@@ -189,7 +189,7 @@ class Rulesets:
         return bool(self.Critical) or bool(self.Rules)
 
 from .Locations import MONKEYS_BOSSES
-class GameMode(Enum):
+class ProgressionMode(Enum):
     """
     Defines how the game should progress and the goal to achieve
     """
@@ -227,5 +227,5 @@ class GameMode(Enum):
         return unlocks
 
     @classmethod
-    def get_gamemode(cls, index : int):
+    def get_progression_mode(cls, index : int):
         return [*cls][index]

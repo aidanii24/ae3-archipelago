@@ -4,10 +4,10 @@ from BaseClasses import MultiWorld, Tutorial
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 
-from .data.Items import (AE3Item, Chassis_Pudding, Nothing, Channel_Key, Victory, generate_collectables)
+from .data.Items import AE3Item, Chassis_Pudding, Nothing, Channel_Key, Victory, generate_collectables
 from .data.Strings import Loc, Meta, APHelper, APConsole
-from .data.Logic import is_goal_achieved, are_goals_achieved, GameMode
-from .AE3_Options import AE3Options
+from .data.Logic import is_goal_achieved, are_goals_achieved, ProgressionMode
+from .AE3_Options import AE3Options, create_option_groups, slot_data_options
 from .Regions import create_regions
 from .data import Items, Locations
 
@@ -22,6 +22,7 @@ components.append(
 
 class AE3Web(WebWorld):
     theme = "ocean"
+    option_groups = create_option_groups()
 
     tutorials = [Tutorial(
         "Multiworld Guide Setup",
@@ -57,7 +58,7 @@ class AE3World(World):
 
     item_name_groups = Items.generate_item_groups()
 
-    progression : GameMode
+    progression : ProgressionMode
 
     def __init__(self, multiworld : MultiWorld, player: int):
         self.auto_equip : bool = False
@@ -68,7 +69,7 @@ class AE3World(World):
 
     def generate_early(self):
         self.auto_equip = self.options.auto_equip
-        self.progression = GameMode.get_gamemode(self.options.game_mode.value)
+        self.progression = ProgressionMode.get_progression_mode(self.options.progression_mode.value)
 
         self.item_pool = []
 
@@ -94,16 +95,6 @@ class AE3World(World):
         hero = Items.Morph_Hero.to_item(self.player)
         monkey = Items.Morph_Monkey.to_item(self.player)
 
-        gadgets : List[AE3Item] = [stun_club, monkey_radar, super_hoop, slingback_shooter, water_net, rc_car,
-                                  sky_flyer]
-
-        # Push Starting Gadget as pre-collected
-        if self.options.starting_gadget > 0:
-            self.multiworld.push_precollected(gadgets[self.options.starting_gadget - 1])
-            del gadgets[self.options.starting_gadget - 1]
-
-        self.multiworld.push_precollected(monkey_net)
-
         # <!> Push important items early for easy testing
         self.multiworld.push_precollected(ninja)
         #
@@ -119,8 +110,27 @@ class AE3World(World):
 
         self.get_location(Loc.seaside_ukkitan.value).place_locked_item(Chassis_Pudding.to_item(self.player))
 
-        self.item_pool += gadgets
-        self.item_pool += [knight, cowboy, ninja, magician, kungfu, hero, monkey]
+        equipment : List[AE3Item] = [stun_club, monkey_radar, super_hoop, slingback_shooter, water_net, rc_car,
+                                  sky_flyer]
+
+        # Push Starting Gadget as pre-collected
+        if self.options.starting_gadget > 0:
+            self.multiworld.push_precollected(equipment[self.options.starting_gadget - 1])
+            del equipment[self.options.starting_gadget - 1]
+
+        self.multiworld.push_precollected(monkey_net)
+
+        self.item_pool += [*equipment]
+
+        equipment.clear()
+        equipment = [knight, cowboy, ninja, magician, kungfu, hero, monkey]
+
+        # Push Starting Morph as precollected
+        if self.options.starting_morph > 0:
+            self.multiworld.push_precollected(equipment[self.options.starting_morph - 1])
+            del equipment[self.options.starting_morph - 1]
+
+        self.item_pool += [*equipment]
 
         if self.options.shuffle_chassis:
             self.item_pool.remove(rc_car)
@@ -163,17 +173,7 @@ class AE3World(World):
         self.multiworld.itempool = self.item_pool
 
     def fill_slot_data(self):
-        return self.options.as_dict(
-            APHelper.game_mode.value,
-
-            APHelper.starting_gadget.value,
-            APHelper.base_morph_duration.value,
-            APHelper.shuffle_chassis.value,
-            APHelper.shuffle_morph_stocks.value,
-            APHelper.add_morph_extensions.value,
-
-            APHelper.auto_equip.value
-        )
+        return self.options.as_dict(*slot_data_options())
 
     def generate_output(self, directory : str):
         datas = {
