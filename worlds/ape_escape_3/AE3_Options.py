@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import OptionGroup, Toggle, DefaultOnToggle, Choice, PerGameCommonOptions, DeathLink
+from Options import OptionGroup, Toggle, DefaultOnToggle, Choice, PerGameCommonOptions, DeathLink, Visibility
 from worlds.ape_escape_3 import APHelper
 
 
@@ -29,7 +29,7 @@ class Monkeysanity(DefaultOnToggle):
     If this option is disabled, and other checks such as Camerasanity or Cellphonesanity are still also disabled,
     this option will be re-enabled.
     """
-    visibility = False
+    visibility = Visibility.none
     display_name : str = "Pipo Monkeysanity"
 
 class Camerasanity(Choice):
@@ -50,7 +50,7 @@ class Camerasanity(Choice):
     option_enabled : int = 1
     option_no_actors : int = 2
 
-class Cellphonesanity(Choice):
+class Cellphonesanity(Toggle):
     """
     Choose if Cellphones should count as locations
     default: Disabled
@@ -112,7 +112,7 @@ class ShuffleMonkeyNet(Toggle):
     Choose if the Monkey Net should also be shuffled. This will skip the tutorial level immediately.
     Default: Disabled
     """
-    visibility = False
+    visibility = Visibility.none
     display_name : str = "Shuffle Monkey Net"
 
 class ShuffleRCCarChassis(Toggle):
@@ -151,7 +151,7 @@ class EnableShoppingArea(DefaultOnToggle):
     Choose if the Shopping Area should be able to sell (relevant) items.
     Default: Enabled
     """
-    visibility = False
+    visibility = Visibility.none
     display_name : str = "Enable Shopping Area"
 
 # QoL/Bonus Options
@@ -162,10 +162,10 @@ class AutoEquipOnUnlock(Toggle):
     """
     display_name : str = "Auto Equip Gadgets when obtained"
 
-ae3_option_groups: dict[str, list[any]] = {
+ae3_option_groups : dict[str, list[any]] = {
     "Randomizer Options"        : [ProgressionMode, Monkeysanity, Camerasanity, Cellphonesanity],
-    "Item Options"              : [StartingGadget, StartingMorph, BaseMorphDuration, ShuffleMonkeyNet, ShuffleRCCarChassis,
-                                    ShuffleMorphStocks, AddMorphExtensions],
+    "Item Options"              : [StartingGadget, StartingMorph, BaseMorphDuration, ShuffleMonkeyNet,
+                                   ShuffleRCCarChassis, ShuffleMorphStocks, AddMorphExtensions],
     "Preferences"               : [EarlyFreePlay, EnableShoppingArea],
     "QoL Options"               : [AutoEquipOnUnlock],
     "Sync Options"              : [DeathLink]
@@ -173,30 +173,30 @@ ae3_option_groups: dict[str, list[any]] = {
 
 @dataclass
 class AE3Options(PerGameCommonOptions):
-    progression_mode        : ProgressionMode
-    monkeysanity            : Monkeysanity
-    camerasanity            : Camerasanity
-    cellphonesanity         : Cellphonesanity
+    Progression_Mode        : ProgressionMode
+    Monkeysanity            : Monkeysanity
+    Camerasanity            : Camerasanity
+    Cellphonesanity         : Cellphonesanity
 
-    starting_gadget         : StartingGadget
-    starting_morph          : StartingMorph
-    base_morph_duration     : BaseMorphDuration
+    Starting_Gadget         : StartingGadget
+    Starting_Morph          : StartingMorph
+    Base_Morph_Duration     : BaseMorphDuration
 
-    shuffle_net             : ShuffleMonkeyNet
-    shuffle_chassis         : ShuffleRCCarChassis
-    shuffle_morph_stocks    : ShuffleMorphStocks
-    add_morph_extensions    : AddMorphExtensions
+    Shuffle_Net             : ShuffleMonkeyNet
+    Shuffle_Chassis         : ShuffleRCCarChassis
+    Shuffle_Morph_Stocks    : ShuffleMorphStocks
+    Add_Morph_Extensions    : AddMorphExtensions
 
-    early_free_play         : EarlyFreePlay
-    enable_shopping_area    : EnableShoppingArea
+    Early_Free_Play         : EarlyFreePlay
+    Enable_Shopping_Area    : EnableShoppingArea
 
-    auto_equip              : AutoEquipOnUnlock
+    Auto_Equip              : AutoEquipOnUnlock
 
     death_link              : DeathLink
 
 def create_option_groups() -> list[OptionGroup]:
     groups : list[OptionGroup] = []
-    for group, options in ae3_option_groups:
+    for group, options in ae3_option_groups.items():
         groups.append(OptionGroup(group, options))
 
     return groups

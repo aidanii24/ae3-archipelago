@@ -1130,24 +1130,24 @@ class APHelper(BaseEnum):
     pr_round2 =             "round2\x00\x00"
 
     # AP Options
-    progression_mode =      "progression_mode"
-    monkeysanity =          "monkeysanity"
-    camerasanity =          "camerasanity"
-    cellphonesanity =       "cellphonesanity"
+    progression_mode =      "Progression_Mode"
+    monkeysanity =          "Monkeysanity"
+    camerasanity =          "Camerasanity"
+    cellphonesanity =       "Cellphonesanity"
 
-    starting_gadget =       "starting_gadget"
-    starting_morph =        "starting_morph"
-    base_morph_duration =   "base_morph_duration"
+    starting_gadget =       "Starting_gadget"
+    starting_morph =        "Starting_morph"
+    base_morph_duration =   "Base_Morph_Duration"
 
-    shuffle_net =           "shuffle_net"
-    shuffle_chassis =       "shuffle_chassis"
-    shuffle_morph_stocks =  "shuffle_morph_stocks"
-    add_morph_extensions =  "add_morph_extensions"
+    shuffle_net =           "Shuffle_Net"
+    shuffle_chassis =       "Shuffle_Chassis"
+    shuffle_morph_stocks =  "Shuffle_Morph_Stocks"
+    add_morph_extensions =  "Add_Morph_Extensions"
 
-    early_free_play =       "early_free_play"
-    enable_shopping_area =  "enable_shopping_area"
+    early_free_play =       "Early_Free_Play"
+    enable_shopping_area =  "Enable_Shopping_Area"
 
-    auto_equip =            "auto_equip"
+    auto_equip =            "Auto_Equip"
 
     death_link =            "death_link"
 
