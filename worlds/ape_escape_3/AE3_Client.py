@@ -12,7 +12,7 @@ from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser,
 import Utils
 
 from .data.Strings import Meta, APConsole
-from .data.Logic import GameMode
+from .data.Logic import ProgressionMode
 from .data.Locations import CELLPHONES_MASTER, MONKEYS_MASTER, generate_name_to_id
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
 from .Checker import *
@@ -84,7 +84,7 @@ class AE3Context(CommonContext):
     # Player Set Options
     auto_equip : bool = False
     morph_duration : float = 0.0
-    progression : GameMode = GameMode.BOSS
+    progression : ProgressionMode = ProgressionMode.BOSS
     death_link : bool = False
 
     def __init__(self, address, password):
@@ -124,8 +124,8 @@ class AE3Context(CommonContext):
                 self.load_session()
 
             ## Game Mode
-            if not self.unlocked_channels and APHelper.game_mode.value in self.slot_data:
-                self.progression = GameMode.get_gamemode(self.slot_data[APHelper.game_mode.value])
+            if not self.unlocked_channels and APHelper.progression_mode.value in self.slot_data:
+                self.progression = ProgressionMode.get_progression_mode(self.slot_data[APHelper.progression_mode.value])
                 self.unlocked_channels = self.progression.get_current_progress(0)
 
             ## Morph Duration
@@ -137,8 +137,8 @@ class AE3Context(CommonContext):
                 self.auto_equip = bool(self.slot_data[APHelper.auto_equip.value])
 
             ## DeathLink
-            if APHelper.arg_deathl.value in self.slot_data:
-                self.death_link = bool(self.slot_data[APHelper.arg_deathl.value])
+            if APHelper.death_link.value in self.slot_data:
+                self.death_link = bool(self.slot_data[APHelper.death_link.value])
                 Utils.async_start(self.update_death_link(self.death_link))
 
         # Initialize Session on receive of RoomInfo Packet
