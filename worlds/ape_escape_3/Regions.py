@@ -98,7 +98,7 @@ def create_regions(world : "AE3World"):
             if world.options.camerasanity == 1 and not world.options.early_free_play:
                 ruleset : Rulesets = Rulesets()
                 parent_channel : str = ""
-                for channel, regions in STAGES_DIRECTORY:
+                for channel, regions in STAGES_DIRECTORY.items():
                     if not stage.name in regions:
                         continue
 

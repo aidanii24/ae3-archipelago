@@ -52,7 +52,7 @@ class RuleType:
                         rules.Rules.update(entrance.rules.Rules)
 
                         # Check for critical rules as well
-                        if entrance.rules.Critical:
+                        if entrance.rules.Critical and entrance.destination != Stage.asia_e.value:
                             rules.Critical.update(entrance.rules.Critical)
 
         # Monkey Rules
