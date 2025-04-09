@@ -831,6 +831,7 @@ class Stage(BaseEnum):
     arabian_e =                 "Mirage Town - Desert Palace"
     arabian_e1 =                "Mirage Town - Desert Palace Entrance"
     arabian_f =                 "Mirage Town - Break Room"
+    arabian_g =                 "Mirage Town - Princess' Room"
 
     boss4 =                     "Monkey Pink Battle!"
 
@@ -984,6 +985,7 @@ class Game(BaseEnum):
     pipo_camera =           "Pipo Camera"
     cellphone =             "Cellphone"
 
+    caught =                " Captured"
     conte =                 "conte"
 
     # Resources
