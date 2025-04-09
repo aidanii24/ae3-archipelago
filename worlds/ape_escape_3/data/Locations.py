@@ -55,8 +55,8 @@ class MonkeyLocation(AE3LocationMeta):
 class CameraLocation(AE3LocationMeta):
     def __init__(self, name : str, offset : int = 0):
         self.name = name
-        # Locations can be assumed to always be in Addresses.Locations. NTSCU version will be used as basis for the ID.
-        self.loc_id = NTSCU.Locations[name] + offset
+        # Cameras will be id'd linearly, based on the starting id definied by Pipo Camera in addresses.py
+        self.loc_id = NTSCU.Locations[Loc.pipo_camera.value] + offset
         self.address = self.loc_id
         self.rules = Rulesets()
 
@@ -550,16 +550,20 @@ Loc.arabian_ukki_mamba.value, Loc.arabian_crazy_ol_mon.value
 
 MONKEYS_ARABIAN_E : Sequence[str] = [
     Loc.arabian_shamila.value, Loc.arabian_tamiyanya.value, Loc.arabian_salteenz.value,
-    Loc.arabian_dancing_mia.value, Loc.arabian_princess_judy.value
+    Loc.arabian_dancing_mia.value
 ]
 
 MONKEYS_ARABIAN_F : Sequence[str] = [
     Loc.arabian_miccho.value, Loc.arabian_kisha.value, Loc.arabian_gimuccho.value, Loc.arabian_wojin.value
 ]
 
+MONKEYS_ARABIAN_G : Sequence[str] = [
+    Loc.arabian_princess_judy.value
+]
+
 MONKEYS_ARABIAN : Sequence[str] = [
     *MONKEYS_ARABIAN_A, *MONKEYS_ARABIAN_B, *MONKEYS_ARABIAN_C, *MONKEYS_ARABIAN_C1, *MONKEYS_ARABIAN_E,
-    *MONKEYS_ARABIAN_F
+    *MONKEYS_ARABIAN_F, *MONKEYS_ARABIAN_G
 ]
 
 # Boss4
@@ -1058,6 +1062,7 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.arabian_c1.value      : MONKEYS_ARABIAN_C1,
     Stage.arabian_e.value       : MONKEYS_ARABIAN_E,
     Stage.arabian_f.value       : MONKEYS_ARABIAN_F,
+    Stage.arabian_g.value       : MONKEYS_ARABIAN_G,
 
     # Boss4
     Stage.boss4.value           : MONKEYS_BOSS4,
@@ -1207,6 +1212,29 @@ CAMERAS_MASTER : Sequence[str] = [
     Loc.space_cam.value
 ]
 
+CAMERAS_INDEX : dict[str, str] = {
+    Stage.seaside_b.value               : Loc.seaside_cam.value,
+    Stage.woods_a.value                 : Loc.woods_cam.value,
+    Stage.castle_c.value                : Loc.castle_cam.value,
+    Stage.ciscocity_b.value             : Loc.ciscocity_cam.value,
+    Stage.studio_e.value                : Loc.studio_cam.value,
+    Stage.halloween_c.value             : Loc.halloween_cam.value,
+    Stage.western_d.value               : Loc.western_cam.value,
+    Stage.onsen_a.value                 : Loc.onsen_cam.value,
+    Stage.snowfesta_a.value             : Loc.snowfesta_cam.value,
+    Stage.edotown_c.value               : Loc.edotown_cam.value,
+    Stage.heaven_a.value                : Loc.heaven_cam.value,
+    Stage.toyhouse_b.value              : Loc.toyhouse_cam.value,
+    Stage.iceland_e.value               : Loc.iceland_cam.value,
+    Stage.arabian_e.value               : Loc.arabian_cam.value,
+    Stage.asia_a2.value                 : Loc.asia_cam.value,
+    Stage.plane_c1.value                : Loc.plane_cam.value,
+    Stage.hong_c.value                  : Loc.hong_cam.value,
+    Stage.bay_c.value                   : Loc.bay_cam.value,
+    Stage.tomo_b.value                  : Loc.tomo_cam.value,
+    Stage.space_e.value                 : Loc.space_cam.value,
+}
+
 CAMERAS_DIRECTORY : dict[str, str] = {
     APHelper.seaside.value              : Loc.seaside_cam.value,
     APHelper.woods.value                : Loc.woods_cam.value,
@@ -1244,6 +1272,30 @@ CAMERAS_DIRECTORY : dict[str, str] = {
     APHelper.space_2.value              : Loc.space_cam.value,
 }
 
+ACTORS_INDEX : dict[str, list[str]] = {
+    Loc.seaside_cam.value               : [Loc.seaside_ukki_ben.value],
+    Loc.woods_cam.value                 : [Loc.woods_ukki_red.value],
+    Loc.castle_cam.value                : [Loc.castle_saru_mon.value],
+    Loc.ciscocity_cam.value             : [Loc.ciscocity_ginjiro.value, Loc.ciscocity_kichiemon.value],
+    Loc.studio_cam.value                : [Loc.studio_ukki_lee_ukki.value, Loc.studio_ukkida_jiro],
+    Loc.halloween_cam.value             : [Loc.halloween_ukkison.value],
+    Loc.western_cam.value               : [Loc.western_shaluron.value],
+    Loc.onsen_cam.value                 : [Loc.onsen_ukki_ichiro.value],
+    Loc.snowfesta_cam.value             : [Loc.snowfesta_konzo, Loc.snowfesta_takuo.value],
+    Loc.edotown_cam.value               : [Loc.edotown_tomoku_chan.value],
+    Loc.heaven_cam.value                : [Loc.heaven_ukkido.value],
+    Loc.toyhouse_cam.value              : [Loc.toyhouse_bon_mota.value, Loc.toyhouse_bon_verna.value,
+                                           Loc.toyhouse_bon_papa.value, Loc.toyhouse_bon_mama.value],
+    Loc.iceland_cam.value               : [Loc.iceland_jolly_mon.value],
+    Loc.arabian_cam.value               : [Loc.arabian_princess_judy],
+    Loc.asia_cam.value                  : [Loc.asia_ukki_mat.value],
+    Loc.plane_cam.value                 : [Loc.plane_prince_bertus.value, Loc.plane_chai_bunny.value],
+    Loc.hong_cam.value                  : [Loc.hong_bassili_ukki.value],
+    Loc.bay_cam.value                   : [Loc.bay_shiny_pete.value, Loc.bay_gimo.value],
+    Loc.tomo_cam.value                  : [Loc.tomo_pon_jiro.value, Loc.tomo_ukkine.value],
+    Loc.space_cam.value                 : [Loc.space_robert.value],
+}
+
 ## Cellphones
 CELLPHONES_SEASIDE_A : Sequence[str] = [
     Loc.tele_000.value, Loc.tele_002.value, Loc.tele_003.value
@@ -1271,6 +1323,13 @@ CELLPHONES_WOODS : Sequence[str] = [
 CELLPHONES_MASTER : Sequence[str] = [
     *CELLPHONES_SEASIDE, *CELLPHONES_WOODS
 ]
+
+CELLPHONES_INDEX : dict[str, Sequence[str]] = {
+    Stage.seaside_a.value               : CELLPHONES_SEASIDE_A,
+    Stage.seaside_b.value               : CELLPHONES_SEASIDE_B,
+    Stage.woods_a.value                 : CELLPHONES_WOODS_A,
+    Stage.woods_b.value                 : CELLPHONES_WOODS_B
+}
 
 CELLPHONES_DIRECTORY : dict[str, Sequence[str]] = {
     APHelper.seaside.value              : CELLPHONES_SEASIDE,
@@ -1390,7 +1449,7 @@ def generate_name_to_id(cameras : bool = False, cellphones : bool = False) -> di
     name_to_id : dict[str, int] = { name : MonkeyLocation(name).loc_id for name in MONKEYS_MASTER }
 
     if cameras:
-        name_to_id.update({name : CameraLocation(name).loc_id for name in CAMERAS_MASTER})
+        name_to_id.update({name : CameraLocation(name, i).loc_id for i, name in enumerate(CAMERAS_MASTER)})
 
     if cellphones:
         name_to_id.update({name : CellphoneLocation(name).loc_id for name in CELLPHONES_MASTER})

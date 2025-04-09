@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-from typing import Callable, Set
+from typing import Callable, Sequence, Set
 
+from .Locations import CAMERAS_DIRECTORY, MONKEYS_DIRECTORY, MONKEYS_INDEX
 from .Logic import Rulesets, AccessRule, ProgressionMode, event_not_invoked, has_keys, event_invoked
 from .Strings import Loc, Stage, Game
-from .Stages import AE3EntranceMeta, LEVELS_BY_ORDER
+from .Stages import AE3EntranceMeta, LEVELS_BY_ORDER, STAGES_DIRECTORY
 
 
 @dataclass
@@ -29,6 +30,7 @@ class RuleType:
     based on a preferred play style
     """
     monkey_rules : dict[str, RuleWrap]
+    camera_rules : dict[str, list[str]]
     entrances : dict[str, list[AE3EntranceMeta]]
 
     default_critical_rule : Set[Callable] = [AccessRule.CATCH]
@@ -36,6 +38,33 @@ class RuleType:
                                         AccessRule.GENIE, AccessRule.KUNGFU, AccessRule.HERO, AccessRule.MONKEY}
 
     # Set Required Keys for each level depending on the Progression Type
+    def get_channel_clear_rules(self, channel_name) -> Rulesets:
+        rules : Rulesets = Rulesets()
+        if not channel_name in STAGES_DIRECTORY:
+            return rules
+
+        # Entrance Rules
+        if channel_name in STAGES_DIRECTORY:
+            regions: Sequence[str] = STAGES_DIRECTORY[channel_name]
+            for region in regions:
+                if region in self.entrances:
+                    for entrance in self.entrances[region]:
+                        rules.Rules.update(entrance.rules.Rules)
+
+                        # Check for critical rules as well
+                        if entrance.rules.Critical:
+                            rules.Critical.update(entrance.rules.Critical)
+
+        # Monkey Rules
+        if channel_name in MONKEYS_DIRECTORY:
+            rules.Critical.update([AccessRule.CATCH])
+            monkeys : Sequence[str] = MONKEYS_DIRECTORY[channel_name]
+            for monkey in monkeys:
+                if monkey in self.monkey_rules:
+                    rules.Rules.update(self.monkey_rules[monkey].rules.Rules)
+
+        return rules
+
     def set_keys_rules(self, progression : ProgressionMode):
         self.entrances.setdefault(Stage.travel_station_a.value, []).clear()
         self.entrances.setdefault(Stage.travel_station_a.value, []).append(
@@ -471,8 +500,10 @@ class Casual(RuleType):
         Stage.arabian_e1.value               : [AE3EntranceMeta(Stage.arabian_b.value),
                                                 AE3EntranceMeta(Stage.arabian_e.value,
                                                                 AccessRule.GENIE)],
-        Stage.arabian_e.value               : [AE3EntranceMeta(Stage.arabian_e1.value)],
+        Stage.arabian_e.value               : [AE3EntranceMeta(Stage.arabian_e1.value),
+                                               AE3EntranceMeta(Stage.arabian_g.value)],
         Stage.arabian_f.value               : [AE3EntranceMeta(Stage.arabian_b.value)],
+        Stage.arabian_g.value               : [AE3EntranceMeta(Stage.arabian_b.value)],
 
         # Boss4
         Stage.boss4.value                   : None,

@@ -2,8 +2,9 @@ from typing import TYPE_CHECKING, Callable, Dict
 
 from BaseClasses import CollectionState, Entrance, Location, Region
 
-from .data.Stages import STAGES_MASTER
-from .data.Locations import MonkeyLocation, MONKEYS_INDEX, EVENTS_INDEX
+from .data.Stages import STAGES_DIRECTORY, STAGES_MASTER
+from .data.Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, CameraLocation, CellphoneLocation, \
+    MonkeyLocation, MONKEYS_INDEX, EVENTS_INDEX
 from .data.Logic import Rulesets
 from .data.Rules import RuleType, Casual
 
@@ -85,6 +86,42 @@ def create_regions(world : "AE3World"):
 
                 stage.locations.append(loc)
 
+        ## Cameras
+        if world.options.camerasanity and stage.name in CAMERAS_INDEX:
+            camera : str = CAMERAS_INDEX[stage.name]
+            meta : CameraLocation = CameraLocation(camera, CAMERAS_MASTER.index(camera))
+            loc : Location = meta.to_location(world.player, stage)
+
+            # Add Access Rule for completing the stage to ensure maximum accessibility,
+            # if the player chooses to require the monkey actors for the Cameras,
+            # and they did not choose to have early Freeplay
+            if world.options.camerasanity == 1 and not world.options.early_free_play:
+                ruleset : Rulesets = Rulesets()
+                parent_channel : str = ""
+                for channel, regions in STAGES_DIRECTORY:
+                    if not stage.name in regions:
+                        continue
+
+                    parent_channel = channel
+                    break
+
+                if parent_channel:
+                    ruleset = rule.get_channel_clear_rules(parent_channel)
+
+                loc.access_rule = generate_access_rule(world.player, ruleset)
+
+            stage.locations.append(loc)
+
+        ## Cellphones
+        if world.options.cellphonesanity:
+            if stage.name in CELLPHONES_INDEX:
+                for cellphone in CELLPHONES_INDEX[stage.name]:
+                    meta : CellphoneLocation = CellphoneLocation(cellphone)
+                    loc : Location = meta.to_location(world.player, stage)
+
+                    stage.locations.append(loc)
+
+        ## Events
         if stage.name in EVENTS_INDEX:
             for event in EVENTS_INDEX[stage.name]:
                 loc : Location = event.to_event_location(world.player, stage)

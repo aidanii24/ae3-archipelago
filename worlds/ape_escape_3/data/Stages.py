@@ -160,7 +160,7 @@ STAGES_ICELAND : Sequence[str] = [
 
 STAGES_ARABIAN : Sequence[str] = [
     Stage.arabian_a.value, Stage.arabian_b.value, Stage.arabian_c.value, Stage.arabian_c1.value, Stage.arabian_e.value,
-    Stage.arabian_e1.value, Stage.arabian_f.value
+    Stage.arabian_e1.value, Stage.arabian_f.value, Stage.arabian_g.value
 ]
 
 STAGES_ASIA : Sequence[str] = [
@@ -220,3 +220,27 @@ STAGES_INDEX : Sequence[Sequence[str]] = [
     STAGES_TOYHOUSE, STAGES_ICELAND, STAGES_ARABIAN, STAGES_ASIA, STAGES_PLANE, STAGES_HONG, STAGES_BAY,
     STAGES_TOMO, STAGES_BOSSES, STAGES_SPACE, STAGES_TITLE, STAGES_HUB
 ]
+
+STAGES_DIRECTORY : dict[str, Sequence[str]] = {
+    APHelper.zero.value                 : STAGES_ZERO,
+    APHelper.seaside.value              : STAGES_SEASIDE,
+    APHelper.woods.value                : STAGES_WOODS,
+    APHelper.castle.value               : STAGES_CASTLE,
+    APHelper.ciscocity.value            : STAGES_CISCOCITY,
+    APHelper.studio.value               : STAGES_STUDIO,
+    APHelper.halloween.value            : STAGES_HALLOWEEN,
+    APHelper.western.value              : STAGES_WESTERN,
+    APHelper.onsen.value                : STAGES_ONSEN,
+    APHelper.snowfesta.value            : STAGES_SNOWFESTA,
+    APHelper.edotown.value              : STAGES_EDOTOWN,
+    APHelper.heaven.value               : STAGES_HEAVEN,
+    APHelper.toyhouse.value             : STAGES_TOYHOUSE,
+    APHelper.iceland.value              : STAGES_ICELAND,
+    APHelper.arabian.value              : STAGES_ARABIAN,
+    APHelper.asia.value                 : STAGES_ASIA,
+    APHelper.plane.value                : STAGES_PLANE,
+    APHelper.hong.value                 : STAGES_HONG,
+    APHelper.bay.value                  : STAGES_BAY,
+    APHelper.tomo.value                 : STAGES_TOMO,
+    APHelper.space.value                : STAGES_SPACE,
+}
