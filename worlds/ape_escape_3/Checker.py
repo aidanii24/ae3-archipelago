@@ -265,9 +265,6 @@ async def check_locations(ctx : 'AE3Context'):
             if tele_text_id in Cellphone_ID:
                 location_id : int = ctx.locations_name_to_id[Cellphone_ID[tele_text_id]]
 
-                if Cellphone_ID[tele_text_id] in ctx.locations_name_to_id:
-                    print(Cellphone_ID[tele_text_id], location_id)
-
                 # Special case for duplicate phone call in Hide-n-seek Forest
                 if tele_text_id == Loc.tele_004s.value and ctx.current_channel == APHelper.woods.value:
                     location_id = ctx.locations_name_to_id[Loc.cell_004w.value]

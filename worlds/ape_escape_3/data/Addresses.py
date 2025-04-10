@@ -782,6 +782,7 @@ class NTSCU(VersionAddresses):
         Game.interact_data.value        : 0x7720d4,
         Game.pipo_camera.value          : -0x80,    # Offset from Interact Data Pointer
         Game.cellphone.value            : 0x1CB,    # Offset from Interact Data Pointer
+        Game.cellphone_alt.value        : -0x355,
 
         # Commands
         Game.command.value              : 0x772030,

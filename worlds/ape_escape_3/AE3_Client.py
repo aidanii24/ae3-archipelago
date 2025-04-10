@@ -113,7 +113,6 @@ class AE3Context(CommonContext):
 
         if self.save_data_path:
             self.save_data_path += "/"
-            print(self.save_data_path)
 
     # Archipelago Server Authentication
     async def server_auth(self, password_requested : bool = False):
