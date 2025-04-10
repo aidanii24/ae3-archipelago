@@ -4,8 +4,8 @@ from NetUtils import ClientStatus, NetworkItem
 
 from .data.Items import ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem
 from .data.Strings import Game, Itm, APHelper
-from .data.Addresses import NTSCU, AP
-from .data.Locations import CAMERAS_DIRECTORY, CAMERAS_MASTER, CELLPHONES_MASTER, Loc, MONKEYS_BOSSES, MONKEYS_DIRECTORY
+from .data.Addresses import Capacities, NTSCU, AP, Cellphone_ID
+from .data.Locations import CELLPHONES_STAGE_INDEX, Loc, CAMERAS_STAGE_INDEX, MONKEYS_BOSSES, MONKEYS_DIRECTORY
 from .data import Items
 
 if TYPE_CHECKING:
@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 async def check_background_states(ctx : 'AE3Context'):
     # Get current stage
     new_channel = ctx.ipc.get_channel()
+    ctx.current_stage = ctx.ipc.get_stage()
 
     # Enforce Morph Duration
     if ctx.character >= 0:
@@ -110,18 +111,24 @@ async def setup_level_select(ctx : 'AE3Context'):
                 ctx.ipc.unlock_chassis_direct(_)
 
 async def setup_area(ctx : 'AE3Context'):
-    if not ctx.morphs_unlocked[-1]:
-        if ctx.ipc.check_screen_fading() != 0x01 and ctx.ipc.get_player_state() != 0x03:
-            if ctx.ipc.get_screen_fade_count() > 0x1:
+    if ctx.ipc.check_screen_fading() != 0x01 and ctx.ipc.get_player_state() != 0x03:
+        if ctx.ipc.get_screen_fade_count() > 0x1:
+            if not ctx.morphs_unlocked[-1]:
                 ctx.ipc.lock_equipment(Itm.morph_monkey.value)
-            # Temporarily give a morph during transitions to keep Morph Gauge visible
-            else:
-                ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
-                ctx.command_state = 2
         else:
+            # Temporarily give a morph during transitions to keep Morph Gauge visible
+            # and to spawn Break Room loading zones
+            if not ctx.morphs_unlocked[-1]:
+                ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
+
+            ctx.current_stage = ctx.ipc.get_stage()
+            ctx.command_state = 2
+    else:
+        if not ctx.morphs_unlocked[-1]:
             ctx.ipc.lock_equipment(Itm.morph_monkey.value)
-            if ctx.command_state == 2:
-                ctx.command_state = 0
+
+        if ctx.command_state == 2:
+            ctx.command_state = 0
 
 async def check_states(ctx : 'AE3Context'):
     if not ctx.command_state:
@@ -196,8 +203,9 @@ async def check_items(ctx : 'AE3Context'):
             i = item
             maximum : int | float = 0x0
 
-            if isinstance(item, CollectableItem):
-                maximum = item.capacity
+            # Get Maximum Values
+            if item.resource in Capacities:
+                maximum = Capacities[item.resource]
 
             ### <!> NTSC-U Addresses are used when identifying Items regardless of region
             if item.address == NTSCU.GameStates[Game.nothing.value]:
@@ -247,18 +255,24 @@ async def check_locations(ctx : 'AE3Context'):
 
     if not ctx.current_channel == APHelper.travel_station.value:
         # Camera Check
-        if ctx.current_channel in CAMERAS_MASTER:
+        if ctx.camerasanity and ctx.current_stage in CAMERAS_STAGE_INDEX:
             if ctx.ipc.is_camera_interacted():
-                cleared.add(ctx.locations_name_to_id[CAMERAS_DIRECTORY[ctx.current_channel]])
+                cleared.add(ctx.locations_name_to_id[CAMERAS_STAGE_INDEX[ctx.current_stage]])
 
         # Cellphone Check
-        if ctx.current_channel in CELLPHONES_MASTER:
-            cell : str = ctx.ipc.get_cellphone_interacted()
-            if cell in CELLPHONES_MASTER:
-                if cell == Loc.tele_004w.value and ctx.current_channel == APHelper.woods.value:
-                    cleared.add(ctx.locations_name_to_id[Loc.tele_004w.value])
-                else:
-                    cleared.add(ctx.locations_name_to_id[cell])
+        if ctx.cellphonesanity and ctx.current_stage in CELLPHONES_STAGE_INDEX:
+            tele_text_id : str = ctx.ipc.get_cellphone_interacted()
+            if tele_text_id in Cellphone_ID:
+                location_id : int = ctx.locations_name_to_id[Cellphone_ID[tele_text_id]]
+
+                if Cellphone_ID[tele_text_id] in ctx.locations_name_to_id:
+                    print(Cellphone_ID[tele_text_id], location_id)
+
+                # Special case for duplicate phone call in Hide-n-seek Forest
+                if tele_text_id == Loc.tele_004s.value and ctx.current_channel == APHelper.woods.value:
+                    location_id = ctx.locations_name_to_id[Loc.cell_004w.value]
+
+                cleared.add(location_id)
 
     # Get newly checked locations
     cleared = cleared.difference(ctx.checked_locations)

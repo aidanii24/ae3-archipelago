@@ -139,7 +139,7 @@ class AEPS2Interface:
         # Decode to String and remove null bytes if present
         return channel_as_bytes.decode("utf-8").replace("\x00", "")
 
-    def get_room(self) -> str:
+    def get_stage(self) -> str:
         address : int = self.addresses.GameStates[Game.current_room.value]
         length : int = 4
 
@@ -213,16 +213,26 @@ class AEPS2Interface:
         address += self.addresses.GameStates[Game.pipo_camera.value]
 
         as_bytes : bytes = self.pine.read_bytes(address, 5)
+        # Try to decode to string, and immediately return if it cannot be decoded
+        try:
+            as_string: str = as_bytes.decode().replace("\x00", "")
+        except UnicodeDecodeError:
+            return False
 
-        return as_bytes.decode("utf-8").replace("\x00", "") == Game.conte.value
+        return as_string == Game.conte.value
 
     def get_cellphone_interacted(self) -> str:
         address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
                                                   Game.interact_data.value)
         address += self.addresses.GameStates[Game.cellphone.value]
 
-        as_bytes : bytes = self.pine.read_bytes(address, 3)
-        as_string : str = as_bytes.decode().replace("\x00", "")
+        as_bytes: bytes = self.pine.read_bytes(address, 3)
+
+        # Try to decode to string, and immediately return if it cannot be decoded
+        try:
+            as_string : str = as_bytes.decode().replace("\x00", "")
+        except UnicodeDecodeError:
+            return ""
 
         if not as_string.isdigit():
             return ""
@@ -364,7 +374,7 @@ class AEPS2Interface:
 
             self.pine.write_int32(morph, float_to_hex_int32(duration_to_set))
 
-    def give_collectable(self, address_name : str, amount : int | float = 0x1, maximum : int | float = 0):
+    def give_collectable(self, address_name : str, amount : int | float = 0x1, maximum : int | float = 0x0):
         address : int = self.addresses.GameStates[address_name]
         current : int = self.pine.read_int32(address)
 
@@ -418,7 +428,7 @@ class AEPS2Interface:
         ### <!> EXPERIMENTAL
         ## self.send_command(Game.kill_player.value) has a transition delay that takes too long
         ## changeArea is more instantaneous, but introduces a buggy respawn when all cookies are depleted
-        self.change_area(self.get_room())
+        self.change_area(self.get_stage())
 
     def change_area(self, destination : str):
         self.set_change_area_destination(destination)
