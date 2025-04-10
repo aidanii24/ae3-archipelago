@@ -1135,8 +1135,8 @@ class APHelper(BaseEnum):
     camerasanity =          "Camerasanity"
     cellphonesanity =       "Cellphonesanity"
 
-    starting_gadget =       "Starting_gadget"
-    starting_morph =        "Starting_morph"
+    starting_gadget =       "Starting_Gadget"
+    starting_morph =        "Starting_Morph"
     base_morph_duration =   "Base_Morph_Duration"
 
     shuffle_net =           "Shuffle_Net"
