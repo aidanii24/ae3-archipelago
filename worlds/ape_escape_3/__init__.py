@@ -68,8 +68,9 @@ class AE3World(World):
         super(AE3World, self).__init__(multiworld, player)
 
     def generate_early(self):
-        self.auto_equip = self.options.Auto_Equip
         self.progression = ProgressionMode.get_progression_mode(self.options.Progression_Mode.value)
+
+        self.auto_equip = self.options.Auto_Equip
 
         self.item_pool = []
 
@@ -96,10 +97,8 @@ class AE3World(World):
         monkey = Items.Morph_Monkey.to_item(self.player)
 
         # <!> Push important items early for easy testing
-        self.multiworld.push_precollected(ninja)
-        #
         # self.multiworld.push_precollected(Channel_Key.to_item(self.player))
-        # self.get_location(Loc.zero_ukki_pan.value).place_locked_item(Channel_Key.to_item(self.player))
+        # self.get_location(Loc.zero_ukki_pan.value).place_locked_item(Acc_Morph_Stock.to_item(self.player))
         # self.get_location(Loc.seaside_ukkitan.value).place_locked_item(Channel_Key.to_item(self.player))
         # self.get_location(Loc.seaside_ukki_pia.value).place_locked_item(Channel_Key.to_item(self.player))
         # self.get_location(Loc.seaside_nessal.value).place_locked_item(Channel_Key.to_item(self.player))
@@ -107,8 +106,6 @@ class AE3World(World):
         # self.get_location(Loc.seaside_sarubo.value).place_locked_item(Channel_Key.to_item(self.player))
         # self.get_location(Loc.seaside_morella.value).place_locked_item(Channel_Key.to_item(self.player))
         # self.get_location(Loc.seaside_ukki_ben.value).place_locked_item(Channel_Key.to_item(self.player))
-
-        self.get_location(Loc.seaside_ukkitan.value).place_locked_item(Chassis_Pudding.to_item(self.player))
 
         equipment : List[AE3Item] = [stun_club, monkey_radar, super_hoop, slingback_shooter, water_net, rc_car,
                                   sky_flyer]

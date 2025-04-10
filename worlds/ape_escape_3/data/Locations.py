@@ -6,7 +6,7 @@ from BaseClasses import Location, Region, ItemClassification
 
 from .Strings import Loc, Stage, Game, Meta, APHelper
 from .Logic import AccessRule, Rulesets
-from .Addresses import NTSCU
+from .Addresses import NTSCU, Cellphone_ID
 
 
 ### [< --- HELPERS --- >]
@@ -64,10 +64,10 @@ class CameraLocation(AE3LocationMeta):
         return Location(player, self.name, self.loc_id, parent)
 
 class CellphoneLocation(AE3LocationMeta):
-    def __init__(self, name : str):
-        self.name = name
+    def __init__(self, text_id : str):
+        self.name = Cellphone_ID[text_id]
         # Locations can be assumed to always be in Addresses.Locations. NTSCU version will be used as basis for the ID.
-        self.loc_id = NTSCU.Locations[name]
+        self.loc_id = NTSCU.Locations[text_id]
         self.address = self.loc_id
         self.rules = Rulesets()
 
@@ -942,224 +942,224 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.zero.value            : MONKEYS_ZERO,
 
     # Seaside
-    Stage.seaside_a.value       : MONKEYS_SEASIDE_A,
-    Stage.seaside_b.value       : MONKEYS_SEASIDE_B,
-    Stage.seaside_c.value       : MONKEYS_SEASIDE_C,
+    Stage.region_seaside_a.value       : MONKEYS_SEASIDE_A,
+    Stage.region_seaside_b.value       : MONKEYS_SEASIDE_B,
+    Stage.region_seaside_c.value       : MONKEYS_SEASIDE_C,
 
     # Woods
-    Stage.woods_a.value         : MONKEYS_WOODS_A,
-    Stage.woods_b.value         : MONKEYS_WOODS_B,
-    Stage.woods_c.value         : MONKEYS_WOODS_C,
-    Stage.woods_d.value         : MONKEYS_WOODS_D,
+    Stage.region_woods_a.value         : MONKEYS_WOODS_A,
+    Stage.region_woods_b.value         : MONKEYS_WOODS_B,
+    Stage.region_woods_c.value         : MONKEYS_WOODS_C,
+    Stage.region_woods_d.value         : MONKEYS_WOODS_D,
 
     # Castle
-    Stage.castle_a.value        : MONKEYS_CASTLE_A,
-    Stage.castle_b.value        : MONKEYS_CASTLE_B,
-    Stage.castle_c.value        : MONKEYS_CASTLE_C,
-    Stage.castle_d.value        : MONKEYS_CASTLE_D,
-    Stage.castle_e.value        : MONKEYS_CASTLE_E,
-    Stage.castle_f.value        : MONKEYS_CASTLE_F,
+    Stage.region_castle_a.value        : MONKEYS_CASTLE_A,
+    Stage.region_castle_b.value        : MONKEYS_CASTLE_B,
+    Stage.region_castle_c.value        : MONKEYS_CASTLE_C,
+    Stage.region_castle_d.value        : MONKEYS_CASTLE_D,
+    Stage.region_castle_e.value        : MONKEYS_CASTLE_E,
+    Stage.region_castle_f.value        : MONKEYS_CASTLE_F,
 
     # Boss1
-    Stage.boss1.value           : MONKEYS_BOSS1,
+    Stage.region_boss1.value           : MONKEYS_BOSS1,
 
     # Ciscocity
-    Stage.ciscocity_a.value     : MONKEYS_CISCOCITY_A,
-    Stage.ciscocity_b.value     : MONKEYS_CISCOCITY_B,
-    Stage.ciscocity_c.value     : MONKEYS_CISCOCITY_C,
-    Stage.ciscocity_d.value     : MONKEYS_CISCOCITY_D,
-    Stage.ciscocity_e.value     : MONKEYS_CISCOCITY_E,
+    Stage.region_ciscocity_a.value     : MONKEYS_CISCOCITY_A,
+    Stage.region_ciscocity_b.value     : MONKEYS_CISCOCITY_B,
+    Stage.region_ciscocity_c.value     : MONKEYS_CISCOCITY_C,
+    Stage.region_ciscocity_d.value     : MONKEYS_CISCOCITY_D,
+    Stage.region_ciscocity_e.value     : MONKEYS_CISCOCITY_E,
 
     # Studio
-    Stage.studio_a.value        : MONKEYS_STUDIO_A,
-    Stage.studio_b.value        : MONKEYS_STUDIO_B,
-    Stage.studio_c.value        : MONKEYS_STUDIO_C,
-    Stage.studio_d.value        : MONKEYS_STUDIO_D,
-    Stage.studio_e.value        : MONKEYS_STUDIO_E,
-    Stage.studio_f.value        : MONKEYS_STUDIO_F,
-    Stage.studio_g.value        : MONKEYS_STUDIO_G,
+    Stage.region_studio_a.value        : MONKEYS_STUDIO_A,
+    Stage.region_studio_b.value        : MONKEYS_STUDIO_B,
+    Stage.region_studio_c.value        : MONKEYS_STUDIO_C,
+    Stage.region_studio_d.value        : MONKEYS_STUDIO_D,
+    Stage.region_studio_e.value        : MONKEYS_STUDIO_E,
+    Stage.region_studio_f.value        : MONKEYS_STUDIO_F,
+    Stage.region_studio_g.value        : MONKEYS_STUDIO_G,
 
     # Halloween
-    Stage.halloween_a1.value    : MONKEYS_HALLOWEEN_A1,
-    Stage.halloween_a.value     : MONKEYS_HALLOWEEN_A,
-    Stage.halloween_b.value     : MONKEYS_HALLOWEEN_B,
-    Stage.halloween_c.value     : MONKEYS_HALLOWEEN_C,
-    Stage.halloween_d.value     : MONKEYS_HALLOWEEN_D,
-    Stage.halloween_e.value     : MONKEYS_HALLOWEEN_E,
-    Stage.halloween_f.value     : MONKEYS_HALLOWEEN_F,
+    Stage.region_halloween_a1.value    : MONKEYS_HALLOWEEN_A1,
+    Stage.region_halloween_a.value     : MONKEYS_HALLOWEEN_A,
+    Stage.region_halloween_b.value     : MONKEYS_HALLOWEEN_B,
+    Stage.region_halloween_c.value     : MONKEYS_HALLOWEEN_C,
+    Stage.region_halloween_d.value     : MONKEYS_HALLOWEEN_D,
+    Stage.region_halloween_e.value     : MONKEYS_HALLOWEEN_E,
+    Stage.region_halloween_f.value     : MONKEYS_HALLOWEEN_F,
 
     # Western
-    Stage.western_a.value       : MONKEYS_WESTERN_A,
-    Stage.western_b.value       : MONKEYS_WESTERN_B,
-    Stage.western_c.value       : MONKEYS_WESTERN_C,
-    Stage.western_d.value       : MONKEYS_WESTERN_D,
-    Stage.western_e.value       : MONKEYS_WESTERN_E,
-    Stage.western_f.value       : MONKEYS_WESTERN_F,
+    Stage.region_western_a.value       : MONKEYS_WESTERN_A,
+    Stage.region_western_b.value       : MONKEYS_WESTERN_B,
+    Stage.region_western_c.value       : MONKEYS_WESTERN_C,
+    Stage.region_western_d.value       : MONKEYS_WESTERN_D,
+    Stage.region_western_e.value       : MONKEYS_WESTERN_E,
+    Stage.region_western_f.value       : MONKEYS_WESTERN_F,
 
     # Boss2
-    Stage.boss2.value           : MONKEYS_BOSS2,
+    Stage.region_boss2.value           : MONKEYS_BOSS2,
 
     # Onsen
-    Stage.onsen_a.value         : MONKEYS_ONSEN_A,
-    Stage.onsen_a1.value        : MONKEYS_ONSEN_A1,
-    Stage.onsen_a2.value        : MONKEYS_ONSEN_A2,
-    Stage.onsen_b.value         : MONKEYS_ONSEN_B,
-    Stage.onsen_c.value         : MONKEYS_ONSEN_C,
-    Stage.onsen_d.value         : MONKEYS_ONSEN_D,
-    Stage.onsen_d1.value        : MONKEYS_ONSEN_D1,
-    Stage.onsen_e.value         : MONKEYS_ONSEN_E,
+    Stage.region_onsen_a.value         : MONKEYS_ONSEN_A,
+    Stage.region_onsen_a1.value        : MONKEYS_ONSEN_A1,
+    Stage.region_onsen_a2.value        : MONKEYS_ONSEN_A2,
+    Stage.region_onsen_b.value         : MONKEYS_ONSEN_B,
+    Stage.region_onsen_c.value         : MONKEYS_ONSEN_C,
+    Stage.region_onsen_d.value         : MONKEYS_ONSEN_D,
+    Stage.region_onsen_d1.value        : MONKEYS_ONSEN_D1,
+    Stage.region_onsen_e.value         : MONKEYS_ONSEN_E,
 
     # Snowfesta
-    Stage.snowfesta_a.value     : MONKEYS_SNOWFESTA_A,
-    Stage.snowfesta_b.value     : MONKEYS_SNOWFESTA_B,
-    Stage.snowfesta_c.value     : MONKEYS_SNOWFESTA_C,
-    Stage.snowfesta_d.value     : MONKEYS_SNOWFESTA_D,
-    Stage.snowfesta_e.value     : MONKEYS_SNOWFESTA_E,
-    Stage.snowfesta_f.value     : MONKEYS_SNOWFESTA_F,
-    Stage.snowfesta_g.value     : MONKEYS_SNOWFESTA_G,
+    Stage.region_snowfesta_a.value     : MONKEYS_SNOWFESTA_A,
+    Stage.region_snowfesta_b.value     : MONKEYS_SNOWFESTA_B,
+    Stage.region_snowfesta_c.value     : MONKEYS_SNOWFESTA_C,
+    Stage.region_snowfesta_d.value     : MONKEYS_SNOWFESTA_D,
+    Stage.region_snowfesta_e.value     : MONKEYS_SNOWFESTA_E,
+    Stage.region_snowfesta_f.value     : MONKEYS_SNOWFESTA_F,
+    Stage.region_snowfesta_g.value     : MONKEYS_SNOWFESTA_G,
 
     # Edotown
-    Stage.edotown_a.value       : MONKEYS_EDOTOWN_A,
-    Stage.edotown_b.value       : MONKEYS_EDOTOWN_B,
-    Stage.edotown_c.value       : MONKEYS_EDOTOWN_C,
-    Stage.edotown_c1.value      : MONKEYS_EDOTOWN_C1,
-    Stage.edotown_d.value       : MONKEYS_EDOTOWN_D,
-    Stage.edotown_e.value       : MONKEYS_EDOTOWN_E,
-    Stage.edotown_f.value       : MONKEYS_EDOTOWN_F,
+    Stage.region_edotown_a.value       : MONKEYS_EDOTOWN_A,
+    Stage.region_edotown_b.value       : MONKEYS_EDOTOWN_B,
+    Stage.region_edotown_c.value       : MONKEYS_EDOTOWN_C,
+    Stage.region_edotown_c1.value      : MONKEYS_EDOTOWN_C1,
+    Stage.region_edotown_d.value       : MONKEYS_EDOTOWN_D,
+    Stage.region_edotown_e.value       : MONKEYS_EDOTOWN_E,
+    Stage.region_edotown_f.value       : MONKEYS_EDOTOWN_F,
 
     # Boss3
-    Stage.boss3.value           : MONKEYS_BOSS3,
+    Stage.region_boss3.value           : MONKEYS_BOSS3,
 
     # Heaven
-    Stage.heaven_a.value        : MONKEYS_HEAVEN_A,
-    Stage.heaven_b.value        : MONKEYS_HEAVEN_B,
-    Stage.heaven_c.value        : MONKEYS_HEAVEN_C,
-    Stage.heaven_d.value        : MONKEYS_HEAVEN_D,
-    Stage.heaven_e.value        : MONKEYS_HEAVEN_E,
+    Stage.region_heaven_a.value        : MONKEYS_HEAVEN_A,
+    Stage.region_heaven_b.value        : MONKEYS_HEAVEN_B,
+    Stage.region_heaven_c.value        : MONKEYS_HEAVEN_C,
+    Stage.region_heaven_d.value        : MONKEYS_HEAVEN_D,
+    Stage.region_heaven_e.value        : MONKEYS_HEAVEN_E,
 
     # Toyhouse
-    Stage.toyhouse_a.value      : MONKEYS_TOYHOUSE_A,
-    Stage.toyhouse_b.value      : MONKEYS_TOYHOUSE_B,
-    Stage.toyhouse_c.value      : MONKEYS_TOYHOUSE_C,
-    Stage.toyhouse_d.value      : MONKEYS_TOYHOUSE_D,
-    Stage.toyhouse_e1.value     : MONKEYS_TOYHOUSE_E1,
-    Stage.toyhouse_f.value      : MONKEYS_TOYHOUSE_F,
-    Stage.toyhouse_g.value      : MONKEYS_TOYHOUSE_G,
-    Stage.toyhouse_h.value      : MONKEYS_TOYHOUSE_H,
+    Stage.region_toyhouse_a.value      : MONKEYS_TOYHOUSE_A,
+    Stage.region_toyhouse_b.value      : MONKEYS_TOYHOUSE_B,
+    Stage.region_toyhouse_c.value      : MONKEYS_TOYHOUSE_C,
+    Stage.region_toyhouse_d.value      : MONKEYS_TOYHOUSE_D,
+    Stage.region_toyhouse_e1.value     : MONKEYS_TOYHOUSE_E1,
+    Stage.region_toyhouse_f.value      : MONKEYS_TOYHOUSE_F,
+    Stage.region_toyhouse_g.value      : MONKEYS_TOYHOUSE_G,
+    Stage.region_toyhouse_h.value      : MONKEYS_TOYHOUSE_H,
 
     # Iceland
-    Stage.iceland_a.value       : MONKEYS_ICELAND_A,
-    Stage.iceland_b.value       : MONKEYS_ICELAND_B,
-    Stage.iceland_c.value       : MONKEYS_ICELAND_C,
-    Stage.iceland_d.value       : MONKEYS_ICELAND_D,
-    Stage.iceland_e.value       : MONKEYS_ICELAND_E,
-    Stage.iceland_f.value       : MONKEYS_ICELAND_F,
+    Stage.region_iceland_a.value       : MONKEYS_ICELAND_A,
+    Stage.region_iceland_b.value       : MONKEYS_ICELAND_B,
+    Stage.region_iceland_c.value       : MONKEYS_ICELAND_C,
+    Stage.region_iceland_d.value       : MONKEYS_ICELAND_D,
+    Stage.region_iceland_e.value       : MONKEYS_ICELAND_E,
+    Stage.region_iceland_f.value       : MONKEYS_ICELAND_F,
 
     # Arabian
-    Stage.arabian_a.value       : MONKEYS_ARABIAN_A,
-    Stage.arabian_b.value       : MONKEYS_ARABIAN_B,
-    Stage.arabian_c.value       : MONKEYS_ARABIAN_C,
-    Stage.arabian_c1.value      : MONKEYS_ARABIAN_C1,
-    Stage.arabian_e.value       : MONKEYS_ARABIAN_E,
-    Stage.arabian_f.value       : MONKEYS_ARABIAN_F,
-    Stage.arabian_g.value       : MONKEYS_ARABIAN_G,
+    Stage.region_arabian_a.value       : MONKEYS_ARABIAN_A,
+    Stage.region_arabian_b.value       : MONKEYS_ARABIAN_B,
+    Stage.region_arabian_c.value       : MONKEYS_ARABIAN_C,
+    Stage.region_arabian_c1.value      : MONKEYS_ARABIAN_C1,
+    Stage.region_arabian_e.value       : MONKEYS_ARABIAN_E,
+    Stage.region_arabian_f.value       : MONKEYS_ARABIAN_F,
+    Stage.region_arabian_g.value       : MONKEYS_ARABIAN_G,
 
     # Boss4
-    Stage.boss4.value           : MONKEYS_BOSS4,
+    Stage.region_boss4.value           : MONKEYS_BOSS4,
 
     # Asia
-    Stage.asia_a.value          : MONKEYS_ASIA_A,
-    Stage.asia_a1.value         : MONKEYS_ASIA_A1,
-    Stage.asia_a3.value         : MONKEYS_ASIA_A3,
-    Stage.asia_a4.value         : MONKEYS_ASIA_A4,
-    Stage.asia_b.value          : MONKEYS_ASIA_B,
-    Stage.asia_b1.value         : MONKEYS_ASIA_B1,
-    Stage.asia_b2.value         : MONKEYS_ASIA_B2,
-    Stage.asia_d.value          : MONKEYS_ASIA_D,
-    Stage.asia_d2.value         : MONKEYS_ASIA_D2,
-    Stage.asia_e1.value         : MONKEYS_ASIA_E1,
-    Stage.asia_e2.value         : MONKEYS_ASIA_E2,
-    Stage.asia_f.value          : MONKEYS_ASIA_F,
+    Stage.region_asia_a.value          : MONKEYS_ASIA_A,
+    Stage.region_asia_a1.value         : MONKEYS_ASIA_A1,
+    Stage.region_asia_a3.value         : MONKEYS_ASIA_A3,
+    Stage.region_asia_a4.value         : MONKEYS_ASIA_A4,
+    Stage.region_asia_b.value          : MONKEYS_ASIA_B,
+    Stage.region_asia_b1.value         : MONKEYS_ASIA_B1,
+    Stage.region_asia_b2.value         : MONKEYS_ASIA_B2,
+    Stage.region_asia_d.value          : MONKEYS_ASIA_D,
+    Stage.region_asia_d2.value         : MONKEYS_ASIA_D2,
+    Stage.region_asia_e1.value         : MONKEYS_ASIA_E1,
+    Stage.region_asia_e2.value         : MONKEYS_ASIA_E2,
+    Stage.region_asia_f.value          : MONKEYS_ASIA_F,
 
     # Plane
-    Stage.plane_a.value         : MONKEYS_PLANE_A,
-    Stage.plane_a1.value        : MONKEYS_PLANE_A1,
-    Stage.plane_b.value         : MONKEYS_PLANE_B,
-    Stage.plane_b1.value        : MONKEYS_PLANE_B1,
-    Stage.plane_c.value         : MONKEYS_PLANE_C,
-    Stage.plane_c1.value        : MONKEYS_PLANE_C1,
-    Stage.plane_d.value         : MONKEYS_PLANE_D,
-    Stage.plane_e.value         : MONKEYS_PLANE_E,
-    Stage.plane_f1.value        : MONKEYS_PLANE_F1,
-    Stage.plane_g.value         : MONKEYS_PLANE_G,
-    Stage.plane_h.value         : MONKEYS_PLANE_H,
+    Stage.region_plane_a.value         : MONKEYS_PLANE_A,
+    Stage.region_plane_a1.value        : MONKEYS_PLANE_A1,
+    Stage.region_plane_b.value         : MONKEYS_PLANE_B,
+    Stage.region_plane_b1.value        : MONKEYS_PLANE_B1,
+    Stage.region_plane_c.value         : MONKEYS_PLANE_C,
+    Stage.region_plane_c1.value        : MONKEYS_PLANE_C1,
+    Stage.region_plane_d.value         : MONKEYS_PLANE_D,
+    Stage.region_plane_e.value         : MONKEYS_PLANE_E,
+    Stage.region_plane_f1.value        : MONKEYS_PLANE_F1,
+    Stage.region_plane_g.value         : MONKEYS_PLANE_G,
+    Stage.region_plane_h.value         : MONKEYS_PLANE_H,
 
     # Hong
-    Stage.hong_a.value          : MONKEYS_HONG_A,
-    Stage.hong_b.value          : MONKEYS_HONG_B,
-    Stage.hong_b1.value         : MONKEYS_HONG_B1,
-    Stage.hong_c.value          : MONKEYS_HONG_C,
-    Stage.hong_c1.value         : MONKEYS_HONG_C1,
-    Stage.hong_c2.value         : MONKEYS_HONG_C2,
-    Stage.hong_d.value          : MONKEYS_HONG_D,
-    Stage.hong_e.value          : MONKEYS_HONG_E,
-    Stage.hong_e1.value         : MONKEYS_HONG_E1,
-    Stage.hong_f.value          : MONKEYS_HONG_F,
-    Stage.hong_g.value          : MONKEYS_HONG_G,
-    Stage.hong_h.value          : MONKEYS_HONG_H,
+    Stage.region_hong_a.value          : MONKEYS_HONG_A,
+    Stage.region_hong_b.value          : MONKEYS_HONG_B,
+    Stage.region_hong_b1.value         : MONKEYS_HONG_B1,
+    Stage.region_hong_c.value          : MONKEYS_HONG_C,
+    Stage.region_hong_c1.value         : MONKEYS_HONG_C1,
+    Stage.region_hong_c2.value         : MONKEYS_HONG_C2,
+    Stage.region_hong_d.value          : MONKEYS_HONG_D,
+    Stage.region_hong_e.value          : MONKEYS_HONG_E,
+    Stage.region_hong_e1.value         : MONKEYS_HONG_E1,
+    Stage.region_hong_f.value          : MONKEYS_HONG_F,
+    Stage.region_hong_g.value          : MONKEYS_HONG_G,
+    Stage.region_hong_h.value          : MONKEYS_HONG_H,
 
     # boss5
-    Stage.boss5.value           : MONKEYS_BOSS5,
+    Stage.region_boss5.value           : MONKEYS_BOSS5,
 
     # bay
-    Stage.bay_a.value           : MONKEYS_BAY_A,
-    Stage.bay_a1.value          : MONKEYS_BAY_A1,
-    Stage.bay_a5.value          : MONKEYS_BAY_A5,
-    Stage.bay_b.value           : MONKEYS_BAY_B,
-    Stage.bay_c.value           : MONKEYS_BAY_C,
-    Stage.bay_d.value           : MONKEYS_BAY_D,
-    Stage.bay_d1.value          : MONKEYS_BAY_D1,
-    Stage.bay_e.value           : MONKEYS_BAY_E,
-    Stage.bay_e1.value          : MONKEYS_BAY_E1,
-    Stage.bay_e2.value          : MONKEYS_BAY_E2,
-    Stage.bay_e3.value          : MONKEYS_BAY_E3,
-    Stage.bay_f.value           : MONKEYS_BAY_F,
+    Stage.region_bay_a.value           : MONKEYS_BAY_A,
+    Stage.region_bay_a1.value          : MONKEYS_BAY_A1,
+    Stage.region_bay_a5.value          : MONKEYS_BAY_A5,
+    Stage.region_bay_b.value           : MONKEYS_BAY_B,
+    Stage.region_bay_c.value           : MONKEYS_BAY_C,
+    Stage.region_bay_d.value           : MONKEYS_BAY_D,
+    Stage.region_bay_d1.value          : MONKEYS_BAY_D1,
+    Stage.region_bay_e.value           : MONKEYS_BAY_E,
+    Stage.region_bay_e1.value          : MONKEYS_BAY_E1,
+    Stage.region_bay_e2.value          : MONKEYS_BAY_E2,
+    Stage.region_bay_e3.value          : MONKEYS_BAY_E3,
+    Stage.region_bay_f.value           : MONKEYS_BAY_F,
 
     # tomo
-    Stage.tomo_a.value          : MONKEYS_TOMO_A,
-    Stage.tomo_b.value          : MONKEYS_TOMO_B,
-    Stage.tomo_c.value          : MONKEYS_TOMO_C,
-    Stage.tomo_e.value          : MONKEYS_TOMO_E,
-    Stage.tomo_e1.value         : MONKEYS_TOMO_E1,
-    Stage.tomo_e2.value         : MONKEYS_TOMO_E2,
-    Stage.tomo_f1.value         : MONKEYS_TOMO_F1,
-    Stage.tomo_f2.value         : MONKEYS_TOMO_F2,
-    Stage.tomo_g.value          : MONKEYS_TOMO_G,
-    Stage.tomo_g1.value         : MONKEYS_TOMO_G1,
-    Stage.tomo_h.value          : MONKEYS_TOMO_H,
-    Stage.tomo_i.value          : MONKEYS_TOMO_I,
-    Stage.tomo_j.value          : MONKEYS_TOMO_J,
+    Stage.region_tomo_a.value          : MONKEYS_TOMO_A,
+    Stage.region_tomo_b.value          : MONKEYS_TOMO_B,
+    Stage.region_tomo_c.value          : MONKEYS_TOMO_C,
+    Stage.region_tomo_e.value          : MONKEYS_TOMO_E,
+    Stage.region_tomo_e1.value         : MONKEYS_TOMO_E1,
+    Stage.region_tomo_e2.value         : MONKEYS_TOMO_E2,
+    Stage.region_tomo_f1.value         : MONKEYS_TOMO_F1,
+    Stage.region_tomo_f2.value         : MONKEYS_TOMO_F2,
+    Stage.region_tomo_g.value          : MONKEYS_TOMO_G,
+    Stage.region_tomo_g1.value         : MONKEYS_TOMO_G1,
+    Stage.region_tomo_h.value          : MONKEYS_TOMO_H,
+    Stage.region_tomo_i.value          : MONKEYS_TOMO_I,
+    Stage.region_tomo_j.value          : MONKEYS_TOMO_J,
 
     # boss6
-    Stage.boss6.value           : MONKEYS_BOSS6,
+    Stage.region_boss6.value           : MONKEYS_BOSS6,
 
     # Space
-    Stage.space_a.value         : MONKEYS_SPACE_A,
-    Stage.space_b.value         : MONKEYS_SPACE_B,
-    Stage.space_d.value         : MONKEYS_SPACE_D,
-    Stage.space_e.value         : MONKEYS_SPACE_E,
-    Stage.space_f.value         : MONKEYS_SPACE_F,
-    Stage.space_f1.value        : MONKEYS_SPACE_F1,
-    Stage.space_f2.value        : MONKEYS_SPACE_F2,
-    Stage.space_g.value         : MONKEYS_SPACE_G,
-    Stage.space_g2.value        : MONKEYS_SPACE_G2,
-    Stage.space_h.value         : MONKEYS_SPACE_H,
-    Stage.space_i.value         : MONKEYS_SPACE_I,
-    Stage.space_k.value         : MONKEYS_SPACE_K,
+    Stage.region_space_a.value         : MONKEYS_SPACE_A,
+    Stage.region_space_b.value         : MONKEYS_SPACE_B,
+    Stage.region_space_d.value         : MONKEYS_SPACE_D,
+    Stage.region_space_e.value         : MONKEYS_SPACE_E,
+    Stage.region_space_f.value         : MONKEYS_SPACE_F,
+    Stage.region_space_f1.value        : MONKEYS_SPACE_F1,
+    Stage.region_space_f2.value        : MONKEYS_SPACE_F2,
+    Stage.region_space_g.value         : MONKEYS_SPACE_G,
+    Stage.region_space_g2.value        : MONKEYS_SPACE_G2,
+    Stage.region_space_h.value         : MONKEYS_SPACE_H,
+    Stage.region_space_i.value         : MONKEYS_SPACE_I,
+    Stage.region_space_k.value         : MONKEYS_SPACE_K,
 
     # Specter
-    Stage.specter1.value        : MONKEYS_SPECTER,
-    Stage.specter2.value        : MONKEYS_SPECTER_FINALE
+    Stage.region_specter1.value        : MONKEYS_SPECTER,
+    Stage.region_specter2.value        : MONKEYS_SPECTER_FINALE
 }
 
 MONKEYS_DIRECTORY : dict[str, Sequence[str]] = {
@@ -1213,6 +1213,29 @@ CAMERAS_MASTER : Sequence[str] = [
 ]
 
 CAMERAS_INDEX : dict[str, str] = {
+    Stage.region_seaside_b.value               : Loc.seaside_cam.value,
+    Stage.region_woods_a.value                 : Loc.woods_cam.value,
+    Stage.region_castle_c.value                : Loc.castle_cam.value,
+    Stage.region_ciscocity_b.value             : Loc.ciscocity_cam.value,
+    Stage.region_studio_e.value                : Loc.studio_cam.value,
+    Stage.region_halloween_c.value             : Loc.halloween_cam.value,
+    Stage.region_western_d.value               : Loc.western_cam.value,
+    Stage.region_onsen_a.value                 : Loc.onsen_cam.value,
+    Stage.region_snowfesta_a.value             : Loc.snowfesta_cam.value,
+    Stage.region_edotown_c.value               : Loc.edotown_cam.value,
+    Stage.region_heaven_a.value                : Loc.heaven_cam.value,
+    Stage.region_toyhouse_b.value              : Loc.toyhouse_cam.value,
+    Stage.region_iceland_e.value               : Loc.iceland_cam.value,
+    Stage.region_arabian_e.value               : Loc.arabian_cam.value,
+    Stage.region_asia_a2.value                 : Loc.asia_cam.value,
+    Stage.region_plane_c1.value                : Loc.plane_cam.value,
+    Stage.region_hong_c.value                  : Loc.hong_cam.value,
+    Stage.region_bay_c.value                   : Loc.bay_cam.value,
+    Stage.region_tomo_b.value                  : Loc.tomo_cam.value,
+    Stage.region_space_e.value                 : Loc.space_cam.value,
+}
+
+CAMERAS_STAGE_INDEX : dict[str, str] = {
     Stage.seaside_b.value               : Loc.seaside_cam.value,
     Stage.woods_a.value                 : Loc.woods_cam.value,
     Stage.castle_c.value                : Loc.castle_cam.value,
@@ -1227,49 +1250,12 @@ CAMERAS_INDEX : dict[str, str] = {
     Stage.toyhouse_b.value              : Loc.toyhouse_cam.value,
     Stage.iceland_e.value               : Loc.iceland_cam.value,
     Stage.arabian_e.value               : Loc.arabian_cam.value,
-    Stage.asia_a2.value                 : Loc.asia_cam.value,
-    Stage.plane_c1.value                : Loc.plane_cam.value,
+    Stage.asia_a.value                  : Loc.asia_cam.value,
+    Stage.plane_c.value                 : Loc.plane_cam.value,
     Stage.hong_c.value                  : Loc.hong_cam.value,
     Stage.bay_c.value                   : Loc.bay_cam.value,
     Stage.tomo_b.value                  : Loc.tomo_cam.value,
     Stage.space_e.value                 : Loc.space_cam.value,
-}
-
-CAMERAS_DIRECTORY : dict[str, str] = {
-    APHelper.seaside.value              : Loc.seaside_cam.value,
-    APHelper.woods.value                : Loc.woods_cam.value,
-    APHelper.castle.value               : Loc.castle_cam.value,
-    APHelper.castle_2.value             : Loc.castle_cam.value,
-    APHelper.ciscocity.value            : Loc.ciscocity_cam.value,
-    APHelper.studio.value               : Loc.studio_cam.value,
-    APHelper.studio_2.value             : Loc.studio_cam.value,
-    APHelper.halloween.value            : Loc.halloween_cam.value,
-    APHelper.halloween_2.value          : Loc.halloween_cam.value,
-    APHelper.western.value              : Loc.western_cam.value,
-    APHelper.western_2.value            : Loc.western_cam.value,
-    APHelper.onsen.value                : Loc.onsen_cam.value,
-    APHelper.onsen_2.value              : Loc.onsen_cam.value,
-    APHelper.snowfesta.value            : Loc.snowfesta_cam.value,
-    APHelper.snowfesta_2.value          : Loc.snowfesta_cam.value,
-    APHelper.edotown.value              : Loc.edotown_cam.value,
-    APHelper.edotown_2.value            : Loc.edotown_cam.value,
-    APHelper.heaven.value               : Loc.heaven_cam.value,
-    APHelper.heaven_2.value             : Loc.heaven_cam.value,
-    APHelper.toyhouse.value             : Loc.toyhouse_cam.value,
-    APHelper.toyhouse_2.value           : Loc.toyhouse_cam.value,
-    APHelper.iceland.value              : Loc.iceland_cam.value,
-    APHelper.iceland_2.value            : Loc.iceland_cam.value,
-    APHelper.arabian.value              : Loc.arabian_cam.value,
-    APHelper.asia.value                 : Loc.asia_cam.value,
-    APHelper.asia_2.value               : Loc.asia_cam.value,
-    APHelper.plane.value                : Loc.plane_cam.value,
-    APHelper.hong.value                 : Loc.hong_cam.value,
-    APHelper.hong_2.value               : Loc.hong_cam.value,
-    APHelper.bay.value                  : Loc.bay_cam.value,
-    APHelper.tomo.value                 : Loc.tomo_cam.value,
-    APHelper.tomo_2.value               : Loc.tomo_cam.value,
-    APHelper.space.value                : Loc.space_cam.value,
-    APHelper.space_2.value              : Loc.space_cam.value,
 }
 
 ACTORS_INDEX : dict[str, list[str]] = {
@@ -1310,7 +1296,8 @@ CELLPHONES_SEASIDE : Sequence[str] = [
 ]
 
 CELLPHONES_WOODS_A : Sequence[str] = [
-    Loc.tele_001.value, Loc.tele_006.value, Loc.tele_007.value, Loc.tele_004w.value]
+    Loc.tele_001.value, Loc.tele_006.value, Loc.tele_007.value, Loc.tele_004w.value
+]
 
 CELLPHONES_WOODS_B : Sequence[str] = [
     Loc.tele_008.value
@@ -1325,6 +1312,13 @@ CELLPHONES_MASTER : Sequence[str] = [
 ]
 
 CELLPHONES_INDEX : dict[str, Sequence[str]] = {
+    Stage.region_seaside_a.value               : CELLPHONES_SEASIDE_A,
+    Stage.region_seaside_b.value               : CELLPHONES_SEASIDE_B,
+    Stage.region_woods_a.value                 : CELLPHONES_WOODS_A,
+    Stage.region_woods_b.value                 : CELLPHONES_WOODS_B
+}
+
+CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
     Stage.seaside_a.value               : CELLPHONES_SEASIDE_A,
     Stage.seaside_b.value               : CELLPHONES_SEASIDE_B,
     Stage.woods_a.value                 : CELLPHONES_WOODS_A,
@@ -1427,31 +1421,34 @@ EVENTS_SPACE_G2 : Sequence[EventMeta] = [
 
 EVENTS_INDEX : dict[str, Sequence[EventMeta]] = {
     # Triggers
-    Stage.iceland_e.value       : EVENTS_ICELAND_E,
-    Stage.arabian_c.value       : EVENTS_ARABIAN_C,
-    Stage.asia_a1.value         : EVENTS_ASIA_A1,
-    Stage.asia_a2.value         : EVENTS_ASIA_A2,
-    Stage.asia_e.value          : EVENTS_ASIA_E,
-    Stage.bay_a4.value          : EVENTS_BAY_A4,
-    Stage.bay_e1.value          : EVENTS_BAY_E1,
-    Stage.space_e.value         : EVENTS_SPACE_E,
-    Stage.space_f2.value        : EVENTS_SPACE_F2,
-    Stage.space_g1.value        : EVENTS_SPACE_G1,
-    Stage.space_g2.value        : EVENTS_SPACE_G2,
+    Stage.region_iceland_e.value       : EVENTS_ICELAND_E,
+    Stage.region_arabian_c.value       : EVENTS_ARABIAN_C,
+    Stage.region_asia_a1.value         : EVENTS_ASIA_A1,
+    Stage.region_asia_a2.value         : EVENTS_ASIA_A2,
+    Stage.region_asia_e.value          : EVENTS_ASIA_E,
+    Stage.region_bay_a4.value          : EVENTS_BAY_A4,
+    Stage.region_bay_e1.value          : EVENTS_BAY_E1,
+    Stage.region_space_e.value         : EVENTS_SPACE_E,
+    Stage.region_space_f2.value        : EVENTS_SPACE_F2,
+    Stage.region_space_g1.value        : EVENTS_SPACE_G1,
+    Stage.region_space_g2.value        : EVENTS_SPACE_G2,
 
     # Shortcuts
-    Stage.studio_a1.value       : EVENTS_STUDIO_A1,
-    Stage.edotown_e.value       : EVENTS_EDOTOWN_E,
-    Stage.asia_b2.value         : EVENTS_ASIA_B2
+    Stage.region_studio_a1.value       : EVENTS_STUDIO_A1,
+    Stage.region_edotown_e.value       : EVENTS_EDOTOWN_E,
+    Stage.region_asia_b2.value         : EVENTS_ASIA_B2
 }
 
-def generate_name_to_id(cameras : bool = False, cellphones : bool = False) -> dict[str, int]:
+def generate_name_to_id() -> dict[str, int]:
+    # Monkeys
     name_to_id : dict[str, int] = { name : MonkeyLocation(name).loc_id for name in MONKEYS_MASTER }
 
-    if cameras:
-        name_to_id.update({name : CameraLocation(name, i).loc_id for i, name in enumerate(CAMERAS_MASTER)})
+    # Cameras
+    name_to_id.update({name : CameraLocation(name, i).loc_id for i, name in enumerate(CAMERAS_MASTER)})
 
-    if cellphones:
-        name_to_id.update({name : CellphoneLocation(name).loc_id for name in CELLPHONES_MASTER})
+    # Cellphones
+    name_to_id.update(
+        {cell.name: cell.loc_id for cell in [CellphoneLocation(name) for name in CELLPHONES_MASTER]}
+    )
 
     return name_to_id

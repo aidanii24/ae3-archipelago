@@ -67,6 +67,7 @@ class AE3Context(CommonContext):
     keys : int = 0
     unlocked_channels : int = 0
     current_channel: str = None
+    current_stage : str = None
     character : int = -1
     player_control : bool = False
     ## Command State can be in either of 3 stages:
@@ -82,9 +83,16 @@ class AE3Context(CommonContext):
     specter1_defeated : bool = False
 
     # Player Set Options
+    progression: ProgressionMode = ProgressionMode.BOSS
+    camerasanity : int = None
+    cellphonesanity : bool = None
+
+    morph_duration: float = 0.0
+
+    early_free_play : bool = False
+
     auto_equip : bool = False
-    morph_duration : float = 0.0
-    progression : ProgressionMode = ProgressionMode.BOSS
+
     death_link : bool = False
 
     def __init__(self, address, password):
@@ -100,10 +108,12 @@ class AE3Context(CommonContext):
         if not os.path.isdir(self.save_data_path):
             try:
                 os.mkdir(self.save_data_path)
-            except:
+            except Exception:
                 self.save_data_path = ""
-            finally:
-                self.save_data_path += "/"
+
+        if self.save_data_path:
+            self.save_data_path += "/"
+            print(self.save_data_path)
 
     # Archipelago Server Authentication
     async def server_auth(self, password_requested : bool = False):
@@ -123,14 +133,26 @@ class AE3Context(CommonContext):
             if self.check_session_save():
                 self.load_session()
 
-            ## Game Mode
+            ## Progression Mode
             if not self.unlocked_channels and APHelper.progression_mode.value in self.slot_data:
                 self.progression = ProgressionMode.get_progression_mode(self.slot_data[APHelper.progression_mode.value])
                 self.unlocked_channels = self.progression.get_current_progress(0)
 
+            ## Camerasanity
+            if self.camerasanity is None and APHelper.camerasanity.value in self.slot_data:
+                self.camerasanity = self.slot_data[APHelper.camerasanity.value]
+
+            ## Cellphonesanity
+            if self.cellphonesanity is None and APHelper.cellphonesanity.value in self.slot_data:
+                self.cellphonesanity = self.slot_data[APHelper.cellphonesanity.value]
+
             ## Morph Duration
             if self.morph_duration == 0 and APHelper.base_morph_duration.value in self.slot_data:
                 self.morph_duration = float(self.slot_data[APHelper.base_morph_duration.value])
+
+            ## Early Free Play
+            if APHelper.early_free_play.value in self.slot_data:
+                self.early_free_play = self.slot_data[APHelper.early_free_play.value]
 
             ## Auto-Equip
             if APHelper.auto_equip.value in self.slot_data:
@@ -200,10 +222,6 @@ class AE3Context(CommonContext):
     def save_session(self):
         """Save current session progress"""
         # Prevent Spammed Messages
-        if not self.last_message == APConsole.Info.saving.value:
-            logger.info(APConsole.Info.saving.value)
-            self.last_message = APConsole.Info.saving.value
-
         if not self.save_data_filename or not self.save_data_path:
             logger.warning(APConsole.Err.save_no_init.value)
             return
@@ -217,7 +235,6 @@ class AE3Context(CommonContext):
             Itm.gadget_swim.value           : self.swim_unlocked,
             Game.morph_duration.value       : self.morph_duration
         }
-
         with io.open(self.save_data_path + self.save_data_filename, 'w') as save:
             save.write(json.dumps(data))
 
