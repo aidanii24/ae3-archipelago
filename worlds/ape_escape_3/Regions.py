@@ -87,7 +87,7 @@ def create_regions(world : "AE3World"):
                 stage.locations.append(loc)
 
         ## Cameras
-        if world.options.camerasanity and stage.name in CAMERAS_INDEX:
+        if world.options.Camerasanity and stage.name in CAMERAS_INDEX:
             camera : str = CAMERAS_INDEX[stage.name]
             meta : CameraLocation = CameraLocation(camera, CAMERAS_MASTER.index(camera))
             loc : Location = meta.to_location(world.player, stage)
@@ -95,7 +95,7 @@ def create_regions(world : "AE3World"):
             # Add Access Rule for completing the stage to ensure maximum accessibility,
             # if the player chooses to require the monkey actors for the Cameras,
             # and they did not choose to have early Freeplay
-            if world.options.camerasanity == 1 and not world.options.early_free_play:
+            if world.options.Camerasanity == 1 and not world.options.Early_Free_Play:
                 ruleset : Rulesets = Rulesets()
                 parent_channel : str = ""
                 for channel, regions in STAGES_DIRECTORY.items():
@@ -113,7 +113,7 @@ def create_regions(world : "AE3World"):
             stage.locations.append(loc)
 
         ## Cellphones
-        if world.options.cellphonesanity:
+        if world.options.Cellphonesanity:
             if stage.name in CELLPHONES_INDEX:
                 for cellphone in CELLPHONES_INDEX[stage.name]:
                     meta : CellphoneLocation = CellphoneLocation(cellphone)
