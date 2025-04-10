@@ -68,8 +68,8 @@ class AE3World(World):
         super(AE3World, self).__init__(multiworld, player)
 
     def generate_early(self):
-        self.auto_equip = self.options.auto_equip
-        self.progression = ProgressionMode.get_progression_mode(self.options.progression_mode.value)
+        self.auto_equip = self.options.Auto_Equip
+        self.progression = ProgressionMode.get_progression_mode(self.options.Progression_Mode.value)
 
         self.item_pool = []
 
@@ -114,9 +114,9 @@ class AE3World(World):
                                   sky_flyer]
 
         # Push Starting Gadget as pre-collected
-        if self.options.starting_gadget > 0:
-            self.multiworld.push_precollected(equipment[self.options.starting_gadget - 1])
-            del equipment[self.options.starting_gadget - 1]
+        if self.options.Starting_Gadget > 0:
+            self.multiworld.push_precollected(equipment[self.options.Starting_Gadget - 1])
+            del equipment[self.options.Starting_Gadget - 1]
 
         self.multiworld.push_precollected(monkey_net)
 
@@ -126,13 +126,13 @@ class AE3World(World):
         equipment = [knight, cowboy, ninja, magician, kungfu, hero, monkey]
 
         # Push Starting Morph as precollected
-        if self.options.starting_morph > 0:
-            self.multiworld.push_precollected(equipment[self.options.starting_morph - 1])
-            del equipment[self.options.starting_morph - 1]
+        if self.options.Starting_Morph > 0:
+            self.multiworld.push_precollected(equipment[self.options.Starting_Morph - 1])
+            del equipment[self.options.Starting_Morph - 1]
 
         self.item_pool += [*equipment]
 
-        if self.options.shuffle_chassis:
+        if self.options.Shuffle_Chassis:
             self.item_pool.remove(rc_car)
 
             chassis_twin = Items.Chassis_Twin.to_item(self.player)
@@ -142,10 +142,10 @@ class AE3World(World):
             self.item_pool += [chassis_twin, chassis_pudding, chassis_black]
 
         # Add Upgradeables
-        if self.options.shuffle_morph_stocks:
+        if self.options.Shuffle_Morph_Stocks:
             self.item_pool += Items.Acc_Morph_Stock.to_items(self.player)
 
-        if self.options.add_morph_extensions:
+        if self.options.Add_Morph_Extensions:
             self.item_pool += Items.Acc_Morph_Ext.to_items(self.player)
 
         # Add Archipelago Items
