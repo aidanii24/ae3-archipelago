@@ -1307,59 +1307,181 @@ CELLPHONES_WOODS : Sequence[str] = [
     *CELLPHONES_WOODS_A, *CELLPHONES_WOODS_B
 ]
 
+CELLPHONES_CASTLE_A : Sequence[str] = [
+    Loc.tele_010.value, Loc.tele_009.value, Loc.tele_029.value
+]
+
+CELLPHONES_CASTLE_D : Sequence[str] = [
+    Loc.tele_011.value
+]
+
+CELLPHONES_CASTLE : Sequence[str] = [
+    *CELLPHONES_CASTLE_A, *CELLPHONES_CASTLE_D
+]
+
+CELLPHONES_CISCOCITY_A : Sequence[str] = [
+    Loc.tele_013.value, Loc.tele_012.value
+]
+
+CELLPHONES_CISCOCITY : Sequence[str] = [
+    *CELLPHONES_CISCOCITY_A
+]
+
+CELLPHONES_STUDIO_A : Sequence[str] = [
+    Loc.tele_062.value
+]
+
+CELLPHONES_STUDIO_B : Sequence[str] = [
+    Loc.tele_014.value
+]
+
+CELLPHONES_STUDIO_F : Sequence[str] = [
+    Loc.tele_030.value
+]
+
+CELLPHONES_STUDIO : Sequence[str] = [
+    *CELLPHONES_STUDIO_A, *CELLPHONES_STUDIO_B, *CELLPHONES_STUDIO_F
+]
+
+CELLPHONES_HALLOWEEN_A : Sequence[str] = [
+    Loc.tele_035.value, Loc.tele_052.value
+]
+
+CELLPHONES_HALLOWEEN_C : Sequence[str] = [
+    Loc.tele_016.value
+]
+
+CELLPHONES_HALLOWEEN_D : Sequence[str] = [
+    Loc.tele_017.value
+]
+
+CELLPHONES_HALLOWEEN : Sequence[str] = [
+    *CELLPHONES_HALLOWEEN_A, *CELLPHONES_HALLOWEEN_C, *CELLPHONES_HALLOWEEN_D
+]
+
+CELLPHONES_WESTERN_A : Sequence[str] = [
+    Loc.tele_018.value
+]
+
+CELLPHONES_WESTERN_F : Sequence[str] = [
+    Loc.tele_051.value
+]
+
+CELLPHONES_WESTERN_E : Sequence[str] = [
+    Loc.tele_019.value
+]
+
+CELLPHONES_WESTERN : Sequence[str] = [
+    *CELLPHONES_WESTERN_A, *CELLPHONES_WESTERN_F, *CELLPHONES_WESTERN_E
+]
+
+CELLPHONES_ONSEN_A : Sequence[str] = [
+    Loc.tele_020.value, Loc.tele_063.value
+]
+
+CELLPHONES_ONSEN_D : Sequence[str] = [
+    Loc.tele_021.value
+]
+
+CELLPHONES_ONSEN : Sequence[str] = [
+    *CELLPHONES_ONSEN_A, *CELLPHONES_ONSEN_D
+]
+
+CELLPHONES_SNOWFESTA_F : Sequence[str] = [
+    Loc.tele_022.value
+]
+
+CELLPHONES_SNOWFESTA : Sequence[str] = [
+    *CELLPHONES_SNOWFESTA_F
+]
+
+CELLPHONES_EDOTOWN_A : Sequence[str] = [
+    Loc.tele_023.value
+]
+
+CELLPHONES_EDOTOWN_B : Sequence[str] = [
+    Loc.tele_025.value
+]
+
+CELLPHONES_EDOTOWN_C : Sequence[str] = [
+    Loc.tele_024.value, Loc.tele_026.value
+]
+
+CELLPHONES_EDOTOWN : Sequence[str] = [
+    *CELLPHONES_EDOTOWN_A, *CELLPHONES_EDOTOWN_B, *CELLPHONES_EDOTOWN_C
+]
+
 CELLPHONES_MASTER : Sequence[str] = [
-    *CELLPHONES_SEASIDE, *CELLPHONES_WOODS
+    *CELLPHONES_SEASIDE, *CELLPHONES_WOODS, *CELLPHONES_CASTLE, *CELLPHONES_CISCOCITY, *CELLPHONES_STUDIO,
+    *CELLPHONES_HALLOWEEN, *CELLPHONES_WESTERN, *CELLPHONES_ONSEN, *CELLPHONES_SNOWFESTA, *CELLPHONES_EDOTOWN
 ]
 
 CELLPHONES_INDEX : dict[str, Sequence[str]] = {
-    Stage.region_seaside_a.value               : CELLPHONES_SEASIDE_A,
-    Stage.region_seaside_b.value               : CELLPHONES_SEASIDE_B,
-    Stage.region_woods_a.value                 : CELLPHONES_WOODS_A,
-    Stage.region_woods_b.value                 : CELLPHONES_WOODS_B
+    Stage.region_seaside_a.value                : CELLPHONES_SEASIDE_A,
+    Stage.region_seaside_b.value                : CELLPHONES_SEASIDE_B,
+
+    Stage.region_woods_a.value                  : CELLPHONES_WOODS_A,
+    Stage.region_woods_b.value                  : CELLPHONES_WOODS_B,
+
+    Stage.region_castle_a.value                 : CELLPHONES_CASTLE_A,
+    Stage.region_castle_d.value                 : CELLPHONES_CASTLE_D,
+
+    Stage.region_ciscocity_a.value              : CELLPHONES_CISCOCITY_A,
+
+    Stage.region_studio_a.value                 : CELLPHONES_STUDIO_A,
+    Stage.region_studio_b.value                 : CELLPHONES_STUDIO_B,
+    Stage.region_studio_f.value                 : CELLPHONES_STUDIO_F,
+
+    Stage.region_halloween_a1.value             : CELLPHONES_HALLOWEEN_A,
+    Stage.region_halloween_c1.value             : CELLPHONES_HALLOWEEN_C,
+    Stage.region_halloween_d.value              : CELLPHONES_HALLOWEEN_D,
+
+    Stage.region_western_a.value                : CELLPHONES_WESTERN_A,
+    Stage.region_western_f.value                : CELLPHONES_WESTERN_F,
+    Stage.region_western_e.value                : CELLPHONES_WESTERN_E,
+
+    Stage.region_onsen_a.value                  : CELLPHONES_ONSEN_A,
+    Stage.region_onsen_d1.value                 : CELLPHONES_ONSEN_D,
+
+    Stage.region_snowfesta_f.value              : CELLPHONES_SNOWFESTA_F,
+
+    Stage.region_edotown_a.value                : CELLPHONES_EDOTOWN_A,
+    Stage.region_edotown_b1.value               : CELLPHONES_EDOTOWN_B,
+    Stage.region_edotown_c1.value               : CELLPHONES_EDOTOWN_C,
 }
 
 CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
     Stage.seaside_a.value               : CELLPHONES_SEASIDE_A,
     Stage.seaside_b.value               : CELLPHONES_SEASIDE_B,
-    Stage.woods_a.value                 : CELLPHONES_WOODS_A,
-    Stage.woods_b.value                 : CELLPHONES_WOODS_B
-}
 
-CELLPHONES_DIRECTORY : dict[str, Sequence[str]] = {
-    APHelper.seaside.value              : CELLPHONES_SEASIDE,
-    APHelper.woods.value                : CELLPHONES_WOODS,
-    APHelper.castle.value               : [],
-    APHelper.castle_2.value             : [],
-    APHelper.ciscocity.value            : [],
-    APHelper.studio.value               : [],
-    APHelper.studio_2.value             : [],
-    APHelper.halloween.value            : [],
-    APHelper.halloween_2.value          : [],
-    APHelper.western.value              : [],
-    APHelper.western_2.value            : [],
-    APHelper.onsen.value                : [],
-    APHelper.onsen_2.value              : [],
-    APHelper.snowfesta.value            : [],
-    APHelper.snowfesta_2.value          : [],
-    APHelper.edotown.value              : [],
-    APHelper.edotown_2.value            : [],
-    APHelper.heaven.value               : [],
-    APHelper.heaven_2.value             : [],
-    APHelper.toyhouse.value             : [],
-    APHelper.toyhouse_2.value           : [],
-    APHelper.iceland.value              : [],
-    APHelper.iceland_2.value            : [],
-    APHelper.arabian.value              : [],
-    APHelper.asia.value                 : [],
-    APHelper.asia_2.value               : [],
-    APHelper.plane.value                : [],
-    APHelper.hong.value                 : [],
-    APHelper.hong_2.value               : [],
-    APHelper.bay.value                  : [],
-    APHelper.tomo.value                 : [],
-    APHelper.tomo_2.value               : [],
-    APHelper.space.value                : [],
-    APHelper.space_2.value              : [],
+    Stage.woods_a.value                 : CELLPHONES_WOODS_A,
+    Stage.woods_b.value                 : CELLPHONES_WOODS_B,
+
+    Stage.castle_a.value                : CELLPHONES_CASTLE_A,
+    Stage.castle_d.value                : CELLPHONES_CASTLE_D,
+
+    Stage.ciscocity_a.value             : CELLPHONES_CISCOCITY_A,
+
+    Stage.studio_a.value                : CELLPHONES_STUDIO_A,
+    Stage.studio_b.value                : CELLPHONES_STUDIO_B,
+    Stage.studio_f.value                : CELLPHONES_STUDIO_F,
+
+    Stage.halloween_a.value             : CELLPHONES_HALLOWEEN_A,
+    Stage.halloween_c.value             : CELLPHONES_HALLOWEEN_C,
+    Stage.halloween_d.value             : CELLPHONES_HALLOWEEN_D,
+
+    Stage.western_a.value               : CELLPHONES_WESTERN_A,
+    Stage.western_f.value               : CELLPHONES_WESTERN_F,
+    Stage.western_e.value               : CELLPHONES_WESTERN_E,
+
+    Stage.onsen_a.value                 : CELLPHONES_ONSEN_A,
+    Stage.onsen_d.value                 : CELLPHONES_ONSEN_D,
+
+    Stage.snowfesta_f.value             : CELLPHONES_SNOWFESTA_F,
+
+    Stage.edotown_a.value               : CELLPHONES_EDOTOWN_A,
+    Stage.edotown_b.value               : CELLPHONES_EDOTOWN_B,
+    Stage.edotown_c.value               : CELLPHONES_EDOTOWN_C,
 }
 
 ### [< --- EVENT GROUPS --- >]
