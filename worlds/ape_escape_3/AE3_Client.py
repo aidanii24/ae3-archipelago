@@ -53,6 +53,7 @@ class AE3Context(CommonContext):
     next_item_slot : int = 0
     pending_deathlinks : int = 0
     cached_locations_checked : Set[int]
+    offline_locations_checked : Set[int]
     cached_received_items : Set[NetworkItem]
 
     # APWorld Properties
@@ -194,8 +195,10 @@ class AE3Context(CommonContext):
             data : dict = json.load(save)
 
             # Retrieve Next Item Slot/Amount of Items Received
-            if APHelper.item_count.value in data:
-                self.next_item_slot = data[APHelper.item_count.value]
+            self.next_item_slot = data.get(APHelper.item_count.value, 0)
+
+            # Retrieve Offline Checked Locations
+            self.offline_locations_checked = data.get(APHelper.offline_checked_locations.value, set())
 
             # Retrieve Key
             if APHelper.channel_key.value in data:
@@ -212,11 +215,8 @@ class AE3Context(CommonContext):
                     self.ipc.set_morph_duration(self.character, self.morph_duration)
 
             # Retrieve Important Items
-            if Itm.gadget_rcc.value in data:
-                self.rcc_unlocked = data[Itm.gadget_rcc.value]
-
-            if Itm.gadget_swim.value in data:
-                self.swim_unlocked = data[Itm.gadget_swim.value]
+            self.rcc_unlocked = data.get(Itm.gadget_rcc.value, False)
+            self.swim_unlocked = data.get(Itm.gadget_swim.value, False)
 
     def save_session(self):
         """Save current session progress"""
@@ -226,13 +226,14 @@ class AE3Context(CommonContext):
             return
 
         data = {
-            APHelper.item_count.value       : self.next_item_slot,
+            APHelper.item_count.value           : self.next_item_slot,
+            APHelper.offline_checked_locations  : self.offline_locations_checked,
 
-            APHelper.channel_key.value      : self.keys,
-            Game.character.value            : self.character,
-            Itm.gadget_rcc.value            : self.rcc_unlocked,
-            Itm.gadget_swim.value           : self.swim_unlocked,
-            Game.morph_duration.value       : self.morph_duration
+            APHelper.channel_key.value          : self.keys,
+            Game.character.value                : self.character,
+            Itm.gadget_rcc.value                : self.rcc_unlocked,
+            Itm.gadget_swim.value               : self.swim_unlocked,
+            Game.morph_duration.value           : self.morph_duration
         }
         with io.open(self.save_data_path + self.save_data_filename, 'w') as save:
             save.write(json.dumps(data))
