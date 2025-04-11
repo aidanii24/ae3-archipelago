@@ -253,13 +253,17 @@ async def check_locations(ctx : 'AE3Context'):
             if monkey == Loc.boss_specter.value:
                 ctx.specter1_defeated = True
 
+    print("Area Info:", ctx.current_channel, ctx.current_stage)
     if not ctx.current_channel == APHelper.travel_station.value:
         # Camera Check
+        print("Check for Cameras?", ctx.camerasanity, ctx.current_stage in CAMERAS_STAGE_INDEX)
         if ctx.camerasanity and ctx.current_stage in CAMERAS_STAGE_INDEX:
             if ctx.ipc.is_camera_interacted():
+                print("Camera Location ID:", ctx.locations_name_to_id[CAMERAS_STAGE_INDEX[ctx.current_stage]])
                 cleared.add(ctx.locations_name_to_id[CAMERAS_STAGE_INDEX[ctx.current_stage]])
 
         # Cellphone Check
+        print("Check for Cellphones?", ctx.cellphonesanity, ctx.current_stage in CELLPHONES_STAGE_INDEX)
         if ctx.cellphonesanity and ctx.current_stage in CELLPHONES_STAGE_INDEX:
             tele_text_id : str = ctx.ipc.get_cellphone_interacted()
             if tele_text_id in Cellphone_ID:

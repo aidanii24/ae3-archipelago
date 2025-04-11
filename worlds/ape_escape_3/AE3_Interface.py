@@ -218,7 +218,7 @@ class AEPS2Interface:
             as_string: str = as_bytes.decode().replace("\x00", "")
         except UnicodeDecodeError:
             return False
-
+        print("Camera check result:", as_string, as_string == Game.conte.value)
         return as_string == Game.conte.value
 
     def get_cellphone_interacted(self, alt : bool = False) -> str:
@@ -235,27 +235,14 @@ class AEPS2Interface:
             as_string = ""
 
         channel : str = self.get_channel()
-
+        print("Cellphone check result [A]:", as_string)
         if as_string.isdigit():
             if as_string == Loc.tele_004w.value and channel == APHelper.woods.value:
                 as_string = Loc.tele_004w.value
 
             return as_string
-
-        # Use Alternative Cellphone Offset on known problematic stages
-        if channel != APHelper.snowfesta.value or APHelper.snowfesta_2:
+        else:
             return ""
-
-        as_string = ""
-        address = base_address + self.addresses.GameStates[Game.cellphone_alt.value]
-        as_bytes = self.pine.read_bytes(address, 3)
-
-        try:
-            as_string : str = as_bytes.decode().replace("\x00", "")
-        except UnicodeDecodeError:
-            as_string = ""
-
-        return as_string
 
     def is_in_pink_boss(self) -> bool:
         return self.pine.read_int8(self.addresses.GameStates[Game.in_pink_stage.value]) == 0x02
