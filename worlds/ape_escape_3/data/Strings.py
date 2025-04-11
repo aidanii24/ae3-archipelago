@@ -1368,38 +1368,40 @@ class APHelper(BaseEnum):
     pr_round2 =             "round2\x00\x00"
 
     # AP Options
-    progression_mode =      "Progression_Mode"
-    monkeysanity =          "Monkeysanity"
-    camerasanity =          "Camerasanity"
-    cellphonesanity =       "Cellphonesanity"
+    progression_mode =          "Progression_Mode"
+    monkeysanity =              "Monkeysanity"
+    camerasanity =              "Camerasanity"
+    cellphonesanity =           "Cellphonesanity"
 
-    starting_gadget =       "Starting_Gadget"
-    starting_morph =        "Starting_Morph"
-    base_morph_duration =   "Base_Morph_Duration"
+    starting_gadget =           "Starting_Gadget"
+    starting_morph =            "Starting_Morph"
+    base_morph_duration =       "Base_Morph_Duration"
 
-    shuffle_net =           "Shuffle_Net"
-    shuffle_chassis =       "Shuffle_Chassis"
-    shuffle_morph_stocks =  "Shuffle_Morph_Stocks"
-    add_morph_extensions =  "Add_Morph_Extensions"
+    shuffle_net =               "Shuffle_Net"
+    shuffle_chassis =           "Shuffle_Chassis"
+    shuffle_morph_stocks =      "Shuffle_Morph_Stocks"
+    add_morph_extensions =      "Add_Morph_Extensions"
 
-    early_free_play =       "Early_Free_Play"
-    enable_shopping_area =  "Enable_Shopping_Area"
+    early_free_play =           "Early_Free_Play"
+    enable_shopping_area =      "Enable_Shopping_Area"
 
-    auto_equip =            "Auto_Equip"
+    auto_equip =                "Auto_Equip"
 
-    death_link =            "death_link"
+    death_link =                "death_link"
 
     # AP Client
-    item_count =            "item_count"
+    item_count =                "item_count"
+    cache_checked_locations =   "cache_checked_locations"
+    offline_checked_locations = "offline_checked_locations"
 
     # AP Server
-    cmd_conn =              "Connected"
-    cmd_rminf =             "RoomInfo"
-    cmd_bounce =            "Bounced"
+    cmd_conn =                  "Connected"
+    cmd_rminf =                 "RoomInfo"
+    cmd_bounce =                "Bounced"
 
-    arg_sl_dt =             "slot_data"
-    arg_seed =              "seed_name"
-    arg_tags =              "tags"
+    arg_sl_dt =                 "slot_data"
+    arg_seed =                  "seed_name"
+    arg_tags =                  "tags"
 
 class APConsole:
     """

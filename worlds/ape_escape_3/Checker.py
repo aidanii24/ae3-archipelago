@@ -276,5 +276,15 @@ async def check_locations(ctx : 'AE3Context'):
 
     # Send newly checked locations to server
     if cleared:
-        await ctx.send_msgs([{"cmd" : "LocationChecks", "locations" : cleared}])
         ctx.cached_locations_checked.update(cleared)
+
+        if ctx.server:
+            # Send Locations checked offline
+            if ctx.offline_locations_checked:
+                cleared.update(ctx.offline_locations_checked)
+                ctx.offline_locations_checked.clear()
+
+            await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
+        else:
+            # When offline, save checked locations to a different set
+            ctx.offline_locations_checked.update(cleared)
