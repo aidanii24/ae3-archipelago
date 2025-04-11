@@ -216,7 +216,7 @@ async def check_items(ctx : 'AE3Context'):
                 ctx.ipc.give_morph_energy(i.amount)
 
             ### Handle Morph Extension
-            elif item.resource == Game.duration_knight_b.value:
+            elif item.resource == Game.morph_duration.value:
                 ctx.morph_duration += item.amount
 
                 unlocked_morphs = [idx for idx, _ in enumerate(ctx.morphs_unlocked) if _]
