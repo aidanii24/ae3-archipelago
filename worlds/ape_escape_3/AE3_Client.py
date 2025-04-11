@@ -53,7 +53,7 @@ class AE3Context(CommonContext):
     next_item_slot : int = 0
     pending_deathlinks : int = 0
     cached_locations_checked : Set[int]
-    offline_locations_checked : Set[int]
+    offline_locations_checked : Set[int] = set()
     cached_received_items : Set[NetworkItem]
 
     # APWorld Properties
@@ -198,7 +198,7 @@ class AE3Context(CommonContext):
             self.next_item_slot = data.get(APHelper.item_count.value, 0)
 
             # Retrieve Offline Checked Locations
-            self.offline_locations_checked = data.get(APHelper.offline_checked_locations.value, set())
+            self.offline_locations_checked = set(data.get(APHelper.offline_checked_locations.value, set()))
 
             # Retrieve Key
             if APHelper.channel_key.value in data:
@@ -226,14 +226,14 @@ class AE3Context(CommonContext):
             return
 
         data = {
-            APHelper.item_count.value           : self.next_item_slot,
-            APHelper.offline_checked_locations  : self.offline_locations_checked,
+            APHelper.item_count.value                   : self.next_item_slot,
+            APHelper.offline_checked_locations.value    : [*self.offline_locations_checked],
 
-            APHelper.channel_key.value          : self.keys,
-            Game.character.value                : self.character,
-            Itm.gadget_rcc.value                : self.rcc_unlocked,
-            Itm.gadget_swim.value               : self.swim_unlocked,
-            Game.morph_duration.value           : self.morph_duration
+            APHelper.channel_key.value                  : self.keys,
+            Game.character.value                        : self.character,
+            Itm.gadget_rcc.value                        : self.rcc_unlocked,
+            Itm.gadget_swim.value                       : self.swim_unlocked,
+            Game.morph_duration.value                   : self.morph_duration
         }
         with io.open(self.save_data_path + self.save_data_filename, 'w') as save:
             save.write(json.dumps(data))
