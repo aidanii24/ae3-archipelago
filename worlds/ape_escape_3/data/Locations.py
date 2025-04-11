@@ -855,7 +855,8 @@ MONKEYS_TOMO_J : Sequence[str] = [
 
 MONKEYS_TOMO : Sequence[str] = [
     *MONKEYS_TOMO_A,*MONKEYS_TOMO_B, *MONKEYS_TOMO_C, *MONKEYS_TOMO_E, *MONKEYS_TOMO_E1, *MONKEYS_TOMO_E2,
-    *MONKEYS_TOMO_F1, *MONKEYS_TOMO_F2, *MONKEYS_TOMO_G, *MONKEYS_TOMO_G1, *MONKEYS_TOMO_H, *MONKEYS_TOMO_J
+    *MONKEYS_TOMO_F1, *MONKEYS_TOMO_F2, *MONKEYS_TOMO_G, *MONKEYS_TOMO_G1, *MONKEYS_TOMO_H, *MONKEYS_TOMO_I,
+    *MONKEYS_TOMO_J
 ]
 
 # boss6
@@ -1207,7 +1208,7 @@ MONKEYS_DIRECTORY : dict[str, Sequence[str]] = {
 CAMERAS_MASTER : Sequence[str] = [
     Loc.seaside_cam.value, Loc.woods_cam.value, Loc.castle_cam.value, Loc.ciscocity_cam.value, Loc.studio_cam.value,
     Loc.halloween_cam.value, Loc.western_cam.value, Loc.onsen_cam.value, Loc.snowfesta_cam.value, Loc.edotown_cam.value,
-    Loc.edotown_cam.value, Loc.heaven_cam.value, Loc.toyhouse_cam.value, Loc.iceland_cam.value, Loc.arabian_cam.value,
+    Loc.heaven_cam.value, Loc.toyhouse_cam.value, Loc.iceland_cam.value, Loc.arabian_cam.value,
     Loc.asia_cam.value, Loc.plane_cam.value, Loc.hong_cam.value, Loc.bay_cam.value, Loc.tomo_cam.value,
     Loc.space_cam.value
 ]
