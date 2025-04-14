@@ -1227,7 +1227,7 @@ CAMERAS_INDEX : dict[str, str] = {
     Stage.region_heaven_a.value                : Loc.heaven_cam.value,
     Stage.region_toyhouse_b.value              : Loc.toyhouse_cam.value,
     Stage.region_iceland_e.value               : Loc.iceland_cam.value,
-    Stage.region_arabian_e.value               : Loc.arabian_cam.value,
+    Stage.region_arabian_g.value               : Loc.arabian_cam.value,
     Stage.region_asia_a2.value                 : Loc.asia_cam.value,
     Stage.region_plane_c1.value                : Loc.plane_cam.value,
     Stage.region_hong_c.value                  : Loc.hong_cam.value,
@@ -1250,7 +1250,7 @@ CAMERAS_STAGE_INDEX : dict[str, str] = {
     Stage.heaven_a.value                : Loc.heaven_cam.value,
     Stage.toyhouse_b.value              : Loc.toyhouse_cam.value,
     Stage.iceland_e.value               : Loc.iceland_cam.value,
-    Stage.arabian_e.value               : Loc.arabian_cam.value,
+    Stage.arabian_g.value               : Loc.arabian_cam.value,
     Stage.asia_a.value                  : Loc.asia_cam.value,
     Stage.plane_c.value                 : Loc.plane_cam.value,
     Stage.hong_c.value                  : Loc.hong_cam.value,
@@ -1289,7 +1289,7 @@ CELLPHONES_SEASIDE_A : Sequence[str] = [
 ]
 
 CELLPHONES_SEASIDE_B : Sequence[str] = [
-    Loc.tele_004s.value
+    Loc.tele_004ss.value
 ]
 
 CELLPHONES_SEASIDE : Sequence[str] = [
@@ -1297,7 +1297,7 @@ CELLPHONES_SEASIDE : Sequence[str] = [
 ]
 
 CELLPHONES_WOODS_A : Sequence[str] = [
-    Loc.tele_001.value, Loc.tele_006.value, Loc.tele_007.value, Loc.tele_004w.value
+    Loc.tele_001.value, Loc.tele_006.value, Loc.tele_007.value, Loc.tele_004wo.value
 ]
 
 CELLPHONES_WOODS_B : Sequence[str] = [
@@ -1321,7 +1321,7 @@ CELLPHONES_CASTLE : Sequence[str] = [
 ]
 
 CELLPHONES_CISCOCITY_A : Sequence[str] = [
-    Loc.tele_013.value, Loc.tele_012.value
+    Loc.tele_013.value, Loc.tele_012cc.value
 ]
 
 CELLPHONES_CISCOCITY : Sequence[str] = [
@@ -1337,7 +1337,7 @@ CELLPHONES_STUDIO_B : Sequence[str] = [
 ]
 
 CELLPHONES_STUDIO_F : Sequence[str] = [
-    Loc.tele_030.value
+    Loc.tele_030tv.value
 ]
 
 CELLPHONES_STUDIO : Sequence[str] = [
@@ -1381,7 +1381,7 @@ CELLPHONES_ONSEN_A : Sequence[str] = [
 ]
 
 CELLPHONES_ONSEN_D : Sequence[str] = [
-    Loc.tele_021.value
+    Loc.tele_021on.value
 ]
 
 CELLPHONES_ONSEN : Sequence[str] = [
@@ -1389,7 +1389,7 @@ CELLPHONES_ONSEN : Sequence[str] = [
 ]
 
 CELLPHONES_SNOWFESTA_F : Sequence[str] = [
-    Loc.tele_022.value
+    Loc.tele_022sf.value
 ]
 
 CELLPHONES_SNOWFESTA : Sequence[str] = [
@@ -1412,9 +1412,129 @@ CELLPHONES_EDOTOWN : Sequence[str] = [
     *CELLPHONES_EDOTOWN_A, *CELLPHONES_EDOTOWN_B, *CELLPHONES_EDOTOWN_C
 ]
 
+CELLPHONES_HEAVEN_A : Sequence[str] = [
+    Loc.tele_028.value
+]
+
+CELLPHONES_HEAVEN : Sequence[str] = [
+    *CELLPHONES_HEAVEN_A
+]
+
+CELLPHONES_TOYHOUSE_C : Sequence[str] = [
+    Loc.tele_012tv.value
+]
+
+CELLPHONES_TOYHOUSE_G : Sequence[str] = [
+    Loc.tele_030ty.value
+]
+
+CELLPHONES_TOYHOUSE : Sequence[str] = [
+    *CELLPHONES_TOYHOUSE_C, *CELLPHONES_TOYHOUSE_G
+]
+
+CELLPHONES_ICELAND_A : Sequence[str] = [
+    Loc.tele_031.value
+]
+
+CELLPHONES_ICELAND_D : Sequence[str] = [
+    Loc.tele_021ic.value
+]
+
+CELLPHONES_ICELAND : Sequence[str] = [
+    *CELLPHONES_ICELAND_A, *CELLPHONES_ICELAND_D
+]
+
+CELLPHONES_ARABIAN_A : Sequence[str] = [
+    Loc.tele_032.value, Loc.tele_033.value
+]
+
+CELLPHONES_ARABIAN_E : Sequence[str] = [
+    Loc.tele_034.value
+]
+
+CELLPHONES_ARABIAN : Sequence[str] = [
+    *CELLPHONES_ARABIAN_A, *CELLPHONES_ARABIAN_E
+]
+
+CELLPHONES_ASIA_B : Sequence[str] = [
+    Loc.tele_037.value
+]
+
+CELLPHONES_ASIA_D : Sequence[str] = [
+    Loc.tele_015.value
+]
+
+CELLPHONES_ASIA : Sequence[str] = [
+    *CELLPHONES_ASIA_B, *CELLPHONES_ASIA_D
+]
+
+CELLPHONES_PLANE_E : Sequence[str] = [
+    Loc.tele_022pl.value
+]
+
+CELLPHONES_PLANE : Sequence[str] = [
+    *CELLPHONES_PLANE_E
+]
+
+CELLPHONES_HONG_A : Sequence[str] = [
+    Loc.tele_039.value, Loc.tele_040h_a.value
+]
+
+CELLPHONES_HONG_B : Sequence[str] = [
+    Loc.tele_040h_b.value
+]
+
+CELLPHONES_HONG_D : Sequence[str] = [
+    Loc.tele_042.value
+]
+
+CELLPHONES_HONG : Sequence[str] = [
+    *CELLPHONES_HONG_A, *CELLPHONES_HONG_B, *CELLPHONES_HONG_D
+]
+
+CELLPHONES_BAY_C : Sequence[str] = [
+    Loc.tele_044.value
+]
+
+CELLPHONES_BAY : Sequence[str] = [
+    *CELLPHONES_BAY_C
+]
+
+CELLPHONES_TOMO_A : Sequence[str] = [
+    Loc.tele_045.value
+]
+
+CELLPHONES_TOMO : Sequence[str] = [
+    *CELLPHONES_TOMO_A
+]
+
+CELLPHONES_SPACE_A : Sequence[str] = [
+    Loc.tele_047.value
+]
+
+CELLPHONES_SPACE_B : Sequence[str] = [
+    Loc.tele_048.value
+]
+
+CELLPHONES_SPACE : Sequence[str] = [
+    *CELLPHONES_SPACE_A, *CELLPHONES_SPACE_B
+]
+
+CELLPHONES_ID_DUPLICATES : Sequence[str] = [
+    Loc.tele_004ss.value, Loc.tele_012cc.value, Loc.tele_021on.value, Loc.tele_022sf.value, Loc.tele_030tv.value,
+    Loc.tele_040h_a.value
+]
+
+CELLPHONES_STAGE_DUPLICATES : Sequence[str] = [
+    Stage.woods_b.value, Stage.toyhouse_c.value, Stage.iceland_d.value, Stage.plane_e.value, Stage.toyhouse_g.value,
+    Stage.hong_b.value
+]
+
 CELLPHONES_MASTER : Sequence[str] = [
     *CELLPHONES_SEASIDE, *CELLPHONES_WOODS, *CELLPHONES_CASTLE, *CELLPHONES_CISCOCITY, *CELLPHONES_STUDIO,
-    *CELLPHONES_HALLOWEEN, *CELLPHONES_WESTERN, *CELLPHONES_ONSEN, *CELLPHONES_SNOWFESTA, *CELLPHONES_EDOTOWN
+    *CELLPHONES_HALLOWEEN, *CELLPHONES_WESTERN, *CELLPHONES_ONSEN, *CELLPHONES_SNOWFESTA, *CELLPHONES_EDOTOWN,
+    *CELLPHONES_HEAVEN, *CELLPHONES_TOYHOUSE, *CELLPHONES_ICELAND, *CELLPHONES_ARABIAN, *CELLPHONES_ASIA,
+    *CELLPHONES_PLANE, *CELLPHONES_HONG, *CELLPHONES_BAY, *CELLPHONES_TOMO, *CELLPHONES_SPACE
 ]
 
 CELLPHONES_INDEX : dict[str, Sequence[str]] = {
@@ -1449,6 +1569,33 @@ CELLPHONES_INDEX : dict[str, Sequence[str]] = {
     Stage.region_edotown_a.value                : CELLPHONES_EDOTOWN_A,
     Stage.region_edotown_b1.value               : CELLPHONES_EDOTOWN_B,
     Stage.region_edotown_c1.value               : CELLPHONES_EDOTOWN_C,
+
+    Stage.region_heaven_a.value                 : CELLPHONES_HEAVEN_A,
+
+    Stage.region_toyhouse_c.value               : CELLPHONES_TOYHOUSE_C,
+    Stage.region_toyhouse_g.value               : CELLPHONES_TOYHOUSE_G,
+
+    Stage.region_iceland_a.value                : CELLPHONES_ICELAND_A,
+    Stage.region_iceland_d.value                : CELLPHONES_ICELAND_D,
+
+    Stage.region_arabian_a.value                : CELLPHONES_ARABIAN_A,
+    Stage.region_arabian_e1.value               : CELLPHONES_ARABIAN_E,
+
+    Stage.region_asia_b.value                   : CELLPHONES_ASIA_B,
+    Stage.region_asia_d1.value                  : CELLPHONES_ASIA_D,
+
+    Stage.region_plane_e.value                  : CELLPHONES_PLANE_E,
+
+    Stage.region_hong_a.value                   : CELLPHONES_HONG_A,
+    Stage.region_hong_b1.value                  : CELLPHONES_HONG_B,
+    Stage.region_hong_d.value                   : CELLPHONES_HONG_D,
+
+    Stage.region_bay_c.value                    : CELLPHONES_BAY_C,
+
+    Stage.region_tomo_a1.value                  : CELLPHONES_TOMO_A,
+
+    Stage.region_space_a.value                  : CELLPHONES_SPACE_A,
+    Stage.region_space_b.value                  : CELLPHONES_SPACE_B,
 }
 
 CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
@@ -1483,6 +1630,33 @@ CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
     Stage.edotown_a.value               : CELLPHONES_EDOTOWN_A,
     Stage.edotown_b.value               : CELLPHONES_EDOTOWN_B,
     Stage.edotown_c.value               : CELLPHONES_EDOTOWN_C,
+
+    Stage.heaven_a.value                : CELLPHONES_HEAVEN_A,
+
+    Stage.toyhouse_c.value              : CELLPHONES_TOYHOUSE_C,
+    Stage.toyhouse_g.value              : CELLPHONES_TOYHOUSE_G,
+
+    Stage.iceland_a.value               : CELLPHONES_ICELAND_A,
+    Stage.iceland_d.value               : CELLPHONES_ICELAND_D,
+
+    Stage.arabian_a.value               : CELLPHONES_ARABIAN_A,
+    Stage.arabian_e.value               : CELLPHONES_ARABIAN_E,
+
+    Stage.asia_b.value                  : CELLPHONES_ASIA_B,
+    Stage.asia_d.value                  : CELLPHONES_ASIA_D,
+
+    Stage.plane_e.value                 : CELLPHONES_PLANE_E,
+
+    Stage.hong_a.value                  : CELLPHONES_HONG_A,
+    Stage.hong_b.value                  : CELLPHONES_HONG_B,
+    Stage.hong_d.value                  : CELLPHONES_HONG_D,
+
+    Stage.bay_c.value                   : CELLPHONES_BAY_C,
+
+    Stage.tomo_a.value                  : CELLPHONES_TOMO_A,
+
+    Stage.space_a.value                 : CELLPHONES_SPACE_A,
+    Stage.space_b.value                 : CELLPHONES_SPACE_B,
 }
 
 ### [< --- EVENT GROUPS --- >]

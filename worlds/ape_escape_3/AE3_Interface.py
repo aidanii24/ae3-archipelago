@@ -4,6 +4,7 @@ from enum import Enum
 import struct
 
 from .data.Addresses import VersionAddresses, get_version_addresses
+from .data.Locations import CELLPHONES_ID_DUPLICATES, CELLPHONES_STAGE_DUPLICATES
 from .data.Strings import Itm, Loc, Meta, Game, APHelper, APConsole
 from .interface.pine import Pine
 
@@ -218,10 +219,10 @@ class AEPS2Interface:
             as_string: str = as_bytes.decode().replace("\x00", "")
         except UnicodeDecodeError:
             return False
-        print("Camera check result:", as_string, as_string == Game.conte.value)
+
         return as_string == Game.conte.value
 
-    def get_cellphone_interacted(self, alt : bool = False) -> str:
+    def get_cellphone_interacted(self, stage : str = "") -> str:
         base_address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
                                                   Game.interact_data.value)
         address : int = base_address + self.addresses.GameStates[Game.cellphone.value]
@@ -234,11 +235,10 @@ class AEPS2Interface:
         except UnicodeDecodeError:
             as_string = ""
 
-        channel : str = self.get_channel()
-        print("Cellphone check result [A]:", as_string)
+
         if as_string.isdigit():
-            if as_string == Loc.tele_004w.value and channel == APHelper.woods.value:
-                as_string = Loc.tele_004w.value
+            if as_string in CELLPHONES_ID_DUPLICATES and stage in CELLPHONES_STAGE_DUPLICATES:
+                as_string = as_string.replace("0", "1", 1)
 
             return as_string
         else:
