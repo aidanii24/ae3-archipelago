@@ -5,7 +5,8 @@ from NetUtils import ClientStatus, NetworkItem
 from .data.Items import ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem
 from .data.Strings import Game, Itm, APHelper
 from .data.Addresses import Capacities, NTSCU, AP, Cellphone_ID
-from .data.Locations import CELLPHONES_STAGE_INDEX, Loc, CAMERAS_STAGE_INDEX, MONKEYS_BOSSES, MONKEYS_DIRECTORY
+from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, Loc, CAMERAS_STAGE_INDEX, MONKEYS_BOSSES, \
+    MONKEYS_DIRECTORY
 from .data import Items
 
 if TYPE_CHECKING:
@@ -253,25 +254,27 @@ async def check_locations(ctx : 'AE3Context'):
             if monkey == Loc.boss_specter.value:
                 ctx.specter1_defeated = True
 
-    print("Area Info:", ctx.current_channel, ctx.current_stage)
     if not ctx.current_channel == APHelper.travel_station.value:
         # Camera Check
-        print("Check for Cameras?", ctx.camerasanity, ctx.current_stage in CAMERAS_STAGE_INDEX)
         if ctx.camerasanity and ctx.current_stage in CAMERAS_STAGE_INDEX:
             if ctx.ipc.is_camera_interacted():
-                print("Camera Location ID:", ctx.locations_name_to_id[CAMERAS_STAGE_INDEX[ctx.current_stage]])
-                cleared.add(ctx.locations_name_to_id[CAMERAS_STAGE_INDEX[ctx.current_stage]])
+
+                are_actors_present : bool = True
+                if ctx.camerasanity == 2:
+                    for actor in ACTORS_INDEX[CAMERAS_STAGE_INDEX[ctx.current_stage]]:
+                        are_actors_present = not ctx.ipc.is_monkey_captured(actor)
+
+                        if not are_actors_present:
+                            break
+
+                if are_actors_present:
+                    cleared.add(ctx.locations_name_to_id[CAMERAS_STAGE_INDEX[ctx.current_stage]])
 
         # Cellphone Check
-        print("Check for Cellphones?", ctx.cellphonesanity, ctx.current_stage in CELLPHONES_STAGE_INDEX)
         if ctx.cellphonesanity and ctx.current_stage in CELLPHONES_STAGE_INDEX:
-            tele_text_id : str = ctx.ipc.get_cellphone_interacted()
+            tele_text_id : str = ctx.ipc.get_cellphone_interacted(ctx.current_stage)
             if tele_text_id in Cellphone_ID:
                 location_id : int = ctx.locations_name_to_id[Cellphone_ID[tele_text_id]]
-
-                # Special case for duplicate phone call in Hide-n-seek Forest
-                if tele_text_id == Loc.tele_004s.value and ctx.current_channel == APHelper.woods.value:
-                    location_id = ctx.locations_name_to_id[Loc.cell_004w.value]
 
                 cleared.add(location_id)
 
