@@ -112,10 +112,14 @@ async def setup_level_select(ctx : 'AE3Context'):
                 ctx.ipc.unlock_chassis_direct(_)
 
 async def setup_area(ctx : 'AE3Context'):
+    # Check Screen Fading State in-game
     if ctx.ipc.check_screen_fading() != 0x01 and ctx.ipc.get_player_state() != 0x03:
+        # Check Start of Screen Fade
         if ctx.ipc.get_screen_fade_count() > 0x1:
             if not ctx.morphs_unlocked[-1]:
                 ctx.ipc.lock_equipment(Itm.morph_monkey.value)
+
+        # Check rest of Screen Fade after Start
         else:
             # Temporarily give a morph during transitions to keep Morph Gauge visible
             # and to spawn Break Room loading zones
@@ -124,6 +128,8 @@ async def setup_area(ctx : 'AE3Context'):
 
             ctx.current_stage = ctx.ipc.get_stage()
             ctx.command_state = 2
+
+    # Not/No Longer Screen Fading
     else:
         if not ctx.morphs_unlocked[-1]:
             ctx.ipc.lock_equipment(Itm.morph_monkey.value)
@@ -273,10 +279,14 @@ async def check_locations(ctx : 'AE3Context'):
         # Cellphone Check
         if ctx.cellphonesanity and ctx.current_stage in CELLPHONES_STAGE_INDEX:
             tele_text_id : str = ctx.ipc.get_cellphone_interacted(ctx.current_stage)
+            print("Cellphone ID", tele_text_id)
             if tele_text_id in Cellphone_ID:
                 location_id : int = ctx.locations_name_to_id[Cellphone_ID[tele_text_id]]
-
                 cleared.add(location_id)
+
+                # Obsolete Interact Data to prevent false checking of phones when transitioning into an adjacent
+                # stage with a phone of the same ID
+                ctx.ipc.obsolete_interact_data()
 
     # Get newly checked locations
     cleared = cleared.difference(ctx.checked_locations)
