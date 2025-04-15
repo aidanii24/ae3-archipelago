@@ -99,6 +99,10 @@ class AEPS2Interface:
         # Get first pointer
         addr : int = self.pine.read_int32(start_address)
 
+        # If pointer is 0, return immediately
+        if addr <= 0x0:
+            return 0x0
+
         # Loop through remaining pointers and adding the offsets
         ptrs : Sequence = self.addresses.Pointers[pointer_chain]
         amt : int = len(ptrs) - 1
@@ -213,6 +217,10 @@ class AEPS2Interface:
                                                   Game.interact_data.value)
         address += self.addresses.GameStates[Game.pipo_camera.value]
 
+        # Return False when the address is invalid
+        if address <= 0x0:
+            return False
+
         as_bytes : bytes = self.pine.read_bytes(address, 5)
         # Try to decode to string, and immediately return if it cannot be decoded
         try:
@@ -223,9 +231,13 @@ class AEPS2Interface:
         return as_string == Game.conte.value
 
     def get_cellphone_interacted(self, stage : str = "") -> str:
-        base_address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
+        address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
                                                   Game.interact_data.value)
-        address : int = base_address + self.addresses.GameStates[Game.cellphone.value]
+        address += self.addresses.GameStates[Game.cellphone.value]
+
+        # Return an empty string if either addresses return 0
+        if address <= 0x0:
+            return ""
 
         as_bytes: bytes = self.pine.read_bytes(address, 3)
 
@@ -235,11 +247,9 @@ class AEPS2Interface:
         except UnicodeDecodeError:
             as_string = ""
 
-
         if as_string.isdigit():
             if as_string in CELLPHONES_ID_DUPLICATES and stage in CELLPHONES_STAGE_DUPLICATES:
                 as_string = as_string.replace("0", "1", 1)
-
             return as_string
         else:
             return ""
@@ -252,7 +262,7 @@ class AEPS2Interface:
                                                   Loc.boss_tomoki.value)
 
         # Return false if pointer is still not initialized
-        if address == 0x0:
+        if address <= 0x0:
             return False
 
         value_raw : int = self.pine.read_int32(address)
@@ -378,6 +388,9 @@ class AEPS2Interface:
                 duration_to_set = 0.0
 
             self.pine.write_int32(morph, float_to_hex_int32(duration_to_set))
+
+    def obsolete_interact_data(self):
+        self.pine.write_int32(self.addresses.GameStates[Game.interact_data.value], 0x0)
 
     def give_collectable(self, address_name : str, amount : int | float = 0x1, maximum : int | float = 0x0):
         address : int = self.addresses.GameStates[address_name]
