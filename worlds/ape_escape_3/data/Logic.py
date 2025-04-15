@@ -149,7 +149,7 @@ class AccessRule:
     KNIGHT = can_knight
     COWBOY = can_cowboy
     NINJA = can_ninja
-    GENIE = can_genie
+    MAGICIAN = can_genie
     KUNGFU = can_kungfu
     HERO = can_hero
     MONKEY = can_monkey

@@ -35,7 +35,7 @@ class RuleType:
 
     default_critical_rule : Set[Callable] = [AccessRule.CATCH]
     final_level_rule : Set[Callable] = {AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC,
-                                        AccessRule.GENIE, AccessRule.KUNGFU, AccessRule.HERO, AccessRule.MONKEY}
+                                        AccessRule.MAGICIAN, AccessRule.KUNGFU, AccessRule.HERO, AccessRule.MONKEY}
 
     # Set Required Keys for each level depending on the Progression Type
     def get_channel_clear_rules(self, channel_name) -> Rulesets:
@@ -97,7 +97,7 @@ class Casual(RuleType):
     monkey_rules = {
         # Seaside
         Loc.seaside_morella.value           : RuleWrap(AccessRule.SHOOT, AccessRule.FLY,
-                                                       frozenset({AccessRule.GENIE, AccessRule.CLUB})),
+                                                       frozenset({AccessRule.MAGICIAN, AccessRule.CLUB})),
 
         # Woods
         Loc.woods_kreemon.value             : RuleWrap(AccessRule.ATTACK),
@@ -143,7 +143,7 @@ class Casual(RuleType):
         Loc.iceland_rammy.value             : RuleWrap(event_invoked(Game.trigger_iceland_e.value)),
 
         # Arabian
-        Loc.arabian_minimon.value           : RuleWrap(AccessRule.GENIE),
+        Loc.arabian_minimon.value           : RuleWrap(AccessRule.MAGICIAN),
 
         # Asia
         Loc.asia_baku.value                 : RuleWrap(frozenset({AccessRule.SHOOT, AccessRule.SWIM})),
@@ -156,7 +156,7 @@ class Casual(RuleType):
         # Plane
         Loc.plane_pont.value                : RuleWrap(AccessRule.RCC, AccessRule.HERO),
         Loc.plane_gamish.value              : RuleWrap(AccessRule.RCC, AccessRule.HERO),
-        Loc.plane_mukita.value              : RuleWrap(AccessRule.GENIE),
+        Loc.plane_mukita.value              : RuleWrap(AccessRule.MAGICIAN),
         Loc.plane_jeloh.value               : RuleWrap(AccessRule.ATTACK),
         Loc.plane_bongo.value               : RuleWrap(AccessRule.ATTACK),
 
@@ -186,7 +186,7 @@ class Casual(RuleType):
         Loc.tomo_mil_mil.value              : RuleWrap(AccessRule.NINJA),
         Loc.tomo_tomio.value                : RuleWrap(AccessRule.ATTACK),
         Loc.tomo_gario.value                : RuleWrap(AccessRule.ATTACK),
-        Loc.tomo_riley.value                : RuleWrap(AccessRule.GENIE),
+        Loc.tomo_riley.value                : RuleWrap(AccessRule.MAGICIAN),
         Loc.tomo_pipo_ron.value             : RuleWrap(AccessRule.KUNGFU),
         Loc.tomo_sal_13.value               : RuleWrap(AccessRule.ATTACK),
         Loc.tomo_sal_12.value               : RuleWrap(AccessRule.ATTACK),
@@ -196,7 +196,7 @@ class Casual(RuleType):
         Loc.space_freet.value               : RuleWrap(AccessRule.ATTACK),
         Loc.space_chico.value               : RuleWrap(AccessRule.ATTACK),
         Loc.space_rokkun.value              : RuleWrap(AccessRule.RCC),
-        Loc.space_ukki_love.value           : RuleWrap(AccessRule.GENIE),
+        Loc.space_ukki_love.value           : RuleWrap(AccessRule.MAGICIAN),
         Loc.space_sal_10.value              : RuleWrap(AccessRule.ATTACK),
         Loc.space_sal_11.value              : RuleWrap(AccessRule.ATTACK),
         Loc.space_sal_3000.value            : RuleWrap(AccessRule.ATTACK),
@@ -308,7 +308,7 @@ class Casual(RuleType):
 
         # Studio
         Stage.region_studio_a.value                : [AE3EntranceMeta(Stage.region_studio_b.value, AccessRule.SHOOT,
-                                                                      AccessRule.GLIDE, AccessRule.GENIE),
+                                                                      AccessRule.GLIDE, AccessRule.MAGICIAN),
                                                       AE3EntranceMeta(Stage.region_studio_c.value),
                                                       AE3EntranceMeta(Stage.region_studio_a1.value,
                                                                       event_invoked(Game.shortcut_studio_ad.value)),
@@ -369,12 +369,12 @@ class Casual(RuleType):
                                                       AE3EntranceMeta(Stage.region_onsen_a2.value)],
         Stage.region_onsen_a1.value                : [AE3EntranceMeta(Stage.region_onsen_a.value),
                                                       AE3EntranceMeta(Stage.region_onsen_a2.value,
-                                                                      AccessRule.GLIDE, AccessRule.GENIE),
+                                                                      AccessRule.GLIDE, AccessRule.MAGICIAN),
                                                       AE3EntranceMeta(Stage.region_onsen_b1.value,
                                                                       AccessRule.DASH, AccessRule.RCC)],
         Stage.region_onsen_a2.value                : [AE3EntranceMeta(Stage.region_onsen_a.value),
                                                       AE3EntranceMeta(Stage.region_onsen_a1.value,
-                                                               AccessRule.GLIDE, AccessRule.GENIE),
+                                                                      AccessRule.GLIDE, AccessRule.MAGICIAN),
                                                       AE3EntranceMeta(Stage.region_onsen_b1.value,
                                                                       AccessRule.DASH, AccessRule.RCC)],
         Stage.region_onsen_b1.value                : [AE3EntranceMeta(Stage.region_onsen_a1.value),
@@ -499,7 +499,7 @@ class Casual(RuleType):
                                                       AE3EntranceMeta(Stage.region_arabian_c.value)],
         Stage.region_arabian_e1.value               : [AE3EntranceMeta(Stage.region_arabian_b.value),
                                                        AE3EntranceMeta(Stage.region_arabian_e.value,
-                                                                AccessRule.GENIE)],
+                                                                       AccessRule.MAGICIAN)],
         Stage.region_arabian_e.value               : [AE3EntranceMeta(Stage.region_arabian_e1.value),
                                                       AE3EntranceMeta(Stage.region_arabian_g.value)],
         Stage.region_arabian_f.value               : [AE3EntranceMeta(Stage.region_arabian_b.value)],
@@ -612,7 +612,7 @@ class Casual(RuleType):
                                                       AE3EntranceMeta(Stage.region_plane_f1.value),
                                                       AE3EntranceMeta(Stage.region_plane_h.value)],
         Stage.region_plane_c.value                 : [AE3EntranceMeta(Stage.region_plane_a.value),
-                                                      AE3EntranceMeta(Stage.region_plane_c1.value, AccessRule.GENIE),
+                                                      AE3EntranceMeta(Stage.region_plane_c1.value, AccessRule.MAGICIAN),
                                                       AE3EntranceMeta(Stage.region_plane_g.value, AccessRule.MONKEY)],
         Stage.region_plane_c1.value                : [AE3EntranceMeta(Stage.region_plane_c.value),
                                                       AE3EntranceMeta(Stage.region_plane_d.value)],

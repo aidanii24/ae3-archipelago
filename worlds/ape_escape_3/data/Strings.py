@@ -340,7 +340,7 @@ class Loc(BaseEnum):
     toyhouse_mokitani           = "Mokitani - Toytown"
     toyhouse_namigo             = "Namigo - Toytown"
     toyhouse_pipotron_red       = "Piptron Red - Toytown"
-    toyhouse_master_loafy       = "Master Loaft - Toytown"
+    toyhouse_master_loafy       = "Master Loafy - Toytown"
     toyhouse_golonero           = "Golonero - Toytown"
     toyhouse_kocho              = "Kocho - Toytown"
     toyhouse_tam_konta          = "Tam Konta - Toytown"
@@ -369,7 +369,7 @@ class Loc(BaseEnum):
     iceland_kris_krimon         = "Kris Krimon - Arctic Wonderland"
 
     ## Mirage Town
-    arabian_scorpi_mon          = "Sccorpi-mon - Mirage Town"
+    arabian_scorpi_mon          = "Scorpi-mon - Mirage Town"
     arabian_minimon             = "Minimon - Mirage Town"
     arabian_moontero            = "Moontero - Mirage Town"
     arabian_ukki_son            = "Ukki Son - Mirage Town"
@@ -843,7 +843,7 @@ class Stage(BaseEnum):
     region_toyhouse_c =         "Toytown - City Race"
     region_toyhouse_d =         "Toytown - Playroom"
     region_toyhouse_e =         "Toytown - Treasure Cave"
-    region_toyhouse_e1 =        "Toytown - Treasure Room"
+    region_toyhouse_e1 =        "Toytown - Coffin Room"
     region_toyhouse_f =         "Toytown - Western Diorama"
     region_toyhouse_g =         "Toytown - Brick House"
     region_toyhouse_h =         "Toytown - Break Room"
