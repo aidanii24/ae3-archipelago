@@ -40,7 +40,7 @@ async def check_background_states(ctx : 'AE3Context'):
             ctx.monkeys_checklist = MONKEYS_BOSSES
             ctx.current_channel = APHelper.boss4.value
         # Recheck locations by each stage while loading
-        else:
+        elif ctx.current_stage:
             await recheck_location_groups(ctx)
             await check_locations(ctx)
 

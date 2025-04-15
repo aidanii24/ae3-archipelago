@@ -327,7 +327,6 @@ async def check_game(ctx : AE3Context):
             if ctx.character < 0:
                 ctx.character = ctx.ipc.get_character()
 
-
             await setup_level_select(ctx)
             await recheck_location_groups(ctx)
         else:
@@ -336,6 +335,8 @@ async def check_game(ctx : AE3Context):
         await check_states(ctx)
 
         # Check Progression
+        print("Current Stage", bool(ctx.current_stage), ctx.current_stage)
+
         await check_items(ctx)
         await check_locations(ctx)
 
