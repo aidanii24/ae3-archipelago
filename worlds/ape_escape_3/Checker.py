@@ -279,7 +279,6 @@ async def check_locations(ctx : 'AE3Context'):
         # Cellphone Check
         if ctx.cellphonesanity and ctx.current_stage in CELLPHONES_STAGE_INDEX:
             tele_text_id : str = ctx.ipc.get_cellphone_interacted(ctx.current_stage)
-            print("Cellphone ID", tele_text_id)
             if tele_text_id in Cellphone_ID:
                 location_id : int = ctx.locations_name_to_id[Cellphone_ID[tele_text_id]]
                 cleared.add(location_id)
