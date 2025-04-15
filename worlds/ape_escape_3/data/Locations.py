@@ -545,7 +545,7 @@ MONKEYS_ARABIAN_C : Sequence[str] = [
 ]
 
 MONKEYS_ARABIAN_C1 : Sequence[str] = [
-Loc.arabian_ukki_mamba.value, Loc.arabian_crazy_ol_mon.value
+    Loc.arabian_ukki_mamba.value, Loc.arabian_crazy_ol_mon.value
 ]
 
 MONKEYS_ARABIAN_E : Sequence[str] = [
