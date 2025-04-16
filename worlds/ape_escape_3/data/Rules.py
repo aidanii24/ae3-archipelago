@@ -116,6 +116,11 @@ class Casual(RuleType):
         Loc.halloween_ukkisuke.value        : RuleWrap(AccessRule.SWIM, AccessRule.HERO),
         Loc.halloween_chibi_sally.value     : RuleWrap(AccessRule.SWIM, AccessRule.HERO),
 
+        # Western
+        Loc.western_chammy_mo.value         : RuleWrap(AccessRule.SHOOT, AccessRule.FLY),
+        Loc.western_golon_moe.value         : RuleWrap(AccessRule.SHOOT, AccessRule.FLY),
+        Loc.western_golozo.value         : RuleWrap(AccessRule.ATTACK),
+
         # Onsen
         Loc.onsen_chabimon.value            : RuleWrap(AccessRule.RCC),
         Loc.onsen_mujakin.value             : RuleWrap(AccessRule.ATTACK),
