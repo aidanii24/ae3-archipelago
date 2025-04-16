@@ -119,7 +119,7 @@ class Casual(RuleType):
         # Western
         Loc.western_chammy_mo.value         : RuleWrap(AccessRule.SHOOT, AccessRule.FLY),
         Loc.western_golon_moe.value         : RuleWrap(AccessRule.SHOOT, AccessRule.FLY),
-        Loc.western_golozo.value         : RuleWrap(AccessRule.ATTACK),
+        Loc.western_golozo.value            : RuleWrap(AccessRule.ATTACK),
 
         # Onsen
         Loc.onsen_chabimon.value            : RuleWrap(AccessRule.RCC),
