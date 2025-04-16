@@ -678,7 +678,7 @@ MONKEYS_PLANE : Sequence[str] = [
 
 # Hong
 MONKEYS_HONG_A : Sequence[str] = [
-    Loc.hong_dally.value, Loc.hong_nak_nayo.value,
+    Loc.hong_nak_nayo.value,
 ]
 
 MONKEYS_HONG_A1 : Sequence[str] = [
@@ -1380,12 +1380,12 @@ CELLPHONES_ONSEN_A : Sequence[str] = [
     Loc.tele_020.value, Loc.tele_063.value
 ]
 
-CELLPHONES_ONSEN_D : Sequence[str] = [
+CELLPHONES_ONSEN_D1 : Sequence[str] = [
     Loc.tele_021on.value
 ]
 
 CELLPHONES_ONSEN : Sequence[str] = [
-    *CELLPHONES_ONSEN_A, *CELLPHONES_ONSEN_D
+    *CELLPHONES_ONSEN_A, *CELLPHONES_ONSEN_D1
 ]
 
 CELLPHONES_SNOWFESTA_F : Sequence[str] = [
@@ -1448,12 +1448,12 @@ CELLPHONES_ARABIAN_A : Sequence[str] = [
     Loc.tele_032.value, Loc.tele_033.value
 ]
 
-CELLPHONES_ARABIAN_E : Sequence[str] = [
+CELLPHONES_ARABIAN_E1 : Sequence[str] = [
     Loc.tele_034.value
 ]
 
 CELLPHONES_ARABIAN : Sequence[str] = [
-    *CELLPHONES_ARABIAN_A, *CELLPHONES_ARABIAN_E
+    *CELLPHONES_ARABIAN_A, *CELLPHONES_ARABIAN_E1
 ]
 
 CELLPHONES_ASIA_B : Sequence[str] = [
@@ -1562,7 +1562,7 @@ CELLPHONES_INDEX : dict[str, Sequence[str]] = {
     Stage.region_western_e.value                : CELLPHONES_WESTERN_E,
 
     Stage.region_onsen_a.value                  : CELLPHONES_ONSEN_A,
-    Stage.region_onsen_d1.value                 : CELLPHONES_ONSEN_D,
+    Stage.region_onsen_d1.value                 : CELLPHONES_ONSEN_D1,
 
     Stage.region_snowfesta_f.value              : CELLPHONES_SNOWFESTA_F,
 
@@ -1579,7 +1579,7 @@ CELLPHONES_INDEX : dict[str, Sequence[str]] = {
     Stage.region_iceland_d.value                : CELLPHONES_ICELAND_D,
 
     Stage.region_arabian_a.value                : CELLPHONES_ARABIAN_A,
-    Stage.region_arabian_e1.value               : CELLPHONES_ARABIAN_E,
+    Stage.region_arabian_e1.value               : CELLPHONES_ARABIAN_E1,
 
     Stage.region_asia_b.value                   : CELLPHONES_ASIA_B,
     Stage.region_asia_d1.value                  : CELLPHONES_ASIA_D,
@@ -1623,7 +1623,7 @@ CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
     Stage.western_e.value               : CELLPHONES_WESTERN_E,
 
     Stage.onsen_a.value                 : CELLPHONES_ONSEN_A,
-    Stage.onsen_d.value                 : CELLPHONES_ONSEN_D,
+    Stage.onsen_d.value                 : CELLPHONES_ONSEN_D1,
 
     Stage.snowfesta_f.value             : CELLPHONES_SNOWFESTA_F,
 
@@ -1640,7 +1640,7 @@ CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
     Stage.iceland_d.value               : CELLPHONES_ICELAND_D,
 
     Stage.arabian_a.value               : CELLPHONES_ARABIAN_A,
-    Stage.arabian_e.value               : CELLPHONES_ARABIAN_E,
+    Stage.arabian_e.value               : CELLPHONES_ARABIAN_E1,
 
     Stage.asia_b.value                  : CELLPHONES_ASIA_B,
     Stage.asia_d.value                  : CELLPHONES_ASIA_D,
