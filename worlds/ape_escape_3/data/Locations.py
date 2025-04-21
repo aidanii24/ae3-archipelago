@@ -152,12 +152,16 @@ MONKEYS_WOODS : Sequence[str] = [
 ]
 
 # Castle
-MONKEYS_CASTLE_A : Sequence[str] = [
+MONKEYS_CASTLE_A1 : Sequence[str] = [
     Loc.castle_ukkido.value
 ]
 
 MONKEYS_CASTLE_B : Sequence[str] = [
-    Loc.castle_pipo_guard.value, Loc.castle_monderella.value, Loc.castle_ukki_ichi.value, Loc.castle_ukkinee.value
+    Loc.castle_pipo_guard.value, Loc.castle_ukkinee.value
+]
+
+MONKEYS_CASTLE_B1 : Sequence[str] = [
+    Loc.castle_monderella.value, Loc.castle_ukki_ichi.value
 ]
 
 MONKEYS_CASTLE_C : Sequence[str] = [
@@ -165,7 +169,11 @@ MONKEYS_CASTLE_C : Sequence[str] = [
 ]
 
 MONKEYS_CASTLE_D : Sequence[str] = [
-    Loc.castle_ukkii.value, Loc.castle_saluto.value
+    Loc.castle_ukkii.value
+]
+
+MONKEYS_CASTLE_D1 : Sequence[str] = [
+    Loc.castle_saluto.value
 ]
 
 MONKEYS_CASTLE_E : Sequence[str] = [
@@ -177,7 +185,8 @@ MONKEYS_CASTLE_F : Sequence[str] = [
 ]
 
 MONKEYS_CASTLE : Sequence[str] = [
-    *MONKEYS_CASTLE_A, *MONKEYS_CASTLE_B, *MONKEYS_CASTLE_C, *MONKEYS_CASTLE_D, *MONKEYS_CASTLE_E, *MONKEYS_CASTLE_F
+    *MONKEYS_CASTLE_A1, *MONKEYS_CASTLE_B1, *MONKEYS_CASTLE_C, *MONKEYS_CASTLE_D, *MONKEYS_CASTLE_D1,
+    *MONKEYS_CASTLE_E, *MONKEYS_CASTLE_F
 ]
 
 # Boss1
@@ -193,7 +202,7 @@ MONKEYS_CISCOCITY_B : Sequence[str] = [
     Loc.ciscocity_sabu_sabu.value, Loc.ciscocity_ginjiro.value, Loc.ciscocity_kichiemon.value
 ]
 
-MONKEYS_CISCOCITY_C : Sequence[str] = [
+MONKEYS_CISCOCITY_C1 : Sequence[str] = [
     Loc.ciscocity_ukkilun.value
 ]
 
@@ -208,7 +217,7 @@ MONKEYS_CISCOCITY_E : Sequence[str] = [
 ]
 
 MONKEYS_CISCOCITY : Sequence[str] = [
-    *MONKEYS_CISCOCITY_A, *MONKEYS_CISCOCITY_B, *MONKEYS_CISCOCITY_C, *MONKEYS_CISCOCITY_D, *MONKEYS_CISCOCITY_E,
+    *MONKEYS_CISCOCITY_A, *MONKEYS_CISCOCITY_B, *MONKEYS_CISCOCITY_C1, *MONKEYS_CISCOCITY_D, *MONKEYS_CISCOCITY_E,
 ]
 
 # Studio
@@ -225,15 +234,23 @@ MONKEYS_STUDIO_C : Sequence[str] = [
 ]
 
 MONKEYS_STUDIO_D : Sequence[str] = [
-    Loc.studio_bananamon.value, Loc.studio_mokinza.value
+    Loc.studio_bananamon.value
+]
+
+MONKEYS_STUDIO_D1 : Sequence[str] = [
+    Loc.studio_mokinza.value
 ]
 
 MONKEYS_STUDIO_E : Sequence[str] = [
     Loc.studio_ukki_lee_ukki.value, Loc.studio_ukkida_jiro.value, Loc.studio_sal_ukindo.value
 ]
 
+MONKEYS_STUDIO_F1 : Sequence[str] = [
+    Loc.studio_gimminey.value, Loc.studio_hant.value
+]
+
 MONKEYS_STUDIO_F : Sequence[str] = [
-    Loc.studio_gimminey.value, Loc.studio_hant.value, Loc.studio_chippino.value
+    Loc.studio_chippino.value
 ]
 
 MONKEYS_STUDIO_G : Sequence[str] = [
@@ -241,8 +258,8 @@ MONKEYS_STUDIO_G : Sequence[str] = [
 ]
 
 MONKEYS_STUDIO : Sequence[str] = [
-    *MONKEYS_STUDIO_A, *MONKEYS_STUDIO_B, *MONKEYS_STUDIO_C, *MONKEYS_STUDIO_D, *MONKEYS_STUDIO_E, *MONKEYS_STUDIO_F,
-    *MONKEYS_STUDIO_G,
+    *MONKEYS_STUDIO_A, *MONKEYS_STUDIO_B, *MONKEYS_STUDIO_C, *MONKEYS_STUDIO_D, *MONKEYS_STUDIO_D1,
+    *MONKEYS_STUDIO_E, *MONKEYS_STUDIO_F, *MONKEYS_STUDIO_F1, *MONKEYS_STUDIO_G,
 ]
 
 # Halloween
@@ -259,12 +276,23 @@ MONKEYS_HALLOWEEN_B : Sequence[str] = [
 ]
 
 MONKEYS_HALLOWEEN_C : Sequence[str] = [
-    Loc.halloween_ukkisuke.value, Loc.halloween_chibi_sally.value, Loc.halloween_ukkison.value
+    Loc.halloween_ukkisuke.value, Loc.halloween_chibi_sally.value
+]
+
+MONKEYS_HALLOWEEN_C2 : Sequence[str] = [
+    Loc.halloween_ukkison.value
 ]
 
 MONKEYS_HALLOWEEN_D : Sequence[str] = [
-    Loc.halloween_saruhotep.value, Loc.halloween_ukkito.value, Loc.halloween_monzally.value,
-    Loc.halloween_ukkiami.value
+    Loc.halloween_saruhotep.value
+]
+
+MONKEYS_HALLOWEEN_D1 : Sequence[str] = [
+    Loc.halloween_ukkito.value
+]
+
+MONKEYS_HALLOWEEN_D2 : Sequence[str] = [
+    Loc.halloween_monzally.value, Loc.halloween_ukkiami.value
 ]
 
 MONKEYS_HALLOWEEN_E : Sequence[str] = [
@@ -277,8 +305,8 @@ MONKEYS_HALLOWEEN_F : Sequence[str] = [
 ]
 
 MONKEYS_HALLOWEEN : Sequence[str] = [
-    *MONKEYS_HALLOWEEN_A1, *MONKEYS_HALLOWEEN_A, *MONKEYS_HALLOWEEN_B, *MONKEYS_HALLOWEEN_C, *MONKEYS_HALLOWEEN_D,
-    *MONKEYS_HALLOWEEN_E,  *MONKEYS_HALLOWEEN_F
+    *MONKEYS_HALLOWEEN_A1, *MONKEYS_HALLOWEEN_A, *MONKEYS_HALLOWEEN_B, *MONKEYS_HALLOWEEN_C, *MONKEYS_HALLOWEEN_C2,
+    *MONKEYS_HALLOWEEN_D, *MONKEYS_HALLOWEEN_D1, *MONKEYS_HALLOWEEN_D2, *MONKEYS_HALLOWEEN_E,  *MONKEYS_HALLOWEEN_F
 ]
 
 # Western
@@ -294,13 +322,20 @@ MONKEYS_WESTERN_C : Sequence[str] = [
     Loc.western_lucky_woo.value, Loc.western_pamela.value, Loc.western_ukki_monber.value, Loc.western_gaukichi.value
 ]
 
-MONKEYS_WESTERN_D : Sequence[str] = [
-    Loc.western_shaluron.value, Loc.western_jay_mohn.value, Loc.western_munkee_joe.value, Loc.western_saru_chison.value,
-    Loc.western_jaja_jamo.value
+MONKEYS_WESTERN_D2 : Sequence[str] = [
+    Loc.western_shaluron.value,
+]
+
+MONKEYS_WESTERN_D3 : Sequence[str] = [
+    Loc.western_jay_mohn.value, Loc.western_munkee_joe.value, Loc.western_saru_chison.value, Loc.western_jaja_jamo.value
 ]
 
 MONKEYS_WESTERN_E : Sequence[str] = [
-    Loc.western_chammy_mo.value, Loc.western_golon_moe.value, Loc.western_golozo.value
+    Loc.western_chammy_mo.value, Loc.western_golozo.value
+]
+
+MONKEYS_WESTERN_E1 : Sequence[str] = [
+    Loc.western_golon_moe.value,
 ]
 
 MONKEYS_WESTERN_F : Sequence[str] = [
@@ -308,8 +343,8 @@ MONKEYS_WESTERN_F : Sequence[str] = [
 ]
 
 MONKEYS_WESTERN : Sequence[str] = [
-    *MONKEYS_WESTERN_A, *MONKEYS_WESTERN_B, *MONKEYS_WESTERN_C, *MONKEYS_WESTERN_D, *MONKEYS_WESTERN_E,
-    *MONKEYS_WESTERN_F,
+    *MONKEYS_WESTERN_A, *MONKEYS_WESTERN_B, *MONKEYS_WESTERN_C, *MONKEYS_WESTERN_D2, *MONKEYS_WESTERN_D3,
+    *MONKEYS_WESTERN_E, *MONKEYS_WESTERN_E1, *MONKEYS_WESTERN_F,
 ]
 
 # Boss2
@@ -323,11 +358,11 @@ MONKEYS_ONSEN_A : Sequence[str] = [
 ]
 
 MONKEYS_ONSEN_A1 : Sequence[str] = [
-    Loc.onsen_michiyan.value, Loc.onsen_tome_san.value
+    Loc.onsen_kiichiro.value, Loc.onsen_saru_sam.value
 ]
 
 MONKEYS_ONSEN_A2 : Sequence[str] = [
-    Loc.onsen_kiichiro.value, Loc.onsen_saru_sam.value
+    Loc.onsen_michiyan.value, Loc.onsen_tome_san.value
 ]
 
 MONKEYS_ONSEN_B : Sequence[str] = [
@@ -402,11 +437,15 @@ MONKEYS_EDOTOWN_B : Sequence[str] = [
 ]
 
 MONKEYS_EDOTOWN_C : Sequence[str] = [
-    Loc.edotown_tomoku_chan.value, Loc.edotown_uziko.value, Loc.edotown_gp.value
+    Loc.edotown_tomoku_chan.value,
 ]
 
 MONKEYS_EDOTOWN_C1 : Sequence[str] = [
     Loc.edotown_kikimaru.value
+]
+
+MONKEYS_EDOTOWN_C2 : Sequence[str] = [
+    Loc.edotown_uziko.value, Loc.edotown_gp.value
 ]
 
 MONKEYS_EDOTOWN_D : Sequence[str] = [
@@ -423,8 +462,8 @@ MONKEYS_EDOTOWN_F : Sequence[str] = [
 ]
 
 MONKEYS_EDOTOWN : Sequence[str] = [
-    *MONKEYS_EDOTOWN_A, *MONKEYS_EDOTOWN_B, *MONKEYS_EDOTOWN_C, *MONKEYS_EDOTOWN_C1, *MONKEYS_EDOTOWN_D,
-    *MONKEYS_EDOTOWN_E, *MONKEYS_EDOTOWN_F,
+    *MONKEYS_EDOTOWN_A, *MONKEYS_EDOTOWN_B, *MONKEYS_EDOTOWN_C, *MONKEYS_EDOTOWN_C1, *MONKEYS_EDOTOWN_C1,
+    *MONKEYS_EDOTOWN_D, *MONKEYS_EDOTOWN_E, *MONKEYS_EDOTOWN_F
 ]
 
 # Boss3
@@ -439,7 +478,7 @@ MONKEYS_HEAVEN_A : Sequence[str] = [
 
 MONKEYS_HEAVEN_B : Sequence[str] = [
     Loc.heaven_kyamio.value, Loc.heaven_talupon.value, Loc.heaven_bokitan.value, Loc.heaven_tami.value,
-    Loc.heaven_micchino.value,
+    Loc.heaven_micchino.value
 ]
 
 MONKEYS_HEAVEN_C : Sequence[str] = [
@@ -465,7 +504,10 @@ MONKEYS_TOYHOUSE_A : Sequence[str] = [
 ]
 
 MONKEYS_TOYHOUSE_B : Sequence[str] = [
-    Loc.toyhouse_bon_mota.value, Loc.toyhouse_bon_verna.value, Loc.toyhouse_bon_papa.value, Loc.toyhouse_bon_mama.value,
+    Loc.toyhouse_bon_mota.value, Loc.toyhouse_bon_verna.value, Loc.toyhouse_bon_papa.value, Loc.toyhouse_bon_mama.value
+]
+
+MONKEYS_TOYHOUSE_B1 : Sequence[str] = [
     Loc.toyhouse_kalkin.value
 ]
 
@@ -478,7 +520,7 @@ MONKEYS_TOYHOUSE_D : Sequence[str] = [
     Loc.toyhouse_monto.value, Loc.toyhouse_mokitani.value, Loc.toyhouse_namigo.value, Loc.toyhouse_pipotron_red.value
 ]
 
-MONKEYS_TOYHOUSE_E1 : Sequence[str] = [
+MONKEYS_TOYHOUSE_E : Sequence[str] = [
     Loc.toyhouse_master_loafy.value
 ]
 
@@ -496,13 +538,21 @@ MONKEYS_TOYHOUSE_H : Sequence[str] = [
 ]
 
 MONKEYS_TOYHOUSE : Sequence[str] = [
-    *MONKEYS_TOYHOUSE_A, *MONKEYS_TOYHOUSE_B, *MONKEYS_TOYHOUSE_C, *MONKEYS_TOYHOUSE_D, *MONKEYS_TOYHOUSE_E1,
-    *MONKEYS_TOYHOUSE_F, *MONKEYS_TOYHOUSE_G, *MONKEYS_TOYHOUSE_H,
+    *MONKEYS_TOYHOUSE_A, *MONKEYS_TOYHOUSE_B, *MONKEYS_TOYHOUSE_B1, *MONKEYS_TOYHOUSE_C, *MONKEYS_TOYHOUSE_D,
+    *MONKEYS_TOYHOUSE_E, *MONKEYS_TOYHOUSE_F, *MONKEYS_TOYHOUSE_G, *MONKEYS_TOYHOUSE_H,
 ]
 
 # Iceland
 MONKEYS_ICELAND_A : Sequence[str] = [
-    Loc.iceland_bikupuri.value, Loc.iceland_ukkisu.value, Loc.iceland_ukki_ami.value, Loc.iceland_balio.value
+    Loc.iceland_bikupuri.value, Loc.iceland_ukkisu.value
+]
+
+MONKEYS_ICELAND_A1 : Sequence[str] = [
+    Loc.iceland_ukki_ami.value,
+]
+
+MONKEYS_ICELAND_A2 : Sequence[str] = [
+    Loc.iceland_balio.value
 ]
 
 MONKEYS_ICELAND_B : Sequence[str] = [
@@ -526,8 +576,8 @@ MONKEYS_ICELAND_F : Sequence[str] = [
 ]
 
 MONKEYS_ICELAND : Sequence[str] = [
-    *MONKEYS_ICELAND_A, *MONKEYS_ICELAND_B, *MONKEYS_ICELAND_C, *MONKEYS_ICELAND_D, *MONKEYS_ICELAND_E,
-    *MONKEYS_ICELAND_F
+    *MONKEYS_ICELAND_A, *MONKEYS_ICELAND_A1, *MONKEYS_ICELAND_A2, *MONKEYS_ICELAND_B, *MONKEYS_ICELAND_C,
+    *MONKEYS_ICELAND_D, *MONKEYS_ICELAND_E, *MONKEYS_ICELAND_F
 ]
 
 # Arabian
@@ -580,11 +630,11 @@ MONKEYS_ASIA_A1 : Sequence[str] = [
     Loc.asia_salumani.value, Loc.asia_salulu.value
 ]
 
-MONKEYS_ASIA_A3 : Sequence[str] = [
+MONKEYS_ASIA_A4 : Sequence[str] = [
     Loc.asia_baku.value
 ]
 
-MONKEYS_ASIA_A4 : Sequence[str] = [
+MONKEYS_ASIA_A6 : Sequence[str] = [
     Loc.asia_ukki_mat.value, Loc.asia_salunch.value
 ]
 
@@ -608,7 +658,7 @@ MONKEYS_ASIA_D2 : Sequence[str] = [
     Loc.asia_takumon.value, Loc.asia_ukki_ether.value
 ]
 
-MONKEYS_ASIA_E1 : Sequence[str] = [
+MONKEYS_ASIA_E : Sequence[str] = [
     Loc.asia_molzone.value
 ]
 
@@ -621,8 +671,8 @@ MONKEYS_ASIA_F : Sequence[str] = [
 ]
 
 MONKEYS_ASIA : Sequence[str] = [
-    *MONKEYS_ASIA_A, *MONKEYS_ASIA_A1, *MONKEYS_ASIA_A3, *MONKEYS_ASIA_A4, *MONKEYS_ASIA_B, *MONKEYS_ASIA_B1,
-    *MONKEYS_ASIA_B1, *MONKEYS_ASIA_B2, *MONKEYS_ASIA_D, *MONKEYS_ASIA_D2, *MONKEYS_ASIA_E1, *MONKEYS_ASIA_E2,
+    *MONKEYS_ASIA_A, *MONKEYS_ASIA_A1, *MONKEYS_ASIA_A4, *MONKEYS_ASIA_A6, *MONKEYS_ASIA_B, *MONKEYS_ASIA_B1,
+    *MONKEYS_ASIA_B1, *MONKEYS_ASIA_B2, *MONKEYS_ASIA_D, *MONKEYS_ASIA_D2, *MONKEYS_ASIA_E, *MONKEYS_ASIA_E2,
     *MONKEYS_ASIA_F
 ]
 
@@ -640,7 +690,11 @@ MONKEYS_PLANE_B : Sequence[str] = [
 ]
 
 MONKEYS_PLANE_B1 : Sequence[str] = [
-    Loc.plane_pont.value, Loc.plane_gamish.value,
+    Loc.plane_pont.value
+]
+
+MONKEYS_PLANE_B2 : Sequence[str] = [
+    Loc.plane_gamish.value
 ]
 
 MONKEYS_PLANE_C : Sequence[str] = [
@@ -672,8 +726,8 @@ MONKEYS_PLANE_H : Sequence[str] = [
 ]
 
 MONKEYS_PLANE : Sequence[str] = [
-    *MONKEYS_PLANE_A, *MONKEYS_PLANE_A1, *MONKEYS_PLANE_B, *MONKEYS_PLANE_B1, *MONKEYS_PLANE_C, *MONKEYS_PLANE_C1,
-    *MONKEYS_PLANE_D, *MONKEYS_PLANE_E, *MONKEYS_PLANE_F1, *MONKEYS_PLANE_G, *MONKEYS_PLANE_H
+    *MONKEYS_PLANE_A, *MONKEYS_PLANE_A1, *MONKEYS_PLANE_B, *MONKEYS_PLANE_B1, *MONKEYS_PLANE_B2, *MONKEYS_PLANE_C,
+    *MONKEYS_PLANE_C1, *MONKEYS_PLANE_D, *MONKEYS_PLANE_E, *MONKEYS_PLANE_F1, *MONKEYS_PLANE_G, *MONKEYS_PLANE_H
 ]
 
 # Hong
@@ -754,7 +808,7 @@ MONKEYS_BAY_A1 : Sequence[str] = [
     Loc.bay_gumbo.value, Loc.bay_pehyan.value
 ]
 
-MONKEYS_BAY_A5 : Sequence[str] = [
+MONKEYS_BAY_A6 : Sequence[str] = [
     Loc.bay_mokito.value
 ]
 
@@ -763,8 +817,11 @@ MONKEYS_BAY_B : Sequence[str] = [
 ]
 
 MONKEYS_BAY_C : Sequence[str] = [
-    Loc.bay_shiny_pete.value, Loc.bay_keiichi.value, Loc.bay_landon.value, Loc.bay_mcbreezy.value,
-    Loc.bay_ronson.value, Loc.bay_gimo.value
+    Loc.bay_keiichi.value, Loc.bay_mcbreezy.value,
+]
+
+MONKEYS_BAY_C1 : Sequence[str] = [
+    Loc.bay_shiny_pete.value, Loc.bay_landon.value, Loc.bay_ronson.value, Loc.bay_gimo.value
 ]
 
 MONKEYS_BAY_D : Sequence[str] = [
@@ -784,11 +841,7 @@ MONKEYS_BAY_E1 : Sequence[str] = [
 ]
 
 MONKEYS_BAY_E2 : Sequence[str] = [
-    Loc.bay_gimi_gimi.value, Loc.bay_pokkini.value, Loc.bay_bokino.value
-]
-
-MONKEYS_BAY_E3 : Sequence[str] = [
-    Loc.bay_jimo.value
+    Loc.bay_gimi_gimi.value, Loc.bay_pokkini.value, Loc.bay_bokino.value. Loc.bay_jimo.value
 ]
 
 MONKEYS_BAY_F : Sequence[str] = [
@@ -796,8 +849,8 @@ MONKEYS_BAY_F : Sequence[str] = [
 ]
 
 MONKEYS_BAY : Sequence[str] = [
-    *MONKEYS_BAY_A, *MONKEYS_BAY_A1, *MONKEYS_BAY_A5, *MONKEYS_BAY_B, *MONKEYS_BAY_C, *MONKEYS_BAY_D, *MONKEYS_BAY_D1,
-    *MONKEYS_BAY_E, *MONKEYS_BAY_E1, *MONKEYS_BAY_E2, *MONKEYS_BAY_E3, *MONKEYS_BAY_F,
+    *MONKEYS_BAY_A, *MONKEYS_BAY_A1, *MONKEYS_BAY_A6, *MONKEYS_BAY_B, *MONKEYS_BAY_C, *MONKEYS_BAY_C1,
+    *MONKEYS_BAY_D, *MONKEYS_BAY_D1, *MONKEYS_BAY_E, *MONKEYS_BAY_E1, *MONKEYS_BAY_E2, *MONKEYS_BAY_F,
 ]
 
 # Tomo
@@ -814,22 +867,26 @@ MONKEYS_TOMO_C : Sequence[str] = [
 ]
 
 MONKEYS_TOMO_E : Sequence[str] = [
-    Loc.tomo_taimon.value, Loc.tomo_goro_san.value
+    Loc.tomo_taimon.value
 ]
 
 MONKEYS_TOMO_E1 : Sequence[str] = [
-    Loc.tomo_reiji.value
+    Loc.tomo_goro_san.value
 ]
 
 MONKEYS_TOMO_E2 : Sequence[str] = [
+    Loc.tomo_reiji.value
+]
+
+MONKEYS_TOMO_E3 : Sequence[str] = [
     Loc.tomo_ponta.value, Loc.tomo_tomio.value, Loc.tomo_gario.value
 ]
 
-MONKEYS_TOMO_F1 : Sequence[str] = [
+MONKEYS_TOMO_F2 : Sequence[str] = [
     Loc.tomo_dj_pari.value
 ]
 
-MONKEYS_TOMO_F2 : Sequence[str] = [
+MONKEYS_TOMO_F : Sequence[str] = [
     Loc.tomo_mitsuo.value
 ]
 
@@ -855,8 +912,8 @@ MONKEYS_TOMO_J : Sequence[str] = [
 
 MONKEYS_TOMO : Sequence[str] = [
     *MONKEYS_TOMO_A,*MONKEYS_TOMO_B, *MONKEYS_TOMO_C, *MONKEYS_TOMO_E, *MONKEYS_TOMO_E1, *MONKEYS_TOMO_E2,
-    *MONKEYS_TOMO_F1, *MONKEYS_TOMO_F2, *MONKEYS_TOMO_G, *MONKEYS_TOMO_G1, *MONKEYS_TOMO_H, *MONKEYS_TOMO_I,
-    *MONKEYS_TOMO_J
+    *MONKEYS_TOMO_E3, *MONKEYS_TOMO_F, *MONKEYS_TOMO_F2, *MONKEYS_TOMO_G, *MONKEYS_TOMO_G1, *MONKEYS_TOMO_H,
+    *MONKEYS_TOMO_I, *MONKEYS_TOMO_J
 ]
 
 # boss6
@@ -877,7 +934,7 @@ MONKEYS_SPACE_D : Sequence[str] = [
     Loc.space_uttey.value, Loc.space_emma.value, Loc.space_dokicchi.value, Loc.space_kamicchi.value,
     Loc.space_ukki_monda.value, Loc.space_porokko.value, Loc.space_zonelin.value
 ]
-MONKEYS_SPACE_E : Sequence[str] = [
+MONKEYS_SPACE_E1 : Sequence[str] = [
     Loc.space_tamano.value, Loc.space_nelson.value, Loc.space_koloneh.value, Loc.space_miluchy.value,
     Loc.space_robert.value, Loc.space_fronson.value, Loc.space_demekin.value
 ]
@@ -897,7 +954,7 @@ MONKEYS_SPACE_G : Sequence[str] = [
     Loc.space_macchan.value, Loc.space_rokkun.value
 ]
 
-MONKEYS_SPACE_G2 : Sequence[str] = [
+MONKEYS_SPACE_G1 : Sequence[str] = [
     Loc.space_ukki_love.value, Loc.space_momongo.value, Loc.space_moepi.value, Loc.space_pumon.value,
     Loc.space_makiban.value
 ]
@@ -914,8 +971,8 @@ MONKEYS_SPACE_K : Sequence[str] = [
 ]
 
 MONKEYS_SPACE : Sequence[str] = [
-    *MONKEYS_SPACE_A, *MONKEYS_SPACE_B, *MONKEYS_SPACE_D, *MONKEYS_SPACE_E, *MONKEYS_SPACE_F, *MONKEYS_SPACE_F1,
-    *MONKEYS_SPACE_F2, *MONKEYS_SPACE_G, *MONKEYS_SPACE_G2, *MONKEYS_SPACE_H, *MONKEYS_SPACE_I, *MONKEYS_SPACE_K
+    *MONKEYS_SPACE_A, *MONKEYS_SPACE_B, *MONKEYS_SPACE_D, *MONKEYS_SPACE_E1, *MONKEYS_SPACE_F, *MONKEYS_SPACE_F1,
+    *MONKEYS_SPACE_F2, *MONKEYS_SPACE_G, *MONKEYS_SPACE_G1, *MONKEYS_SPACE_H, *MONKEYS_SPACE_I, *MONKEYS_SPACE_K
 ]
 
 MONKEYS_SPECTER : Sequence[str] = [
@@ -940,227 +997,244 @@ MONKEYS_MASTER : Sequence[str] = [
 
 MONKEYS_INDEX : dict[str, Sequence] = {
     # Zero
-    Stage.zero.value            : MONKEYS_ZERO,
+    Stage.zero.value                    : MONKEYS_ZERO,
 
     # Seaside
-    Stage.region_seaside_a.value       : MONKEYS_SEASIDE_A,
-    Stage.region_seaside_b.value       : MONKEYS_SEASIDE_B,
-    Stage.region_seaside_c.value       : MONKEYS_SEASIDE_C,
+    Stage.region_seaside_a.value        : MONKEYS_SEASIDE_A,
+    Stage.region_seaside_b.value        : MONKEYS_SEASIDE_B,
+    Stage.region_seaside_c.value        : MONKEYS_SEASIDE_C,
 
     # Woods
-    Stage.region_woods_a.value         : MONKEYS_WOODS_A,
-    Stage.region_woods_b.value         : MONKEYS_WOODS_B,
-    Stage.region_woods_c.value         : MONKEYS_WOODS_C,
-    Stage.region_woods_d.value         : MONKEYS_WOODS_D,
+    Stage.region_woods_a.value          : MONKEYS_WOODS_A,
+    Stage.region_woods_b.value          : MONKEYS_WOODS_B,
+    Stage.region_woods_c.value          : MONKEYS_WOODS_C,
+    Stage.region_woods_d.value          : MONKEYS_WOODS_D,
 
     # Castle
-    Stage.region_castle_a.value        : MONKEYS_CASTLE_A,
-    Stage.region_castle_b.value        : MONKEYS_CASTLE_B,
-    Stage.region_castle_c.value        : MONKEYS_CASTLE_C,
-    Stage.region_castle_d.value        : MONKEYS_CASTLE_D,
-    Stage.region_castle_e.value        : MONKEYS_CASTLE_E,
-    Stage.region_castle_f.value        : MONKEYS_CASTLE_F,
+    Stage.region_castle_a1.value        : MONKEYS_CASTLE_A1,
+    Stage.region_castle_b.value         : MONKEYS_CASTLE_B,
+    Stage.region_castle_b1.value        : MONKEYS_CASTLE_B1,
+    Stage.region_castle_c.value         : MONKEYS_CASTLE_C,
+    Stage.region_castle_d.value         : MONKEYS_CASTLE_D,
+    Stage.region_castle_d1.value        : MONKEYS_CASTLE_D1,
+    Stage.region_castle_e.value         : MONKEYS_CASTLE_E,
+    Stage.region_castle_f.value         : MONKEYS_CASTLE_F,
 
     # Boss1
-    Stage.region_boss1.value           : MONKEYS_BOSS1,
+    Stage.region_boss1.value            : MONKEYS_BOSS1,
 
     # Ciscocity
-    Stage.region_ciscocity_a.value     : MONKEYS_CISCOCITY_A,
-    Stage.region_ciscocity_b.value     : MONKEYS_CISCOCITY_B,
-    Stage.region_ciscocity_c.value     : MONKEYS_CISCOCITY_C,
-    Stage.region_ciscocity_d.value     : MONKEYS_CISCOCITY_D,
-    Stage.region_ciscocity_e.value     : MONKEYS_CISCOCITY_E,
+    Stage.region_ciscocity_a.value      : MONKEYS_CISCOCITY_A,
+    Stage.region_ciscocity_b.value      : MONKEYS_CISCOCITY_B,
+    Stage.region_ciscocity_c1.value     : MONKEYS_CISCOCITY_C1,
+    Stage.region_ciscocity_d.value      : MONKEYS_CISCOCITY_D,
+    Stage.region_ciscocity_e.value      : MONKEYS_CISCOCITY_E,
 
     # Studio
-    Stage.region_studio_a.value        : MONKEYS_STUDIO_A,
-    Stage.region_studio_b.value        : MONKEYS_STUDIO_B,
-    Stage.region_studio_c.value        : MONKEYS_STUDIO_C,
-    Stage.region_studio_d.value        : MONKEYS_STUDIO_D,
-    Stage.region_studio_e.value        : MONKEYS_STUDIO_E,
-    Stage.region_studio_f.value        : MONKEYS_STUDIO_F,
-    Stage.region_studio_g.value        : MONKEYS_STUDIO_G,
+    Stage.region_studio_a.value         : MONKEYS_STUDIO_A,
+    Stage.region_studio_b.value         : MONKEYS_STUDIO_B,
+    Stage.region_studio_c.value         : MONKEYS_STUDIO_C,
+    Stage.region_studio_d.value         : MONKEYS_STUDIO_D,
+    Stage.region_studio_d1.value        : MONKEYS_STUDIO_D1,
+    Stage.region_studio_e.value         : MONKEYS_STUDIO_E,
+    Stage.region_studio_f.value         : MONKEYS_STUDIO_F,
+    Stage.region_studio_f1.value        : MONKEYS_STUDIO_F1,
+    Stage.region_studio_g.value         : MONKEYS_STUDIO_G,
 
     # Halloween
-    Stage.region_halloween_a1.value    : MONKEYS_HALLOWEEN_A1,
-    Stage.region_halloween_a.value     : MONKEYS_HALLOWEEN_A,
-    Stage.region_halloween_b.value     : MONKEYS_HALLOWEEN_B,
-    Stage.region_halloween_c.value     : MONKEYS_HALLOWEEN_C,
-    Stage.region_halloween_d.value     : MONKEYS_HALLOWEEN_D,
-    Stage.region_halloween_e.value     : MONKEYS_HALLOWEEN_E,
-    Stage.region_halloween_f.value     : MONKEYS_HALLOWEEN_F,
+    Stage.region_halloween_a1.value     : MONKEYS_HALLOWEEN_A1,
+    Stage.region_halloween_a.value      : MONKEYS_HALLOWEEN_A,
+    Stage.region_halloween_b.value      : MONKEYS_HALLOWEEN_B,
+    Stage.region_halloween_c.value      : MONKEYS_HALLOWEEN_C,
+    Stage.region_halloween_c2.value     : MONKEYS_HALLOWEEN_C2,
+    Stage.region_halloween_d.value      : MONKEYS_HALLOWEEN_D,
+    Stage.region_halloween_d1.value     : MONKEYS_HALLOWEEN_D1,
+    Stage.region_halloween_d2.value     : MONKEYS_HALLOWEEN_D2,
+    Stage.region_halloween_e.value      : MONKEYS_HALLOWEEN_E,
+    Stage.region_halloween_f.value      : MONKEYS_HALLOWEEN_F,
 
     # Western
-    Stage.region_western_a.value       : MONKEYS_WESTERN_A,
-    Stage.region_western_b.value       : MONKEYS_WESTERN_B,
-    Stage.region_western_c.value       : MONKEYS_WESTERN_C,
-    Stage.region_western_d.value       : MONKEYS_WESTERN_D,
-    Stage.region_western_e.value       : MONKEYS_WESTERN_E,
-    Stage.region_western_f.value       : MONKEYS_WESTERN_F,
+    Stage.region_western_a.value        : MONKEYS_WESTERN_A,
+    Stage.region_western_b.value        : MONKEYS_WESTERN_B,
+    Stage.region_western_c.value        : MONKEYS_WESTERN_C,
+    Stage.region_western_d2.value       : MONKEYS_WESTERN_D2,
+    Stage.region_western_d3.value       : MONKEYS_WESTERN_D3,
+    Stage.region_western_e.value        : MONKEYS_WESTERN_E,
+    Stage.region_western_e1.value       : MONKEYS_WESTERN_E1,
+    Stage.region_western_f.value        : MONKEYS_WESTERN_F,
 
     # Boss2
-    Stage.region_boss2.value           : MONKEYS_BOSS2,
+    Stage.region_boss2.value            : MONKEYS_BOSS2,
 
     # Onsen
-    Stage.region_onsen_a.value         : MONKEYS_ONSEN_A,
-    Stage.region_onsen_a1.value        : MONKEYS_ONSEN_A1,
-    Stage.region_onsen_a2.value        : MONKEYS_ONSEN_A2,
-    Stage.region_onsen_b.value         : MONKEYS_ONSEN_B,
-    Stage.region_onsen_c.value         : MONKEYS_ONSEN_C,
-    Stage.region_onsen_d.value         : MONKEYS_ONSEN_D,
-    Stage.region_onsen_d1.value        : MONKEYS_ONSEN_D1,
-    Stage.region_onsen_e.value         : MONKEYS_ONSEN_E,
+    Stage.region_onsen_a.value          : MONKEYS_ONSEN_A,
+    Stage.region_onsen_a1.value         : MONKEYS_ONSEN_A1,
+    Stage.region_onsen_a2.value         : MONKEYS_ONSEN_A2,
+    Stage.region_onsen_b.value          : MONKEYS_ONSEN_B,
+    Stage.region_onsen_c.value          : MONKEYS_ONSEN_C,
+    Stage.region_onsen_d.value          : MONKEYS_ONSEN_D,
+    Stage.region_onsen_d1.value         : MONKEYS_ONSEN_D1,
+    Stage.region_onsen_e.value          : MONKEYS_ONSEN_E,
 
     # Snowfesta
-    Stage.region_snowfesta_a.value     : MONKEYS_SNOWFESTA_A,
-    Stage.region_snowfesta_b.value     : MONKEYS_SNOWFESTA_B,
-    Stage.region_snowfesta_c.value     : MONKEYS_SNOWFESTA_C,
-    Stage.region_snowfesta_d.value     : MONKEYS_SNOWFESTA_D,
-    Stage.region_snowfesta_e.value     : MONKEYS_SNOWFESTA_E,
-    Stage.region_snowfesta_f.value     : MONKEYS_SNOWFESTA_F,
-    Stage.region_snowfesta_g.value     : MONKEYS_SNOWFESTA_G,
+    Stage.region_snowfesta_a.value      : MONKEYS_SNOWFESTA_A,
+    Stage.region_snowfesta_b.value      : MONKEYS_SNOWFESTA_B,
+    Stage.region_snowfesta_c.value      : MONKEYS_SNOWFESTA_C,
+    Stage.region_snowfesta_d.value      : MONKEYS_SNOWFESTA_D,
+    Stage.region_snowfesta_e.value      : MONKEYS_SNOWFESTA_E,
+    Stage.region_snowfesta_f.value      : MONKEYS_SNOWFESTA_F,
+    Stage.region_snowfesta_g.value      : MONKEYS_SNOWFESTA_G,
 
     # Edotown
-    Stage.region_edotown_a.value       : MONKEYS_EDOTOWN_A,
-    Stage.region_edotown_b.value       : MONKEYS_EDOTOWN_B,
-    Stage.region_edotown_c.value       : MONKEYS_EDOTOWN_C,
-    Stage.region_edotown_c1.value      : MONKEYS_EDOTOWN_C1,
-    Stage.region_edotown_d.value       : MONKEYS_EDOTOWN_D,
-    Stage.region_edotown_e.value       : MONKEYS_EDOTOWN_E,
-    Stage.region_edotown_f.value       : MONKEYS_EDOTOWN_F,
+    Stage.region_edotown_a.value        : MONKEYS_EDOTOWN_A,
+    Stage.region_edotown_b.value        : MONKEYS_EDOTOWN_B,
+    Stage.region_edotown_c.value        : MONKEYS_EDOTOWN_C,
+    Stage.region_edotown_c1.value       : MONKEYS_EDOTOWN_C1,
+    Stage.region_edotown_c2.value       : MONKEYS_EDOTOWN_C2,
+    Stage.region_edotown_d.value        : MONKEYS_EDOTOWN_D,
+    Stage.region_edotown_e.value        : MONKEYS_EDOTOWN_E,
+    Stage.region_edotown_f.value        : MONKEYS_EDOTOWN_F,
 
     # Boss3
-    Stage.region_boss3.value           : MONKEYS_BOSS3,
+    Stage.region_boss3.value            : MONKEYS_BOSS3,
 
     # Heaven
-    Stage.region_heaven_a.value        : MONKEYS_HEAVEN_A,
-    Stage.region_heaven_b.value        : MONKEYS_HEAVEN_B,
-    Stage.region_heaven_c.value        : MONKEYS_HEAVEN_C,
-    Stage.region_heaven_d.value        : MONKEYS_HEAVEN_D,
-    Stage.region_heaven_e.value        : MONKEYS_HEAVEN_E,
+    Stage.region_heaven_a.value         : MONKEYS_HEAVEN_A,
+    Stage.region_heaven_b.value         : MONKEYS_HEAVEN_B,
+    Stage.region_heaven_c.value         : MONKEYS_HEAVEN_C,
+    Stage.region_heaven_d.value         : MONKEYS_HEAVEN_D,
+    Stage.region_heaven_e.value         : MONKEYS_HEAVEN_E,
 
     # Toyhouse
-    Stage.region_toyhouse_a.value      : MONKEYS_TOYHOUSE_A,
-    Stage.region_toyhouse_b.value      : MONKEYS_TOYHOUSE_B,
-    Stage.region_toyhouse_c.value      : MONKEYS_TOYHOUSE_C,
-    Stage.region_toyhouse_d.value      : MONKEYS_TOYHOUSE_D,
-    Stage.region_toyhouse_e1.value     : MONKEYS_TOYHOUSE_E1,
-    Stage.region_toyhouse_f.value      : MONKEYS_TOYHOUSE_F,
-    Stage.region_toyhouse_g.value      : MONKEYS_TOYHOUSE_G,
-    Stage.region_toyhouse_h.value      : MONKEYS_TOYHOUSE_H,
+    Stage.region_toyhouse_a.value       : MONKEYS_TOYHOUSE_A,
+    Stage.region_toyhouse_b.value       : MONKEYS_TOYHOUSE_B,
+    Stage.region_toyhouse_b1.value      : MONKEYS_TOYHOUSE_B1,
+    Stage.region_toyhouse_c.value       : MONKEYS_TOYHOUSE_C,
+    Stage.region_toyhouse_d.value       : MONKEYS_TOYHOUSE_D,
+    Stage.region_toyhouse_e.value       : MONKEYS_TOYHOUSE_E,
+    Stage.region_toyhouse_f.value       : MONKEYS_TOYHOUSE_F,
+    Stage.region_toyhouse_g.value       : MONKEYS_TOYHOUSE_G,
+    Stage.region_toyhouse_h.value       : MONKEYS_TOYHOUSE_H,
 
     # Iceland
-    Stage.region_iceland_a.value       : MONKEYS_ICELAND_A,
-    Stage.region_iceland_b.value       : MONKEYS_ICELAND_B,
-    Stage.region_iceland_c.value       : MONKEYS_ICELAND_C,
-    Stage.region_iceland_d.value       : MONKEYS_ICELAND_D,
-    Stage.region_iceland_e.value       : MONKEYS_ICELAND_E,
-    Stage.region_iceland_f.value       : MONKEYS_ICELAND_F,
+    Stage.region_iceland_a.value        : MONKEYS_ICELAND_A,
+    Stage.region_iceland_a1.value       : MONKEYS_ICELAND_A1,
+    Stage.region_iceland_a2.value       : MONKEYS_ICELAND_A2,
+    Stage.region_iceland_b.value        : MONKEYS_ICELAND_B,
+    Stage.region_iceland_c.value        : MONKEYS_ICELAND_C,
+    Stage.region_iceland_d.value        : MONKEYS_ICELAND_D,
+    Stage.region_iceland_e.value        : MONKEYS_ICELAND_E,
+    Stage.region_iceland_f.value        : MONKEYS_ICELAND_F,
 
     # Arabian
-    Stage.region_arabian_a.value       : MONKEYS_ARABIAN_A,
-    Stage.region_arabian_b.value       : MONKEYS_ARABIAN_B,
-    Stage.region_arabian_c.value       : MONKEYS_ARABIAN_C,
-    Stage.region_arabian_c1.value      : MONKEYS_ARABIAN_C1,
-    Stage.region_arabian_e.value       : MONKEYS_ARABIAN_E,
-    Stage.region_arabian_f.value       : MONKEYS_ARABIAN_F,
-    Stage.region_arabian_g.value       : MONKEYS_ARABIAN_G,
+    Stage.region_arabian_a.value        : MONKEYS_ARABIAN_A,
+    Stage.region_arabian_b.value        : MONKEYS_ARABIAN_B,
+    Stage.region_arabian_c.value        : MONKEYS_ARABIAN_C,
+    Stage.region_arabian_c1.value       : MONKEYS_ARABIAN_C1,
+    Stage.region_arabian_e.value        : MONKEYS_ARABIAN_E,
+    Stage.region_arabian_f.value        : MONKEYS_ARABIAN_F,
+    Stage.region_arabian_g.value        : MONKEYS_ARABIAN_G,
 
     # Boss4
-    Stage.region_boss4.value           : MONKEYS_BOSS4,
+    Stage.region_boss4.value            : MONKEYS_BOSS4,
 
     # Asia
-    Stage.region_asia_a.value          : MONKEYS_ASIA_A,
-    Stage.region_asia_a1.value         : MONKEYS_ASIA_A1,
-    Stage.region_asia_a3.value         : MONKEYS_ASIA_A3,
-    Stage.region_asia_a4.value         : MONKEYS_ASIA_A4,
-    Stage.region_asia_b.value          : MONKEYS_ASIA_B,
-    Stage.region_asia_b1.value         : MONKEYS_ASIA_B1,
-    Stage.region_asia_b2.value         : MONKEYS_ASIA_B2,
-    Stage.region_asia_d.value          : MONKEYS_ASIA_D,
-    Stage.region_asia_d2.value         : MONKEYS_ASIA_D2,
-    Stage.region_asia_e1.value         : MONKEYS_ASIA_E1,
-    Stage.region_asia_e2.value         : MONKEYS_ASIA_E2,
-    Stage.region_asia_f.value          : MONKEYS_ASIA_F,
+    Stage.region_asia_a.value           : MONKEYS_ASIA_A,
+    Stage.region_asia_a1.value          : MONKEYS_ASIA_A1,
+    Stage.region_asia_a4.value          : MONKEYS_ASIA_A4,
+    Stage.region_asia_a6.value          : MONKEYS_ASIA_A6,
+    Stage.region_asia_b.value           : MONKEYS_ASIA_B,
+    Stage.region_asia_b1.value          : MONKEYS_ASIA_B1,
+    Stage.region_asia_b2.value          : MONKEYS_ASIA_B2,
+    Stage.region_asia_d.value           : MONKEYS_ASIA_D,
+    Stage.region_asia_d2.value          : MONKEYS_ASIA_D2,
+    Stage.region_asia_e1.value          : MONKEYS_ASIA_E,
+    Stage.region_asia_e2.value          : MONKEYS_ASIA_E2,
+    Stage.region_asia_f.value           : MONKEYS_ASIA_F,
 
     # Plane
-    Stage.region_plane_a.value         : MONKEYS_PLANE_A,
-    Stage.region_plane_a1.value        : MONKEYS_PLANE_A1,
-    Stage.region_plane_b.value         : MONKEYS_PLANE_B,
-    Stage.region_plane_b1.value        : MONKEYS_PLANE_B1,
-    Stage.region_plane_c.value         : MONKEYS_PLANE_C,
-    Stage.region_plane_c1.value        : MONKEYS_PLANE_C1,
-    Stage.region_plane_d.value         : MONKEYS_PLANE_D,
-    Stage.region_plane_e.value         : MONKEYS_PLANE_E,
-    Stage.region_plane_f1.value        : MONKEYS_PLANE_F1,
-    Stage.region_plane_g.value         : MONKEYS_PLANE_G,
-    Stage.region_plane_h.value         : MONKEYS_PLANE_H,
+    Stage.region_plane_a.value          : MONKEYS_PLANE_A,
+    Stage.region_plane_a1.value         : MONKEYS_PLANE_A1,
+    Stage.region_plane_b.value          : MONKEYS_PLANE_B,
+    Stage.region_plane_b1.value         : MONKEYS_PLANE_B1,
+    Stage.region_plane_b2.value         : MONKEYS_PLANE_B2,
+    Stage.region_plane_c.value          : MONKEYS_PLANE_C,
+    Stage.region_plane_c1.value         : MONKEYS_PLANE_C1,
+    Stage.region_plane_d.value          : MONKEYS_PLANE_D,
+    Stage.region_plane_e.value          : MONKEYS_PLANE_E,
+    Stage.region_plane_f1.value         : MONKEYS_PLANE_F1,
+    Stage.region_plane_g.value          : MONKEYS_PLANE_G,
+    Stage.region_plane_h.value          : MONKEYS_PLANE_H,
 
     # Hong
-    Stage.region_hong_a.value          : MONKEYS_HONG_A,
-    Stage.region_hong_b.value          : MONKEYS_HONG_B,
-    Stage.region_hong_b1.value         : MONKEYS_HONG_B1,
-    Stage.region_hong_c.value          : MONKEYS_HONG_C,
-    Stage.region_hong_c1.value         : MONKEYS_HONG_C1,
-    Stage.region_hong_c2.value         : MONKEYS_HONG_C2,
-    Stage.region_hong_d.value          : MONKEYS_HONG_D,
-    Stage.region_hong_e.value          : MONKEYS_HONG_E,
-    Stage.region_hong_e1.value         : MONKEYS_HONG_E1,
-    Stage.region_hong_f.value          : MONKEYS_HONG_F,
-    Stage.region_hong_g.value          : MONKEYS_HONG_G,
-    Stage.region_hong_h.value          : MONKEYS_HONG_H,
+    Stage.region_hong_a.value           : MONKEYS_HONG_A,
+    Stage.region_hong_a1.value          : MONKEYS_HONG_A1,
+    Stage.region_hong_a2.value          : MONKEYS_HONG_A2,
+    Stage.region_hong_b.value           : MONKEYS_HONG_B,
+    Stage.region_hong_b1.value          : MONKEYS_HONG_B1,
+    Stage.region_hong_c.value           : MONKEYS_HONG_C,
+    Stage.region_hong_c1.value          : MONKEYS_HONG_C1,
+    Stage.region_hong_c2.value          : MONKEYS_HONG_C2,
+    Stage.region_hong_d.value           : MONKEYS_HONG_D,
+    Stage.region_hong_e.value           : MONKEYS_HONG_E,
+    Stage.region_hong_e1.value          : MONKEYS_HONG_E1,
+    Stage.region_hong_f.value           : MONKEYS_HONG_F,
+    Stage.region_hong_g.value           : MONKEYS_HONG_G,
+    Stage.region_hong_h.value           : MONKEYS_HONG_H,
 
     # boss5
-    Stage.region_boss5.value           : MONKEYS_BOSS5,
+    Stage.region_boss5.value            : MONKEYS_BOSS5,
 
     # bay
-    Stage.region_bay_a.value           : MONKEYS_BAY_A,
-    Stage.region_bay_a1.value          : MONKEYS_BAY_A1,
-    Stage.region_bay_a5.value          : MONKEYS_BAY_A5,
-    Stage.region_bay_b.value           : MONKEYS_BAY_B,
-    Stage.region_bay_c.value           : MONKEYS_BAY_C,
-    Stage.region_bay_d.value           : MONKEYS_BAY_D,
-    Stage.region_bay_d1.value          : MONKEYS_BAY_D1,
-    Stage.region_bay_e.value           : MONKEYS_BAY_E,
-    Stage.region_bay_e1.value          : MONKEYS_BAY_E1,
-    Stage.region_bay_e2.value          : MONKEYS_BAY_E2,
-    Stage.region_bay_e3.value          : MONKEYS_BAY_E3,
-    Stage.region_bay_f.value           : MONKEYS_BAY_F,
+    Stage.region_bay_a.value            : MONKEYS_BAY_A,
+    Stage.region_bay_a1.value           : MONKEYS_BAY_A1,
+    Stage.region_bay_a6.value           : MONKEYS_BAY_A6,
+    Stage.region_bay_b.value            : MONKEYS_BAY_B,
+    Stage.region_bay_c.value            : MONKEYS_BAY_C,
+    Stage.region_bay_c1.value           : MONKEYS_BAY_C1,
+    Stage.region_bay_d.value            : MONKEYS_BAY_D,
+    Stage.region_bay_d1.value           : MONKEYS_BAY_D1,
+    Stage.region_bay_e.value            : MONKEYS_BAY_E,
+    Stage.region_bay_e1.value           : MONKEYS_BAY_E1,
+    Stage.region_bay_e2.value           : MONKEYS_BAY_E2,
+    Stage.region_bay_f.value            : MONKEYS_BAY_F,
 
     # tomo
-    Stage.region_tomo_a.value          : MONKEYS_TOMO_A,
-    Stage.region_tomo_b.value          : MONKEYS_TOMO_B,
-    Stage.region_tomo_c.value          : MONKEYS_TOMO_C,
-    Stage.region_tomo_e.value          : MONKEYS_TOMO_E,
-    Stage.region_tomo_e1.value         : MONKEYS_TOMO_E1,
-    Stage.region_tomo_e2.value         : MONKEYS_TOMO_E2,
-    Stage.region_tomo_f1.value         : MONKEYS_TOMO_F1,
-    Stage.region_tomo_f2.value         : MONKEYS_TOMO_F2,
-    Stage.region_tomo_g.value          : MONKEYS_TOMO_G,
-    Stage.region_tomo_g1.value         : MONKEYS_TOMO_G1,
-    Stage.region_tomo_h.value          : MONKEYS_TOMO_H,
-    Stage.region_tomo_i.value          : MONKEYS_TOMO_I,
-    Stage.region_tomo_j.value          : MONKEYS_TOMO_J,
+    Stage.region_tomo_a.value           : MONKEYS_TOMO_A,
+    Stage.region_tomo_b.value           : MONKEYS_TOMO_B,
+    Stage.region_tomo_c.value           : MONKEYS_TOMO_C,
+    Stage.region_tomo_e.value           : MONKEYS_TOMO_E,
+    Stage.region_tomo_e1.value          : MONKEYS_TOMO_E1,
+    Stage.region_tomo_e2.value          : MONKEYS_TOMO_E2,
+    Stage.region_tomo_e3.value          : MONKEYS_TOMO_E3,
+    Stage.region_tomo_f.value           : MONKEYS_TOMO_F,
+    Stage.region_tomo_f2.value          : MONKEYS_TOMO_F2,
+    Stage.region_tomo_g.value           : MONKEYS_TOMO_G,
+    Stage.region_tomo_g1.value          : MONKEYS_TOMO_G1,
+    Stage.region_tomo_h.value           : MONKEYS_TOMO_H,
+    Stage.region_tomo_i.value           : MONKEYS_TOMO_I,
+    Stage.region_tomo_j.value           : MONKEYS_TOMO_J,
 
     # boss6
-    Stage.region_boss6.value           : MONKEYS_BOSS6,
+    Stage.region_boss6.value            : MONKEYS_BOSS6,
 
     # Space
-    Stage.region_space_a.value         : MONKEYS_SPACE_A,
-    Stage.region_space_b.value         : MONKEYS_SPACE_B,
-    Stage.region_space_d.value         : MONKEYS_SPACE_D,
-    Stage.region_space_e.value         : MONKEYS_SPACE_E,
-    Stage.region_space_f.value         : MONKEYS_SPACE_F,
-    Stage.region_space_f1.value        : MONKEYS_SPACE_F1,
-    Stage.region_space_f2.value        : MONKEYS_SPACE_F2,
-    Stage.region_space_g.value         : MONKEYS_SPACE_G,
-    Stage.region_space_g2.value        : MONKEYS_SPACE_G2,
-    Stage.region_space_h.value         : MONKEYS_SPACE_H,
-    Stage.region_space_i.value         : MONKEYS_SPACE_I,
-    Stage.region_space_k.value         : MONKEYS_SPACE_K,
+    Stage.region_space_a.value          : MONKEYS_SPACE_A,
+    Stage.region_space_b.value          : MONKEYS_SPACE_B,
+    Stage.region_space_d.value          : MONKEYS_SPACE_D,
+    Stage.region_space_e1.value         : MONKEYS_SPACE_E1,
+    Stage.region_space_f.value          : MONKEYS_SPACE_F,
+    Stage.region_space_f1.value         : MONKEYS_SPACE_F1,
+    Stage.region_space_f2.value         : MONKEYS_SPACE_F2,
+    Stage.region_space_g.value          : MONKEYS_SPACE_G,
+    Stage.region_space_g1.value         : MONKEYS_SPACE_G1,
+    Stage.region_space_h.value          : MONKEYS_SPACE_H,
+    Stage.region_space_i.value          : MONKEYS_SPACE_I,
+    Stage.region_space_k.value          : MONKEYS_SPACE_K,
 
     # Specter
-    Stage.region_specter1.value        : MONKEYS_SPECTER,
-    Stage.region_specter2.value        : MONKEYS_SPECTER_FINALE
+    Stage.region_specter1.value         : MONKEYS_SPECTER,
+    Stage.region_specter2.value         : MONKEYS_SPECTER_FINALE
 }
 
 MONKEYS_DIRECTORY : dict[str, Sequence[str]] = {
@@ -1220,7 +1294,7 @@ CAMERAS_INDEX : dict[str, str] = {
     Stage.region_ciscocity_b.value             : Loc.ciscocity_cam.value,
     Stage.region_studio_e.value                : Loc.studio_cam.value,
     Stage.region_halloween_c.value             : Loc.halloween_cam.value,
-    Stage.region_western_d.value               : Loc.western_cam.value,
+    Stage.region_western_d2.value               : Loc.western_cam.value,
     Stage.region_onsen_a.value                 : Loc.onsen_cam.value,
     Stage.region_snowfesta_a.value             : Loc.snowfesta_cam.value,
     Stage.region_edotown_c.value               : Loc.edotown_cam.value,
@@ -1231,9 +1305,9 @@ CAMERAS_INDEX : dict[str, str] = {
     Stage.region_asia_a2.value                 : Loc.asia_cam.value,
     Stage.region_plane_c1.value                : Loc.plane_cam.value,
     Stage.region_hong_c.value                  : Loc.hong_cam.value,
-    Stage.region_bay_c.value                   : Loc.bay_cam.value,
+    Stage.region_bay_c1.value                  : Loc.bay_cam.value,
     Stage.region_tomo_b.value                  : Loc.tomo_cam.value,
-    Stage.region_space_e.value                 : Loc.space_cam.value,
+    Stage.region_space_e1.value                : Loc.space_cam.value
 }
 
 CAMERAS_STAGE_INDEX : dict[str, str] = {
@@ -1284,6 +1358,7 @@ ACTORS_INDEX : dict[str, list[str]] = {
 }
 
 ## Cellphones
+# Seaside
 CELLPHONES_SEASIDE_A : Sequence[str] = [
     Loc.tele_000.value, Loc.tele_002.value, Loc.tele_003.value
 ]
@@ -1296,6 +1371,7 @@ CELLPHONES_SEASIDE : Sequence[str] = [
     *CELLPHONES_SEASIDE_A, *CELLPHONES_SEASIDE_B
 ]
 
+# Woods
 CELLPHONES_WOODS_A : Sequence[str] = [
     Loc.tele_001.value, Loc.tele_006.value, Loc.tele_007.value, Loc.tele_004wo.value
 ]
@@ -1308,8 +1384,13 @@ CELLPHONES_WOODS : Sequence[str] = [
     *CELLPHONES_WOODS_A, *CELLPHONES_WOODS_B
 ]
 
+# Castle
 CELLPHONES_CASTLE_A : Sequence[str] = [
-    Loc.tele_010.value, Loc.tele_009.value, Loc.tele_029.value
+    Loc.tele_029.value
+]
+
+CELLPHONES_CASTLE_A1 : Sequence[str] = [
+    Loc.tele_010.value, Loc.tele_009.value
 ]
 
 CELLPHONES_CASTLE_D : Sequence[str] = [
@@ -1317,7 +1398,7 @@ CELLPHONES_CASTLE_D : Sequence[str] = [
 ]
 
 CELLPHONES_CASTLE : Sequence[str] = [
-    *CELLPHONES_CASTLE_A, *CELLPHONES_CASTLE_D
+    *CELLPHONES_CASTLE_A, *CELLPHONES_CASTLE_A1, *CELLPHONES_CASTLE_D
 ]
 
 CELLPHONES_CISCOCITY_A : Sequence[str] = [
@@ -1332,7 +1413,7 @@ CELLPHONES_STUDIO_A : Sequence[str] = [
     Loc.tele_062.value
 ]
 
-CELLPHONES_STUDIO_B : Sequence[str] = [
+CELLPHONES_STUDIO_B1 : Sequence[str] = [
     Loc.tele_014.value
 ]
 
@@ -1341,14 +1422,18 @@ CELLPHONES_STUDIO_F : Sequence[str] = [
 ]
 
 CELLPHONES_STUDIO : Sequence[str] = [
-    *CELLPHONES_STUDIO_A, *CELLPHONES_STUDIO_B, *CELLPHONES_STUDIO_F
+    *CELLPHONES_STUDIO_A, *CELLPHONES_STUDIO_B1, *CELLPHONES_STUDIO_F
 ]
 
 CELLPHONES_HALLOWEEN_A : Sequence[str] = [
-    Loc.tele_035.value, Loc.tele_052.value
+    Loc.tele_052.value
 ]
 
-CELLPHONES_HALLOWEEN_C : Sequence[str] = [
+CELLPHONES_HALLOWEEN_A1 : Sequence[str] = [
+    Loc.tele_035.value
+]
+
+CELLPHONES_HALLOWEEN_C1 : Sequence[str] = [
     Loc.tele_016.value
 ]
 
@@ -1357,7 +1442,7 @@ CELLPHONES_HALLOWEEN_D : Sequence[str] = [
 ]
 
 CELLPHONES_HALLOWEEN : Sequence[str] = [
-    *CELLPHONES_HALLOWEEN_A, *CELLPHONES_HALLOWEEN_C, *CELLPHONES_HALLOWEEN_D
+    *CELLPHONES_HALLOWEEN_A1, *CELLPHONES_HALLOWEEN_C1, *CELLPHONES_HALLOWEEN_D
 ]
 
 CELLPHONES_WESTERN_A : Sequence[str] = [
@@ -1396,28 +1481,32 @@ CELLPHONES_SNOWFESTA : Sequence[str] = [
     *CELLPHONES_SNOWFESTA_F
 ]
 
-CELLPHONES_EDOTOWN_A : Sequence[str] = [
+CELLPHONES_EDOTOWN_A1 : Sequence[str] = [
     Loc.tele_023.value
 ]
 
-CELLPHONES_EDOTOWN_B : Sequence[str] = [
+CELLPHONES_EDOTOWN_B1 : Sequence[str] = [
     Loc.tele_025.value
 ]
 
-CELLPHONES_EDOTOWN_C : Sequence[str] = [
-    Loc.tele_024.value, Loc.tele_026.value
+CELLPHONES_EDOTOWN_C1 : Sequence[str] = [
+    Loc.tele_024.value
+]
+
+CELLPHONES_EDOTOWN_C2 : Sequence[str] = [
+    Loc.tele_026.value
 ]
 
 CELLPHONES_EDOTOWN : Sequence[str] = [
-    *CELLPHONES_EDOTOWN_A, *CELLPHONES_EDOTOWN_B, *CELLPHONES_EDOTOWN_C
+    *CELLPHONES_EDOTOWN_A1, *CELLPHONES_EDOTOWN_B1, *CELLPHONES_EDOTOWN_C1
 ]
 
-CELLPHONES_HEAVEN_A : Sequence[str] = [
+CELLPHONES_HEAVEN_A1 : Sequence[str] = [
     Loc.tele_028.value
 ]
 
 CELLPHONES_HEAVEN : Sequence[str] = [
-    *CELLPHONES_HEAVEN_A
+    *CELLPHONES_HEAVEN_A1
 ]
 
 CELLPHONES_TOYHOUSE_C : Sequence[str] = [
@@ -1432,7 +1521,7 @@ CELLPHONES_TOYHOUSE : Sequence[str] = [
     *CELLPHONES_TOYHOUSE_C, *CELLPHONES_TOYHOUSE_G
 ]
 
-CELLPHONES_ICELAND_A : Sequence[str] = [
+CELLPHONES_ICELAND_A1 : Sequence[str] = [
     Loc.tele_031.value
 ]
 
@@ -1441,7 +1530,7 @@ CELLPHONES_ICELAND_D : Sequence[str] = [
 ]
 
 CELLPHONES_ICELAND : Sequence[str] = [
-    *CELLPHONES_ICELAND_A, *CELLPHONES_ICELAND_D
+    *CELLPHONES_ICELAND_A1, *CELLPHONES_ICELAND_D
 ]
 
 CELLPHONES_ARABIAN_A : Sequence[str] = [
@@ -1460,12 +1549,12 @@ CELLPHONES_ASIA_B : Sequence[str] = [
     Loc.tele_037.value
 ]
 
-CELLPHONES_ASIA_D : Sequence[str] = [
+CELLPHONES_ASIA_D1 : Sequence[str] = [
     Loc.tele_015.value
 ]
 
 CELLPHONES_ASIA : Sequence[str] = [
-    *CELLPHONES_ASIA_B, *CELLPHONES_ASIA_D
+    *CELLPHONES_ASIA_B, *CELLPHONES_ASIA_D1
 ]
 
 CELLPHONES_PLANE_E : Sequence[str] = [
@@ -1480,7 +1569,7 @@ CELLPHONES_HONG_A : Sequence[str] = [
     Loc.tele_039.value, Loc.tele_040h_a.value
 ]
 
-CELLPHONES_HONG_B : Sequence[str] = [
+CELLPHONES_HONG_B1 : Sequence[str] = [
     Loc.tele_040h_b.value
 ]
 
@@ -1489,7 +1578,7 @@ CELLPHONES_HONG_D : Sequence[str] = [
 ]
 
 CELLPHONES_HONG : Sequence[str] = [
-    *CELLPHONES_HONG_A, *CELLPHONES_HONG_B, *CELLPHONES_HONG_D
+    *CELLPHONES_HONG_A, *CELLPHONES_HONG_B1, *CELLPHONES_HONG_D
 ]
 
 CELLPHONES_BAY_C : Sequence[str] = [
@@ -1500,12 +1589,12 @@ CELLPHONES_BAY : Sequence[str] = [
     *CELLPHONES_BAY_C
 ]
 
-CELLPHONES_TOMO_A : Sequence[str] = [
+CELLPHONES_TOMO_A1 : Sequence[str] = [
     Loc.tele_045.value
 ]
 
 CELLPHONES_TOMO : Sequence[str] = [
-    *CELLPHONES_TOMO_A
+    *CELLPHONES_TOMO_A1
 ]
 
 CELLPHONES_SPACE_A : Sequence[str] = [
@@ -1550,11 +1639,11 @@ CELLPHONES_INDEX : dict[str, Sequence[str]] = {
     Stage.region_ciscocity_a.value              : CELLPHONES_CISCOCITY_A,
 
     Stage.region_studio_a.value                 : CELLPHONES_STUDIO_A,
-    Stage.region_studio_b.value                 : CELLPHONES_STUDIO_B,
+    Stage.region_studio_b1.value                 : CELLPHONES_STUDIO_B1,
     Stage.region_studio_f.value                 : CELLPHONES_STUDIO_F,
 
-    Stage.region_halloween_a1.value             : CELLPHONES_HALLOWEEN_A,
-    Stage.region_halloween_c1.value             : CELLPHONES_HALLOWEEN_C,
+    Stage.region_halloween_a1.value             : CELLPHONES_HALLOWEEN_A1,
+    Stage.region_halloween_c1.value             : CELLPHONES_HALLOWEEN_C1,
     Stage.region_halloween_d.value              : CELLPHONES_HALLOWEEN_D,
 
     Stage.region_western_a.value                : CELLPHONES_WESTERN_A,
@@ -1566,33 +1655,33 @@ CELLPHONES_INDEX : dict[str, Sequence[str]] = {
 
     Stage.region_snowfesta_f.value              : CELLPHONES_SNOWFESTA_F,
 
-    Stage.region_edotown_a.value                : CELLPHONES_EDOTOWN_A,
-    Stage.region_edotown_b1.value               : CELLPHONES_EDOTOWN_B,
-    Stage.region_edotown_c1.value               : CELLPHONES_EDOTOWN_C,
+    Stage.region_edotown_a1.value                : CELLPHONES_EDOTOWN_A1,
+    Stage.region_edotown_b1.value               : CELLPHONES_EDOTOWN_B1,
+    Stage.region_edotown_c1.value               : CELLPHONES_EDOTOWN_C1,
 
-    Stage.region_heaven_a.value                 : CELLPHONES_HEAVEN_A,
+    Stage.region_heaven_a1.value                 : CELLPHONES_HEAVEN_A1,
 
     Stage.region_toyhouse_c.value               : CELLPHONES_TOYHOUSE_C,
     Stage.region_toyhouse_g.value               : CELLPHONES_TOYHOUSE_G,
 
-    Stage.region_iceland_a.value                : CELLPHONES_ICELAND_A,
+    Stage.region_iceland_a1.value                : CELLPHONES_ICELAND_A1,
     Stage.region_iceland_d.value                : CELLPHONES_ICELAND_D,
 
     Stage.region_arabian_a.value                : CELLPHONES_ARABIAN_A,
     Stage.region_arabian_e1.value               : CELLPHONES_ARABIAN_E1,
 
     Stage.region_asia_b.value                   : CELLPHONES_ASIA_B,
-    Stage.region_asia_d1.value                  : CELLPHONES_ASIA_D,
+    Stage.region_asia_d1.value                  : CELLPHONES_ASIA_D1,
 
     Stage.region_plane_e.value                  : CELLPHONES_PLANE_E,
 
     Stage.region_hong_a.value                   : CELLPHONES_HONG_A,
-    Stage.region_hong_b1.value                  : CELLPHONES_HONG_B,
+    Stage.region_hong_b1.value                  : CELLPHONES_HONG_B1,
     Stage.region_hong_d.value                   : CELLPHONES_HONG_D,
 
     Stage.region_bay_c.value                    : CELLPHONES_BAY_C,
 
-    Stage.region_tomo_a1.value                  : CELLPHONES_TOMO_A,
+    Stage.region_tomo_a1.value                  : CELLPHONES_TOMO_A1,
 
     Stage.region_space_a.value                  : CELLPHONES_SPACE_A,
     Stage.region_space_b.value                  : CELLPHONES_SPACE_B,
@@ -1611,11 +1700,11 @@ CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
     Stage.ciscocity_a.value             : CELLPHONES_CISCOCITY_A,
 
     Stage.studio_a.value                : CELLPHONES_STUDIO_A,
-    Stage.studio_b.value                : CELLPHONES_STUDIO_B,
+    Stage.studio_b.value                : CELLPHONES_STUDIO_B1,
     Stage.studio_f.value                : CELLPHONES_STUDIO_F,
 
-    Stage.halloween_a.value             : CELLPHONES_HALLOWEEN_A,
-    Stage.halloween_c.value             : CELLPHONES_HALLOWEEN_C,
+    Stage.halloween_a.value             : CELLPHONES_HALLOWEEN_A1,
+    Stage.halloween_c.value             : CELLPHONES_HALLOWEEN_C1,
     Stage.halloween_d.value             : CELLPHONES_HALLOWEEN_D,
 
     Stage.western_a.value               : CELLPHONES_WESTERN_A,
@@ -1627,33 +1716,33 @@ CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
 
     Stage.snowfesta_f.value             : CELLPHONES_SNOWFESTA_F,
 
-    Stage.edotown_a.value               : CELLPHONES_EDOTOWN_A,
-    Stage.edotown_b.value               : CELLPHONES_EDOTOWN_B,
-    Stage.edotown_c.value               : CELLPHONES_EDOTOWN_C,
+    Stage.edotown_a.value               : CELLPHONES_EDOTOWN_A1,
+    Stage.edotown_b.value               : CELLPHONES_EDOTOWN_B1,
+    Stage.edotown_c.value               : CELLPHONES_EDOTOWN_C1,
 
-    Stage.heaven_a.value                : CELLPHONES_HEAVEN_A,
+    Stage.heaven_a.value                : CELLPHONES_HEAVEN_A1,
 
     Stage.toyhouse_c.value              : CELLPHONES_TOYHOUSE_C,
     Stage.toyhouse_g.value              : CELLPHONES_TOYHOUSE_G,
 
-    Stage.iceland_a.value               : CELLPHONES_ICELAND_A,
+    Stage.iceland_a.value               : CELLPHONES_ICELAND_A1,
     Stage.iceland_d.value               : CELLPHONES_ICELAND_D,
 
     Stage.arabian_a.value               : CELLPHONES_ARABIAN_A,
     Stage.arabian_e.value               : CELLPHONES_ARABIAN_E1,
 
     Stage.asia_b.value                  : CELLPHONES_ASIA_B,
-    Stage.asia_d.value                  : CELLPHONES_ASIA_D,
+    Stage.asia_d.value                  : CELLPHONES_ASIA_D1,
 
     Stage.plane_e.value                 : CELLPHONES_PLANE_E,
 
     Stage.hong_a.value                  : CELLPHONES_HONG_A,
-    Stage.hong_b.value                  : CELLPHONES_HONG_B,
+    Stage.hong_b.value                  : CELLPHONES_HONG_B1,
     Stage.hong_d.value                  : CELLPHONES_HONG_D,
 
     Stage.bay_c.value                   : CELLPHONES_BAY_C,
 
-    Stage.tomo_a.value                  : CELLPHONES_TOMO_A,
+    Stage.tomo_a.value                  : CELLPHONES_TOMO_A1,
 
     Stage.space_a.value                 : CELLPHONES_SPACE_A,
     Stage.space_b.value                 : CELLPHONES_SPACE_B,
