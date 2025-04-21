@@ -343,9 +343,6 @@ STAGES_TOMO : Sequence[str] = [
     Stage.region_tomo_h1.value,
     Stage.region_tomo_i.value,
     Stage.region_tomo_j.value
-
-
-
 ]
 
 STAGES_SPACE : Sequence[str] = [
