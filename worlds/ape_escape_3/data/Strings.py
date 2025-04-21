@@ -725,6 +725,42 @@ class Loc(BaseEnum):
     cell_063                    = "Blue Cellphone 14 - The Hot Springs"
 
 
+class Events(BaseEnum):
+    event_castle_b_clapper                  = "Saru-mon's Castle - Clapper Button"
+    event_ciscocity_d_exit                  = "The Big City - Football Stadium Far Exit"
+    event_ciscocity_c_button                = "The Big City - Theater Button"
+    event_studio_a1_button                  = "Specter TV Studio - First Floor Exit Button"
+    event_studio_a2_button                  = "Specter TV Studio - Second Floor Exit Button"
+    event_studio_f_tele_robo                = "Specter TV Studio - Destroy Tele-Robo"
+    event_halloween_b_jumbo_robo            = "Bootown - Destroy Jumbo Robo"
+    event_halloween_b1_jumbo_robo_shoot     = "Bootown - Destroy Jumbo Robo (Long Range)"
+    event_snowfesta_e_bell                  = "Winterville - Ring Chime Bell"
+    event_edotown_b1_button                 = "The Emperor's Castle - Tightrope Button"
+    event_edotown_e_scroll                  = "The Emperor's Castle - Hit Japanese Scroll"
+    event_iceland_e_button                  = "Arctic Wonderland - Christmas Tree Button"
+    event_arabian_c_golden_mon              = "Mirage Town - Capture Golden Mon"
+    event_arabian_c1_exit                   = "Mirage Town - Escape Exit"
+    event_arabian_g_exit                    = "Mirage Town - Carpet Ride"
+    event_asia_a_block                      = "Eversummer Island - Low Island Block Pushed"
+    event_asia_a1_block                     = "Eversummer Island - Higher Island Block Pushed"
+    event_asia_a2_block                     = "Eversummer Island - Cliffs Block Pushed"
+    event_asia_b2_button                    = "Eversummer Island - Village Gate Button"
+    event_asia_e1_button                    = "Eversummer Island - Water Raised"
+    event_plane_d_button                    = "Airplane Squadron - Clapper Button"
+    event_hong_b2_button                    = "Kung-Fu Alley - Raised Wooden Door Button"
+    event_bay_a7_button                     = "Midnight Bay - Factory Attic Button"
+    event_bay_a5_button                     = "Midnight Bay - Warehouse Entrance Button"
+    event_bay_e1_button                     = "Midnight Bay - Sewer Button"
+    event_tomo_e2_kungfu                    = "Tomoki City - Activate Kung-Fu Switch (Tomoki Tower Abdomen)"
+    event_tomo_g_kungfu                     = "Tomoki City - Activate Kung-Fu Switch (Tomoki Tower Chest)"
+    event_tomo_h_button                     = "Tomoki City - Cloud Button A"
+    event_tomo_h_button1                    = "Tomoki City - Cloud Button B"
+    event_space_e1_button                   = "Space-TV Fortress - Studio 1 Control Panel Button"
+    event_space_g1_button                   = "Space-TV Fortress - Studio 2 Control Panel Button"
+    event_space_f2_kungfu                   = "Space-TV Fortress - Reactor Kung-Fu Switch"
+    event_space_f2_button                   = "Space-TV Fortress - Studio 3 Control Panel Button"
+    event_space_d_button                    = "Space-TV Fortress - Studio 4 Control Panel Button"
+
 class Stage(BaseEnum):
     """Strings for the various stages of Ape Escape 3. This refers to the names of all the rooms in the game."""
 
@@ -1726,23 +1762,6 @@ class Game(BaseEnum):
     equip_chassis_active =  "RC Car Chassis Selected"
     equip_quick_morph =     "Quick Morph Selected"
     equip_morph_target =    "Selected Morph"
-
-    # Environment
-    trigger_iceland_e =     "Christmas Tree Button"
-    trigger_arabian_c =     "Golden-mon Captured"
-    trigger_asia_a1 =       "Higher Islands Block Inserted"
-    trigger_asia_a2 =       "Cliffs Block Inserted"
-    trigger_asia_e =        "Temple Fully Flooded"
-    trigger_bay_a4 =        "Ship Rear Door Open"
-    trigger_bay_e1 =        "Sewer Drained"
-    trigger_space_e =       "Studio 1 Controls Unlock"
-    trigger_space_f2 =      "Studio 3 Controls Unlock"
-    trigger_space_g1 =      "Studio 2 Barrier Unlock"
-    trigger_space_g2 =      "Studio 2 Controls Unlock"
-
-    shortcut_studio_ad =    "Shortcut to Specter TV Studio - Buildings Set"
-    shortcut_edotown_eb =   "Shortcut to The Emperor's Castle - Castle Grounds"
-    shortcut_asia_b2b =     "Shortcut to Eversummer Island - Village Canals"
 
     # Commands
     command =               "Command"

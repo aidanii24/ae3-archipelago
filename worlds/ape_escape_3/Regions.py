@@ -4,7 +4,7 @@ from BaseClasses import CollectionState, Entrance, Location, Region
 
 from .data.Stages import STAGES_DIRECTORY, STAGES_MASTER
 from .data.Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, CameraLocation, CellphoneLocation, \
-    MonkeyLocation, MONKEYS_INDEX, EVENTS_INDEX
+    EventMeta, MonkeyLocation, MONKEYS_INDEX, EVENTS_INDEX
 from .data.Logic import Rulesets
 from .data.Rules import RuleType, Casual
 
@@ -124,9 +124,11 @@ def create_regions(world : "AE3World"):
         ## Events
         if stage.name in EVENTS_INDEX:
             for event in EVENTS_INDEX[stage.name]:
-                loc : Location = event.to_event_location(world.player, stage)
+                if event in rule.event_rules:
+                    meta : EventMeta = EventMeta(event)
+                    loc : Location = meta.to_event_location(world.player, stage)
 
-                stage.locations.append(loc)
+                    stage.locations.append(loc)
 
     # Send Regions to Archipelago
     world.multiworld.regions.extend(list(stages.values()))

@@ -4,8 +4,8 @@ from abc import ABC
 import random
 
 from BaseClasses import Item, ItemClassification
-from .Strings import Itm, Game, Meta, APHelper
-from .Addresses import NTSCU, Capacities, AP
+from .Strings import Itm, Loc, Game, Meta, APHelper
+from .Addresses import NTSCU
 
 ### [< --- HELPERS --- >]
 class AE3Item(Item):
@@ -116,6 +116,79 @@ class ArchipelagoItem(AE3ItemMeta):
 
     def to_items(self, player : int, amount : int):
         return [self.to_item(player) for _ in range(amount)]
+
+### [< --- DATA --->]
+Capacities : dict[str, int | float] = {
+    Game.morph_duration.value       : 30.0,
+    Game.nothing.value              : 0x0,
+    Game.cookies.value              : 100.0,
+    Game.jackets.value              : 0x63,
+    Game.chips.value                : 0x270F,
+    Game.morph_gauge_active.value   : 30.0,
+    Game.morph_stocks.value         : 1100.0,
+    Game.ammo_boom.value            : 0x9,
+    Game.ammo_homing.value          : 0x9,
+}
+
+Cellphone_Name_to_ID : dict[str, str] = {
+    Loc.tele_000.value              : Loc.cell_000.value,
+    Loc.tele_001.value              : Loc.cell_001.value,
+    Loc.tele_002.value              : Loc.cell_002.value,
+    Loc.tele_003.value              : Loc.cell_003.value,
+    Loc.tele_004ss.value            : Loc.cell_004ss.value,
+    Loc.tele_004wo.value            : Loc.cell_004wo.value,
+    Loc.tele_006.value              : Loc.cell_006.value,
+    Loc.tele_007.value              : Loc.cell_007.value,
+    Loc.tele_008.value              : Loc.cell_008.value,
+    Loc.tele_009.value              : Loc.cell_009.value,
+    Loc.tele_010.value              : Loc.cell_010.value,
+    Loc.tele_011.value              : Loc.cell_011.value,
+    Loc.tele_012cc.value            : Loc.cell_012cc.value,
+    Loc.tele_012tv.value            : Loc.cell_012tv.value,
+    Loc.tele_013.value              : Loc.cell_013.value,
+    Loc.tele_014.value              : Loc.cell_014.value,
+    Loc.tele_015.value              : Loc.cell_015.value,
+    Loc.tele_016.value              : Loc.cell_016.value,
+    Loc.tele_017.value              : Loc.cell_017.value,
+    Loc.tele_018.value              : Loc.cell_018.value,
+    Loc.tele_019.value              : Loc.cell_019.value,
+    Loc.tele_020.value              : Loc.cell_020.value,
+    Loc.tele_021on.value            : Loc.cell_021on.value,
+    Loc.tele_021ic.value            : Loc.cell_021ic.value,
+    Loc.tele_022sf.value            : Loc.cell_022sf.value,
+    Loc.tele_022pl.value            : Loc.cell_022pl.value,
+    Loc.tele_023.value              : Loc.cell_023.value,
+    Loc.tele_024.value              : Loc.cell_024.value,
+    Loc.tele_025.value              : Loc.cell_025.value,
+    Loc.tele_026.value              : Loc.cell_026.value,
+    Loc.tele_028.value              : Loc.cell_028.value,
+    Loc.tele_029.value              : Loc.cell_029.value,
+    Loc.tele_030tv.value            : Loc.cell_030tv.value,
+    Loc.tele_030ty.value            : Loc.cell_030ty.value,
+    Loc.tele_031.value              : Loc.cell_031.value,
+    Loc.tele_032.value              : Loc.cell_032.value,
+    Loc.tele_033.value              : Loc.cell_033.value,
+    Loc.tele_034.value              : Loc.cell_034.value,
+    Loc.tele_035.value              : Loc.cell_035.value,
+    Loc.tele_037.value              : Loc.cell_037.value,
+    Loc.tele_039.value              : Loc.cell_039.value,
+    Loc.tele_040h_a.value           : Loc.cell_040h_a.value,
+    Loc.tele_040h_b.value           : Loc.cell_040h_b.value,
+    Loc.tele_042.value              : Loc.cell_042.value,
+    Loc.tele_044.value              : Loc.cell_044.value,
+    Loc.tele_045.value              : Loc.cell_045.value,
+    Loc.tele_047.value              : Loc.cell_047.value,
+    Loc.tele_048.value              : Loc.cell_048.value,
+    Loc.tele_051.value              : Loc.cell_051.value,
+    Loc.tele_052.value              : Loc.cell_052.value,
+    Loc.tele_062.value              : Loc.cell_062.value,
+    Loc.tele_063.value              : Loc.cell_063.value,
+}
+
+AP : dict[str, int] = {
+    APHelper.channel_key.value      : 0x3E8,
+    APHelper.victory.value          : 0x3E9
+}
 
 ### [< --- ITEMS --- >]
 # Gadgets

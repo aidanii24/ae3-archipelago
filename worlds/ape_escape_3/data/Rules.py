@@ -31,6 +31,7 @@ class RuleType:
     """
     monkey_rules : dict[str, RuleWrap]
     camera_rules : dict[str, list[str]]
+    event_rules : dict[str, RuleWrap]
     entrances : dict[str, list[AE3EntranceMeta]]
 
     default_critical_rule : Set[Callable] = [AccessRule.CATCH]

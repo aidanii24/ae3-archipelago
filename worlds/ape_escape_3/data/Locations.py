@@ -6,7 +6,7 @@ from BaseClasses import Location, Region, ItemClassification
 
 from .Strings import Loc, Stage, Game, Meta, APHelper
 from .Logic import AccessRule, Rulesets
-from .Addresses import NTSCU, Cellphone_ID
+from .Addresses import NTSCU
 
 
 ### [< --- HELPERS --- >]
@@ -63,9 +63,10 @@ class CameraLocation(AE3LocationMeta):
     def to_location(self, player : int, parent : Region) -> Location:
         return Location(player, self.name, self.loc_id, parent)
 
+from .Items import Cellphone_Name_to_ID
 class CellphoneLocation(AE3LocationMeta):
     def __init__(self, text_id : str):
-        self.name = Cellphone_ID[text_id]
+        self.name = Cellphone_Name_to_ID[text_id]
         # Locations can be assumed to always be in Addresses.Locations. NTSCU version will be used as basis for the ID.
         self.loc_id = NTSCU.Locations[text_id]
         self.address = self.loc_id
@@ -1749,80 +1750,11 @@ CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
 }
 
 ### [< --- EVENT GROUPS --- >]
-EVENTS_STUDIO_A1 : Sequence[EventMeta] = [
-    EventMeta(Game.shortcut_studio_ad.value)
+EVENTS_ : Sequence[str] = [
+
 ]
 
-EVENTS_EDOTOWN_E : Sequence[EventMeta] = [
-    EventMeta(Game.shortcut_edotown_eb.value)
-]
-
-EVENTS_ICELAND_E : Sequence[EventMeta] = [
-    EventMeta(Game.trigger_iceland_e.value, AccessRule.SLING)
-]
-
-EVENTS_ARABIAN_C : Sequence[EventMeta] = [
-    EventMeta(Game.trigger_arabian_c.value, AccessRule.CATCH)
-]
-
-EVENTS_ASIA_A1 : Sequence[EventMeta] = [
-    EventMeta(Game.trigger_asia_a1.value)
-]
-
-EVENTS_ASIA_A2 : Sequence[EventMeta] = [
-    EventMeta(Game.trigger_asia_a2.value)
-]
-
-EVENTS_ASIA_B2 : Sequence[EventMeta] = [
-    EventMeta(Game.shortcut_asia_b2b.value)
-]
-
-EVENTS_ASIA_E : Sequence[EventMeta] = [
-    EventMeta(Game.trigger_asia_e.value)
-]
-
-EVENTS_BAY_A4 : Sequence[EventMeta] = [
-    EventMeta(Game.trigger_bay_a4.value)
-]
-
-EVENTS_BAY_E1 : Sequence[EventMeta] = [
-    EventMeta(Game.trigger_bay_e1.value, AccessRule.SLING)
-]
-
-EVENTS_SPACE_E : Sequence[EventMeta] = [
-    EventMeta(Game.trigger_space_e.value)
-]
-
-EVENTS_SPACE_F2 : Sequence[EventMeta] = [
-    EventMeta(Game.trigger_space_f2.value)
-]
-
-EVENTS_SPACE_G1 : Sequence[EventMeta] = [
-    EventMeta(Game.trigger_space_g1.value)
-]
-
-EVENTS_SPACE_G2 : Sequence[EventMeta] = [
-    EventMeta(Game.trigger_space_g2.value)
-]
-
-EVENTS_INDEX : dict[str, Sequence[EventMeta]] = {
-    # Triggers
-    Stage.region_iceland_e.value       : EVENTS_ICELAND_E,
-    Stage.region_arabian_c.value       : EVENTS_ARABIAN_C,
-    Stage.region_asia_a1.value         : EVENTS_ASIA_A1,
-    Stage.region_asia_a2.value         : EVENTS_ASIA_A2,
-    Stage.region_asia_e.value          : EVENTS_ASIA_E,
-    Stage.region_bay_a4.value          : EVENTS_BAY_A4,
-    Stage.region_bay_e1.value          : EVENTS_BAY_E1,
-    Stage.region_space_e.value         : EVENTS_SPACE_E,
-    Stage.region_space_f2.value        : EVENTS_SPACE_F2,
-    Stage.region_space_g1.value        : EVENTS_SPACE_G1,
-    Stage.region_space_g2.value        : EVENTS_SPACE_G2,
-
-    # Shortcuts
-    Stage.region_studio_a1.value       : EVENTS_STUDIO_A1,
-    Stage.region_edotown_e.value       : EVENTS_EDOTOWN_E,
-    Stage.region_asia_b2.value         : EVENTS_ASIA_B2
+EVENTS_INDEX : dict[str, Sequence[str]] = {
 }
 
 def generate_name_to_id() -> dict[str, int]:

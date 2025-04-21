@@ -2,9 +2,10 @@ from typing import TYPE_CHECKING, Set, List
 
 from NetUtils import ClientStatus, NetworkItem
 
-from .data.Items import ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem
+from .data.Items import ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem, Capacities, AP, \
+    Cellphone_Name_to_ID
 from .data.Strings import Game, Itm, APHelper
-from .data.Addresses import Capacities, NTSCU, AP, Cellphone_ID
+from .data.Addresses import NTSCU
 from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, Loc, CAMERAS_STAGE_INDEX, MONKEYS_BOSSES, \
     MONKEYS_DIRECTORY
 from .data import Items
@@ -279,8 +280,8 @@ async def check_locations(ctx : 'AE3Context'):
         # Cellphone Check
         if ctx.cellphonesanity and ctx.current_stage in CELLPHONES_STAGE_INDEX:
             tele_text_id : str = ctx.ipc.get_cellphone_interacted(ctx.current_stage)
-            if tele_text_id in Cellphone_ID:
-                location_id : int = ctx.locations_name_to_id[Cellphone_ID[tele_text_id]]
+            if tele_text_id in Cellphone_Name_to_ID:
+                location_id : int = ctx.locations_name_to_id[Cellphone_Name_to_ID[tele_text_id]]
                 cleared.add(location_id)
 
                 # Obsolete Interact Data to prevent false checking of phones when transitioning into an adjacent
