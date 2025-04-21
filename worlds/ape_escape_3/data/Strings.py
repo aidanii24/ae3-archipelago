@@ -841,6 +841,8 @@ class Stage(BaseEnum):
     region_edotown_c1 =         "The Emperor's Castle - Castle Interior - Entrance Area"
     region_edotown_c2 =         "The Emperor's Castle - Castle Interior - Ceiling"
     region_edotown_d =          "The Emperor's Castle - Castle Roofs"
+    region_edotown_e =          "The Emperor's Castle - Japanese Room"
+    region_edotown_f =          "The Emperor's Castle - Break Room"
 
     region_boss3 =              "Monkey Yellow Battle!"
 
@@ -871,6 +873,8 @@ class Stage(BaseEnum):
     region_iceland_b =          "Arctic Wonderland - Chilly Path"
     region_iceland_c =          "Arctic Wonderland - Ice Cavern"
     region_iceland_d =          "Arctic Wonderland - Frozen River"
+    region_iceland_e =          "Arctic Wonderland - Christmas Tree"
+    region_iceland_f =          "Arctic Wonderland - Break Room"
 
     arabian =                   "Mirage Town"
     region_arabian_a =          "Mirage Town - Desert"
@@ -916,6 +920,7 @@ class Stage(BaseEnum):
     region_plane_f =            "Airplane Squadron - Main Deck"
     region_plane_f1 =           "Airplane Squadron - Main Deck - Power Generator"
     region_plane_g =            "Airplane Squadron - Break Rom"
+    region_plane_h =            "Airplane Squadron - Bow"
 
     hong =                      "Kung-Fu Alley"
     region_hong_a =             "Kung-Fu Alley - Mountains"
@@ -932,6 +937,7 @@ class Stage(BaseEnum):
     region_hong_e1 =            "Kung-Fu Alley - Restaurant - Mahjong Room"
     region_hong_f =             "Kung-Fu Alley - Break Room"
     region_hong_g =             "Kung-Fu Alley - Triad Headquarters"
+    region_hong_h =             "Kung-Fu Alley - Dentist's Clinic"
 
     region_boss5 =              "Monkey Red Battle!"
 
@@ -951,6 +957,8 @@ class Stage(BaseEnum):
     region_bay_d1 =             "Midnight Bay - Warehouse - Garage"
     region_bay_e =              "Midnight Bay - Sewers"
     region_bay_e1 =             "Midnight Bay - Sewers - Observation Deck"
+    region_bay_e2 =             "Midnight Bay - Sewers - Lower Sewers"
+    region_bay_f =              "Midnight Bay - Break Room"
 
     tomo =                      "Tomoki City"
     region_tomo_a =             "Tomoki City - City Walls"
@@ -969,6 +977,7 @@ class Stage(BaseEnum):
     region_tomo_h =             "Tomoki City - Tower Head"
     region_tomo_h1 =            "Tomoki City - Tower Head - Entrance Area"
     region_tomo_i =             "Tomoki City - Break Room"
+    region_tomo_j =             "Tomoki City - Laser Fountains"
 
     region_boss6 =              "Dr. Tomoki Battle!"
 
