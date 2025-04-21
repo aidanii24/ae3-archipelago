@@ -4,8 +4,8 @@ from abc import ABC
 
 from BaseClasses import Location, Region, ItemClassification
 
-from .Strings import Loc, Stage, Game, Meta, APHelper
-from .Logic import AccessRule, Rulesets
+from .Strings import Loc, Stage, Events, Meta, APHelper
+from .Logic import Rulesets
 from .Addresses import NTSCU
 
 
@@ -1750,11 +1750,167 @@ CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
 }
 
 ### [< --- EVENT GROUPS --- >]
-EVENTS_ : Sequence[str] = [
+EVENTS_CASTLE_B : Sequence[str] = [
+    Events.event_castle_b_clapper.value
+]
 
+EVENTS_CISCOCITY_D : Sequence[str] = [
+    Events.event_ciscocity_d_exit.value
+]
+
+EVENTS_CISCOCITY_C : Sequence[str] = [
+    Events.event_ciscocity_c_button.value
+]
+
+EVENTS_STUDIO_A1 : Sequence[str] = [
+    Events.event_studio_a1_button.value
+]
+
+EVENTS_STUDIO_A2 : Sequence[str] = [
+    Events.event_studio_a2_button.value
+]
+
+EVENTS_STUDIO_F : Sequence[str] = [
+    Events.event_studio_f_tele_robo.value
+]
+
+EVENTS_HALLOWEEN_B : Sequence[str] = [
+    Events.event_halloween_b_jumbo_robo.value
+]
+
+EVENTS_HALLOWEEN_B1 : Sequence[str] = [
+    Events.event_halloween_b1_jumbo_robo_shoot.value
+]
+
+EVENTS_SNOWFESTA_E : Sequence[str] = [
+    Events.event_snowfesta_e_bell.value
+]
+
+EVENTS_EDOTOWN_B1 : Sequence[str] = [
+    Events.event_edotown_b1_button.value
+]
+
+EVENTS_EDOTOWN_E : Sequence[str] = [
+    Events.event_edotown_e_scroll.value
+]
+
+EVENTS_ICELAND_E : Sequence[str] = [
+    Events.event_iceland_e_button.value
+]
+
+EVENTS_ARABIAN_C : Sequence[str] = [
+    Events.event_arabian_c_golden_mon.value
+]
+
+EVENTS_ARABIAN_C1 : Sequence[str] = [
+    Events.event_arabian_c1_exit.value
+]
+
+EVENTS_ARABIAN_G : Sequence[str] = [
+    Events.event_arabian_g_exit.value
+]
+
+EVENTS_ASIA_A : Sequence[str] = [
+    Events.event_asia_a_block.value
+]
+
+EVENTS_ASIA_A1 : Sequence[str] = [
+    Events.event_asia_a1_block.value
+]
+
+EVENTS_ASIA_A2 : Sequence[str] = [
+    Events.event_asia_a2_block.value
+]
+
+EVENTS_ASIA_B2 : Sequence[str] = [
+    Events.event_asia_b2_button.value
+]
+
+EVENTS_ASIA_E1 : Sequence[str] = [
+    Events.event_asia_e1_button.value
+]
+
+EVENTS_PLANE_D : Sequence[str] = [
+    Events.event_plane_d_button.value
+]
+
+EVENTS_HONG_B2 : Sequence[str] = [
+    Events.event_hong_b2_button.value
+]
+
+EVENTS_BAY_A7 : Sequence[str] = [
+    Events.event_bay_a7_button.value
+]
+
+EVENTS_BAY_A5 : Sequence[str] = [
+    Events.event_bay_a5_button.value
+]
+
+EVENTS_BAY_E1 : Sequence[str] = [
+    Events.event_bay_e1_button.value
+]
+
+EVENTS_TOMO_E2 : Sequence[str] = [
+    Events.event_tomo_e2_kungfu.value
+]
+
+EVENTS_TOMO_G : Sequence[str] = [
+    Events.event_tomo_g_kungfu.value
+]
+
+EVENTS_TOMO_H : Sequence[str] = [
+    Events.event_tomo_h_button.value, Events.event_tomo_h_button1.value
+]
+
+EVENTS_SPACE_E1 : Sequence[str] = [
+    Events.event_space_e1_button.value
+]
+
+EVENTS_SPACE_G1 : Sequence[str] = [
+    Events.event_space_g1_button.value
+]
+
+EVENTS_SPACE_F2 : Sequence[str] = [
+    Events.event_space_f2_button.value, Events.event_space_f2_kungfu.value
+]
+
+EVENTS_SPACE_D : Sequence[str] = [
+    Events.event_space_d_button.value
 ]
 
 EVENTS_INDEX : dict[str, Sequence[str]] = {
+    Stage.region_castle_b.value         : EVENTS_CASTLE_B,
+    Stage.region_ciscocity_d.value      : EVENTS_CISCOCITY_D,
+    Stage.region_ciscocity_c.value      : EVENTS_CISCOCITY_C,
+    Stage.region_studio_a1.value        : EVENTS_STUDIO_A1,
+    Stage.region_studio_a2.value        : EVENTS_STUDIO_A2,
+    Stage.region_studio_f.value         : EVENTS_STUDIO_F,
+    Stage.region_halloween_b.value      : EVENTS_HALLOWEEN_B,
+    Stage.region_halloween_b1.value     : EVENTS_HALLOWEEN_B1,
+    Stage.region_snowfesta_e.value      : EVENTS_SNOWFESTA_E,
+    Stage.region_edotown_b1.value       : EVENTS_EDOTOWN_B1,
+    Stage.region_edotown_e.value        : EVENTS_EDOTOWN_E,
+    Stage.region_iceland_e.value        : EVENTS_ICELAND_E,
+    Stage.region_arabian_c.value        : EVENTS_ARABIAN_C,
+    Stage.region_arabian_c1.value       : EVENTS_ARABIAN_C1,
+    Stage.region_arabian_g.value        : EVENTS_ARABIAN_G,
+    Stage.region_asia_a.value           : EVENTS_ASIA_A,
+    Stage.region_asia_a1.value          : EVENTS_ASIA_A1,
+    Stage.region_asia_a2.value          : EVENTS_ASIA_A2,
+    Stage.region_asia_b2.value          : EVENTS_ASIA_B2,
+    Stage.region_asia_e1.value          : EVENTS_ASIA_E1,
+    Stage.region_plane_d.value          : EVENTS_PLANE_D,
+    Stage.region_hong_b2.value          : EVENTS_HONG_B2,
+    Stage.region_bay_a7.value           : EVENTS_BAY_A7,
+    Stage.region_bay_a5.value           : EVENTS_BAY_A5,
+    Stage.region_bay_e1.value           : EVENTS_BAY_E1,
+    Stage.region_tomo_e2.value          : EVENTS_TOMO_E2,
+    Stage.region_tomo_g.value           : EVENTS_TOMO_G,
+    Stage.region_tomo_h.value           : EVENTS_TOMO_H,
+    Stage.region_space_e1.value         : EVENTS_SPACE_E1,
+    Stage.region_space_g1.value         : EVENTS_SPACE_G1,
+    Stage.region_space_f2.value         : EVENTS_SPACE_F2,
+    Stage.region_space_d.value          : EVENTS_SPACE_D,
 }
 
 def generate_name_to_id() -> dict[str, int]:
