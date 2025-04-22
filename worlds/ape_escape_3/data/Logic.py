@@ -14,6 +14,9 @@ if TYPE_CHECKING:
 def can_catch(state : CollectionState, player : int):
     return can_net(state, player) or can_morph_not_monkey(state, player)
 
+def can_catch_long(state : CollectionState, player : int):
+    return can_net(state, player) or can_morph_not_monkey(state, player)
+
 def can_net(state : CollectionState, player : int):
     return state.has(Itm.gadget_net.value, player)
 
@@ -38,10 +41,7 @@ def can_swim(state : CollectionState, player : int):
 
 ## Check if Player can use the RC Car
 def can_rcc(state : CollectionState, player : int):
-    return (state.has(Itm.gadget_rcc.value, player) or
-            state.has(Itm.chassis_twin.value, player) or
-            state.has(Itm.chassis_black.value, player) or
-            state.has(Itm.chassis_pudding.value, player))
+    return state.has(APHelper.rc_cars.value, player)
 
 # Morph Checks
 def can_knight(state : CollectionState, player : int):
@@ -67,35 +67,27 @@ def can_monkey(state : CollectionState, player : int):
 
 # General Ability Checks
 ## Check if player can hit beyond basic hip drops
-def can_attack_well(state : CollectionState, player : int):
-    return (has_club(state, player) or can_sling(state, player) or
+def can_attack(state : CollectionState, player : int):
+    return state.has(APHelper.attack.value, player)
 
-            can_morph_not_monkey(state, player))
+def can_hit(state : CollectionState, player : int):
+    return state.has(APHelper.hit.value, player)
 
 ## Check if player has the ability to move fast
 def can_dash(state : CollectionState, player : int):
-    return (state.has(Itm.gadget_hoop.value, player) or
-
-            state.has(Itm.morph_ninja.value, player) or
-            state.has(Itm.morph_hero.value, player))
+    return state.has(APHelper.dash.value, player)
 
 ## Check if Player can use long-ranged attacks
 def can_shoot(state : CollectionState, player : int):
-    return (state.has(Itm.gadget_sling.value, player) or
-
-            state.has(Itm.morph_cowboy.value, player) or
-            state.has(Itm.morph_hero.value, player))
+    return state.has(APHelper.shoot.value, player)
 
 ## Check if Player can fly (can gain height)
 def can_fly(state : CollectionState, player : int):
-    return (state.has(Itm.gadget_fly.value, player) or
-
-            state.has(Itm.morph_ninja.value, player))
+    return state.has(APHelper.fly.value, player)
 
 ## Check if the Player can glide
 def can_glide(state : CollectionState, player : int):
-    return (can_fly(state, player) or
-            state.has(Itm.morph_hero.value, player))
+    return state.has(APHelper.glide.value, player)
 
 # Event Checks
 def has_enough_keys(state : CollectionState, player : int, keys : int):
@@ -133,7 +125,7 @@ class AccessRule:
     NET = can_net                               # Monkey Net Unlocked
     MORPH = can_morph
     MORPH_NO_MONKEY = can_morph_not_monkey      # Unlocked any morph that is not Super Monkey
-    ATTACK = can_attack_well                    # Can attack reasonably
+    ATTACK = can_attack                    # Can attack reasonably
     CLUB = has_club                             # Unlocked Stun Club
     DASH = can_dash                             # Unlocked Super Hoop or any fast moving Morph
     SHOOT = can_shoot                           # Slingback Shooter unlocked or has any morph with long range attacks
@@ -172,9 +164,9 @@ class Rulesets:
         at least one set of AccessRules must also be adhered to.
     """
     Critical : Set[Callable] = None
-    Rules : Set[Callable] = None
+    Rules : Set[Set[Callable]] = None
 
-    def __init__(self, critical : Set[Callable] = None, rules : Set[Callable] = None):
+    def __init__(self, critical : Set[Callable] = None, rules : Set[Set[Callable]] = None):
         if critical is not None:
             self.Critical = critical
         else:
@@ -201,8 +193,8 @@ class Rulesets:
 
         reachable: bool = False
 
-        for ruleset in self.Rules:
-            for rule in ruleset:
+        for rulesets in self.Rules:
+            for rule in rulesets:
                 if not rule(state, player):
                     continue
 

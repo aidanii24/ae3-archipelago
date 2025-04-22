@@ -294,17 +294,62 @@ def generate_item_groups() -> dict[str : set[str]]:
     groups : dict[str : set[str]] = {}
 
     i : AE3ItemMeta
+    # Gadgets
     for i in GADGETS:
         groups.setdefault(APHelper.gadgets.value, set()).add(i.name)
 
+    # Morphs
     for i in MORPHS:
         groups.setdefault(APHelper.morphs.value, set()).add(i.name)
 
-        if i.name is not Itm.morph_monkey.value:
-            groups.setdefault(APHelper.morphs_no_monkey.value, set()).add(i.name)
-
+    # Equipment
     groups.setdefault(APHelper.equipment.value, set()).update(groups[APHelper.gadgets.value])
     groups.setdefault(APHelper.equipment.value, set()).update(groups[APHelper.morphs.value])
+
+    # Morphs (without Super Monkey)
+    groups.setdefault(APHelper.morphs_no_monkey.value, set()).update(
+        groups[APHelper.morphs.value].remove(Itm.morph_monkey.value))
+
+    # RC Cars
+    groups.setdefault(APHelper.rc_cars.value, set()).update([
+        Itm.gadget_rcc.value, Itm.chassis_twin.value, Itm.chassis_black.value, Itm.chassis_pudding.value
+    ])
+
+    # Catch (Long)
+    groups.setdefault(APHelper.attack.value, set()).update([
+        Itm.morph_cowboy.value, Itm.morph_ninja.value, Itm.morph_magician.value, Itm.morph_hero.value
+    ])
+
+    # Attack
+    groups.setdefault(APHelper.attack.value, set()).update([
+        Itm.gadget_club.value, Itm.gadget_sling.value, *groups[APHelper.morphs_no_monkey.value]
+    ])
+
+    # Hit
+    groups.setdefault(APHelper.attack.value, set()).update([
+        Itm.gadget_hoop.value, Itm.morph_monkey.value, Itm.gadget_fly.value, *groups[APHelper.rc_cars.value],
+        *groups[APHelper.attack.value]
+    ])
+
+    # Dash
+    groups.setdefault(APHelper.dash.value, set()).update([
+        Itm.gadget_hoop.value, Itm.morph_ninja.value, Itm.morph_hero.value
+    ])
+
+    # Shoot
+    groups.setdefault(APHelper.shoot.value, set()).update([
+        Itm.gadget_sling.value, Itm.morph_cowboy.value, Itm.morph_hero.value
+    ])
+
+    # Fly
+    groups.setdefault(APHelper.fly.value, set()).update([
+        Itm.gadget_fly.value, Itm.morph_ninja.value
+    ])
+
+    # Glide
+    groups.setdefault(APHelper.glide.value, set()).update([
+        Itm.morph_hero.value, *groups[APHelper.fly.value]
+    ])
 
     return groups
 
