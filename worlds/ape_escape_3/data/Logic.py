@@ -15,7 +15,7 @@ def can_catch(state : CollectionState, player : int):
     return can_net(state, player) or can_morph_not_monkey(state, player)
 
 def can_catch_long(state : CollectionState, player : int):
-    return can_net(state, player) or can_morph_not_monkey(state, player)
+    return state.has(APHelper.catch_long.value, player)
 
 def can_net(state : CollectionState, player : int):
     return state.has(Itm.gadget_net.value, player)
