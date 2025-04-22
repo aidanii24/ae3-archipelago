@@ -1,43 +1,17 @@
-from typing import TYPE_CHECKING, Callable, Dict
+from typing import TYPE_CHECKING, Dict
 
-from BaseClasses import CollectionState, Entrance, Location, Region
+from BaseClasses import Entrance, Location, Region
 
 from .data.Stages import STAGES_DIRECTORY, STAGES_MASTER
 from .data.Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, CameraLocation, CellphoneLocation, \
     EventMeta, MonkeyLocation, MONKEYS_INDEX, EVENTS_INDEX
 from .data.Logic import Rulesets
-from .data.Rules import RuleType, Casual
+from .data.Rules import LogicPreference, Casual
 
 if TYPE_CHECKING:
     from . import AE3World
 
 ### [< --- HELPERS --- >]
-def generate_access_rule(player : int, rulesets : Rulesets) -> Callable[[CollectionState], bool]:
-    """Parses a Ruleset and returns a staticmethod for use as an access rule by Archipelago"""
-    def access_rule(state: CollectionState) -> bool:
-        # Any Critical Rules that return False should immediately mark the item as inaccessible with the current state
-        if rulesets.Critical:
-            for rule in rulesets.Critical:
-                if not rule(state, player):
-                    return False
-
-        # At least one set of normal rules (if any) must return true to mark the item as reachable
-        if not rulesets.Rules:
-            return True
-
-        reachable: bool = False
-
-        for ruleset in rulesets.Rules:
-            for rule in ruleset:
-                if not rule(state, player):
-                    continue
-
-                reachable = True
-                break
-
-        return reachable
-    return access_rule
-
 def establish_entrances(player : int, parent_region : Region, connections : Dict[Region, Rulesets]):
     """Connects the parent region to its destinations and assigns access rules where present."""
     for destination, ruleset in connections.items():
@@ -45,13 +19,13 @@ def establish_entrances(player : int, parent_region : Region, connections : Dict
         entrance.parent_region = parent_region
 
         if ruleset:
-            entrance.access_rule = generate_access_rule(player, ruleset)
+            entrance.access_rule = ruleset.condense(player)
 
         parent_region.exits.append(entrance)
         entrance.connect(destination)
 
 def create_regions(world : "AE3World"):
-    rule : RuleType = Casual()
+    rule : LogicPreference = Casual()
     rule.set_keys_rules(world.progression)
 
     # Initialize Regions
@@ -82,7 +56,7 @@ def create_regions(world : "AE3World"):
                 ruleset.Critical.update(rule.default_critical_rule)
 
                 # Generate Access Rule from Ruleset
-                loc.access_rule = generate_access_rule(world.player, ruleset)
+                loc.access_rule = ruleset.condense(world.player)
 
                 stage.locations.append(loc)
 
@@ -108,7 +82,7 @@ def create_regions(world : "AE3World"):
                 if parent_channel:
                     ruleset = rule.get_channel_clear_rules(parent_channel)
 
-                loc.access_rule = generate_access_rule(world.player, ruleset)
+                loc.access_rule = ruleset.condense(world.player)
 
             stage.locations.append(loc)
 
@@ -127,6 +101,7 @@ def create_regions(world : "AE3World"):
                 if event in rule.event_rules:
                     meta : EventMeta = EventMeta(event)
                     loc : Location = meta.to_event_location(world.player, stage)
+                    loc.access_rule = rule.event_rules[event].rules.condense()
 
                     stage.locations.append(loc)
 

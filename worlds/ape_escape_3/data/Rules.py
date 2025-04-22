@@ -12,19 +12,19 @@ class RuleWrap:
     """Container for Rulesets for easy parsing when generating locations"""
     rules : Rulesets = Rulesets()
 
-    def __init__(self, *rules : Callable | frozenset[Callable] | Set[frozenset[Callable]] | Rulesets):
+    def __init__(self, *rules : Callable | Set[Callable] | Rulesets):
         for rule in rules:
             if isinstance(rule, Rulesets):
                 self.rules = rule
             else:
                 if isinstance(rule, Callable):
-                    self.rules.Rules.add(frozenset({rule}))
+                    self.rules.Rules.add(Set[rule])
                 elif isinstance(rule, set):
                     self.rules.Rules.update(rule)
                 elif isinstance(rules, frozenset):
                     self.rules.Rules.add(rule)
 
-class RuleType:
+class LogicPreference:
     """
     Base Class for defined RuleTypes. RuleTypes determine the kinds of access rules locations or regions have
     based on a preferred play style
@@ -90,7 +90,7 @@ class RuleType:
 
                 levels_count += 1
 
-class Casual(RuleType):
+class Casual(LogicPreference):
     """
     RuleType for a casual experience. The player is assumed to play the game without any or little advanced or obscure
     knowledge of it.
