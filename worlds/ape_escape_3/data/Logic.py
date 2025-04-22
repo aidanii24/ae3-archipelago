@@ -122,10 +122,12 @@ class AccessRule:
 
     # General
     CATCH = can_catch                           # Monkey Net unlocked or any Morph that can Catch Monkeys
+    CATCH_LONG = can_catch_long                 # Has any morph with ranged capture
     NET = can_net                               # Monkey Net Unlocked
     MORPH = can_morph
     MORPH_NO_MONKEY = can_morph_not_monkey      # Unlocked any morph that is not Super Monkey
-    ATTACK = can_attack                    # Can attack reasonably
+    ATTACK = can_attack                         # Can attack reasonably
+    HIT = can_hit                               # Can hit at all
     CLUB = has_club                             # Unlocked Stun Club
     DASH = can_dash                             # Unlocked Super Hoop or any fast moving Morph
     SHOOT = can_shoot                           # Slingback Shooter unlocked or has any morph with long range attacks
