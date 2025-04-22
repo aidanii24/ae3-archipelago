@@ -1870,6 +1870,7 @@ class APHelper(BaseEnum):
     # Game Progress
     pr_boss6 =              "boss6"
     pr_specter1 =           "specter1"
+    pr_specter2 =           "specter2"
     pr_round2 =             "round2\x00\x00"
 
     # AP Options

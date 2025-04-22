@@ -166,18 +166,25 @@ class Rulesets:
         at least one set of AccessRules must also be adhered to.
     """
     Critical : Set[Callable] = None
-    Rules : Set[Set[Callable]] = None
+    Rules : list[list[Callable]] = None
 
-    def __init__(self, critical : Set[Callable] = None, rules : Set[Set[Callable]] = None):
-        if critical is not None:
-            self.Critical = critical
-        else:
-            self.Critical = set()
+    def __init__(self, *rules : Callable | list[Callable] | list[list[Callable]], critical : Set[Callable] = None):
+        self.critical = []
+        self.rules = []
 
-        if rules is not None:
-            self.Rules = rules
-        else:
-            self.Rules = set()
+        if critical:
+            self.critical = critical
+
+        if rules:
+            for rule in rules:
+                if isinstance(rule, Callable):
+                    self.rules.append([rule])
+                elif isinstance(rule, list):
+                    if all(isinstance(_, Callable) for _ in rule):
+                        self.rules.append(rule)
+                    elif all(isinstance(x, list) and all(isinstance(_, Callable) for _ in x) for x in rule):
+                        self.rules.extend(rule)
+
 
     def __bool__(self):
         return bool(self.Critical) or bool(self.Rules)

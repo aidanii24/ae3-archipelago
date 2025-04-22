@@ -12,12 +12,14 @@ class AE3EntranceMeta:
         rules : Sets of AccessRules for the Entrance. Can be an AccessRule, Set of AccessRule, or a full Ruleset.
         Passing callables will add them as Normal Rules. To assign critical rules, pass a Ruleset instead.
     """
+    parent : str
     destination : str
     rules : Rulesets
 
     def __init__(self, destination : str,
-                 *rules : Callable | frozenset[Callable] | Set[frozenset[Callable]] | Rulesets,
+                 *rules : Callable | list[Callable] | list[list[Callable]] | Rulesets,
                  critical : set = None):
+        self.parent = "Wow"
         self.destination = destination
         self.rules = Rulesets()
 
@@ -25,12 +27,7 @@ class AE3EntranceMeta:
             if isinstance(rule, Rulesets):
                 self.rules = rule
             else:
-                if isinstance(rule, Callable):
-                    self.rules.Rules.add(frozenset({rule}))
-                elif isinstance(rule, set):
-                    self.rules.Rules.update(frozenset(rule))
-                elif isinstance(rule, frozenset):
-                    self.rules.Rules.add(rule)
+                self.rules = Rulesets(*rules)
 
         if isinstance(critical, set):
             self.rules.Critical.update(critical)

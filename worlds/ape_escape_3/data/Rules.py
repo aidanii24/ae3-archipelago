@@ -18,9 +18,9 @@ class RuleWrap:
                 self.rules = rule
             else:
                 if isinstance(rule, Callable):
-                    self.rules.Rules.add(Set[rule])
+                    self.rules.Rules.add({rule})
                 elif isinstance(rule, set):
-                    self.rules.Rules.update(rule)
+                    self.rules.Rules.update({rule})
                 elif isinstance(rules, frozenset):
                     self.rules.Rules.add(rule)
 
