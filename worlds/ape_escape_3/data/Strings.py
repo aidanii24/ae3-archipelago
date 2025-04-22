@@ -1811,8 +1811,18 @@ class APHelper(BaseEnum):
     # Item Groups
     gadgets =               "Gadgets"
     morphs =                "Morphs"
-    morphs_no_monkey =      "Morphs (Not Super Monkey)"
+    morphs_no_monkey =      "Morphs (without Super Monkey)"
     equipment =             "Equipment"
+
+    rc_cars =               "RC Car Chassis"
+
+    catch_long =            "Catch (Long)"
+    attack =                "Attack"
+    hit =                   "Hit"
+    dash =                  "Dash"
+    shoot =                 "Shoot"
+    fly =                   "Fly"
+    glide =                 "Glide"
 
     # Game Groups
     travel_station =        "o_1"
