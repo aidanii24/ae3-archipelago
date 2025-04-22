@@ -172,9 +172,9 @@ class Rulesets:
         at least one set of AccessRules must also be adhered to.
     """
     Critical : Set[Callable] = None
-    Rules : Set[frozenset[Callable]] = None
+    Rules : Set[Callable] = None
 
-    def __init__(self, critical : Set[Callable] = None, rules : Set[frozenset[Callable]] = None):
+    def __init__(self, critical : Set[Callable] = None, rules : Set[Callable] = None):
         if critical is not None:
             self.Critical = critical
         else:
@@ -187,6 +187,32 @@ class Rulesets:
 
     def __bool__(self):
         return bool(self.Critical) or bool(self.Rules)
+
+    def check(self, state : CollectionState, player : int) -> bool:
+        # Any Critical Rules that return False should immediately mark the item as inaccessible with the current state
+        if self.Critical:
+            for rule in self.Critical:
+                if not rule(state, player):
+                    return False
+
+        # At least one set of normal rules (if any) must return true to mark the item as reachable
+        if not self.Rules:
+            return True
+
+        reachable: bool = False
+
+        for ruleset in self.Rules:
+            for rule in ruleset:
+                if not rule(state, player):
+                    continue
+
+                reachable = True
+                break
+
+        return reachable
+
+    def condense(self, player) -> Callable[[CollectionState], bool]:
+        return lambda state : self.check(state, player)
 
 from .Locations import MONKEYS_BOSSES
 class ProgressionMode(Enum):
