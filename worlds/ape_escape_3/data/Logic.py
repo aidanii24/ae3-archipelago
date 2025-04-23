@@ -34,6 +34,9 @@ def has_radar(state : CollectionState, player : int):
 def has_club(state : CollectionState, player : int):
     return state.has(Itm.gadget_club.value, player)
 
+def has_hoop(state : CollectionState, player : int):
+    return state.has(Itm.gadget_hoop.value, player)
+
 ## Check if Player can use the Slingback Shooter
 def can_sling(state : CollectionState, player : int):
     return state.has(Itm.gadget_sling.value, player)
@@ -133,6 +136,7 @@ class AccessRule:
     HIT = can_hit                               # Can hit at all
     CLUB = has_club                             # Unlocked Stun Club
     RADAR = has_radar                           # Unlocked Monkey Radar
+    HOOP = has_hoop                             # Unlocked Dash Hoop
     DASH = can_dash                             # Unlocked Super Hoop or any fast moving Morph
     SHOOT = can_shoot                           # Slingback Shooter unlocked or has any morph with long range attacks
     SWIM = can_swim

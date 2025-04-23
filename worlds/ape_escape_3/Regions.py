@@ -108,12 +108,13 @@ def create_regions(world : "AE3World"):
         ## Events
         if stage.name in EVENTS_INDEX:
             for event in EVENTS_INDEX[stage.name]:
+                meta : EventMeta = EventMeta(event)
+                loc : Location = meta.to_event_location(world.player, stage)
+
                 if event in rule.event_rules:
-                    meta : EventMeta = EventMeta(event)
-                    loc : Location = meta.to_event_location(world.player, stage)
                     loc.access_rule = rule.event_rules[event].condense(world.player)
 
-                    stage.locations.append(loc)
+                stage.locations.append(loc)
 
     # Send Regions to Archipelago
     world.multiworld.regions.extend(list(stages.values()))

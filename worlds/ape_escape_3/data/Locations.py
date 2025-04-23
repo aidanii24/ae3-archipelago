@@ -1879,7 +1879,7 @@ EVENTS_INDEX : dict[str, Sequence[str]] = {
     Stage.region_castle_b.value         : EVENTS_CASTLE_B,
     Stage.region_castle_a2.value        : EVENTS_CASTLE_A2,
     Stage.region_ciscocity_d.value      : EVENTS_CISCOCITY_D,
-    Stage.region_ciscocity_c.value      : EVENTS_CISCOCITY_C,
+    Stage.region_ciscocity_c1.value     : EVENTS_CISCOCITY_C,
     Stage.region_studio_a1.value        : EVENTS_STUDIO_A1,
     Stage.region_studio_a2.value        : EVENTS_STUDIO_A2,
     Stage.region_studio_f.value         : EVENTS_STUDIO_F,
