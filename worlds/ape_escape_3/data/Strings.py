@@ -727,6 +727,7 @@ class Loc(BaseEnum):
 
 class Events(BaseEnum):
     event_castle_b_clapper                  = "Saru-mon's Castle - Clapper Button"
+    event_castle_a2_button                  = "Saru-mon's Castle - Castle Doorway Button"
     event_ciscocity_d_exit                  = "The Big City - Football Stadium Far Exit"
     event_ciscocity_c_button                = "The Big City - Theater Button"
     event_studio_a1_button                  = "Specter TV Studio - First Floor Exit Button"
@@ -787,6 +788,7 @@ class Stage(BaseEnum):
 
     castle =                    "Saru-mon's Castle"
     region_castle_a1 =          "Saru-Mon's Castle - Castle Gates - Bridge"
+    region_castle_a2 =          "Saru-Mon's Castle - Castle Gates - Castle Doorway"
     region_castle_a =           "Saru-Mon's Castle - Gates"
     region_castle_b =           "Saru-Mon's Castle - Courtyard"
     region_castle_b1 =          "Saru-Mon's Castle - Courtyard - Palace First Floor"
@@ -1044,6 +1046,7 @@ class Stage(BaseEnum):
 
     # Entrances
     entrance_ng =                       "New Game Confirmed"
+    entrance_continue =                 "Continue Game"
     entrance_tutorial_clear =           "Tutorial Cleared"
 
     entrance_travel_ab =                "TV Station Stairs"
@@ -1107,7 +1110,7 @@ class Stage(BaseEnum):
     entrance_castle_be =                "Saru-mon's Castle - Courtyard - Hidden Door"
     entrance_castle_b1b =               "Saru-mon's Castle - Courtyard - To Garden"
     entrance_castle_b1c =               "Saru-mon's Castle - Courtyard - Second Floor Entrance"
-    entrance_castle_cb =                "Saru-mon's Castle - Ballroom - Room Exit"
+    entrance_castle_cb1 =               "Saru-mon's Castle - Ballroom - Room Exit"
     entrance_castle_eb =                "Saru-mon's Castle - Break Room - Exit Door"
     entrance_castle_ef =                "Saru-mon's Castle - Break Room - Extension Entrance"
     entrance_castle_fe =                "Saru-mon's Castle - Arena - Exit Gates"

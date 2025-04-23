@@ -1,4 +1,4 @@
-from typing import Callable, Set, Sequence
+from typing import Sequence
 from dataclasses import dataclass
 from abc import ABC
 
@@ -77,23 +77,15 @@ class CellphoneLocation(AE3LocationMeta):
 
 class EventMeta(AE3LocationMeta):
     """Base Class for all events."""
-    def __init__(self, name : str, *rules : Callable | frozenset[Callable] | Set[frozenset[Callable]] | Rulesets):
+    def __init__(self, name : str, rules : Rulesets = None):
         self.name = name
         self.loc_id = 0x0
         self.address = 0x0
 
         self.rules = Rulesets()
 
-        for rule in rules:
-            if isinstance(rule, Rulesets):
-                self.rules = rule
-            else:
-                if isinstance(rule, Callable):
-                    self.rules.Rules.add(frozenset({rule}))
-                elif isinstance(rule, set):
-                    self.rules.Rules.update(rule)
-                elif isinstance(rules, frozenset):
-                    self.rules.Rules.add(rule)
+        if isinstance(rules, Rulesets):
+            self.rules = rules
 
     def to_event_location(self, player : int, parent : Region) -> Location:
         from .Items import AE3Item
@@ -842,7 +834,7 @@ MONKEYS_BAY_E1 : Sequence[str] = [
 ]
 
 MONKEYS_BAY_E2 : Sequence[str] = [
-    Loc.bay_gimi_gimi.value, Loc.bay_pokkini.value, Loc.bay_bokino.value. Loc.bay_jimo.value
+    Loc.bay_gimi_gimi.value, Loc.bay_pokkini.value, Loc.bay_bokino.value, Loc.bay_jimo.value
 ]
 
 MONKEYS_BAY_F : Sequence[str] = [
@@ -1616,7 +1608,7 @@ CELLPHONES_ID_DUPLICATES : Sequence[str] = [
 ]
 
 CELLPHONES_STAGE_DUPLICATES : Sequence[str] = [
-    Stage.woods_b.value, Stage.toyhouse_c.value, Stage.iceland_d.value, Stage.plane_e.value, Stage.toyhouse_g.value,
+    Stage.woods_a.value, Stage.toyhouse_c.value, Stage.iceland_d.value, Stage.plane_e.value, Stage.toyhouse_g.value,
     Stage.hong_b.value
 ]
 
@@ -1635,6 +1627,7 @@ CELLPHONES_INDEX : dict[str, Sequence[str]] = {
     Stage.region_woods_b.value                  : CELLPHONES_WOODS_B,
 
     Stage.region_castle_a.value                 : CELLPHONES_CASTLE_A,
+    Stage.region_castle_a1.value                : CELLPHONES_CASTLE_A1,
     Stage.region_castle_d.value                 : CELLPHONES_CASTLE_D,
 
     Stage.region_ciscocity_a.value              : CELLPHONES_CISCOCITY_A,
@@ -1752,6 +1745,10 @@ CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
 ### [< --- EVENT GROUPS --- >]
 EVENTS_CASTLE_B : Sequence[str] = [
     Events.event_castle_b_clapper.value
+]
+
+EVENTS_CASTLE_A2 : Sequence[str] = [
+    Events.event_castle_a2_button.value
 ]
 
 EVENTS_CISCOCITY_D : Sequence[str] = [
@@ -1880,6 +1877,7 @@ EVENTS_SPACE_D : Sequence[str] = [
 
 EVENTS_INDEX : dict[str, Sequence[str]] = {
     Stage.region_castle_b.value         : EVENTS_CASTLE_B,
+    Stage.region_castle_a2.value        : EVENTS_CASTLE_A2,
     Stage.region_ciscocity_d.value      : EVENTS_CISCOCITY_D,
     Stage.region_ciscocity_c.value      : EVENTS_CISCOCITY_C,
     Stage.region_studio_a1.value        : EVENTS_STUDIO_A1,

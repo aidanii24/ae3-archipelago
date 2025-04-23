@@ -335,8 +335,6 @@ async def check_game(ctx : AE3Context):
         await check_states(ctx)
 
         # Check Progression
-        print("Current Stage", bool(ctx.current_stage), ctx.current_stage)
-
         await check_items(ctx)
         await check_locations(ctx)
 

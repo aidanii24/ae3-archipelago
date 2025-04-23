@@ -307,8 +307,7 @@ def generate_item_groups() -> dict[str : set[str]]:
     groups.setdefault(APHelper.equipment.value, set()).update(groups[APHelper.morphs.value])
 
     # Morphs (without Super Monkey)
-    groups.setdefault(APHelper.morphs_no_monkey.value, set()).update(
-        groups[APHelper.morphs.value].remove(Itm.morph_monkey.value))
+    groups.setdefault(APHelper.morphs_no_monkey.value, groups[APHelper.morphs.value]).remove(Itm.morph_monkey.value)
 
     # RC Cars
     groups.setdefault(APHelper.rc_cars.value, set()).update([
@@ -326,7 +325,7 @@ def generate_item_groups() -> dict[str : set[str]]:
     ])
 
     # Hit
-    groups.setdefault(APHelper.attack.value, set()).update([
+    groups.setdefault(APHelper.hit.value, set()).update([
         Itm.gadget_hoop.value, Itm.morph_monkey.value, Itm.gadget_fly.value, *groups[APHelper.rc_cars.value],
         *groups[APHelper.attack.value]
     ])
