@@ -196,6 +196,7 @@ STAGES_EDOTOWN : Sequence[str] = [
     Stage.region_edotown_a1.value,
     Stage.region_edotown_b.value,
     Stage.region_edotown_b1.value,
+    Stage.region_edotown_b2.value,
     Stage.region_edotown_c.value,
     Stage.region_edotown_c1.value,
     Stage.region_edotown_c2.value,
@@ -208,6 +209,7 @@ STAGES_HEAVEN : Sequence[str] = [
     Stage.region_heaven_a.value,
     Stage.region_heaven_a1.value,
     Stage.region_heaven_b.value,
+    Stage.region_heaven_b1.value,
     Stage.region_heaven_c.value,
     Stage.region_heaven_d.value,
     Stage.region_heaven_e.value
