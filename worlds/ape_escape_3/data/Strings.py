@@ -804,7 +804,7 @@ class Stage(BaseEnum):
     region_ciscocity_a =        "The Big City - City"
     region_ciscocity_b =        "The Big City - Bank"
     region_ciscocity_c =        "The Big City - Theater"
-    region_ciscocity_c1 =       "The Big City - Theater - Stage"
+    region_ciscocity_c1 =       "The Big City - Theater - Audience Hall"
     region_ciscocity_d =        "The Big City - Football Stadium"
     region_ciscocity_e =        "The Big City - Break Room"
 
@@ -1192,7 +1192,7 @@ class Stage(BaseEnum):
     entrance_western_dd3 =              "Wild West Town - Train - First Route To Monkeys"
     entrance_western_d1f =              "Wild West Town - Train - Second Route"
     entrance_western_d1d2 =             "Wild West Town - Train - To Rear Cars Second Route"
-    entrance_western_d1d3 =             "Wild West Town - Train - First Route To Monkeys"
+    entrance_western_d1d3 =             "Wild West Town - Train - Second Route To Monkeys"
     entrance_western_d2d =              "Wild West Town - Train - To Engine First Route"
     entrance_western_ed1 =              "Wild West Town - Canyon - Train Boarding"
     entrance_western_ec =               "Wild West Town - Canyon - Hidden Door"
