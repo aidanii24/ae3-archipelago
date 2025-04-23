@@ -15,19 +15,22 @@ def can_catch(state : CollectionState, player : int):
     return can_net(state, player) or can_morph_not_monkey(state, player)
 
 def can_catch_long(state : CollectionState, player : int):
-    return state.has(APHelper.catch_long.value, player)
+    return state.has_group(APHelper.catch_long.value, player)
 
 def can_net(state : CollectionState, player : int):
     return state.has(Itm.gadget_net.value, player)
 
 ## Check if Player can Morph
 def can_morph(state : CollectionState, player : int):
-    return state.has(APHelper.morphs.value, player)
+    return state.has_group(APHelper.morphs.value, player)
 
 def can_morph_not_monkey(state : CollectionState, player : int):
-    return state.has(APHelper.morphs_no_monkey.value, player)
+    return state.has_group(APHelper.morphs_no_monkey.value, player)
 
 # Gadget Checks
+def has_radar(state : CollectionState, player : int):
+    return state.has(Itm.gadget_radar.value, player)
+
 def has_club(state : CollectionState, player : int):
     return state.has(Itm.gadget_club.value, player)
 
@@ -41,7 +44,7 @@ def can_swim(state : CollectionState, player : int):
 
 ## Check if Player can use the RC Car
 def can_rcc(state : CollectionState, player : int):
-    return state.has(APHelper.rc_cars.value, player)
+    return state.has_group(APHelper.rc_cars.value, player)
 
 # Morph Checks
 def can_knight(state : CollectionState, player : int):
@@ -68,26 +71,26 @@ def can_monkey(state : CollectionState, player : int):
 # General Ability Checks
 ## Check if player can hit beyond basic hip drops
 def can_attack(state : CollectionState, player : int):
-    return state.has(APHelper.attack.value, player)
+    return state.has_group(APHelper.attack.value, player)
 
 def can_hit(state : CollectionState, player : int):
-    return state.has(APHelper.hit.value, player)
+    return state.has_group(APHelper.hit.value, player)
 
 ## Check if player has the ability to move fast
 def can_dash(state : CollectionState, player : int):
-    return state.has(APHelper.dash.value, player)
+    return state.has_group(APHelper.dash.value, player)
 
 ## Check if Player can use long-ranged attacks
 def can_shoot(state : CollectionState, player : int):
-    return state.has(APHelper.shoot.value, player)
+    return state.has_group(APHelper.shoot.value, player)
 
 ## Check if Player can fly (can gain height)
 def can_fly(state : CollectionState, player : int):
-    return state.has(APHelper.fly.value, player)
+    return state.has_group(APHelper.fly.value, player)
 
 ## Check if the Player can glide
 def can_glide(state : CollectionState, player : int):
-    return state.has(APHelper.glide.value, player)
+    return state.has_group(APHelper.glide.value, player)
 
 # Event Checks
 def has_enough_keys(state : CollectionState, player : int, keys : int):
@@ -129,6 +132,7 @@ class AccessRule:
     ATTACK = can_attack                         # Can attack reasonably
     HIT = can_hit                               # Can hit at all
     CLUB = has_club                             # Unlocked Stun Club
+    RADAR = has_radar                           # Unlocked Monkey Radar
     DASH = can_dash                             # Unlocked Super Hoop or any fast moving Morph
     SHOOT = can_shoot                           # Slingback Shooter unlocked or has any morph with long range attacks
     SWIM = can_swim
@@ -161,15 +165,16 @@ class Rulesets:
     Helper for Storing and Managing Access Rules of Locations.
 
     Attributes:
-        Critical : Set of AccessRules that must always be true for a Location to be reachable.
-        Rules : Normal Sets of AccessRules. In addition to adhering to AccessRules set in Critical,
+        critical : Set of AccessRules that must always be true for a Location to be reachable.
+        rules : Normal Sets of AccessRules. In addition to adhering to AccessRules set in Critical,
         at least one set of AccessRules must also be adhered to.
     """
-    Critical : Set[Callable] = None
-    Rules : list[list[Callable]] = None
+    critical : Set[Callable] = None
+    rules : list[list[Callable]] = None
 
-    def __init__(self, *rules : Callable | list[Callable] | list[list[Callable]], critical : Set[Callable] = None):
-        self.critical = []
+    def __init__(self, *rules : Callable | list[Callable] | list[list[Callable]] | None,
+                 critical : Set[Callable] = None):
+        self.critical = set()
         self.rules = []
 
         if critical:
@@ -187,22 +192,36 @@ class Rulesets:
 
 
     def __bool__(self):
-        return bool(self.Critical) or bool(self.Rules)
+        return bool(self.critical) or bool(self.rules)
+
+    def update(self, rulesets : "Rulesets"):
+        if not rulesets:
+            return
+
+        if rulesets.critical:
+            self.critical.update(rulesets.critical)
+
+        if rulesets.rules:
+            for i, rule in enumerate(rulesets.rules):
+                if rule in self.rules:
+                    rulesets.rules.pop(i)
+
+            self.rules.extend(rulesets.rules)
 
     def check(self, state : CollectionState, player : int) -> bool:
         # Any Critical Rules that return False should immediately mark the item as inaccessible with the current state
-        if self.Critical:
-            for rule in self.Critical:
+        if self.critical:
+            for rule in self.critical:
                 if not rule(state, player):
                     return False
 
         # At least one set of normal rules (if any) must return true to mark the item as reachable
-        if not self.Rules:
+        if not self.rules:
             return True
 
         reachable: bool = False
 
-        for rulesets in self.Rules:
+        for rulesets in self.rules:
             for rule in rulesets:
                 if not rule(state, player):
                     continue
@@ -237,7 +256,8 @@ class ProgressionMode(Enum):
         if auto_set:
             bosses : int = len(MONKEYS_BOSSES) - 2
             for _ in range(0, bosses):
-                world.get_location(MONKEYS_BOSSES[_]).place_locked_item(Channel_Key.to_item(world.player))
+                break
+                # world.get_location(MONKEYS_BOSSES[_]).place_locked_item(Channel_Key.to_item(world.player))
 
             amt -= bosses
 

@@ -1,4 +1,8 @@
-from .Locations import *
+from typing import Callable, Sequence
+from dataclasses import dataclass
+
+from .Strings import Stage, APHelper
+from .Logic import Rulesets
 
 
 ### [< --- HELPERS --- >]
@@ -12,14 +16,16 @@ class AE3EntranceMeta:
         rules : Sets of AccessRules for the Entrance. Can be an AccessRule, Set of AccessRule, or a full Ruleset.
         Passing callables will add them as Normal Rules. To assign critical rules, pass a Ruleset instead.
     """
+    name : str
     parent : str
     destination : str
     rules : Rulesets
 
-    def __init__(self, destination : str,
-                 *rules : Callable | list[Callable] | list[list[Callable]] | Rulesets,
+    def __init__(self, name : str, parent : str, destination : str,
+                 *rules : Callable | list[Callable] | list[list[Callable]] | Rulesets | None,
                  critical : set = None):
-        self.parent = "Wow"
+        self.name = name
+        self.parent = parent
         self.destination = destination
         self.rules = Rulesets()
 
@@ -27,10 +33,7 @@ class AE3EntranceMeta:
             if isinstance(rule, Rulesets):
                 self.rules = rule
             else:
-                self.rules = Rulesets(*rules)
-
-        if isinstance(critical, set):
-            self.rules.Critical.update(critical)
+                self.rules = Rulesets(*rules, critical=critical)
 
 ### [< --- STAGE GROUPS --- >]
 LEVELS_BY_ORDER : Sequence[str] = [
@@ -105,6 +108,7 @@ STAGES_WOODS : Sequence[str] = [
 
 STAGES_CASTLE : Sequence[str] = [
     Stage.region_castle_a1.value,
+    Stage.region_castle_a2.value,
     Stage.region_castle_a.value,
     Stage.region_castle_b.value,
     Stage.region_castle_b1.value,
@@ -374,10 +378,12 @@ STAGES_BOSSES : Sequence[str] = [
 ]
 
 STAGES_MASTER : Sequence[str] = [
-    *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY, *STAGES_STUDIO,
-    *STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_ONSEN, *STAGES_SNOWFESTA, *STAGES_EDOTOWN, *STAGES_HEAVEN,
-    *STAGES_TOYHOUSE, *STAGES_ICELAND, *STAGES_ARABIAN, *STAGES_ASIA, *STAGES_PLANE, *STAGES_HONG,
-    *STAGES_BAY, *STAGES_TOMO, *STAGES_SPACE, *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB
+    *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE,
+    # *STAGES_CISCOCITY, *STAGES_STUDIO,
+    # *STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_ONSEN, *STAGES_SNOWFESTA, *STAGES_EDOTOWN, *STAGES_HEAVEN,
+    # *STAGES_TOYHOUSE, *STAGES_ICELAND, *STAGES_ARABIAN, *STAGES_ASIA, *STAGES_PLANE, *STAGES_HONG,
+    # *STAGES_BAY, *STAGES_TOMO, *STAGES_SPACE, *STAGES_BOSSES,
+    *STAGES_TITLE, *STAGES_HUB
 ]
 
 STAGES_INDEX : Sequence[Sequence[str]] = [
@@ -410,3 +416,133 @@ STAGES_DIRECTORY : dict[str, Sequence[str]] = {
     APHelper.tomo.value                 : STAGES_TOMO,
     APHelper.space.value                : STAGES_SPACE,
 }
+
+### [< --- VANILLA ENTRANCES --- >]
+ENTRANCES_MAIN : list[AE3EntranceMeta] = [
+    # Seaside
+    AE3EntranceMeta(Stage.entrance_seaside_ab.value, Stage.region_seaside_a.value, Stage.region_seaside_b.value),
+    AE3EntranceMeta(Stage.entrance_seaside_ac.value, Stage.region_seaside_a.value, Stage.region_seaside_c.value),
+    AE3EntranceMeta(Stage.entrance_seaside_ba.value, Stage.region_seaside_b.value, Stage.region_seaside_a.value),
+    AE3EntranceMeta(Stage.entrance_seaside_ca.value, Stage.region_seaside_c.value, Stage.region_seaside_a.value),
+
+    # Woods
+    AE3EntranceMeta(Stage.entrance_woods_ab.value, Stage.region_woods_a.value, Stage.region_woods_b.value),
+    AE3EntranceMeta(Stage.entrance_woods_ad.value, Stage.region_woods_a.value, Stage.region_woods_d.value),
+    AE3EntranceMeta(Stage.entrance_woods_ba.value, Stage.region_woods_b.value, Stage.region_woods_a.value),
+    AE3EntranceMeta(Stage.entrance_woods_bc.value, Stage.region_woods_b.value, Stage.region_woods_c.value),
+    AE3EntranceMeta(Stage.entrance_woods_cb.value, Stage.region_woods_c.value, Stage.region_woods_b.value),
+    AE3EntranceMeta(Stage.entrance_woods_da.value, Stage.region_woods_d.value, Stage.region_woods_a.value),
+
+    # Castle
+    AE3EntranceMeta(Stage.entrance_castle_ad.value, Stage.region_castle_a.value, Stage.region_castle_d.value),
+    AE3EntranceMeta(Stage.entrance_castle_a2b.value, Stage.region_castle_a2.value,Stage.region_castle_b.value),
+    AE3EntranceMeta(Stage.entrance_castle_da.value, Stage.region_castle_d.value, Stage.region_castle_a.value),
+    AE3EntranceMeta(Stage.entrance_castle_d1b.value, Stage.region_castle_d1.value, Stage.region_castle_b.value),
+    AE3EntranceMeta(Stage.entrance_castle_ba2.value, Stage.region_castle_b.value, Stage.region_castle_a2.value),
+    AE3EntranceMeta(Stage.entrance_castle_bd1.value, Stage.region_castle_b.value, Stage.region_castle_d1.value),
+    AE3EntranceMeta(Stage.entrance_castle_be.value, Stage.region_castle_b.value, Stage.region_castle_e.value),
+    AE3EntranceMeta(Stage.entrance_castle_b1c.value, Stage.region_castle_b1.value, Stage.region_castle_c.value),
+    AE3EntranceMeta(Stage.entrance_castle_cb1.value, Stage.region_castle_c.value, Stage.region_castle_b1.value),
+    AE3EntranceMeta(Stage.entrance_castle_eb.value, Stage.region_castle_e.value, Stage.region_castle_b.value),
+    AE3EntranceMeta(Stage.entrance_castle_ef.value, Stage.region_castle_e.value, Stage.region_castle_f.value),
+    AE3EntranceMeta(Stage.entrance_castle_fe.value, Stage.region_castle_f.value, Stage.region_castle_e.value),
+]
+
+## Entrances between subregions (Regions within the same Room/Stage)
+ENTRANCES_SUBREGIONS : list[AE3EntranceMeta] = [
+    # Preliminary
+    AE3EntranceMeta(Stage.entrance_ng.value, Stage.title_screen.value, Stage.zero.value),
+    AE3EntranceMeta(Stage.entrance_tutorial_clear.value, Stage.title_screen.value, Stage.travel_station_a.value),
+    AE3EntranceMeta(Stage.entrance_continue.value, Stage.zero.value, Stage.travel_station_a.value),
+
+    AE3EntranceMeta(Stage.entrance_travel_ab.value, Stage.travel_station_a.value, Stage.travel_station_b.value),
+    AE3EntranceMeta(Stage.entrance_travel_ba.value, Stage.travel_station_b.value, Stage.travel_station_a.value),
+
+    # Castle
+    AE3EntranceMeta(Stage.entrance_castle_aa2.value, Stage.region_castle_a.value, Stage.region_castle_a2.value),
+    AE3EntranceMeta(Stage.entrance_castle_a2a.value, Stage.region_castle_a2.value, Stage.region_castle_a.value),
+    AE3EntranceMeta(Stage.entrance_castle_a1a.value, Stage.region_castle_a1.value, Stage.region_castle_a.value),
+    AE3EntranceMeta(Stage.entrance_castle_aa1.value, Stage.region_castle_a.value, Stage.region_castle_a1.value),
+    AE3EntranceMeta(Stage.entrance_castle_dd1.value, Stage.region_castle_d.value, Stage.region_castle_d1.value),
+    AE3EntranceMeta(Stage.entrance_castle_d1d.value, Stage.region_castle_d1.value, Stage.region_castle_d.value),
+    AE3EntranceMeta(Stage.entrance_castle_bb1.value, Stage.region_castle_b.value, Stage.region_castle_b1.value),
+    AE3EntranceMeta(Stage.entrance_castle_b1b.value, Stage.region_castle_b1.value, Stage.region_castle_b.value),
+]
+
+## Entrances for selecting a stage
+ENTRANCES_STAGE_SELECT : list[AE3EntranceMeta] = [
+    AE3EntranceMeta(Stage.entrance_level_1.value, Stage.travel_station_a.value, Stage.region_seaside_a.value),
+    AE3EntranceMeta(Stage.entrance_level_2.value, Stage.travel_station_a.value, Stage.region_woods_a.value),
+    AE3EntranceMeta(Stage.entrance_level_3.value, Stage.travel_station_a.value, Stage.region_castle_a1.value),
+    AE3EntranceMeta(Stage.entrance_level_4.value, Stage.travel_station_a.value, Stage.region_boss1.value),
+    AE3EntranceMeta(Stage.entrance_level_5.value, Stage.travel_station_a.value, Stage.region_ciscocity_a.value),
+    AE3EntranceMeta(Stage.entrance_level_6.value, Stage.travel_station_a.value, Stage.region_studio_a.value),
+    AE3EntranceMeta(Stage.entrance_level_7.value, Stage.travel_station_a.value, Stage.region_halloween_a1.value),
+    AE3EntranceMeta(Stage.entrance_level_8.value, Stage.travel_station_a.value, Stage.region_western_a.value),
+    AE3EntranceMeta(Stage.entrance_level_9.value, Stage.travel_station_a.value, Stage.region_boss2.value),
+    AE3EntranceMeta(Stage.entrance_level_10.value, Stage.travel_station_a.value, Stage.region_onsen_a.value),
+    AE3EntranceMeta(Stage.entrance_level_11.value, Stage.travel_station_a.value, Stage.region_snowfesta_a.value),
+    AE3EntranceMeta(Stage.entrance_level_12.value, Stage.travel_station_a.value, Stage.region_edotown_a1.value),
+    AE3EntranceMeta(Stage.entrance_level_13.value, Stage.travel_station_a.value, Stage.region_boss3.value),
+    AE3EntranceMeta(Stage.entrance_level_14.value, Stage.travel_station_a.value, Stage.region_heaven_a1.value),
+    AE3EntranceMeta(Stage.entrance_level_15.value, Stage.travel_station_a.value, Stage.region_toyhouse_a.value),
+    AE3EntranceMeta(Stage.entrance_level_16.value, Stage.travel_station_a.value, Stage.region_iceland_a1.value),
+    AE3EntranceMeta(Stage.entrance_level_17.value, Stage.travel_station_a.value, Stage.region_arabian_a.value),
+    AE3EntranceMeta(Stage.entrance_level_18.value, Stage.travel_station_a.value, Stage.region_boss4.value),
+    AE3EntranceMeta(Stage.entrance_level_19.value, Stage.travel_station_a.value, Stage.region_asia_a.value),
+    AE3EntranceMeta(Stage.entrance_level_20.value, Stage.travel_station_a.value, Stage.region_plane_a.value),
+    AE3EntranceMeta(Stage.entrance_level_21.value, Stage.travel_station_a.value, Stage.region_hong_a.value),
+    AE3EntranceMeta(Stage.entrance_level_22.value, Stage.travel_station_a.value, Stage.region_boss5.value),
+    AE3EntranceMeta(Stage.entrance_level_23.value, Stage.travel_station_a.value, Stage.region_bay_a.value),
+    AE3EntranceMeta(Stage.entrance_level_24.value, Stage.travel_station_a.value, Stage.region_tomo_a1.value),
+    AE3EntranceMeta(Stage.entrance_level_25.value, Stage.travel_station_a.value, Stage.region_boss6.value),
+    AE3EntranceMeta(Stage.entrance_level_26.value, Stage.travel_station_a.value, Stage.region_space_a.value),
+    AE3EntranceMeta(Stage.entrance_level_27.value, Stage.travel_station_a.value, Stage.region_specter1.value),
+    AE3EntranceMeta(Stage.entrance_level_28.value, Stage.travel_station_a.value, Stage.region_specter2.value),
+    AE3EntranceMeta(Stage.entrance_level_29.value, Stage.travel_station_a.value, Stage.zero.value)
+]
+
+ENTRANCES_MASTER : list[AE3EntranceMeta] = [
+    *ENTRANCES_MAIN, *ENTRANCES_SUBREGIONS, *ENTRANCES_STAGE_SELECT
+]
+
+### [< --- VANILLA ENTRANCES GROUPS --- >]
+ENTRANCES_SEASIDE : list[str] = [
+    Stage.entrance_seaside_ab.value,
+    Stage.entrance_seaside_ac.value,
+    Stage.entrance_seaside_ba.value,
+    Stage.entrance_seaside_ca.value
+]
+
+ENTRANCES_WOODS : list[str] = [
+    Stage.entrance_woods_ab.value,
+    Stage.entrance_woods_ad.value,
+    Stage.entrance_woods_ba.value,
+    Stage.entrance_woods_bc.value,
+    Stage.entrance_woods_cb.value,
+    Stage.entrance_woods_da.value
+]
+
+ENTRANCES_CASTLE : list[str] = [
+    Stage.entrance_castle_ad.value,
+    Stage.entrance_castle_a2b.value,
+    Stage.entrance_castle_da.value,
+    Stage.entrance_castle_d1b.value,
+    Stage.entrance_castle_ba2.value,
+    Stage.entrance_castle_bd1.value,
+    Stage.entrance_castle_be.value,
+    Stage.entrance_castle_b1c.value,
+    Stage.entrance_castle_cb1.value,
+    Stage.entrance_castle_eb.value,
+    Stage.entrance_castle_ef.value,
+    Stage.entrance_castle_fe.value,
+
+    Stage.entrance_castle_aa2.value,
+    Stage.entrance_castle_a2a.value,
+    Stage.entrance_castle_a1a.value,
+    Stage.entrance_castle_aa1.value,
+    Stage.entrance_castle_dd1.value,
+    Stage.entrance_castle_d1d.value,
+    Stage.entrance_castle_bb1.value,
+    Stage.entrance_castle_b1b.value
+]

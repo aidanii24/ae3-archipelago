@@ -1,46 +1,56 @@
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 from BaseClasses import Entrance, Location, Region
 
-from .data.Stages import STAGES_DIRECTORY, STAGES_MASTER
+from .data.Stages import STAGES_DIRECTORY, STAGES_MASTER, ENTRANCES_MASTER
 from .data.Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, CameraLocation, CellphoneLocation, \
     EventMeta, MonkeyLocation, MONKEYS_INDEX, EVENTS_INDEX
 from .data.Logic import Rulesets
-from .data.Rules import LogicPreference, Casual
+from .data.Rules import LogicPreference, Hard, Normal, Casual
 
 if TYPE_CHECKING:
     from . import AE3World
 
 ### [< --- HELPERS --- >]
-def establish_entrances(player : int, parent_region : Region, connections : Dict[Region, Rulesets]):
+def establish_entrance(player : int, name : str, parent_region : Region, destination : Region,
+                       ruleset : Rulesets = None):
     """Connects the parent region to its destinations and assigns access rules where present."""
-    for destination, ruleset in connections.items():
-        entrance : Entrance = Entrance(player, parent_region.name + " <> " + destination.name)
-        entrance.parent_region = parent_region
+    entrance : Entrance = Entrance(player, name, parent_region)
 
-        if ruleset:
-            entrance.access_rule = ruleset.condense(player)
+    if ruleset:
+        entrance.access_rule = ruleset.condense(player)
 
-        parent_region.exits.append(entrance)
-        entrance.connect(destination)
+    parent_region.exits.append(entrance)
+    entrance.connect(destination)
 
 def create_regions(world : "AE3World"):
-    rule : LogicPreference = Casual()
+    rule : LogicPreference = Hard()
     rule.set_level_progression_rules(world.progression)
 
     # Initialize Regions
     stages : dict[str, Region] = { name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER }
 
+    # Connect Regions
+    for entrance in [*ENTRANCES_MASTER]:
+        ruleset : Rulesets | None = None
+
+        if entrance.parent in stages:
+            parent = stages[entrance.parent]
+        else:
+            continue
+
+        if entrance.destination in stages:
+            destination = stages[entrance.destination]
+        else:
+            continue
+
+        if entrance.name in LogicPreference.entrance_rules:
+            ruleset = LogicPreference.entrance_rules[entrance.name]
+
+        establish_entrance(world.player, entrance.name, parent, destination, ruleset)
+
     # Define Regions
     for stage in stages.values():
-        connections : dict[Region, Rulesets] = {}
-        if rule.entrances[stage.name]:
-            for entrance in rule.entrances[stage.name]:
-                connections.setdefault(stages[entrance.destination], entrance.rules)
-
-        if connections:
-            establish_entrances(world.player, stage, connections)
-
         # Define Locations
         ## Monkeys
         if stage.name in MONKEYS_INDEX:
@@ -51,9 +61,9 @@ def create_regions(world : "AE3World"):
                 # Initialize Ruleset for Location
                 ruleset : Rulesets = Rulesets()
                 if monkeys in rule.monkey_rules.keys():
-                    ruleset = rule.monkey_rules[monkeys].rules
+                    ruleset = rule.monkey_rules[monkeys]
 
-                ruleset.Critical.update(rule.default_critical_rule)
+                ruleset.critical.update(rule.default_critical_rule)
 
                 # Generate Access Rule from Ruleset
                 loc.access_rule = ruleset.condense(world.player)
@@ -101,7 +111,7 @@ def create_regions(world : "AE3World"):
                 if event in rule.event_rules:
                     meta : EventMeta = EventMeta(event)
                     loc : Location = meta.to_event_location(world.player, stage)
-                    loc.access_rule = rule.event_rules[event].rules.condense()
+                    loc.access_rule = rule.event_rules[event].condense(world.player)
 
                     stage.locations.append(loc)
 
