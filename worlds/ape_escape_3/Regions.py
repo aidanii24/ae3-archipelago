@@ -26,7 +26,7 @@ def establish_entrances(player : int, parent_region : Region, connections : Dict
 
 def create_regions(world : "AE3World"):
     rule : LogicPreference = Casual()
-    rule.set_keys_rules(world.progression)
+    rule.set_level_progression_rules(world.progression)
 
     # Initialize Regions
     stages : dict[str, Region] = { name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER }

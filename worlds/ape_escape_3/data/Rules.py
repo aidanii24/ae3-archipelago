@@ -12,17 +12,11 @@ class RuleWrap:
     """Container for Rulesets for easy parsing when generating locations"""
     rules : Rulesets = Rulesets()
 
-    def __init__(self, *rules : Callable | Set[Callable] | Rulesets):
-        for rule in rules:
-            if isinstance(rule, Rulesets):
-                self.rules = rule
-            else:
-                if isinstance(rule, Callable):
-                    self.rules.Rules.add({rule})
-                elif isinstance(rule, set):
-                    self.rules.Rules.update({rule})
-                elif isinstance(rules, frozenset):
-                    self.rules.Rules.add(rule)
+    def __init__(self, *rules : Callable | list[Callable] | Rulesets):
+        if isinstance(rules, Rulesets):
+            self.rules = rules
+        else:
+            self.rules = Rulesets(*rules)
 
 class LogicPreference:
     """
@@ -38,7 +32,7 @@ class LogicPreference:
     final_level_rule : Set[Callable] = {AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC,
                                         AccessRule.MAGICIAN, AccessRule.KUNGFU, AccessRule.HERO, AccessRule.MONKEY}
 
-    # Set Required Keys for each level depending on the Progression Type
+    # Get all Access Rules within the channel
     def get_channel_clear_rules(self, channel_name) -> Rulesets:
         rules : Rulesets = Rulesets()
         if not channel_name in STAGES_DIRECTORY:
@@ -50,7 +44,7 @@ class LogicPreference:
             for region in regions:
                 if region in self.entrances:
                     for entrance in self.entrances[region]:
-                        rules.Rules.update(entrance.rules.Rules)
+                        rules.Rules.extend(entrance.rules.Rules)
 
                         # Check for critical rules as well
                         if entrance.rules.Critical and entrance.destination != Stage.region_asia_e.value:
@@ -62,11 +56,11 @@ class LogicPreference:
             monkeys : Sequence[str] = MONKEYS_DIRECTORY[channel_name]
             for monkey in monkeys:
                 if monkey in self.monkey_rules:
-                    rules.Rules.update(self.monkey_rules[monkey].rules.Rules)
+                    rules.Rules.extend(self.monkey_rules[monkey].rules.Rules)
 
         return rules
 
-    def set_keys_rules(self, progression : ProgressionMode):
+    def set_level_progression_rules(self, progression : ProgressionMode):
         self.entrances.setdefault(Stage.travel_station_a.value, []).clear()
         self.entrances.setdefault(Stage.travel_station_a.value, []).append(
             AE3EntranceMeta(Stage.travel_station_b.value))
