@@ -141,7 +141,7 @@ async def setup_area(ctx : 'AE3Context'):
 async def check_states(ctx : 'AE3Context'):
     if not ctx.command_state:
         # Check for DeathLinks
-        if ctx.pending_deathlinks:
+        if ctx.death_link and ctx.pending_deathlinks:
             ctx.ipc.kill_player(100.0)
             ctx.pending_deathlinks -= 1
             ctx.command_state = 1
