@@ -1744,135 +1744,143 @@ CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
 
 ### [< --- EVENT GROUPS --- >]
 EVENTS_CASTLE_B : Sequence[str] = [
-    Events.event_castle_b_clapper.value
+    Events.castle_b_clapper.value
 ]
 
 EVENTS_CASTLE_A2 : Sequence[str] = [
-    Events.event_castle_a2_button.value
+    Events.castle_a2_button.value
 ]
 
 EVENTS_CISCOCITY_D : Sequence[str] = [
-    Events.event_ciscocity_d_exit.value
+    Events.ciscocity_d_exit.value
 ]
 
 EVENTS_CISCOCITY_C : Sequence[str] = [
-    Events.event_ciscocity_c_button.value
+    Events.ciscocity_c_button.value
 ]
 
 EVENTS_STUDIO_A1 : Sequence[str] = [
-    Events.event_studio_a1_button.value
+    Events.studio_a1_button.value
 ]
 
 EVENTS_STUDIO_A2 : Sequence[str] = [
-    Events.event_studio_a2_button.value
+    Events.studio_a2_button.value
+]
+
+EVENTS_STUDIO_B1 : Sequence[str] = [
+    Events.studio_b1_button.value
 ]
 
 EVENTS_STUDIO_F : Sequence[str] = [
-    Events.event_studio_f_tele_robo.value
+    Events.studio_f_tele_robo.value
 ]
 
 EVENTS_HALLOWEEN_B : Sequence[str] = [
-    Events.event_halloween_b_jumbo_robo.value
+    Events.halloween_b_jumbo_robo.value
 ]
 
 EVENTS_HALLOWEEN_B1 : Sequence[str] = [
-    Events.event_halloween_b1_jumbo_robo_shoot.value
+    Events.halloween_b1_jumbo_robo_shoot.value
+]
+
+EVENTS_ONSEN_A : Sequence[str] = [
+    Events.onsen_a_button.value
 ]
 
 EVENTS_SNOWFESTA_E : Sequence[str] = [
-    Events.event_snowfesta_e_bell.value
+    Events.snowfesta_e_bell.value
 ]
 
 EVENTS_EDOTOWN_B1 : Sequence[str] = [
-    Events.event_edotown_b1_button.value
+    Events.edotown_b1_button.value
 ]
 
 EVENTS_EDOTOWN_E : Sequence[str] = [
-    Events.event_edotown_e_scroll.value
+    Events.edotown_e_scroll.value
 ]
 
 EVENTS_ICELAND_E : Sequence[str] = [
-    Events.event_iceland_e_button.value
+    Events.iceland_e_button.value
 ]
 
 EVENTS_ARABIAN_C : Sequence[str] = [
-    Events.event_arabian_c_golden_mon.value
+    Events.arabian_c_golden_mon.value
 ]
 
 EVENTS_ARABIAN_C1 : Sequence[str] = [
-    Events.event_arabian_c1_exit.value
+    Events.arabian_c1_exit.value
 ]
 
 EVENTS_ARABIAN_G : Sequence[str] = [
-    Events.event_arabian_g_exit.value
+    Events.arabian_g_exit.value
 ]
 
 EVENTS_ASIA_A : Sequence[str] = [
-    Events.event_asia_a_block.value
+    Events.asia_a_block.value
 ]
 
 EVENTS_ASIA_A1 : Sequence[str] = [
-    Events.event_asia_a1_block.value
+    Events.asia_a1_block.value
 ]
 
 EVENTS_ASIA_A2 : Sequence[str] = [
-    Events.event_asia_a2_block.value
+    Events.asia_a2_block.value
 ]
 
 EVENTS_ASIA_B2 : Sequence[str] = [
-    Events.event_asia_b2_button.value
+    Events.asia_b2_button.value
 ]
 
 EVENTS_ASIA_E1 : Sequence[str] = [
-    Events.event_asia_e1_button.value
+    Events.asia_e1_button.value
 ]
 
 EVENTS_PLANE_D : Sequence[str] = [
-    Events.event_plane_d_button.value
+    Events.plane_d_button.value
 ]
 
 EVENTS_HONG_B2 : Sequence[str] = [
-    Events.event_hong_b2_button.value
+    Events.hong_b2_button.value
 ]
 
 EVENTS_BAY_A7 : Sequence[str] = [
-    Events.event_bay_a7_button.value
+    Events.bay_a7_button.value
 ]
 
 EVENTS_BAY_A5 : Sequence[str] = [
-    Events.event_bay_a5_button.value
+    Events.bay_a5_button.value
 ]
 
 EVENTS_BAY_E1 : Sequence[str] = [
-    Events.event_bay_e1_button.value
+    Events.bay_e1_button.value
 ]
 
 EVENTS_TOMO_E2 : Sequence[str] = [
-    Events.event_tomo_e2_kungfu.value
+    Events.tomo_e2_kungfu.value
 ]
 
 EVENTS_TOMO_G : Sequence[str] = [
-    Events.event_tomo_g_kungfu.value
+    Events.tomo_g_kungfu.value
 ]
 
 EVENTS_TOMO_H : Sequence[str] = [
-    Events.event_tomo_h_button.value, Events.event_tomo_h_button1.value
+    Events.tomo_h_button.value, Events.tomo_h_button1.value
 ]
 
 EVENTS_SPACE_E1 : Sequence[str] = [
-    Events.event_space_e1_button.value
+    Events.space_e1_button.value
 ]
 
 EVENTS_SPACE_G1 : Sequence[str] = [
-    Events.event_space_g1_button.value
+    Events.space_g1_button.value
 ]
 
 EVENTS_SPACE_F2 : Sequence[str] = [
-    Events.event_space_f2_button.value, Events.event_space_f2_kungfu.value
+    Events.space_f2_button.value, Events.space_f2_kungfu.value
 ]
 
 EVENTS_SPACE_D : Sequence[str] = [
-    Events.event_space_d_button.value
+    Events.space_d_button.value
 ]
 
 EVENTS_INDEX : dict[str, Sequence[str]] = {
@@ -1882,9 +1890,11 @@ EVENTS_INDEX : dict[str, Sequence[str]] = {
     Stage.region_ciscocity_c1.value     : EVENTS_CISCOCITY_C,
     Stage.region_studio_a1.value        : EVENTS_STUDIO_A1,
     Stage.region_studio_a2.value        : EVENTS_STUDIO_A2,
+    Stage.region_studio_b1.value        : EVENTS_STUDIO_B1,
     Stage.region_studio_f.value         : EVENTS_STUDIO_F,
     Stage.region_halloween_b.value      : EVENTS_HALLOWEEN_B,
     Stage.region_halloween_b1.value     : EVENTS_HALLOWEEN_B1,
+    Stage.region_onsen_a.value          : EVENTS_ONSEN_A,
     Stage.region_snowfesta_e.value      : EVENTS_SNOWFESTA_E,
     Stage.region_edotown_b1.value       : EVENTS_EDOTOWN_B1,
     Stage.region_edotown_e.value        : EVENTS_EDOTOWN_E,
