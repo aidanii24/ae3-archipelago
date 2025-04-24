@@ -82,6 +82,27 @@ class Hard(LogicPreference):
             # Studio
             Loc.studio_minoh.value          : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE),
             Loc.studio_monta.value          : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE),
+
+            # Onsen
+            Loc.onsen_chabimon.value        : Rulesets(AccessRule.RCC),
+            Loc.onsen_fuji_chan.value       : Rulesets(AccessRule.SHOOT, AccessRule.NINJA),
+
+            # Snowfesta
+            Loc.snowfesta_kimisuke.value    : Rulesets(AccessRule.SHOOT),
+            Loc.snowfesta_mitsuro.value     : Rulesets(AccessRule.SHOOT),
+        })
+
+        self.event_rules.update({
+            # Studio
+            Events.studio_b1_button.value               : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE,
+                                                                   AccessRule.MAGICIAN),
+
+            # Halloween
+            Events.halloween_b1_jumbo_robo_shoot.value  : Rulesets(AccessRule.SHOOT),
+
+            # Edotown
+            Events.edotown_e_scroll.value               : Rulesets(AccessRule.CLUB, AccessRule.HOOP,
+                                                                   AccessRule.MORPH)
         })
 
         self.entrance_rules.update({
@@ -92,23 +113,25 @@ class Hard(LogicPreference):
             Stage.entrance_woods_ad.value       : Rulesets(AccessRule.MONKEY),
 
             # Castle
-            Stage.entrance_castle_aa2.value     : Rulesets(event_invoked(Events.event_castle_a2_button.value)),
-            Stage.entrance_castle_b1b.value     : Rulesets(event_invoked(Events.event_castle_b_clapper.value)),
+            Stage.entrance_castle_aa2.value     : Rulesets(event_invoked(Events.castle_a2_button.value)),
+            Stage.entrance_castle_b1b.value     : Rulesets(event_invoked(Events.castle_b_clapper.value)),
             Stage.entrance_castle_be.value      : Rulesets(AccessRule.MONKEY),
 
             # Ciscocity
             Stage.entrance_ciscocity_ad.value   : Rulesets(AccessRule.DASH, AccessRule.RCC),
-            Stage.entrance_ciscocity_ad_2.value : Rulesets(event_invoked(Events.event_ciscocity_d_exit.value)),
+            Stage.entrance_ciscocity_ad_2.value : Rulesets(event_invoked(Events.ciscocity_d_exit.value)),
             Stage.entrance_ciscocity_ce         : Rulesets(AccessRule.MONKEY),
-            Stage.entrance_ciscocity_c1c.value  : Rulesets(event_invoked(Events.event_ciscocity_c_button.value)),
-            Stage.entrance_ciscocity_cc1.value  : Rulesets(event_invoked(Events.event_ciscocity_c_button.value)),
+            Stage.entrance_ciscocity_c1c.value  : Rulesets(event_invoked(Events.ciscocity_c_button.value)),
+            Stage.entrance_ciscocity_cc1.value  : Rulesets(event_invoked(Events.ciscocity_c_button.value)),
 
             # Studio
-            Stage.entrance_studio_aa1.value     : Rulesets(event_invoked(Events.event_studio_a1_button.value)),
-            Stage.entrance_studio_aa2.value     : Rulesets(event_invoked(Events.event_studio_a2_button.value)),
-            Stage.entrance_studio_b1b.value     : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE, AccessRule.MAGICIAN),
-            Stage.entrance_studio_ff1.value     : Rulesets(event_invoked(Events.event_studio_f_tele_robo.value)),
-            Stage.entrance_studio_f1f.value     : Rulesets(event_invoked(Events.event_studio_f_tele_robo.value)),
+            Stage.entrance_studio_aa1.value     : Rulesets(event_invoked(Events.studio_a1_button.value)),
+            Stage.entrance_studio_aa2.value     : Rulesets(event_invoked(Events.studio_a2_button.value)),
+            Stage.entrance_studio_b1b2.value    : Rulesets(event_invoked(Events.studio_b1_button.value)),
+            Stage.entrance_studio_b2b.value     : Rulesets(event_invoked(Events.studio_b1_button.value)),
+            Stage.entrance_studio_bb2.value     : Rulesets(event_invoked(Events.studio_b1_button.value)),
+            Stage.entrance_studio_ff1.value     : Rulesets(event_invoked(Events.studio_f_tele_robo.value)),
+            Stage.entrance_studio_f1f.value     : Rulesets(event_invoked(Events.studio_f_tele_robo.value)),
             Stage.entrance_studio_dg.value      : Rulesets(AccessRule.MONKEY),
             Stage.entrance_studio_dd2.value     : Rulesets(AccessRule.SHOOT),
 
@@ -116,11 +139,11 @@ class Hard(LogicPreference):
             Stage.entrance_halloween_aa1.value  : Rulesets(AccessRule.SWIM, AccessRule.HERO),
             Stage.entrance_halloween_a1a.value  : Rulesets(AccessRule.SWIM, AccessRule.HERO),
             Stage.entrance_halloween_bb1.value  : Rulesets(
-                event_invoked(Events.event_halloween_b_jumbo_robo.value),
-                      event_invoked(Events.event_halloween_b1_jumbo_robo_shoot.value)),
+                event_invoked(Events.halloween_b_jumbo_robo.value),
+                      event_invoked(Events.halloween_b1_jumbo_robo_shoot.value)),
             Stage.entrance_halloween_b1b.value: Rulesets(
-                event_invoked(Events.event_halloween_b_jumbo_robo.value),
-                event_invoked(Events.event_halloween_b1_jumbo_robo_shoot.value)),
+                event_invoked(Events.halloween_b_jumbo_robo.value),
+                event_invoked(Events.halloween_b1_jumbo_robo_shoot.value)),
             Stage.entrance_halloween_c1c.value  : Rulesets(AccessRule.SWIM, AccessRule.HERO),
             Stage.entrance_halloween_cc1.value  : Rulesets(AccessRule.SWIM, AccessRule.HERO),
             Stage.entrance_halloween_cc2.value  : Rulesets(AccessRule.SWIM, AccessRule.HERO),
@@ -129,6 +152,29 @@ class Hard(LogicPreference):
 
             # Western
             Stage.entrance_western_ec.value     : Rulesets(AccessRule.MONKEY),
+
+            # Onsen
+            Stage.entrance_onsen_a1a.value      : Rulesets(event_invoked(Events.onsen_a_button.value)),
+            Stage.entrance_onsen_a2a.value      : Rulesets(event_invoked(Events.onsen_a_button.value)),
+            Stage.entrance_onsen_be.value       : Rulesets(AccessRule.FLY),
+            Stage.entrance_onsen_bd1.value      : Rulesets(AccessRule.SHOOT, [AccessRule.RCC, AccessRule.ATTACK]),
+            Stage.entrance_onsen_bd.value       : Rulesets(AccessRule.FLY),
+            Stage.entrance_onsen_dd1.value      : Rulesets(AccessRule.RCC, AccessRule.DASH),
+            Stage.entrance_onsen_d1d.value      : Rulesets(AccessRule.RCC),
+            Stage.entrance_onsen_dc.value       : Rulesets(AccessRule.MONKEY),
+
+            # Snowfesta
+            Stage.entrance_snowfesta_ab.value   : Rulesets(AccessRule.RCC, AccessRule.DASH),
+            Stage.entrance_snowfesta_ag.value   : Rulesets(AccessRule.MONKEY),
+            Stage.entrance_snowfesta_ce_2.value : Rulesets(event_invoked(Events.snowfesta_e_bell.value)),
+            Stage.entrance_snowfesta_ec.value   : Rulesets(event_invoked(Events.snowfesta_e_bell.value)),
+
+            # Edotown
+            Stage.entrance_edotown_b2b1.value   : Rulesets([event_invoked(Events.edotown_b1_button.value),
+                                                            AccessRule.NINJA], AccessRule.SWIM, AccessRule.HERO),
+            Stage.entrance_edotown_be.value     : Rulesets(event_invoked(Events.edotown_e_scroll.value)),
+            Stage.entrance_edotown_df.value     : Rulesets(AccessRule.MONKEY),
+            Stage.entrance_edotown_eb.value     : Rulesets(event_invoked(Events.edotown_e_scroll.value))
         })
 
 class Normal(Hard):
@@ -160,12 +206,12 @@ class Normal(Hard):
 
             # Halloween
             Loc.halloween_uikkun.value          : Rulesets(AccessRule.HIT),
-            Loc.halloween_bonbon.value          : Rulesets(AccessRule.HIT, event_invoked(
-                Events.event_halloween_b_jumbo_robo.value), event_invoked(
-                Events.event_halloween_b1_jumbo_robo_shoot.value)),
-            Loc.halloween_chichi.value          : Rulesets(AccessRule.HIT, event_invoked(
-                Events.event_halloween_b_jumbo_robo.value), event_invoked(
-                Events.event_halloween_b1_jumbo_robo_shoot.value)),
+            Loc.halloween_bonbon.value          : Rulesets(AccessRule.HIT,
+                                                           event_invoked(Events.halloween_b_jumbo_robo.value),
+                                                           event_invoked(Events.halloween_b1_jumbo_robo_shoot.value)),
+            Loc.halloween_chichi.value          : Rulesets(AccessRule.HIT,
+                                                           event_invoked(Events.halloween_b_jumbo_robo.value),
+                                                           event_invoked(Events.halloween_b1_jumbo_robo_shoot.value)),
             Loc.halloween_ukkito.value          : Rulesets(AccessRule.HIT),
             Loc.halloween_ukkiami.value         : Rulesets(AccessRule.HIT),
             Loc.halloween_kabochin.value        : Rulesets(AccessRule.HIT),
@@ -177,6 +223,55 @@ class Normal(Hard):
             Loc.western_chammy_mo.value         : Rulesets(AccessRule.HIT),
             Loc.western_golozo.value            : Rulesets(AccessRule.HIT),
             Loc.western_golon_moe.value         : Rulesets(AccessRule.ATTACK),
+
+            # Onsen
+            Loc.onsen_domobeh.value             : Rulesets(AccessRule.SWIM, AccessRule.CATCH_LONG),
+            Loc.onsen_mujakin.value             : Rulesets(AccessRule.SWIM, AccessRule.CATCH_LONG),
+            Loc.onsen_fuji_chan.value           : Rulesets(AccessRule.SHOOT),
+
+            # Snofesta
+            Loc.snowfesta_konkichi.value        : Rulesets(AccessRule.RADAR),
+            Loc.snowfesta_pipotron_yellow.value : Rulesets(AccessRule.DASH),
+            Loc.snowfesta_ukki_jii.value        : Rulesets(AccessRule.HIT),
+
+            # Edotown
+            Loc.edotown_fatty_mcfats.value      : Rulesets(AccessRule.HIT),
+            Loc.edotown_walter.value            : Rulesets(AccessRule.NINJA),
+
+            # Bosses
+            Loc.boss_monkey_white.value         : Rulesets(AccessRule.HIT),
+            Loc.boss_monkey_blue.value          : Rulesets(AccessRule.HIT),
+            Loc.boss_monkey_yellow.value        : Rulesets(AccessRule.HIT),
+            Loc.boss_monkey_pink.value          : Rulesets(AccessRule.HIT),
+            Loc.boss_monkey_red.value           : Rulesets(AccessRule.HIT),
+            Loc.boss_specter.value              : Rulesets(AccessRule.HIT),
+            Loc.boss_specter_final.value        : Rulesets(AccessRule.HIT)
+        })
+
+        self.event_rules.update({
+            # Castle
+            Events.castle_b_clapper.value               : Rulesets(AccessRule.HIT),
+            Events.castle_a2_button.value               : Rulesets(AccessRule.HIT),
+
+            # Ciscocity
+            Events.ciscocity_c_button.value             : Rulesets(AccessRule.SHOOT, AccessRule.DASH, AccessRule.RCC),
+
+            # Studio
+            Events.studio_a1_button.value               : Rulesets(AccessRule.HIT),
+            Events.studio_a2_button.value               : Rulesets(AccessRule.HIT),
+            Events.studio_b1_button.value               : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE),
+
+            # Halloween
+            Events.halloween_b_jumbo_robo.value         : Rulesets(AccessRule.HIT),
+
+            # Onsen
+            Events.onsen_a_button.value                 : Rulesets(AccessRule.HIT),
+
+            # Snowfesta
+            Events.snowfesta_e_bell.value               : Rulesets(AccessRule.HIT),
+
+            # Edotown
+            Events.edotown_b1_button.value              : Rulesets(AccessRule.HIT),
         })
 
         self.entrance_rules.update({
@@ -191,9 +286,6 @@ class Normal(Hard):
             Stage.entrance_castle_a1a.value     : Rulesets(AccessRule.HIT),
             Stage.entrance_castle_bb1.value     : Rulesets(AccessRule.HIT),
 
-            # Ciscocity
-            Stage.entrance_studio_bb1.value     : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE),
-
             # Halloween
             Stage.entrance_halloween_d1d2.value : Rulesets(AccessRule.HIT),
 
@@ -203,6 +295,25 @@ class Normal(Hard):
             Stage.entrance_western_d1d2.value   : Rulesets(AccessRule.HIT),
             Stage.entrance_western_d2d.value    : Rulesets(AccessRule.HIT),
             Stage.entrance_western_ed1.value    : Rulesets(AccessRule.HIT),
+
+            # Onsen
+            Stage.entrance_onsen_aa1.value      : Rulesets(AccessRule.HIT),
+            Stage.entrance_onsen_aa2.value      : Rulesets(AccessRule.HIT),
+            Stage.entrance_onsen_a1a2.value     : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
+            Stage.entrance_onsen_a2a1.value     : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
+            Stage.entrance_onsen_b1b.value      : Rulesets(AccessRule.GLIDE, [AccessRule.RCC, AccessRule.SWIM]),
+
+            # Edotown
+            Stage.entrance_edotown_a1a.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
+            Stage.entrance_edotown_aa1.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
+            Stage.entrance_edotown_ab1.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
+            Stage.entrance_edotown_b1a.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
+            Stage.entrance_edotown_b2b.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
+            Stage.entrance_edotown_bb2.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
+            Stage.entrance_edotown_bc1.value    : Rulesets(AccessRule.HIT),
+            Stage.entrance_edotown_c1c.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
+            Stage.entrance_edotown_cc1.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
+            Stage.entrance_edotown_cc2.value    : Rulesets(AccessRule.HIT),
         })
 
 class Casual(Normal):
@@ -238,11 +349,11 @@ class Casual(Normal):
             Loc.halloween_monkichiro.value      : Rulesets(AccessRule.SWIM),
             Loc.halloween_uikkun.value          : Rulesets(AccessRule.ATTACK),
             Loc.halloween_bonbon.value          : Rulesets(AccessRule.ATTACK, event_invoked(
-                Events.event_halloween_b_jumbo_robo.value), event_invoked(
-                Events.event_halloween_b1_jumbo_robo_shoot.value)),
+                Events.halloween_b_jumbo_robo.value), event_invoked(
+                Events.halloween_b1_jumbo_robo_shoot.value)),
             Loc.halloween_chichi.value          : Rulesets(AccessRule.ATTACK, event_invoked(
-                Events.event_halloween_b_jumbo_robo.value), event_invoked(
-                Events.event_halloween_b1_jumbo_robo_shoot.value)),
+                Events.halloween_b_jumbo_robo.value), event_invoked(
+                Events.halloween_b1_jumbo_robo_shoot.value)),
             Loc.halloween_ukkito.value          : Rulesets(AccessRule.ATTACK),
             Loc.halloween_ukkiami.value         : Rulesets(AccessRule.ATTACK),
             Loc.halloween_kabochin.value        : Rulesets(AccessRule.ATTACK),
@@ -254,7 +365,60 @@ class Casual(Normal):
             Loc.western_chammy_mo.value         : Rulesets(AccessRule.ATTACK),
             Loc.western_golozo.value            : Rulesets(AccessRule.ATTACK),
             Loc.western_golon_moe.value         : Rulesets(AccessRule.MORPH_NO_MONKEY),
-            
+
+            # Onsen
+            Loc.onsen_saru_sam.value            : Rulesets(AccessRule.ATTACK),
+            Loc.onsen_tome_san.value            : Rulesets(AccessRule.ATTACK),
+            Loc.onsen_domobeh.value             : Rulesets(AccessRule.SWIM),
+            Loc.onsen_kimi_san.value            : Rulesets(AccessRule.ATTACK),
+            Loc.onsen_mujakin.value             : Rulesets(AccessRule.SWIM),
+
+            # Snowfesta
+            Loc.snowfesta_konkichi.value        : Rulesets([AccessRule.ATTACK, AccessRule.RADAR]),
+            Loc.snowfesta_pipotron_yellow.value : Rulesets(AccessRule.ATTACK),
+            Loc.snowfesta_ukki_jii.value        : Rulesets(AccessRule.ATTACK),
+
+            # Edotown
+            Loc.edotown_yosio.value             : Rulesets(AccessRule.DASH),
+            Loc.edotown_fatty_mcfats.value      : Rulesets(AccessRule.ATTACK),
+            Loc.edotown_golota.value            : Rulesets(AccessRule.ATTACK),
+
+            # Bosses
+            Loc.boss_monkey_white.value         : Rulesets(AccessRule.ATTACK),
+            Loc.boss_monkey_blue.value          : Rulesets(AccessRule.ATTACK),
+            Loc.boss_monkey_yellow.value        : Rulesets(AccessRule.NINJA),
+            Loc.boss_monkey_pink.value          : Rulesets(AccessRule.MORPH_NO_MONKEY),
+            Loc.boss_monkey_red.value           : Rulesets(AccessRule.ATTACK),
+            Loc.boss_specter.value              : Rulesets(AccessRule.ATTACK),
+            Loc.boss_specter_final.value        : Rulesets(AccessRule.ATTACK)
+        })
+
+        self.event_rules.update({
+            # Castle
+            Events.castle_b_clapper.value               : Rulesets(AccessRule.ATTACK),
+            Events.castle_a2_button.value               : Rulesets(AccessRule.ATTACK),
+
+            # Ciscocity
+            Events.ciscocity_c_button.value             : Rulesets(AccessRule.SHOOT, AccessRule.DASH, AccessRule.RCC),
+
+            # Studio
+            Events.studio_a1_button.value               : Rulesets(AccessRule.ATTACK),
+            Events.studio_a2_button.value               : Rulesets(AccessRule.ATTACK),
+
+            # Halloween
+            Events.halloween_b_jumbo_robo.value         : Rulesets(AccessRule.ATTACK),
+
+            # Onsen
+            Events.onsen_a_button.value                 : Rulesets(AccessRule.ATTACK),
+
+            # Snowfesta
+            Events.snowfesta_e_bell.value               : Rulesets(AccessRule.ATTACK),
+
+            # Edotown
+            Events.edotown_b1_button.value              : Rulesets(AccessRule.ATTACK),
+            Events.edotown_e_scroll.value               : Rulesets(AccessRule.CLUB, AccessRule.KNIGHT,
+                                                                   AccessRule.NINJA, AccessRule.MAGICIAN,
+                                                                   AccessRule.KUNGFU),
         })
 
         self.entrance_rules.update({
@@ -297,5 +461,28 @@ class Casual(Normal):
             Stage.entrance_western_d1d2.value   : Rulesets(AccessRule.ATTACK),
             Stage.entrance_western_d2d.value    : Rulesets(AccessRule.ATTACK),
             Stage.entrance_western_ed1.value    : Rulesets(AccessRule.ATTACK),
+
+            # Onsen
+            Stage.entrance_onsen_aa1.value      : Rulesets(AccessRule.ATTACK),
+            Stage.entrance_onsen_aa2.value      : Rulesets(AccessRule.ATTACK),
+            Stage.entrance_onsen_a1a2.value     : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
+            Stage.entrance_onsen_a2a1.value     : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
+            Stage.entrance_onsen_b1b.value      : Rulesets([AccessRule.RCC, AccessRule.SWIM]),
+            Stage.entrance_onsen_bd1.value      : Rulesets(AccessRule.SHOOT),
+            Stage.entrance_onsen_dd1.value      : Rulesets(AccessRule.RCC),
+
+            # Edotown
+            Stage.entrance_edotown_a1a.value    : Rulesets(AccessRule.NINJA),
+            Stage.entrance_edotown_aa1.value    : Rulesets(AccessRule.NINJA),
+            Stage.entrance_edotown_ab1.value    : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_edotown_b1a.value    : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_edotown_b2b1.value   : Rulesets([event_invoked(Events.edotown_b1_button.value),
+                                                            AccessRule.NINJA], AccessRule.SWIM),
+            Stage.entrance_edotown_b2b.value    : Rulesets(AccessRule.NINJA),
+            Stage.entrance_edotown_bb2.value    : Rulesets(AccessRule.NINJA),
+            Stage.entrance_edotown_bc1.value    : Rulesets(AccessRule.ATTACK),
+            Stage.entrance_edotown_c1c.value    : Rulesets(AccessRule.NINJA),
+            Stage.entrance_edotown_cc1.value    : Rulesets(AccessRule.NINJA),
+            Stage.entrance_edotown_cc2.value    : Rulesets(AccessRule.ATTACK),
         })
 

@@ -134,6 +134,7 @@ STAGES_STUDIO : Sequence[str] = [
     Stage.region_studio_a2.value,
     Stage.region_studio_b.value,
     Stage.region_studio_b1.value,
+    Stage.region_studio_b2.value,
     Stage.region_studio_c.value,
     Stage.region_studio_d.value,
     Stage.region_studio_d1.value,
@@ -369,7 +370,7 @@ STAGES_SPACE : Sequence[str] = [
 STAGES_BOSSES : Sequence[str] = [
     Stage.region_boss1.value,
     Stage.region_boss2.value,
-    # Stage.region_boss3.value,
+    Stage.region_boss3.value,
     # Stage.region_boss4.value,
     # Stage.region_boss5.value,
     # Stage.region_boss6.value,
@@ -379,8 +380,8 @@ STAGES_BOSSES : Sequence[str] = [
 
 STAGES_MASTER : Sequence[str] = [
     *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY, *STAGES_STUDIO,
-    *STAGES_HALLOWEEN, *STAGES_WESTERN,
-    # *STAGES_ONSEN, *STAGES_SNOWFESTA, *STAGES_EDOTOWN, *STAGES_HEAVEN,
+    *STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_ONSEN, *STAGES_SNOWFESTA, *STAGES_EDOTOWN,
+    # *STAGES_HEAVEN,
     # *STAGES_TOYHOUSE, *STAGES_ICELAND, *STAGES_ARABIAN, *STAGES_ASIA, *STAGES_PLANE, *STAGES_HONG,
     # *STAGES_BAY, *STAGES_TOMO, *STAGES_SPACE,
     *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB
@@ -512,6 +513,53 @@ ENTRANCES_MAIN : list[AE3EntranceMeta] = [
     AE3EntranceMeta(Stage.entrance_western_ed1.value, Stage.region_western_e.value, Stage.region_western_d1.value),
     AE3EntranceMeta(Stage.entrance_western_ec.value, Stage.region_western_e.value, Stage.region_western_c.value),
     AE3EntranceMeta(Stage.entrance_western_cf.value, Stage.region_western_c.value, Stage.region_western_f.value),
+
+    # Onsen
+    AE3EntranceMeta(Stage.entrance_onsen_a1b1.value, Stage.region_onsen_a1.value, Stage.region_onsen_b1.value),
+    AE3EntranceMeta(Stage.entrance_onsen_a2b1.value, Stage.region_onsen_a2.value, Stage.region_onsen_b1.value),
+    AE3EntranceMeta(Stage.entrance_onsen_b1a1.value, Stage.region_onsen_b1.value, Stage.region_onsen_a1.value),
+    AE3EntranceMeta(Stage.entrance_onsen_b1a2.value, Stage.region_onsen_b1.value, Stage.region_onsen_a2.value),
+    AE3EntranceMeta(Stage.entrance_onsen_be_2.value, Stage.region_onsen_b.value, Stage.region_onsen_e.value),
+    AE3EntranceMeta(Stage.entrance_onsen_bd1.value, Stage.region_onsen_b.value, Stage.region_onsen_d1.value),
+    AE3EntranceMeta(Stage.entrance_onsen_bd.value, Stage.region_onsen_b.value, Stage.region_onsen_d.value),
+    AE3EntranceMeta(Stage.entrance_onsen_be.value, Stage.region_onsen_b.value, Stage.region_onsen_e.value),
+    AE3EntranceMeta(Stage.entrance_onsen_d1b.value, Stage.region_onsen_d1.value, Stage.region_onsen_b.value),
+    AE3EntranceMeta(Stage.entrance_onsen_db.value, Stage.region_onsen_d.value, Stage.region_onsen_b.value),
+    AE3EntranceMeta(Stage.entrance_onsen_dc.value, Stage.region_onsen_d.value, Stage.region_onsen_c.value),
+    AE3EntranceMeta(Stage.entrance_onsen_cd.value, Stage.region_onsen_c.value, Stage.region_onsen_d.value),
+    AE3EntranceMeta(Stage.entrance_onsen_eb.value, Stage.region_onsen_e.value, Stage.region_onsen_b.value),
+    AE3EntranceMeta(Stage.entrance_onsen_eb_2.value, Stage.region_onsen_e.value, Stage.region_onsen_b.value),
+
+    # Snowfesta
+    AE3EntranceMeta(Stage.entrance_snowfesta_ab.value, Stage.region_snowfesta_a.value, Stage.region_snowfesta_b.value),
+    AE3EntranceMeta(Stage.entrance_snowfesta_ag.value, Stage.region_snowfesta_a.value, Stage.region_snowfesta_g.value),
+    AE3EntranceMeta(Stage.entrance_snowfesta_ac.value, Stage.region_snowfesta_a.value, Stage.region_snowfesta_c.value),
+    AE3EntranceMeta(Stage.entrance_snowfesta_ba.value, Stage.region_snowfesta_b.value, Stage.region_snowfesta_a.value),
+    AE3EntranceMeta(Stage.entrance_snowfesta_ga.value, Stage.region_snowfesta_g.value, Stage.region_snowfesta_a.value),
+    AE3EntranceMeta(Stage.entrance_snowfesta_gd.value, Stage.region_snowfesta_g.value, Stage.region_snowfesta_d.value),
+    AE3EntranceMeta(Stage.entrance_snowfesta_dg.value, Stage.region_snowfesta_d.value, Stage.region_snowfesta_g.value),
+    AE3EntranceMeta(Stage.entrance_snowfesta_ca.value, Stage.region_snowfesta_c.value, Stage.region_snowfesta_a.value),
+    AE3EntranceMeta(Stage.entrance_snowfesta_cf.value, Stage.region_snowfesta_c.value, Stage.region_snowfesta_f.value),
+    AE3EntranceMeta(Stage.entrance_snowfesta_ce.value, Stage.region_snowfesta_c.value, Stage.region_snowfesta_e.value),
+    AE3EntranceMeta(Stage.entrance_snowfesta_ce_2.value, Stage.region_snowfesta_c.value,
+                    Stage.region_snowfesta_e.value),
+    AE3EntranceMeta(Stage.entrance_snowfesta_fc.value, Stage.region_snowfesta_f.value, Stage.region_snowfesta_c.value),
+    AE3EntranceMeta(Stage.entrance_snowfesta_ec.value, Stage.region_snowfesta_e.value, Stage.region_snowfesta_c.value),
+    AE3EntranceMeta(Stage.entrance_snowfesta_ec_2.value, Stage.region_snowfesta_e.value,
+                    Stage.region_snowfesta_c.value),
+
+    # Edotown
+    AE3EntranceMeta(Stage.entrance_edotown_ab1.value, Stage.region_edotown_a.value, Stage.region_edotown_b1.value),
+    AE3EntranceMeta(Stage.entrance_edotown_b1a.value, Stage.region_edotown_b1.value, Stage.region_edotown_a.value),
+    AE3EntranceMeta(Stage.entrance_edotown_be.value, Stage.region_edotown_b.value, Stage.region_edotown_e.value),
+    AE3EntranceMeta(Stage.entrance_edotown_c1b.value, Stage.region_edotown_c1.value, Stage.region_edotown_b.value),
+    AE3EntranceMeta(Stage.entrance_edotown_c2d.value, Stage.region_edotown_c2.value, Stage.region_edotown_d.value),
+    AE3EntranceMeta(Stage.entrance_edotown_dc2.value, Stage.region_edotown_d.value, Stage.region_edotown_c2.value),
+    AE3EntranceMeta(Stage.entrance_edotown_de.value, Stage.region_edotown_d.value, Stage.region_edotown_e.value),
+    AE3EntranceMeta(Stage.entrance_edotown_df.value, Stage.region_edotown_d.value, Stage.region_edotown_f.value),
+    AE3EntranceMeta(Stage.entrance_edotown_fd.value, Stage.region_edotown_f.value, Stage.region_edotown_d.value),
+    AE3EntranceMeta(Stage.entrance_edotown_ed.value, Stage.region_edotown_e.value, Stage.region_edotown_d.value),
+    AE3EntranceMeta(Stage.entrance_edotown_eb.value, Stage.region_edotown_e.value, Stage.region_edotown_b.value),
 ]
 
 ## Entrances between subregions (Regions within the same Room/Stage)
@@ -545,8 +593,10 @@ ENTRANCES_SUBREGIONS : list[AE3EntranceMeta] = [
     AE3EntranceMeta(Stage.entrance_studio_aa1.value, Stage.region_studio_a.value, Stage.region_studio_a1.value),
     AE3EntranceMeta(Stage.entrance_studio_a2a.value, Stage.region_studio_a2.value, Stage.region_studio_a.value),
     AE3EntranceMeta(Stage.entrance_studio_a1a.value, Stage.region_studio_a1.value, Stage.region_studio_a.value),
-    AE3EntranceMeta(Stage.entrance_studio_b1b.value, Stage.region_studio_b1.value, Stage.region_studio_b.value),
-    AE3EntranceMeta(Stage.entrance_studio_bb1.value, Stage.region_studio_b.value, Stage.region_studio_b1.value),
+    AE3EntranceMeta(Stage.entrance_studio_b1b2.value, Stage.region_studio_b1.value, Stage.region_studio_b2.value),
+    AE3EntranceMeta(Stage.entrance_studio_b2b1.value, Stage.region_studio_b2.value, Stage.region_studio_b1.value),
+    AE3EntranceMeta(Stage.entrance_studio_b2b.value, Stage.region_studio_b2.value, Stage.region_studio_b.value),
+    AE3EntranceMeta(Stage.entrance_studio_bb2.value, Stage.region_studio_b.value, Stage.region_studio_b2.value),
     AE3EntranceMeta(Stage.entrance_studio_ff1.value, Stage.region_studio_f.value, Stage.region_studio_f1.value),
     AE3EntranceMeta(Stage.entrance_studio_f1f.value, Stage.region_studio_f1.value, Stage.region_studio_f.value),
     AE3EntranceMeta(Stage.entrance_studio_d1d.value, Stage.region_studio_d1.value, Stage.region_studio_d.value),
@@ -590,6 +640,31 @@ ENTRANCES_SUBREGIONS : list[AE3EntranceMeta] = [
     AE3EntranceMeta(Stage.entrance_western_d2d.value, Stage.region_western_d2.value, Stage.region_western_d.value),
     AE3EntranceMeta(Stage.entrance_western_ee1.value, Stage.region_western_e.value, Stage.region_western_e1.value),
     AE3EntranceMeta(Stage.entrance_western_e1e.value, Stage.region_western_e1.value, Stage.region_western_e.value),
+
+    # Onsen
+    AE3EntranceMeta(Stage.entrance_onsen_aa1.value, Stage.region_onsen_a.value, Stage.region_onsen_a1.value),
+    AE3EntranceMeta(Stage.entrance_onsen_aa2.value, Stage.region_onsen_a.value, Stage.region_onsen_a2.value),
+    AE3EntranceMeta(Stage.entrance_onsen_a1a.value, Stage.region_onsen_a1.value, Stage.region_onsen_a.value),
+    AE3EntranceMeta(Stage.entrance_onsen_a1a2.value, Stage.region_onsen_a1.value, Stage.region_onsen_a2.value),
+    AE3EntranceMeta(Stage.entrance_onsen_a2a.value, Stage.region_onsen_a2.value, Stage.region_onsen_a.value),
+    AE3EntranceMeta(Stage.entrance_onsen_a2a1.value, Stage.region_onsen_a2.value, Stage.region_onsen_a1.value),
+    AE3EntranceMeta(Stage.entrance_onsen_b1b.value, Stage.region_onsen_b1.value, Stage.region_onsen_b.value),
+    AE3EntranceMeta(Stage.entrance_onsen_bb1.value, Stage.region_onsen_b.value, Stage.region_onsen_b1.value),
+    AE3EntranceMeta(Stage.entrance_onsen_d1d.value, Stage.region_onsen_d1.value, Stage.region_onsen_d.value),
+    AE3EntranceMeta(Stage.entrance_onsen_dd1.value, Stage.region_onsen_d.value, Stage.region_onsen_d1.value),
+
+    # Edotown
+    AE3EntranceMeta(Stage.entrance_edotown_a1a.value, Stage.region_edotown_a1.value, Stage.region_edotown_a.value),
+    AE3EntranceMeta(Stage.entrance_edotown_aa1.value, Stage.region_edotown_a.value, Stage.region_edotown_a1.value),
+    AE3EntranceMeta(Stage.entrance_edotown_b1b2.value, Stage.region_edotown_b1.value, Stage.region_edotown_b2.value),
+    AE3EntranceMeta(Stage.entrance_edotown_b2b1.value, Stage.region_edotown_b2.value, Stage.region_edotown_b1.value),
+    AE3EntranceMeta(Stage.entrance_edotown_b2b.value, Stage.region_edotown_b2.value, Stage.region_edotown_b.value),
+    AE3EntranceMeta(Stage.entrance_edotown_bb2.value, Stage.region_edotown_b.value, Stage.region_edotown_b2.value),
+    AE3EntranceMeta(Stage.entrance_edotown_bc1.value, Stage.region_edotown_b.value, Stage.region_edotown_c1.value),
+    AE3EntranceMeta(Stage.entrance_edotown_c1c.value, Stage.region_edotown_c1.value, Stage.region_edotown_c.value),
+    AE3EntranceMeta(Stage.entrance_edotown_cc1.value, Stage.region_edotown_c.value, Stage.region_edotown_c1.value),
+    AE3EntranceMeta(Stage.entrance_edotown_cc2.value, Stage.region_edotown_c.value, Stage.region_edotown_c2.value),
+    AE3EntranceMeta(Stage.entrance_edotown_c2c.value, Stage.region_edotown_c2.value, Stage.region_edotown_c.value),
 ]
 
 ## Entrances for selecting a stage
@@ -682,7 +757,7 @@ ENTRANCES_CISCOCITY : list[str] = [
     Stage.entrance_ciscocity_ec.value,
     Stage.entrance_ciscocity_ba.value,
     Stage.entrance_ciscocity_da.value,
-    Stage.entrance_ciscocity_da_2.value,
+    Stage.entrance_ciscocity_da_2.value
 ]
 
 ENTRANCES_STUDIO : list[str] = [
@@ -695,8 +770,8 @@ ENTRANCES_STUDIO : list[str] = [
     Stage.entrance_studio_a1a.value,
     Stage.entrance_studio_a1d2.value,
     Stage.entrance_studio_b1a.value,
-    Stage.entrance_studio_b1b.value,
-    Stage.entrance_studio_bb1.value,
+    Stage.entrance_studio_b1b2.value,
+    Stage.entrance_studio_b2b1.value,
     Stage.entrance_studio_bf.value,
     Stage.entrance_studio_fb.value,
     Stage.entrance_studio_ff1.value,
@@ -713,7 +788,7 @@ ENTRANCES_STUDIO : list[str] = [
     Stage.entrance_studio_ea.value,
     Stage.entrance_studio_ec.value,
     Stage.entrance_studio_ce.value,
-    Stage.entrance_studio_ca2.value,
+    Stage.entrance_studio_ca2.value
 ]
 
 ENTRANCES_HALLOWEEN : list[str] = [
@@ -738,7 +813,7 @@ ENTRANCES_HALLOWEEN : list[str] = [
     Stage.entrance_halloween_d1e.value,
     Stage.entrance_halloween_d1d2.value,
     Stage.entrance_halloween_d2d1.value,
-    Stage.entrance_halloween_ed1.value,
+    Stage.entrance_halloween_ed1.value
 ]
 
 ENTRANCES_WESTERN : list[str] = [
@@ -760,7 +835,76 @@ ENTRANCES_WESTERN : list[str] = [
     Stage.entrance_western_ec.value,
     Stage.entrance_western_ee1.value,
     Stage.entrance_western_e1e.value,
-    Stage.entrance_western_cf.value,
+    Stage.entrance_western_cf.value
+]
+
+ENTRANCES_ONSEN : list[str] = [
+    Stage.entrance_onsen_aa1.value,
+    Stage.entrance_onsen_aa2.value,
+    Stage.entrance_onsen_a1a.value,
+    Stage.entrance_onsen_a1a2.value,
+    Stage.entrance_onsen_a1b1.value,
+    Stage.entrance_onsen_a2a.value,
+    Stage.entrance_onsen_a2a1.value,
+    Stage.entrance_onsen_a2b1.value,
+    Stage.entrance_onsen_b1a1.value,
+    Stage.entrance_onsen_b1a2.value,
+    Stage.entrance_onsen_b1b.value,
+    Stage.entrance_onsen_bb1.value,
+    Stage.entrance_onsen_be_2.value,
+    Stage.entrance_onsen_bd1.value,
+    Stage.entrance_onsen_bd.value,
+    Stage.entrance_onsen_be.value,
+    Stage.entrance_onsen_d1b.value,
+    Stage.entrance_onsen_d1d.value,
+    Stage.entrance_onsen_dd1.value,
+    Stage.entrance_onsen_db.value,
+    Stage.entrance_onsen_dc.value,
+    Stage.entrance_onsen_cd.value,
+    Stage.entrance_onsen_eb.value,
+    Stage.entrance_onsen_eb_2.value
+]
+
+ENTRANCES_SNOWFESTA : list[str] = [
+    Stage.entrance_snowfesta_ab.value,
+    Stage.entrance_snowfesta_ag.value,
+    Stage.entrance_snowfesta_ac.value,
+    Stage.entrance_snowfesta_ba.value,
+    Stage.entrance_snowfesta_ga.value,
+    Stage.entrance_snowfesta_gd.value,
+    Stage.entrance_snowfesta_dg.value,
+    Stage.entrance_snowfesta_ca.value,
+    Stage.entrance_snowfesta_cf.value,
+    Stage.entrance_snowfesta_ce.value,
+    Stage.entrance_snowfesta_ce_2.value,
+    Stage.entrance_snowfesta_fc.value,
+    Stage.entrance_snowfesta_ec.value,
+    Stage.entrance_snowfesta_ec_2.value
+]
+
+ENTRANCES_EDOTOWN : list[str] = [
+    Stage.entrance_edotown_a1a.value,
+    Stage.entrance_edotown_aa1.value,
+    Stage.entrance_edotown_ab1.value,
+    Stage.entrance_edotown_b1a.value,
+    Stage.entrance_edotown_b1b2.value,
+    Stage.entrance_edotown_b2b1.value,
+    Stage.entrance_edotown_b2b.value,
+    Stage.entrance_edotown_bb2.value,
+    Stage.entrance_edotown_bc1.value,
+    Stage.entrance_edotown_be.value,
+    Stage.entrance_edotown_c1b.value,
+    Stage.entrance_edotown_c1c.value,
+    Stage.entrance_edotown_cc1.value,
+    Stage.entrance_edotown_cc2.value,
+    Stage.entrance_edotown_c2c.value,
+    Stage.entrance_edotown_c2d.value,
+    Stage.entrance_edotown_dc2.value,
+    Stage.entrance_edotown_de.value,
+    Stage.entrance_edotown_df.value,
+    Stage.entrance_edotown_fd.value,
+    Stage.entrance_edotown_ed.value,
+    Stage.entrance_edotown_eb.value
 ]
 
 ENTRANCES_INDEX : dict[str, list[str]] = {
@@ -771,9 +915,9 @@ ENTRANCES_INDEX : dict[str, list[str]] = {
     APHelper.studio.value               : ENTRANCES_STUDIO,
     APHelper.halloween.value            : ENTRANCES_HALLOWEEN,
     APHelper.western.value              : ENTRANCES_WESTERN,
-    # APHelper.onsen.value                : ENTRANCES_,
-    # APHelper.snowfesta.value            : ENTRANCES_,
-    # APHelper.edotown.value              : ENTRANCES_,
+    APHelper.onsen.value                : ENTRANCES_ONSEN,
+    APHelper.snowfesta.value            : ENTRANCES_SNOWFESTA,
+    APHelper.edotown.value              : ENTRANCES_EDOTOWN,
     # APHelper.heaven.value               : ENTRANCES_,
     # APHelper.toyhouse.value             : ENTRANCES_,
     # APHelper.iceland.value              : ENTRANCES_,
