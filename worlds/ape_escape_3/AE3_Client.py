@@ -27,6 +27,36 @@ class AE3CommandProcessor(ClientCommandProcessor):
             logger.info(f"{APConsole.Info.p_check.value}"
                         f"{APConsole.Info.init.value if self.ctx.is_connected else APConsole.Info.exit.value}")
 
+    def _cmd_freeplay(self):
+        if isinstance(self.ctx, AE3Context):
+            self.ctx.early_free_play = not self.ctx.early_free_play
+
+            logger.info(f"[-!-] Early Free Play is now" f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
+
+    def _cmd_deathlink(self):
+        if isinstance(self.ctx, AE3Context):
+            self.ctx.death_link = not self.ctx.death_link
+
+            logger.info(f"[-!-] DeathLink is now" f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
+    # Debug commands
+    def _cmd_unlock(self, unlocks : str = "28"):
+        if not unlocks.isdigit():
+            logger.info("Please enter a number.")
+            return
+
+        if isinstance(self.ctx, AE3Context):
+            amount: int = int(unlocks)
+            self.ctx.unlocked_channels = max(min(amount, 28), 0)
+
+    def _cmd_receive_death(self, count : str = "1"):
+        if not count.isdigit():
+            logger.info("Please enter a number.")
+            return
+
+        if isinstance(self.ctx, AE3Context):
+            amount : int = int(count)
+            self.ctx.pending_deathlinks += amount
+
 class AE3Context(CommonContext):
     # Archipelago Meta
     client_version: str = APConsole.Info.client_ver.value
