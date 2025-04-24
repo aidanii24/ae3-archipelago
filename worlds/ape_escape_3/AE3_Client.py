@@ -28,18 +28,24 @@ class AE3CommandProcessor(ClientCommandProcessor):
                         f"{APConsole.Info.init.value if self.ctx.is_connected else APConsole.Info.exit.value}")
 
     def _cmd_freeplay(self):
+        """
+        Toggle if Free Play mode and Time Attack mode should be swapped, allowing Free Play to become available
+        earlier.
+        """
         if isinstance(self.ctx, AE3Context):
             self.ctx.early_free_play = not self.ctx.early_free_play
 
-            logger.info(f"[-!-] Early Free Play is now" f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
+            logger.info(f"[-!-] Early Free Play is now " f"{"ENABLED" if self.ctx.early_free_play else "DISABLED"}")
 
     def _cmd_deathlink(self):
+        """Toggle if death links should be received."""
         if isinstance(self.ctx, AE3Context):
             self.ctx.death_link = not self.ctx.death_link
 
-            logger.info(f"[-!-] DeathLink is now" f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
+            logger.info(f"[-!-] DeathLink is now " f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
     # Debug commands
     def _cmd_unlock(self, unlocks : str = "28"):
+        """<!> DEBUG | Unlock amount of levels given"""
         if not unlocks.isdigit():
             logger.info("Please enter a number.")
             return
@@ -49,6 +55,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
             self.ctx.unlocked_channels = max(min(amount, 28), 0)
 
     def _cmd_receive_death(self, count : str = "1"):
+        """<!> DEBUG | Simulate receiving a death link"""
         if not count.isdigit():
             logger.info("Please enter a number.")
             return
