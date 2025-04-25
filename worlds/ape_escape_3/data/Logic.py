@@ -37,6 +37,9 @@ def has_club(state : CollectionState, player : int):
 def has_hoop(state : CollectionState, player : int):
     return state.has(Itm.gadget_hoop.value, player)
 
+def has_flyer(state : CollectionState, player : int):
+    return state.has(Itm.gadget_fly.value, player)
+
 ## Check if Player can use the Slingback Shooter
 def can_sling(state : CollectionState, player : int):
     return state.has(Itm.gadget_sling.value, player)
@@ -87,6 +90,9 @@ def can_dash(state : CollectionState, player : int):
 def can_shoot(state : CollectionState, player : int):
     return state.has_group(APHelper.shoot.value, player)
 
+def can_shoot_boom(state : CollectionState, player : int):
+    return can_shoot(state, player) and state.has(Itm.ammo_boom.value, player)
+
 ## Check if Player can fly (can gain height)
 def can_fly(state : CollectionState, player : int):
     return state.has_group(APHelper.fly.value, player)
@@ -129,21 +135,23 @@ class AccessRule:
     # General
     CATCH = can_catch                           # Monkey Net unlocked or any Morph that can Catch Monkeys
     CATCH_LONG = can_catch_long                 # Has any morph with ranged capture
-    NET = can_net                               # Monkey Net Unlocked
     MORPH = can_morph
     MORPH_NO_MONKEY = can_morph_not_monkey      # Unlocked any morph that is not Super Monkey
     ATTACK = can_attack                         # Can attack reasonably
     HIT = can_hit                               # Can hit at all
-    CLUB = has_club                             # Unlocked Stun Club
-    RADAR = has_radar                           # Unlocked Monkey Radar
-    HOOP = has_hoop                             # Unlocked Dash Hoop
     DASH = can_dash                             # Unlocked Super Hoop or any fast moving Morph
     SHOOT = can_shoot                           # Slingback Shooter unlocked or has any morph with long range attacks
+    SHOOT_BOOM = can_shoot_boom                      # Slingback Shooter unlocked or has any morph with long range attacks
     SWIM = can_swim
     FLY = can_fly                               # Sky Flyer unlocked or has any morph that can fly (gain height)
     GLIDE = can_glide                           # Sky Flyer unlocked or has any morph that can glide
 
     # Gadget
+    NET = can_net                               # Monkey Net Unlocked
+    CLUB = has_club                             # Unlocked Stun Club
+    RADAR = has_radar                           # Unlocked Monkey Radar
+    HOOP = has_hoop                             # Unlocked Dash Hoop
+    FLYER = has_flyer                           # Unlocked Sky Flyer
     SLING = can_sling
     RCC = can_rcc
 

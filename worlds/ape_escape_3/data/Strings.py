@@ -741,6 +741,7 @@ class Events(BaseEnum):
     edotown_b1_button                 = "The Emperor's Castle - Tightrope Button"
     edotown_e_scroll                  = "The Emperor's Castle - Hit Japanese Scroll"
     heaven_b_clapper                  = "Mount Amazing - Clapper Button"
+    iceland_c_jumbo_robo              = "Arctic Wonderland - Destroy Jumbo Robo"
     iceland_e_button                  = "Arctic Wonderland - Christmas Tree Button"
     arabian_c_golden_mon              = "Mirage Town - Capture Golden Mon"
     arabian_c1_exit                   = "Mirage Town - Escape Exit"
