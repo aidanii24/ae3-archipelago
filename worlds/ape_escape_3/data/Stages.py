@@ -560,6 +560,63 @@ ENTRANCES_MAIN : list[AE3EntranceMeta] = [
     AE3EntranceMeta(Stage.entrance_edotown_fd.value, Stage.region_edotown_f.value, Stage.region_edotown_d.value),
     AE3EntranceMeta(Stage.entrance_edotown_ed.value, Stage.region_edotown_e.value, Stage.region_edotown_d.value),
     AE3EntranceMeta(Stage.entrance_edotown_eb.value, Stage.region_edotown_e.value, Stage.region_edotown_b.value),
+
+    # Heaven
+    AE3EntranceMeta(Stage.entrance_heaven_ab.value, Stage.region_heaven_a.value, Stage.region_heaven_b.value),
+    AE3EntranceMeta(Stage.entrance_heaven_ba.value, Stage.region_heaven_b.value, Stage.region_heaven_a.value),
+    AE3EntranceMeta(Stage.entrance_heaven_b1c.value, Stage.region_heaven_b1.value, Stage.region_heaven_c.value),
+    AE3EntranceMeta(Stage.entrance_heaven_cb1.value, Stage.region_heaven_c.value, Stage.region_heaven_b1.value),
+    AE3EntranceMeta(Stage.entrance_heaven_ce.value, Stage.region_heaven_c.value, Stage.region_heaven_e.value),
+    AE3EntranceMeta(Stage.entrance_heaven_cd.value, Stage.region_heaven_c.value, Stage.region_heaven_d.value),
+    AE3EntranceMeta(Stage.entrance_heaven_ec.value, Stage.region_heaven_e.value, Stage.region_heaven_c.value),
+    AE3EntranceMeta(Stage.entrance_heaven_dc.value, Stage.region_heaven_d.value, Stage.region_heaven_c.value),
+
+    # Toyhouse
+    AE3EntranceMeta(Stage.entrance_toyhouse_ab.value, Stage.region_toyhouse_a.value, Stage.region_toyhouse_b.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_ad.value, Stage.region_toyhouse_d.value, Stage.region_toyhouse_d.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_ag.value, Stage.region_toyhouse_g.value, Stage.region_toyhouse_g.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_ae.value, Stage.region_toyhouse_e.value, Stage.region_toyhouse_e.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_ac.value, Stage.region_toyhouse_c.value, Stage.region_toyhouse_c.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_ba.value, Stage.region_toyhouse_b.value, Stage.region_toyhouse_a.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_da.value, Stage.region_toyhouse_d.value, Stage.region_toyhouse_a.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_dh.value, Stage.region_toyhouse_d.value, Stage.region_toyhouse_h.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_hd.value, Stage.region_toyhouse_h.value, Stage.region_toyhouse_d.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_ga.value, Stage.region_toyhouse_g.value, Stage.region_toyhouse_a.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_g1a.value, Stage.region_toyhouse_g1.value, Stage.region_toyhouse_a.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_ea.value, Stage.region_toyhouse_e.value, Stage.region_toyhouse_a.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_ef.value, Stage.region_toyhouse_e.value, Stage.region_toyhouse_f.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_fe.value, Stage.region_toyhouse_f.value, Stage.region_toyhouse_e.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_fa.value, Stage.region_toyhouse_f.value, Stage.region_toyhouse_a.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_ca.value, Stage.region_toyhouse_c.value, Stage.region_toyhouse_a.value),
+
+    # Iceland
+    AE3EntranceMeta(Stage.entrance_iceland_ad.value, Stage.region_iceland_a.value, Stage.region_iceland_d.value),
+    AE3EntranceMeta(Stage.entrance_iceland_a2e.value, Stage.region_iceland_a2.value, Stage.region_iceland_e.value),
+    AE3EntranceMeta(Stage.entrance_iceland_da.value, Stage.region_iceland_d.value, Stage.region_iceland_a.value),
+    AE3EntranceMeta(Stage.entrance_iceland_dc.value, Stage.region_iceland_d.value, Stage.region_iceland_c.value),
+    AE3EntranceMeta(Stage.entrance_iceland_cd.value, Stage.region_iceland_c.value, Stage.region_iceland_d.value),
+    AE3EntranceMeta(Stage.entrance_iceland_cb.value, Stage.region_iceland_c.value, Stage.region_iceland_b.value),
+    AE3EntranceMeta(Stage.entrance_iceland_bc.value, Stage.region_iceland_b.value, Stage.region_iceland_c.value),
+    AE3EntranceMeta(Stage.entrance_iceland_be.value, Stage.region_iceland_b.value, Stage.region_iceland_e.value),
+    AE3EntranceMeta(Stage.entrance_iceland_eb.value, Stage.region_iceland_e.value, Stage.region_iceland_b.value),
+    AE3EntranceMeta(Stage.entrance_iceland_ef.value, Stage.region_iceland_e.value, Stage.region_iceland_f.value),
+    AE3EntranceMeta(Stage.entrance_iceland_ea2.value, Stage.region_iceland_e.value, Stage.region_iceland_a2.value),
+
+    # Arabian
+    AE3EntranceMeta(Stage.entrance_arabian_ac.value, Stage.region_arabian_a.value, Stage.region_arabian_c.value),
+    AE3EntranceMeta(Stage.entrance_arabian_ac1.value, Stage.region_arabian_a.value, Stage.region_arabian_c1.value),
+    AE3EntranceMeta(Stage.entrance_arabian_ab.value, Stage.region_arabian_a.value, Stage.region_arabian_b.value),
+    AE3EntranceMeta(Stage.entrance_arabian_ca.value, Stage.region_arabian_c.value, Stage.region_arabian_a.value),
+    AE3EntranceMeta(Stage.entrance_arabian_c1a.value, Stage.region_arabian_c1.value, Stage.region_arabian_a.value),
+    AE3EntranceMeta(Stage.entrance_arabian_ba.value, Stage.region_arabian_b.value, Stage.region_arabian_a.value),
+    AE3EntranceMeta(Stage.entrance_arabian_bg.value, Stage.region_arabian_b.value, Stage.region_arabian_g.value),
+    AE3EntranceMeta(Stage.entrance_arabian_bf.value, Stage.region_arabian_b.value, Stage.region_arabian_f.value),
+    AE3EntranceMeta(Stage.entrance_arabian_be1.value, Stage.region_arabian_b.value, Stage.region_arabian_e1.value),
+    AE3EntranceMeta(Stage.entrance_arabian_fb.value, Stage.region_arabian_f.value, Stage.region_arabian_b.value),
+    AE3EntranceMeta(Stage.entrance_arabian_e1b.value, Stage.region_arabian_e1.value, Stage.region_arabian_b.value),
+    AE3EntranceMeta(Stage.entrance_arabian_eg.value, Stage.region_arabian_e.value, Stage.region_arabian_g.value),
+    AE3EntranceMeta(Stage.entrance_arabian_ge.value, Stage.region_arabian_g.value, Stage.region_arabian_e.value),
+    AE3EntranceMeta(Stage.entrance_arabian_gb.value, Stage.region_arabian_g.value, Stage.region_arabian_b.value),
 ]
 
 ## Entrances between subregions (Regions within the same Room/Stage)
@@ -665,6 +722,30 @@ ENTRANCES_SUBREGIONS : list[AE3EntranceMeta] = [
     AE3EntranceMeta(Stage.entrance_edotown_cc1.value, Stage.region_edotown_c.value, Stage.region_edotown_c1.value),
     AE3EntranceMeta(Stage.entrance_edotown_cc2.value, Stage.region_edotown_c.value, Stage.region_edotown_c2.value),
     AE3EntranceMeta(Stage.entrance_edotown_c2c.value, Stage.region_edotown_c2.value, Stage.region_edotown_c.value),
+
+    # Heaven
+    AE3EntranceMeta(Stage.entrance_heaven_a1a.value, Stage.region_heaven_a1.value, Stage.region_heaven_a.value),
+    AE3EntranceMeta(Stage.entrance_heaven_aa1.value, Stage.region_heaven_a.value, Stage.region_heaven_a1.value),
+    AE3EntranceMeta(Stage.entrance_heaven_bb1.value, Stage.region_heaven_b.value, Stage.region_heaven_b1.value),
+    AE3EntranceMeta(Stage.entrance_heaven_b1b.value, Stage.region_heaven_b1.value, Stage.region_heaven_b.value),
+
+    # Toyhouse
+    AE3EntranceMeta(Stage.entrance_toyhouse_bb1.value, Stage.region_toyhouse_b.value, Stage.region_toyhouse_b1.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_b1b.value, Stage.region_toyhouse_b1.value, Stage.region_toyhouse_b.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_gg1.value, Stage.region_toyhouse_g.value, Stage.region_toyhouse_g1.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_g1g.value, Stage.region_toyhouse_g1.value, Stage.region_toyhouse_g.value),
+
+    # Iceland
+    AE3EntranceMeta(Stage.entrance_iceland_a1a.value, Stage.region_iceland_a1.value, Stage.region_iceland_a.value),
+    AE3EntranceMeta(Stage.entrance_iceland_aa1.value, Stage.region_iceland_a.value, Stage.region_iceland_a1.value),
+    AE3EntranceMeta(Stage.entrance_iceland_aa2.value, Stage.region_iceland_a.value, Stage.region_iceland_a2.value),
+    AE3EntranceMeta(Stage.entrance_iceland_a2a.value, Stage.region_iceland_a2.value, Stage.region_iceland_a.value),
+
+    # Arabian
+    AE3EntranceMeta(Stage.entrance_arabian_cc1.value, Stage.region_arabian_c.value, Stage.region_arabian_c1.value),
+    AE3EntranceMeta(Stage.entrance_arabian_c1c.value, Stage.region_arabian_c1.value, Stage.region_arabian_c.value),
+    AE3EntranceMeta(Stage.entrance_arabian_e1e.value, Stage.region_arabian_e1.value, Stage.region_arabian_e.value),
+    AE3EntranceMeta(Stage.entrance_arabian_ee1.value, Stage.region_arabian_e.value, Stage.region_arabian_e1.value),
 ]
 
 ## Entrances for selecting a stage
@@ -907,6 +988,83 @@ ENTRANCES_EDOTOWN : list[str] = [
     Stage.entrance_edotown_eb.value
 ]
 
+ENTRANCES_HEAVEN : list[str] = [
+    Stage.entrance_heaven_a1a.value,
+    Stage.entrance_heaven_aa1.value,
+    Stage.entrance_heaven_ab.value,
+    Stage.entrance_heaven_ba.value,
+    Stage.entrance_heaven_bb1.value,
+    Stage.entrance_heaven_b1b.value,
+    Stage.entrance_heaven_b1c.value,
+    Stage.entrance_heaven_cb1.value,
+    Stage.entrance_heaven_ce.value,
+    Stage.entrance_heaven_cd.value,
+    Stage.entrance_heaven_ec.value,
+    Stage.entrance_heaven_dc.value
+]
+
+ENTRANCES_TOYHOUSE : list[str] = [
+    Stage.entrance_toyhouse_bb1.value,
+    Stage.entrance_toyhouse_b1b.value,
+    Stage.entrance_toyhouse_gg1.value,
+    Stage.entrance_toyhouse_g1g.value,
+    Stage.entrance_toyhouse_ab.value,
+    Stage.entrance_toyhouse_ad.value,
+    Stage.entrance_toyhouse_ag.value,
+    Stage.entrance_toyhouse_ae.value,
+    Stage.entrance_toyhouse_ac.value,
+    Stage.entrance_toyhouse_ba.value,
+    Stage.entrance_toyhouse_da.value,
+    Stage.entrance_toyhouse_dh.value,
+    Stage.entrance_toyhouse_hd.value,
+    Stage.entrance_toyhouse_ga.value,
+    Stage.entrance_toyhouse_g1a.value,
+    Stage.entrance_toyhouse_ea.value,
+    Stage.entrance_toyhouse_ef.value,
+    Stage.entrance_toyhouse_fe.value,
+    Stage.entrance_toyhouse_fa.value,
+    Stage.entrance_toyhouse_ca.value
+]
+
+ENTRANCES_ICELAND : list[str] = [
+    Stage.entrance_iceland_a1a.value,
+    Stage.entrance_iceland_aa1.value,
+    Stage.entrance_iceland_aa2.value,
+    Stage.entrance_iceland_ad.value,
+    Stage.entrance_iceland_a2a.value,
+    Stage.entrance_iceland_a2e.value,
+    Stage.entrance_iceland_da.value,
+    Stage.entrance_iceland_dc.value,
+    Stage.entrance_iceland_cd.value,
+    Stage.entrance_iceland_cb.value,
+    Stage.entrance_iceland_bc.value,
+    Stage.entrance_iceland_be.value,
+    Stage.entrance_iceland_eb.value,
+    Stage.entrance_iceland_ef.value,
+    Stage.entrance_iceland_ea2.value
+]
+
+ENTRANCES_ARABIAN : list[str] = [
+    Stage.entrance_arabian_ac.value,
+    Stage.entrance_arabian_ac1.value,
+    Stage.entrance_arabian_ab.value,
+    Stage.entrance_arabian_ca.value,
+    Stage.entrance_arabian_cc1.value,
+    Stage.entrance_arabian_c1c.value,
+    Stage.entrance_arabian_c1a.value,
+    Stage.entrance_arabian_ba.value,
+    Stage.entrance_arabian_bg.value,
+    Stage.entrance_arabian_bf.value,
+    Stage.entrance_arabian_be1.value,
+    Stage.entrance_arabian_fb.value,
+    Stage.entrance_arabian_e1b.value,
+    Stage.entrance_arabian_e1e.value,
+    Stage.entrance_arabian_ee1.value,
+    Stage.entrance_arabian_eg.value,
+    Stage.entrance_arabian_ge.value,
+    Stage.entrance_arabian_gb.value
+]
+
 ENTRANCES_INDEX : dict[str, list[str]] = {
     APHelper.seaside.value              : ENTRANCES_SEASIDE,
     APHelper.woods.value                : ENTRANCES_WOODS,
@@ -918,10 +1076,10 @@ ENTRANCES_INDEX : dict[str, list[str]] = {
     APHelper.onsen.value                : ENTRANCES_ONSEN,
     APHelper.snowfesta.value            : ENTRANCES_SNOWFESTA,
     APHelper.edotown.value              : ENTRANCES_EDOTOWN,
-    # APHelper.heaven.value               : ENTRANCES_,
-    # APHelper.toyhouse.value             : ENTRANCES_,
-    # APHelper.iceland.value              : ENTRANCES_,
-    # APHelper.arabian.value              : ENTRANCES_,
+    APHelper.heaven.value               : ENTRANCES_HEAVEN,
+    APHelper.toyhouse.value             : ENTRANCES_TOYHOUSE,
+    APHelper.iceland.value              : ENTRANCES_ICELAND,
+    APHelper.arabian.value              : ENTRANCES_ARABIAN,
     # APHelper.asia.value                 : ENTRANCES_,
     # APHelper.plane.value                : ENTRANCES_,
     # APHelper.hong.value                 : ENTRANCES_,
