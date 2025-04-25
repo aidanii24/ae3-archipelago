@@ -371,7 +371,7 @@ STAGES_BOSSES : Sequence[str] = [
     Stage.region_boss1.value,
     Stage.region_boss2.value,
     Stage.region_boss3.value,
-    # Stage.region_boss4.value,
+    Stage.region_boss4.value,
     # Stage.region_boss5.value,
     # Stage.region_boss6.value,
     # Stage.region_specter1.value,
