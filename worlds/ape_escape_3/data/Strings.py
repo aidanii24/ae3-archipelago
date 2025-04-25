@@ -754,6 +754,7 @@ class Events(BaseEnum):
     asia_b2_button                    = "Eversummer Island - Village Gate Button"
     asia_e1_button                    = "Eversummer Island - Water Raised"
     plane_d_button                    = "Airplane Squadron - Clapper Button"
+    hong_b_kungfu                     = "Kung-Fu Alley - Stone Wall Kung-Fu Switch"
     hong_b2_button                    = "Kung-Fu Alley - Raised Wooden Door Button"
     bay_a7_button                     = "Midnight Bay - Factory Attic Button"
     bay_a5_button                     = "Midnight Bay - Warehouse Entrance Button"

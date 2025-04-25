@@ -1915,6 +1915,10 @@ EVENTS_PLANE_D : Sequence[str] = [
     Events.plane_d_button.value
 ]
 
+EVENTS_HONG_B : Sequence[str] = [
+    Events.hong_b_kungfu.value
+]
+
 EVENTS_HONG_B2 : Sequence[str] = [
     Events.hong_b2_button.value
 ]
@@ -1985,6 +1989,7 @@ EVENTS_INDEX : dict[str, Sequence[str]] = {
     Stage.region_asia_b2.value          : EVENTS_ASIA_B2,
     Stage.region_asia_e1.value          : EVENTS_ASIA_E1,
     Stage.region_plane_d.value          : EVENTS_PLANE_D,
+    Stage.region_hong_b.value           : EVENTS_HONG_B,
     Stage.region_hong_b2.value          : EVENTS_HONG_B2,
     Stage.region_bay_a7.value           : EVENTS_BAY_A7,
     Stage.region_bay_a5.value           : EVENTS_BAY_A5,

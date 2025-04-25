@@ -106,6 +106,26 @@ class Hard(LogicPreference):
             # Arabian
             Loc.arabian_minimon.value       : Rulesets(AccessRule.MAGICIAN, [AccessRule.DASH,
                                                                              AccessRule.SHOOT_BOOM]),
+
+            # Asia
+            Loc.bay_kazuo.value             : Rulesets(AccessRule.NINJA, AccessRule.HERO,
+                                                       [AccessRule.SHOOT, AccessRule.SWIM]),
+            Loc.asia_mohcha.value           : Rulesets(AccessRule.RCC),
+            Loc.asia_takumon.value          : Rulesets(AccessRule.SWIM, AccessRule.CATCH_LONG,
+                                                       [AccessRule.KUNGFU, AccessRule.RCC],
+                                                       [AccessRule.KUNGFU, AccessRule.CLUB],
+                                                       [AccessRule.KUNGFU, AccessRule.SHOOT],),
+            Loc.asia_ukki_ether.value       : Rulesets(AccessRule.SWIM, AccessRule.HERO),
+
+            # Plane
+            Loc.plane_mukita.value          : Rulesets(AccessRule.MAGICIAN),
+
+            # Hong
+            Loc.hong_ukki_chan.value        : Rulesets(AccessRule.SHOOT),
+            Loc.hong_uki_uki.value          : Rulesets(AccessRule.SHOOT, AccessRule.FLY),
+            Loc.hong_muki_muki.value        : Rulesets(AccessRule.SHOOT, AccessRule.FLY),
+            Loc.hong_bankan.value           : Rulesets(AccessRule.NINJA, AccessRule.HERO),
+            Loc.hong_sukei.value            : Rulesets(AccessRule.SHOOT, AccessRule.NINJA),
         })
 
         self.event_rules.update({
@@ -125,6 +145,13 @@ class Hard(LogicPreference):
 
             # Arabian
             Events.arabian_c_golden_mon.value           : Rulesets(AccessRule.CATCH),
+
+            # Asia
+            Events.asia_e1_button.value                 : Rulesets(AccessRule.RCC, AccessRule.SHOOT,
+                                                                   critical={AccessRule.FLY}),
+
+            # Hong
+            Events.hong_b_kungfu.value                  : Rulesets(AccessRule.KUNGFU),
         })
 
         self.entrance_rules.update({
@@ -305,6 +332,15 @@ class Normal(Hard):
             Loc.arabian_minimon.value           : Rulesets(AccessRule.MAGICIAN),
             Loc.arabian_cup_o_mon.value         : Rulesets(AccessRule.HIT),
 
+            # Asia
+            Loc.asia_baku.value                 : Rulesets([AccessRule.SHOOT, AccessRule.SWIM], AccessRule.NINJA),
+            Loc.asia_takumon.value              : Rulesets(AccessRule.SWIM, AccessRule.CATCH_LONG),
+            Loc.asia_ukki_ether.value           : Rulesets(AccessRule.SWIM),
+
+            # Plane
+            Loc.plane_jeloh.value               : Rulesets(AccessRule.HIT),
+            Loc.plane_bongo.value               : Rulesets(AccessRule.HIT),
+
             # Bosses
             Loc.boss_monkey_white.value         : Rulesets(AccessRule.HIT),
             Loc.boss_monkey_blue.value          : Rulesets(AccessRule.HIT),
@@ -345,6 +381,15 @@ class Normal(Hard):
 
             # Iceland
             Events.iceland_c_jumbo_robo.value           : Rulesets(AccessRule.HIT),
+
+            # Asia
+            Events.asia_b2_button.value                 : Rulesets(AccessRule.HIT),
+
+            # Plane
+            Events.plane_d_button.value                 : Rulesets(AccessRule.HIT),
+
+            # Hong
+            Events.hong_b2_button.value                 : Rulesets(AccessRule.HIT),
         })
 
         self.entrance_rules.update({
@@ -489,6 +534,23 @@ class Casual(Normal):
             # Arabian
             Loc.arabian_cup_o_mon.value         : Rulesets(AccessRule.ATTACK),
 
+            # Asia
+            Loc.asia_baku.value                 : Rulesets([AccessRule.SHOOT, AccessRule.SWIM]),
+            Loc.asia_takumon.value              : Rulesets(AccessRule.SWIM),
+
+            # Plane
+            Loc.plane_temko.value               : Rulesets(AccessRule.DASH),
+            Loc.plane_pipotron_blue.value       : Rulesets(AccessRule.MORPH_NO_MONKEY),
+            Loc.plane_jeloh.value               : Rulesets(AccessRule.ATTACK),
+            Loc.plane_bongo.value               : Rulesets(AccessRule.ATTACK),
+
+            # Hong
+            Loc.hong_uki_uki.value              : Rulesets(AccessRule.SHOOT),
+            Loc.hong_muki_muki.value            : Rulesets(AccessRule.SHOOT),
+            Loc.hong_bassili_ukki.value         : Rulesets(AccessRule.DASH),
+            Loc.hong_bankan.value               : Rulesets(AccessRule.NINJA),
+            Loc.hong_sukei.value                : Rulesets(AccessRule.SHOOT),
+
             # Bosses
             Loc.boss_monkey_white.value         : Rulesets(AccessRule.ATTACK),
             Loc.boss_monkey_blue.value          : Rulesets(AccessRule.ATTACK),
@@ -531,6 +593,15 @@ class Casual(Normal):
 
             # Iceland
             Events.iceland_c_jumbo_robo.value           : Rulesets(AccessRule.ATTACK),
+
+            # Asia
+            Events.asia_b2_button.value                 : Rulesets(AccessRule.ATTACK),
+
+            # Plane
+            Events.plane_d_button.value                 : Rulesets(AccessRule.ATTACK),
+
+            # Hong
+            Events.hong_b2_button.value                 : Rulesets(AccessRule.ATTACK),
         })
 
         self.entrance_rules.update({
