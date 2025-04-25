@@ -573,10 +573,10 @@ ENTRANCES_MAIN : list[AE3EntranceMeta] = [
 
     # Toyhouse
     AE3EntranceMeta(Stage.entrance_toyhouse_ab.value, Stage.region_toyhouse_a.value, Stage.region_toyhouse_b.value),
-    AE3EntranceMeta(Stage.entrance_toyhouse_ad.value, Stage.region_toyhouse_d.value, Stage.region_toyhouse_d.value),
-    AE3EntranceMeta(Stage.entrance_toyhouse_ag.value, Stage.region_toyhouse_g.value, Stage.region_toyhouse_g.value),
-    AE3EntranceMeta(Stage.entrance_toyhouse_ae.value, Stage.region_toyhouse_e.value, Stage.region_toyhouse_e.value),
-    AE3EntranceMeta(Stage.entrance_toyhouse_ac.value, Stage.region_toyhouse_c.value, Stage.region_toyhouse_c.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_ad.value, Stage.region_toyhouse_a.value, Stage.region_toyhouse_d.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_ag.value, Stage.region_toyhouse_a.value, Stage.region_toyhouse_g.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_ae.value, Stage.region_toyhouse_a.value, Stage.region_toyhouse_e.value),
+    AE3EntranceMeta(Stage.entrance_toyhouse_ac.value, Stage.region_toyhouse_a.value, Stage.region_toyhouse_c.value),
     AE3EntranceMeta(Stage.entrance_toyhouse_ba.value, Stage.region_toyhouse_b.value, Stage.region_toyhouse_a.value),
     AE3EntranceMeta(Stage.entrance_toyhouse_da.value, Stage.region_toyhouse_d.value, Stage.region_toyhouse_a.value),
     AE3EntranceMeta(Stage.entrance_toyhouse_dh.value, Stage.region_toyhouse_d.value, Stage.region_toyhouse_h.value),
