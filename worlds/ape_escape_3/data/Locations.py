@@ -63,7 +63,6 @@ class CameraLocation(AE3LocationMeta):
     def to_location(self, player : int, parent : Region) -> Location:
         return Location(player, self.name, self.loc_id, parent)
 
-from .Items import Cellphone_Name_to_ID
 class CellphoneLocation(AE3LocationMeta):
     def __init__(self, text_id : str):
         self.name = Cellphone_Name_to_ID[text_id]
@@ -1341,7 +1340,7 @@ ACTORS_INDEX : dict[str, list[str]] = {
     Loc.toyhouse_cam.value              : [Loc.toyhouse_bon_mota.value, Loc.toyhouse_bon_verna.value,
                                            Loc.toyhouse_bon_papa.value, Loc.toyhouse_bon_mama.value],
     Loc.iceland_cam.value               : [Loc.iceland_jolly_mon.value],
-    Loc.arabian_cam.value               : [Loc.arabian_princess_judy],
+    Loc.arabian_cam.value               : [Loc.arabian_princess_judy.value],
     Loc.asia_cam.value                  : [Loc.asia_ukki_mat.value],
     Loc.plane_cam.value                 : [Loc.plane_prince_bertus.value, Loc.plane_chai_bunny.value],
     Loc.hong_cam.value                  : [Loc.hong_bassili_ukki.value],
@@ -1538,12 +1537,16 @@ CELLPHONES_ARABIAN_A : Sequence[str] = [
     Loc.tele_032.value, Loc.tele_033.value
 ]
 
+CELLPHONES_ARABIAN_B : Sequence[str] = [
+    Loc.tele_042ar.value
+]
+
 CELLPHONES_ARABIAN_E1 : Sequence[str] = [
     Loc.tele_034.value
 ]
 
 CELLPHONES_ARABIAN : Sequence[str] = [
-    *CELLPHONES_ARABIAN_A, *CELLPHONES_ARABIAN_E1
+    *CELLPHONES_ARABIAN_A, *CELLPHONES_ARABIAN_B, *CELLPHONES_ARABIAN_E1
 ]
 
 CELLPHONES_ASIA_B : Sequence[str] = [
@@ -1575,7 +1578,7 @@ CELLPHONES_HONG_B1 : Sequence[str] = [
 ]
 
 CELLPHONES_HONG_D : Sequence[str] = [
-    Loc.tele_042.value
+    Loc.tele_042ho.value
 ]
 
 CELLPHONES_HONG : Sequence[str] = [
@@ -1610,14 +1613,15 @@ CELLPHONES_SPACE : Sequence[str] = [
     *CELLPHONES_SPACE_A, *CELLPHONES_SPACE_B
 ]
 
+# Lists all first known instances of a duplicate phone call in vanilla progression
 CELLPHONES_ID_DUPLICATES : Sequence[str] = [
     Loc.tele_004ss.value, Loc.tele_012cc.value, Loc.tele_021on.value, Loc.tele_022sf.value, Loc.tele_030tv.value,
-    Loc.tele_040h_a.value
+    Loc.tele_040h_a.value, Loc.tele_042ar.value
 ]
 
 CELLPHONES_STAGE_DUPLICATES : Sequence[str] = [
     Stage.woods_a.value, Stage.toyhouse_c.value, Stage.iceland_d.value, Stage.plane_e.value, Stage.toyhouse_g.value,
-    Stage.hong_b.value
+    Stage.hong_b.value, Stage.hong_d.value
 ]
 
 CELLPHONES_MASTER : Sequence[str] = [
@@ -1672,6 +1676,7 @@ CELLPHONES_INDEX : dict[str, Sequence[str]] = {
     Stage.region_iceland_d.value                : CELLPHONES_ICELAND_D,
 
     Stage.region_arabian_a.value                : CELLPHONES_ARABIAN_A,
+    Stage.region_arabian_b.value                : CELLPHONES_ARABIAN_B,
     Stage.region_arabian_e1.value               : CELLPHONES_ARABIAN_E1,
 
     Stage.region_asia_b.value                   : CELLPHONES_ASIA_B,
@@ -1733,6 +1738,7 @@ CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
     Stage.iceland_d.value               : CELLPHONES_ICELAND_D,
 
     Stage.arabian_a.value               : CELLPHONES_ARABIAN_A,
+    Stage.arabian_b.value               : CELLPHONES_ARABIAN_B,
     Stage.arabian_e.value               : CELLPHONES_ARABIAN_E1,
 
     Stage.asia_b.value                  : CELLPHONES_ASIA_B,
@@ -1750,6 +1756,62 @@ CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
 
     Stage.space_a.value                 : CELLPHONES_SPACE_A,
     Stage.space_b.value                 : CELLPHONES_SPACE_B,
+}
+
+Cellphone_Name_to_ID : dict[str, str] = {
+    Loc.tele_000.value              : Loc.cell_000.value,
+    Loc.tele_001.value              : Loc.cell_001.value,
+    Loc.tele_002.value              : Loc.cell_002.value,
+    Loc.tele_003.value              : Loc.cell_003.value,
+    Loc.tele_004ss.value            : Loc.cell_004ss.value,
+    Loc.tele_004wo.value            : Loc.cell_004wo.value,
+    Loc.tele_006.value              : Loc.cell_006.value,
+    Loc.tele_007.value              : Loc.cell_007.value,
+    Loc.tele_008.value              : Loc.cell_008.value,
+    Loc.tele_009.value              : Loc.cell_009.value,
+    Loc.tele_010.value              : Loc.cell_010.value,
+    Loc.tele_011.value              : Loc.cell_011.value,
+    Loc.tele_012cc.value            : Loc.cell_012cc.value,
+    Loc.tele_012tv.value            : Loc.cell_012tv.value,
+    Loc.tele_013.value              : Loc.cell_013.value,
+    Loc.tele_014.value              : Loc.cell_014.value,
+    Loc.tele_015.value              : Loc.cell_015.value,
+    Loc.tele_016.value              : Loc.cell_016.value,
+    Loc.tele_017.value              : Loc.cell_017.value,
+    Loc.tele_018.value              : Loc.cell_018.value,
+    Loc.tele_019.value              : Loc.cell_019.value,
+    Loc.tele_020.value              : Loc.cell_020.value,
+    Loc.tele_021on.value            : Loc.cell_021on.value,
+    Loc.tele_021ic.value            : Loc.cell_021ic.value,
+    Loc.tele_022sf.value            : Loc.cell_022sf.value,
+    Loc.tele_022pl.value            : Loc.cell_022pl.value,
+    Loc.tele_023.value              : Loc.cell_023.value,
+    Loc.tele_024.value              : Loc.cell_024.value,
+    Loc.tele_025.value              : Loc.cell_025.value,
+    Loc.tele_026.value              : Loc.cell_026.value,
+    Loc.tele_028.value              : Loc.cell_028.value,
+    Loc.tele_029.value              : Loc.cell_029.value,
+    Loc.tele_030tv.value            : Loc.cell_030tv.value,
+    Loc.tele_030ty.value            : Loc.cell_030ty.value,
+    Loc.tele_031.value              : Loc.cell_031.value,
+    Loc.tele_032.value              : Loc.cell_032.value,
+    Loc.tele_033.value              : Loc.cell_033.value,
+    Loc.tele_034.value              : Loc.cell_034.value,
+    Loc.tele_035.value              : Loc.cell_035.value,
+    Loc.tele_037.value              : Loc.cell_037.value,
+    Loc.tele_039.value              : Loc.cell_039.value,
+    Loc.tele_040h_a.value           : Loc.cell_040h_a.value,
+    Loc.tele_040h_b.value           : Loc.cell_040h_b.value,
+    Loc.tele_042ar.value            : Loc.cell_042ar.value,
+    Loc.tele_042ho.value            : Loc.cell_042ho.value,
+    Loc.tele_044.value              : Loc.cell_044.value,
+    Loc.tele_045.value              : Loc.cell_045.value,
+    Loc.tele_047.value              : Loc.cell_047.value,
+    Loc.tele_048.value              : Loc.cell_048.value,
+    Loc.tele_051.value              : Loc.cell_051.value,
+    Loc.tele_052.value              : Loc.cell_052.value,
+    Loc.tele_062.value              : Loc.cell_062.value,
+    Loc.tele_063.value              : Loc.cell_063.value,
 }
 
 ### [< --- EVENT GROUPS --- >]

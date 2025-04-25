@@ -2,12 +2,11 @@ from typing import TYPE_CHECKING, Set, List
 
 from NetUtils import ClientStatus, NetworkItem
 
-from .data.Items import ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem, Capacities, AP, \
-    Cellphone_Name_to_ID
+from .data.Items import ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem, Capacities, AP
 from .data.Strings import Game, Itm, APHelper
 from .data.Addresses import NTSCU
-from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, Loc, CAMERAS_STAGE_INDEX, MONKEYS_BOSSES, \
-    MONKEYS_DIRECTORY
+from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_INDEX, MONKEYS_BOSSES, \
+    MONKEYS_DIRECTORY, Loc, Cellphone_Name_to_ID
 from .data import Items
 
 if TYPE_CHECKING:
