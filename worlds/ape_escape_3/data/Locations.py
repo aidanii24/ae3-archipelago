@@ -455,7 +455,7 @@ MONKEYS_EDOTOWN_F : Sequence[str] = [
 ]
 
 MONKEYS_EDOTOWN : Sequence[str] = [
-    *MONKEYS_EDOTOWN_A, *MONKEYS_EDOTOWN_B, *MONKEYS_EDOTOWN_C, *MONKEYS_EDOTOWN_C1, *MONKEYS_EDOTOWN_C1,
+    *MONKEYS_EDOTOWN_A, *MONKEYS_EDOTOWN_B, *MONKEYS_EDOTOWN_C, *MONKEYS_EDOTOWN_C1, *MONKEYS_EDOTOWN_C2,
     *MONKEYS_EDOTOWN_D, *MONKEYS_EDOTOWN_E, *MONKEYS_EDOTOWN_F
 ]
 
@@ -1287,7 +1287,7 @@ CAMERAS_INDEX : dict[str, str] = {
     Stage.region_ciscocity_b.value             : Loc.ciscocity_cam.value,
     Stage.region_studio_e.value                : Loc.studio_cam.value,
     Stage.region_halloween_c.value             : Loc.halloween_cam.value,
-    Stage.region_western_d2.value               : Loc.western_cam.value,
+    Stage.region_western_d2.value              : Loc.western_cam.value,
     Stage.region_onsen_a.value                 : Loc.onsen_cam.value,
     Stage.region_snowfesta_a.value             : Loc.snowfesta_cam.value,
     Stage.region_edotown_c.value               : Loc.edotown_cam.value,
@@ -1434,6 +1434,10 @@ CELLPHONES_HALLOWEEN_D : Sequence[str] = [
     Loc.tele_017.value
 ]
 
+CELLPHONES_HALLOWEEN_A_ALL : Sequence[str] = [
+    *CELLPHONES_HALLOWEEN_A, *CELLPHONES_HALLOWEEN_A1,
+]
+
 CELLPHONES_HALLOWEEN : Sequence[str] = [
     *CELLPHONES_HALLOWEEN_A, *CELLPHONES_HALLOWEEN_A1, *CELLPHONES_HALLOWEEN_C1, *CELLPHONES_HALLOWEEN_D
 ]
@@ -1490,8 +1494,12 @@ CELLPHONES_EDOTOWN_C2 : Sequence[str] = [
     Loc.tele_026.value
 ]
 
+CELLPHONES_EDOTOWN_C_ALL : Sequence[str] = [
+    *CELLPHONES_EDOTOWN_C1, *CELLPHONES_EDOTOWN_C2
+]
+
 CELLPHONES_EDOTOWN : Sequence[str] = [
-    *CELLPHONES_EDOTOWN_A1, *CELLPHONES_EDOTOWN_B1, *CELLPHONES_EDOTOWN_C1
+    *CELLPHONES_EDOTOWN_A1, *CELLPHONES_EDOTOWN_B1, *CELLPHONES_EDOTOWN_C1, *CELLPHONES_EDOTOWN_C2
 ]
 
 CELLPHONES_HEAVEN_A1 : Sequence[str] = [
@@ -1633,9 +1641,10 @@ CELLPHONES_INDEX : dict[str, Sequence[str]] = {
     Stage.region_ciscocity_a.value              : CELLPHONES_CISCOCITY_A,
 
     Stage.region_studio_a.value                 : CELLPHONES_STUDIO_A,
-    Stage.region_studio_b1.value                 : CELLPHONES_STUDIO_B1,
+    Stage.region_studio_b1.value                : CELLPHONES_STUDIO_B1,
     Stage.region_studio_f.value                 : CELLPHONES_STUDIO_F,
 
+    Stage.region_halloween_a.value              : CELLPHONES_HALLOWEEN_A,
     Stage.region_halloween_a1.value             : CELLPHONES_HALLOWEEN_A1,
     Stage.region_halloween_c1.value             : CELLPHONES_HALLOWEEN_C1,
     Stage.region_halloween_d.value              : CELLPHONES_HALLOWEEN_D,
@@ -1649,9 +1658,10 @@ CELLPHONES_INDEX : dict[str, Sequence[str]] = {
 
     Stage.region_snowfesta_f.value              : CELLPHONES_SNOWFESTA_F,
 
-    Stage.region_edotown_a1.value                : CELLPHONES_EDOTOWN_A1,
+    Stage.region_edotown_a1.value               : CELLPHONES_EDOTOWN_A1,
     Stage.region_edotown_b1.value               : CELLPHONES_EDOTOWN_B1,
     Stage.region_edotown_c1.value               : CELLPHONES_EDOTOWN_C1,
+    Stage.region_edotown_c2.value               : CELLPHONES_EDOTOWN_C2,
 
     Stage.region_heaven_a1.value                 : CELLPHONES_HEAVEN_A1,
 
@@ -1697,7 +1707,7 @@ CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
     Stage.studio_b.value                : CELLPHONES_STUDIO_B1,
     Stage.studio_f.value                : CELLPHONES_STUDIO_F,
 
-    Stage.halloween_a.value             : CELLPHONES_HALLOWEEN_A1,
+    Stage.halloween_a.value             : CELLPHONES_HALLOWEEN_A_ALL,
     Stage.halloween_c.value             : CELLPHONES_HALLOWEEN_C1,
     Stage.halloween_d.value             : CELLPHONES_HALLOWEEN_D,
 
@@ -1712,7 +1722,7 @@ CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
 
     Stage.edotown_a.value               : CELLPHONES_EDOTOWN_A1,
     Stage.edotown_b.value               : CELLPHONES_EDOTOWN_B1,
-    Stage.edotown_c.value               : CELLPHONES_EDOTOWN_C1,
+    Stage.edotown_c.value               : CELLPHONES_EDOTOWN_C_ALL,
 
     Stage.heaven_a.value                : CELLPHONES_HEAVEN_A1,
 
