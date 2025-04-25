@@ -90,6 +90,22 @@ class Hard(LogicPreference):
             # Snowfesta
             Loc.snowfesta_kimisuke.value    : Rulesets(AccessRule.SHOOT),
             Loc.snowfesta_mitsuro.value     : Rulesets(AccessRule.SHOOT),
+
+            # Heaven
+            Loc.heaven_chomon.value         : Rulesets(AccessRule.RCC),
+
+            # Toyhouse
+            Loc.toyhouse_monto.value        : Rulesets(AccessRule.SHOOT, AccessRule.FLY),
+            Loc.toyhouse_mokitani.value     : Rulesets(AccessRule.RCC),
+
+            # Iceland
+            Loc.iceland_jolly_mon.value     : Rulesets(AccessRule.SLING),
+            Loc.iceland_hikkori.value       : Rulesets(AccessRule.SLING),
+            Loc.iceland_rammy.value         : Rulesets(AccessRule.SLING),
+
+            # Arabian
+            Loc.arabian_minimon.value       : Rulesets(AccessRule.MAGICIAN, [AccessRule.DASH,
+                                                                             AccessRule.SHOOT_BOOM]),
         })
 
         self.event_rules.update({
@@ -102,7 +118,13 @@ class Hard(LogicPreference):
 
             # Edotown
             Events.edotown_e_scroll.value               : Rulesets(AccessRule.CLUB, AccessRule.HOOP,
-                                                                   AccessRule.MORPH)
+                                                                   AccessRule.MORPH),
+
+            # Iceland
+            Events.iceland_e_button.value               : Rulesets(AccessRule.SLING),
+
+            # Arabian
+            Events.arabian_c_golden_mon.value           : Rulesets(AccessRule.CATCH),
         })
 
         self.entrance_rules.update({
@@ -174,7 +196,33 @@ class Hard(LogicPreference):
                                                             AccessRule.NINJA], AccessRule.SWIM, AccessRule.HERO),
             Stage.entrance_edotown_be.value     : Rulesets(event_invoked(Events.edotown_e_scroll.value)),
             Stage.entrance_edotown_df.value     : Rulesets(AccessRule.MONKEY),
-            Stage.entrance_edotown_eb.value     : Rulesets(event_invoked(Events.edotown_e_scroll.value))
+            Stage.entrance_edotown_eb.value     : Rulesets(event_invoked(Events.edotown_e_scroll.value)),
+
+            # Heaven
+            Stage.entrance_heaven_ab.value      : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_heaven_ba.value      : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_heaven_b1b.value     : Rulesets(event_invoked(Events.heaven_b_clapper.value)),
+            Stage.entrance_heaven_ce.value      : Rulesets(AccessRule.MONKEY),
+
+            # Toyhouse
+            Stage.entrance_toyhouse_ae.value    : Rulesets(AccessRule.NINJA),
+            Stage.entrance_toyhouse_ea.value    : Rulesets(AccessRule.NINJA),
+            Stage.entrance_toyhouse_dh.value    : Rulesets(AccessRule.MONKEY),
+
+            # Iceland
+            Stage.entrance_iceland_a2e.value    : Rulesets(event_invoked(Events.iceland_e_button.value)),
+            Stage.entrance_iceland_ea2.value    : Rulesets(event_invoked(Events.iceland_e_button.value)),
+            Stage.entrance_iceland_ef.value     : Rulesets(AccessRule.MONKEY),
+            Stage.entrance_iceland_cb.value     : Rulesets(event_invoked(Events.iceland_c_jumbo_robo.value)),
+
+            # Arabian
+            Stage.entrance_arabian_ac.value     : Rulesets([AccessRule.RCC, AccessRule.SHOOT]),
+            Stage.entrance_arabian_ac1.value    : Rulesets(event_invoked(Events.arabian_c1_exit.value)),
+            Stage.entrance_arabian_cc1.value    : Rulesets(event_invoked(Events.arabian_c_golden_mon.value)),
+            Stage.entrance_arabian_c1c.value    : Rulesets(event_invoked(Events.arabian_c_golden_mon.value)),
+            Stage.entrance_arabian_bg.value     : Rulesets(event_invoked(Events.arabian_g_exit.value)),
+            Stage.entrance_arabian_bf.value     : Rulesets(event_invoked(Events.arabian_g_exit.value)),
+            Stage.entrance_arabian_e1e.value    : Rulesets(AccessRule.MAGICIAN),
         })
 
 class Normal(Hard):
@@ -238,6 +286,25 @@ class Normal(Hard):
             Loc.edotown_fatty_mcfats.value      : Rulesets(AccessRule.HIT),
             Loc.edotown_walter.value            : Rulesets(AccessRule.NINJA),
 
+            # Heaven
+            Loc.heaven_ukkido.value             : Rulesets(AccessRule.ATTACK),
+            Loc.heaven_tami.value               : Rulesets(AccessRule.HIT),
+            Loc.heaven_valuccha.value           : Rulesets(AccessRule.ATTACK),
+
+            # Toyhouse
+            Loc.toyhouse_monto.value            : Rulesets(AccessRule.SHOOT, AccessRule.NINJA),
+            Loc.toyhouse_golonero.value         : Rulesets(AccessRule.HIT),
+
+            # Iceland
+            Loc.iceland_kushachin.value         : Rulesets(AccessRule.HIT),
+            Loc.iceland_malikko.value           : Rulesets(AccessRule.HIT),
+            Loc.iceland_bolikko.value           : Rulesets(AccessRule.HIT),
+            Loc.iceland_iceymon.value           : Rulesets(AccessRule.HIT),
+
+            # Arabian
+            Loc.arabian_minimon.value           : Rulesets(AccessRule.MAGICIAN),
+            Loc.arabian_cup_o_mon.value         : Rulesets(AccessRule.HIT),
+
             # Bosses
             Loc.boss_monkey_white.value         : Rulesets(AccessRule.HIT),
             Loc.boss_monkey_blue.value          : Rulesets(AccessRule.HIT),
@@ -272,6 +339,12 @@ class Normal(Hard):
 
             # Edotown
             Events.edotown_b1_button.value              : Rulesets(AccessRule.HIT),
+
+            # Heaven
+            Events.heaven_b_clapper.value               : Rulesets(AccessRule.HIT),
+
+            # Iceland
+            Events.iceland_c_jumbo_robo.value           : Rulesets(AccessRule.HIT),
         })
 
         self.entrance_rules.update({
@@ -314,6 +387,18 @@ class Normal(Hard):
             Stage.entrance_edotown_c1c.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
             Stage.entrance_edotown_cc1.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
             Stage.entrance_edotown_cc2.value    : Rulesets(AccessRule.HIT),
+
+            # Heaven
+            Stage.entrance_heaven_bb1.value     : Rulesets(AccessRule.HIT),
+
+            # Toyhouse
+            Stage.entrance_toyhouse_bb1.value   : Rulesets(AccessRule.HIT),
+            Stage.entrance_toyhouse_ef.value    : Rulesets(AccessRule.HIT),
+            Stage.entrance_toyhouse_fe.value    : Rulesets(AccessRule.HIT),
+            Stage.entrance_toyhouse_fa.value    : Rulesets(AccessRule.HIT),
+
+            # Iceland
+            Stage.entrance_iceland_a1a.value    : Rulesets(AccessRule.HIT),
         })
 
 class Casual(Normal):
@@ -383,6 +468,27 @@ class Casual(Normal):
             Loc.edotown_fatty_mcfats.value      : Rulesets(AccessRule.ATTACK),
             Loc.edotown_golota.value            : Rulesets(AccessRule.ATTACK),
 
+            # Heaven
+            Loc.heaven_ukkido.value             : Rulesets(AccessRule.SHOOT),
+            Loc.heaven_tami.value               : Rulesets(AccessRule.ATTACK),
+            Loc.heaven_kicchino.value           : Rulesets(AccessRule.MORPH_NO_MONKEY),
+            Loc.heaven_kimurin.value            : Rulesets(AccessRule.MORPH_NO_MONKEY),
+            Loc.heaven_valuccha.value           : Rulesets(AccessRule.SHOOT),
+
+            # Toyhouse
+            Loc.toyhouse_monto.value            : Rulesets(AccessRule.SHOOT),
+            Loc.toyhouse_pipotron_red.value     : Rulesets(AccessRule.MORPH_NO_MONKEY),
+            Loc.toyhouse_golonero.value         : Rulesets(AccessRule.ATTACK),
+
+            # Iceland
+            Loc.iceland_kushachin.value         : Rulesets(AccessRule.ATTACK),
+            Loc.iceland_malikko.value           : Rulesets(AccessRule.ATTACK),
+            Loc.iceland_bolikko.value           : Rulesets(AccessRule.ATTACK),
+            Loc.iceland_iceymon.value           : Rulesets(AccessRule.ATTACK),
+
+            # Arabian
+            Loc.arabian_cup_o_mon.value         : Rulesets(AccessRule.ATTACK),
+
             # Bosses
             Loc.boss_monkey_white.value         : Rulesets(AccessRule.ATTACK),
             Loc.boss_monkey_blue.value          : Rulesets(AccessRule.ATTACK),
@@ -419,6 +525,12 @@ class Casual(Normal):
             Events.edotown_e_scroll.value               : Rulesets(AccessRule.CLUB, AccessRule.KNIGHT,
                                                                    AccessRule.NINJA, AccessRule.MAGICIAN,
                                                                    AccessRule.KUNGFU),
+
+            # Heaven
+            Events.heaven_b_clapper.value               : Rulesets(AccessRule.ATTACK),
+
+            # Iceland
+            Events.iceland_c_jumbo_robo.value           : Rulesets(AccessRule.ATTACK),
         })
 
         self.entrance_rules.update({
@@ -484,5 +596,24 @@ class Casual(Normal):
             Stage.entrance_edotown_c1c.value    : Rulesets(AccessRule.NINJA),
             Stage.entrance_edotown_cc1.value    : Rulesets(AccessRule.NINJA),
             Stage.entrance_edotown_cc2.value    : Rulesets(AccessRule.ATTACK),
+
+            # Heaven
+            Stage.entrance_heaven_a1a.value     : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_heaven_aa1.value     : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_heaven_ab.value      : Rulesets(AccessRule.NINJA, AccessRule.HERO, [AccessRule.FLYER,
+                                                            AccessRule.HOOP]),
+            Stage.entrance_heaven_bb1.value     : Rulesets(AccessRule.ATTACK),
+
+            # Toyhouse
+            Stage.entrance_toyhouse_bb1.value   : Rulesets(AccessRule.ATTACK),
+            Stage.entrance_toyhouse_ef.value    : Rulesets(AccessRule.ATTACK),
+            Stage.entrance_toyhouse_fe.value    : Rulesets(AccessRule.ATTACK),
+            Stage.entrance_toyhouse_fa.value    : Rulesets(AccessRule.ATTACK),
+
+            # Iceland
+            Stage.entrance_iceland_a1a.value    : Rulesets(AccessRule.ATTACK),
+            Stage.entrance_iceland_aa2.value    : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_iceland_a2a.value    : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_iceland_be.value     : Rulesets(AccessRule.DASH),
         })
 
