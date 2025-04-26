@@ -173,6 +173,7 @@ class Hard(LogicPreference):
 
             # Tomo
             Events.tomo_e2_kungfu.value                 : Rulesets(AccessRule.KUNGFU),
+            Events.tomo_g_button.value                  : Rulesets(AccessRule.RCC),
 
             # Space
             Events.space_g_button.value                 : Rulesets(AccessRule.SWIM),
@@ -372,7 +373,7 @@ class Hard(LogicPreference):
             Stage.entrance_tomo_f1f2.value      : Rulesets(AccessRule.NINJA, AccessRule.HERO),
             Stage.entrance_tomo_f2f1.value      : Rulesets(AccessRule.NINJA, AccessRule.HERO),
             Stage.entrance_tomo_gg1.value       : Rulesets(AccessRule.KUNGFU),
-            Stage.entrance_tomo_g1f.value       : Rulesets(event_invoked(Events.tomo_g_kungfu.value)),
+            Stage.entrance_tomo_g1f.value       : Rulesets(event_invoked(Events.tomo_g_button.value)),
             Stage.entrance_tomo_h1h.value       : Rulesets(AccessRule.GLIDE),
             Stage.entrance_tomo_ha.value        : Rulesets(AccessRule.SHOOT),
 
