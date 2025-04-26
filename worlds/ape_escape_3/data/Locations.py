@@ -2006,7 +2006,7 @@ EVENTS_INDEX : dict[str, Sequence[str]] = {
     Stage.region_tomo_g.value           : EVENTS_TOMO_G,
     Stage.region_tomo_h.value           : EVENTS_TOMO_H,
     Stage.region_space_e1.value         : EVENTS_SPACE_E1,
-    Stage.region_space_g.value         : EVENTS_SPACE_G,
+    Stage.region_space_g.value          : EVENTS_SPACE_G,
     Stage.region_space_g1.value         : EVENTS_SPACE_G1,
     Stage.region_space_f1.value         : EVENTS_SPACE_F1,
     Stage.region_space_f2.value         : EVENTS_SPACE_F2,

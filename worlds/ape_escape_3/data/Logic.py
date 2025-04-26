@@ -164,6 +164,9 @@ class AccessRule:
     HERO = can_hero
     MONKEY = can_monkey
 
+    # NULL
+    NULL = (lambda state, player : False)
+
     # Glitches
     GLITCH_FLY = 0
     GLITCH_FLOAT = 0
@@ -268,12 +271,11 @@ class ProgressionMode(Enum):
         if auto_set:
             bosses : int = len(MONKEYS_BOSSES) - 2
             for _ in range(0, bosses):
-                break
-                # world.get_location(MONKEYS_BOSSES[_]).place_locked_item(Channel_Key.to_item(world.player))
+                world.get_location(MONKEYS_BOSSES[_]).place_locked_item(Channel_Key.to_item(world.player))
 
             amt -= bosses
 
-        return Channel_Key.to_items(world.player, amt + 4)
+        return Channel_Key.to_items(world.player, amt)
 
     def get_current_progress(self, keys : int) -> int:
         unlocks : int = 0
