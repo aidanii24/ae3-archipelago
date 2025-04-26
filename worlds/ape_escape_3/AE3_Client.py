@@ -122,6 +122,7 @@ class AE3Context(CommonContext):
 
     # Player Set Options
     progression: ProgressionMode = ProgressionMode.BOSS
+    dummy_morph : int = -1
     camerasanity : int = None
     cellphonesanity : bool = None
 
@@ -174,6 +175,11 @@ class AE3Context(CommonContext):
             if not self.unlocked_channels and APHelper.progression_mode.value in self.slot_data:
                 self.progression = ProgressionMode.get_progression_mode(self.slot_data[APHelper.progression_mode.value])
                 self.unlocked_channels = self.progression.get_current_progress(0)
+
+            ## Monkeysanity - Break Rooms
+            if APHelper.monkeysanitybr.value in self.slot_data:
+                if self.slot_data[APHelper.monkeysanitybr.value] < 2:
+                    self.dummy_morph = 0
 
             ## Camerasanity
             if self.camerasanity is None and APHelper.camerasanity.value in self.slot_data:
