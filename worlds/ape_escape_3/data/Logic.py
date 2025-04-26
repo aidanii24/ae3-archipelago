@@ -272,7 +272,6 @@ class ProgressionMode(Enum):
                 # world.get_location(MONKEYS_BOSSES[_]).place_locked_item(Channel_Key.to_item(world.player))
 
             amt -= bosses
-        print("Keys", amt)
         return Channel_Key.to_items(world.player, amt + 4)
 
     def get_current_progress(self, keys : int) -> int:
