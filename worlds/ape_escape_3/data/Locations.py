@@ -1940,7 +1940,7 @@ EVENTS_TOMO_E2 : Sequence[str] = [
 ]
 
 EVENTS_TOMO_G : Sequence[str] = [
-    Events.tomo_g_kungfu.value
+    Events.tomo_g_button.value
 ]
 
 EVENTS_TOMO_H : Sequence[str] = [
