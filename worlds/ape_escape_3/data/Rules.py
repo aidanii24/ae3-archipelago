@@ -50,13 +50,16 @@ class LogicPreference:
 
             for _ in range(levels + extra):
                 rule : Rulesets = Rulesets()
+                req : int = sets
 
                 if sets > 0:
-                    rule = Rulesets(has_keys(sets))
+                    rule = Rulesets(has_keys(req))
                 elif sets == len(progression.value):
+                    req -= 1
                     rule = Rulesets(self.final_level_rule.add(has_keys(sets - 1)))
 
                 self.entrance_rules[ENTRANCES_STAGE_SELECT[levels_count].name] = rule
+                print(ENTRANCES_STAGE_SELECT[levels_count].name, req)
 
                 levels_count += 1
 
@@ -838,7 +841,7 @@ class Casual(Normal):
 
         self.entrance_rules.update({
             # Seaside
-            Stage.entrance_seaside_ab.value     : Rulesets(AccessRule.ATTACK),
+            Stage.entrance_seaside_ab.value     : Rulesets(AccessRule.NULL),
 
             # Woods
             Stage.entrance_woods_bc.value       : Rulesets(AccessRule.ATTACK),
