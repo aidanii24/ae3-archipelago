@@ -292,6 +292,12 @@ class AEPS2Interface:
         as_bytes : bytes = area.encode() + b'\x00'
         self.pine.write_bytes(self.addresses.GameStates[Game.area_dest.value], as_bytes)
 
+    def clear_spawn(self):
+        address : int = self.addresses.GameStates[Game.spawn.value]
+        for _ in range(3):
+            self.pine.write_int32(address, 0x0)
+            address += 4
+
     def set_cookies(self, amount : float):
         as_int : int = float_to_hex_int32(amount)
         self.pine.write_int32(self.addresses.GameStates[Game.cookies.value], as_int)

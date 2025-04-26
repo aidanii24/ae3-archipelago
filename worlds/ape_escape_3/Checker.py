@@ -111,6 +111,10 @@ async def setup_level_select(ctx : 'AE3Context'):
             for _ in range(3):
                 ctx.ipc.unlock_chassis_direct(_)
 
+    if ctx.ipc.is_a_level_confirmed():
+        ctx.ipc.clear_spawn()
+
+
 async def setup_area(ctx : 'AE3Context'):
     # Check Screen Fading State in-game
     if ctx.ipc.check_screen_fading() != 0x01 and ctx.ipc.get_player_state() != 0x03:
