@@ -20,6 +20,19 @@ class ProgressionMode(Choice):
     option_boss : int = 1
     option_boss_inclusive : int = 2
 
+class LogicPreference(Choice):
+    """
+    Choose a certain logic preset that determines how difficult the game will be and how much expertise is asked from
+    the player.
+    Default: normal
+    """
+    display_name : str = "Logic Preference"
+    default = 1
+
+    option_casual : int = 0
+    option_normal : int = 1
+    option_hard : int = 2
+
 class Monkeysanity(DefaultOnToggle):
     """
     Choose if Pipo Monkeys (and Dr. Tomoki) should count as Locations.
@@ -31,6 +44,39 @@ class Monkeysanity(DefaultOnToggle):
     """
     visibility = Visibility.none
     display_name : str = "Pipo Monkeysanity"
+
+class MonkeysanityBreakRooms(Choice):
+    """
+    Choose if Break Room monkeys should count as locations, and if so, if the Super Monkey morph must first be
+    obtained before the game allows them to spawn.
+    Default: disabled
+
+    > disabled : Break Room monkeys will not spawn
+    > enabled : Break Room monkeys will spawn, but only when the Super Monkey morph is obtained
+    > early : Break Room monkeys will spawn, regardless if the player has obtained the Super Monkey morph
+    """
+    display_name : str = "Pipo Monkeysanity - Break Rooms"
+    default = 0
+
+    option_disabled : int = 0
+    option_enabled : int = 1
+    option_early : int = 2
+
+class MonkeysanityPasswords(Choice):
+    """
+    Choose if Password monkeys should count as locations, and if so, how they should be unlocked.
+    Default: disabled
+
+    > disabled : Password monkeys will not spawn
+    > enabled : Password monkeys will be unlocked from the start and spawn in their rooms.
+    > hunt : Password monkeys will be unlocked when certain conditions are met, and only then will they spawn.
+    """
+    display_name: str = "Pipo Monkeysanity - Passwords"
+    default = 0
+
+    option_disabled: int = 0
+    option_enabled: int = 1
+    option_hunt: int = 2
 
 class Camerasanity(Choice):
     """
@@ -162,8 +208,9 @@ class AutoEquipOnUnlock(Toggle):
     """
     display_name : str = "Auto Equip Gadgets when obtained"
 
-ae3_option_groups : dict[str, list[any]] = {
-    "Randomizer Options"        : [ProgressionMode, Monkeysanity, Camerasanity, Cellphonesanity],
+ae3_option_groups : dict[str, list] = {
+    "Randomizer Options"        : [ProgressionMode, LogicPreference, Monkeysanity, MonkeysanityBreakRooms,
+                                   MonkeysanityPasswords, Camerasanity, Cellphonesanity,],
     "Item Options"              : [StartingGadget, StartingMorph, BaseMorphDuration, ShuffleMonkeyNet,
                                    ShuffleRCCarChassis, ShuffleMorphStocks, AddMorphExtensions],
     "Preferences"               : [EarlyFreePlay, EnableShoppingArea],
@@ -174,7 +221,10 @@ ae3_option_groups : dict[str, list[any]] = {
 @dataclass
 class AE3Options(PerGameCommonOptions):
     Progression_Mode        : ProgressionMode
+    Logic_Preference        : LogicPreference
     Monkeysanity            : Monkeysanity
+    Monkeysanity_BreakRooms : MonkeysanityBreakRooms
+    Monkeysanity_Passwords  : MonkeysanityPasswords
     Camerasanity            : Camerasanity
     Cellphonesanity         : Cellphonesanity
 
@@ -204,7 +254,10 @@ def create_option_groups() -> list[OptionGroup]:
 def slot_data_options() -> list[str]:
     return [
         APHelper.progression_mode.value,
+        APHelper.logic_preference.value,
         APHelper.monkeysanity.value,
+        APHelper.monkeysanitybr.value,
+        APHelper.monkeysanitypw.value,
         APHelper.camerasanity.value,
         APHelper.cellphonesanity.value,
 

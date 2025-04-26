@@ -980,6 +980,12 @@ MONKEYS_BOSSES : Sequence[str] = [
     *MONKEYS_SPECTER_FINALE
 ]
 
+MONKEYS_PASSWORDS : Sequence[str] = [
+    Loc.woods_spork.value, Loc.castle_sal_1000.value, Loc.snowfesta_shimmy.value, Loc.snowfesta_pipotron_yellow.value,
+    Loc.toyhouse_pipotron_red.value, Loc.plane_pipotron_blue.value, Loc.hong_dark_master.value,
+    Loc.space_sal_3000.value
+]
+
 MONKEYS_MASTER : Sequence[str] = [
     *MONKEYS_ZERO, *MONKEYS_SEASIDE, *MONKEYS_WOODS, *MONKEYS_CASTLE, *MONKEYS_CISCOCITY, *MONKEYS_STUDIO,
     *MONKEYS_HALLOWEEN, *MONKEYS_WESTERN, *MONKEYS_ONSEN, *MONKEYS_SNOWFESTA, *MONKEYS_EDOTOWN, *MONKEYS_HEAVEN,

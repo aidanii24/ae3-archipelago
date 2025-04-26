@@ -120,23 +120,20 @@ async def setup_area(ctx : 'AE3Context'):
     if ctx.ipc.check_screen_fading() != 0x01 and ctx.ipc.get_player_state() != 0x03:
         # Check Start of Screen Fade
         if ctx.ipc.get_screen_fade_count() > 0x1:
-            if not ctx.morphs_unlocked[-1]:
-                ctx.ipc.lock_equipment(Itm.morph_monkey.value)
+            dispatch_dummy_morph(ctx)
 
         # Check rest of Screen Fade after Start
         else:
             # Temporarily give a morph during transitions to keep Morph Gauge visible
             # and to spawn Break Room loading zones
-            if not ctx.morphs_unlocked[-1]:
-                ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
+            dispatch_dummy_morph(ctx, True)
 
             ctx.current_stage = ctx.ipc.get_stage()
             ctx.command_state = 2
 
     # Not/No Longer Screen Fading
     else:
-        if not ctx.morphs_unlocked[-1]:
-            ctx.ipc.lock_equipment(Itm.morph_monkey.value)
+        dispatch_dummy_morph(ctx)
 
         if ctx.command_state == 2:
             ctx.command_state = 0
@@ -308,3 +305,14 @@ async def check_locations(ctx : 'AE3Context'):
         else:
             # When offline, save checked locations to a different set
             ctx.offline_locations_checked.update(cleared)
+
+def dispatch_dummy_morph(ctx : 'AE3Context', unlock : bool = False):
+    if ctx.dummy_morph < 0 and not ctx.morphs_unlocked[ctx.dummy_morph]:
+        return
+    elif ctx.dummy_morph >= 0 and any(state for state in ctx.morphs_unlocked):
+        return
+
+    if unlock:
+        ctx.ipc.unlock_equipment(Itm.get_morphs_ordered()[ctx.dummy_morph])
+    else:
+        ctx.ipc.lock_equipment(Itm.get_morphs_ordered()[ctx.dummy_morph])

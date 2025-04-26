@@ -380,6 +380,29 @@ STAGES_BOSSES : Sequence[str] = [
     Stage.region_specter2.value
 ]
 
+STAGES_BREAK_ROOMS : Sequence[str] = [
+    Stage.region_seaside_c.value,
+    Stage.region_woods_d.value,
+    Stage.region_castle_e.value,
+    Stage.region_ciscocity_e.value,
+    Stage.region_studio_g.value,
+    Stage.region_halloween_e.value,
+    Stage.region_western_c.value,
+    Stage.region_onsen_c.value,
+    Stage.region_snowfesta_g.value,
+    Stage.region_edotown_f.value,
+    Stage.region_heaven_e.value,
+    Stage.region_toyhouse_h.value,
+    Stage.region_iceland_f.value,
+    Stage.region_arabian_f.value,
+    Stage.region_asia_f.value,
+    Stage.region_plane_g.value,
+    Stage.region_hong_f.value,
+    Stage.region_bay_f.value,
+    Stage.region_tomo_i.value,
+    Stage.region_space_h.value,
+]
+
 STAGES_MASTER : Sequence[str] = [
     *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY, *STAGES_STUDIO,
     *STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_ONSEN, *STAGES_SNOWFESTA, *STAGES_EDOTOWN, *STAGES_HEAVEN,

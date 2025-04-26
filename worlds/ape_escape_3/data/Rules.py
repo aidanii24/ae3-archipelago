@@ -969,3 +969,8 @@ class Casual(Normal):
             Stage.entrance_space_gg1.value      : Rulesets([AccessRule.ATTACK, AccessRule.ATTACK]),
         })
 
+LogicPreferenceOptions : list = [
+    Casual,
+    Normal,
+    Hard
+]

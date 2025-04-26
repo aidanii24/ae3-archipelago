@@ -2,11 +2,11 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import Entrance, Location, Region
 
-from .data.Stages import STAGES_DIRECTORY, STAGES_MASTER, ENTRANCES_MASTER
+from .data.Stages import STAGES_BREAK_ROOMS, STAGES_DIRECTORY, STAGES_MASTER, ENTRANCES_MASTER
 from .data.Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, CameraLocation, CellphoneLocation, \
-    EventMeta, MonkeyLocation, MONKEYS_INDEX, EVENTS_INDEX
+    EventMeta, MONKEYS_PASSWORDS, MonkeyLocation, MONKEYS_INDEX, EVENTS_INDEX
 from .data.Logic import Rulesets
-from .data.Rules import LogicPreference, Hard, Normal, Casual
+from .data.Rules import LogicPreference, LogicPreferenceOptions
 
 if TYPE_CHECKING:
     from . import AE3World
@@ -24,11 +24,13 @@ def establish_entrance(player : int, name : str, parent_region : Region, destina
     entrance.connect(destination)
 
 def create_regions(world : "AE3World"):
-    rule : LogicPreference = Hard()
+    rule : LogicPreference = LogicPreferenceOptions[world.options.Logic_Preference.value]()
     rule.set_level_progression_rules(world.progression)
 
     # Initialize Regions
-    stages : dict[str, Region] = { name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER }
+    stages : dict[str, Region] = { name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER
+                                   # Exclude Break Room if player does not want Break Room monkeys
+                                   if not world.options.Monkeysanity_BreakRooms and name not in STAGES_BREAK_ROOMS }
 
     # Connect Regions
     for entrance in [*ENTRANCES_MASTER]:
@@ -55,6 +57,9 @@ def create_regions(world : "AE3World"):
         ## Monkeys
         if stage.name in MONKEYS_INDEX:
             for monkeys in MONKEYS_INDEX[stage.name]:
+                if not world.options.Monkeysanity_Passwords and monkeys in MONKEYS_PASSWORDS:
+                    continue
+
                 meta : MonkeyLocation = MonkeyLocation(monkeys)
                 loc : Location = meta.to_location(world.player, stage)
 
