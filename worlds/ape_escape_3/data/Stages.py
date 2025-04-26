@@ -39,7 +39,7 @@ class AE3EntranceMeta:
 LEVELS_BY_ORDER : Sequence[str] = [
     Stage.region_seaside_a.value,
     Stage.region_woods_a.value,
-    Stage.region_castle_a.value,
+    Stage.region_castle_a1.value,
 
     Stage.region_boss1.value,
 
@@ -77,7 +77,9 @@ LEVELS_BY_ORDER : Sequence[str] = [
     Stage.region_space_a.value,
 
     Stage.region_specter1.value,
-    Stage.region_specter2.value
+    Stage.region_specter2.value,
+
+    Stage.zero.value,
 ]
 
 STAGES_TITLE : Sequence[str] = [
@@ -373,17 +375,16 @@ STAGES_BOSSES : Sequence[str] = [
     Stage.region_boss3.value,
     Stage.region_boss4.value,
     Stage.region_boss5.value,
-    # Stage.region_boss6.value,
-    # Stage.region_specter1.value,
-    # Stage.region_specter2.value
+    Stage.region_boss6.value,
+    Stage.region_specter1.value,
+    Stage.region_specter2.value
 ]
 
 STAGES_MASTER : Sequence[str] = [
     *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY, *STAGES_STUDIO,
     *STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_ONSEN, *STAGES_SNOWFESTA, *STAGES_EDOTOWN, *STAGES_HEAVEN,
     *STAGES_TOYHOUSE, *STAGES_ICELAND, *STAGES_ARABIAN, *STAGES_ASIA, *STAGES_PLANE, *STAGES_HONG,
-    # *STAGES_BAY, *STAGES_TOMO, *STAGES_SPACE,
-    *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB
+    *STAGES_BAY, *STAGES_TOMO, *STAGES_SPACE, *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB
 ]
 
 STAGES_INDEX : Sequence[Sequence[str]] = [
@@ -979,31 +980,45 @@ ENTRANCES_STAGE_SELECT : list[AE3EntranceMeta] = [
     AE3EntranceMeta(Stage.entrance_level_1.value, Stage.travel_station_a.value, Stage.region_seaside_a.value),
     AE3EntranceMeta(Stage.entrance_level_2.value, Stage.travel_station_a.value, Stage.region_woods_a.value),
     AE3EntranceMeta(Stage.entrance_level_3.value, Stage.travel_station_a.value, Stage.region_castle_a1.value),
+
     AE3EntranceMeta(Stage.entrance_level_4.value, Stage.travel_station_a.value, Stage.region_boss1.value),
+
     AE3EntranceMeta(Stage.entrance_level_5.value, Stage.travel_station_a.value, Stage.region_ciscocity_a.value),
     AE3EntranceMeta(Stage.entrance_level_6.value, Stage.travel_station_a.value, Stage.region_studio_a.value),
     AE3EntranceMeta(Stage.entrance_level_7.value, Stage.travel_station_a.value, Stage.region_halloween_a1.value),
     AE3EntranceMeta(Stage.entrance_level_8.value, Stage.travel_station_a.value, Stage.region_western_a.value),
+
     AE3EntranceMeta(Stage.entrance_level_9.value, Stage.travel_station_a.value, Stage.region_boss2.value),
+
     AE3EntranceMeta(Stage.entrance_level_10.value, Stage.travel_station_a.value, Stage.region_onsen_a.value),
     AE3EntranceMeta(Stage.entrance_level_11.value, Stage.travel_station_a.value, Stage.region_snowfesta_a.value),
     AE3EntranceMeta(Stage.entrance_level_12.value, Stage.travel_station_a.value, Stage.region_edotown_a1.value),
+
     AE3EntranceMeta(Stage.entrance_level_13.value, Stage.travel_station_a.value, Stage.region_boss3.value),
+
     AE3EntranceMeta(Stage.entrance_level_14.value, Stage.travel_station_a.value, Stage.region_heaven_a1.value),
     AE3EntranceMeta(Stage.entrance_level_15.value, Stage.travel_station_a.value, Stage.region_toyhouse_a.value),
     AE3EntranceMeta(Stage.entrance_level_16.value, Stage.travel_station_a.value, Stage.region_iceland_a1.value),
     AE3EntranceMeta(Stage.entrance_level_17.value, Stage.travel_station_a.value, Stage.region_arabian_a.value),
+
     AE3EntranceMeta(Stage.entrance_level_18.value, Stage.travel_station_a.value, Stage.region_boss4.value),
+
     AE3EntranceMeta(Stage.entrance_level_19.value, Stage.travel_station_a.value, Stage.region_asia_a.value),
     AE3EntranceMeta(Stage.entrance_level_20.value, Stage.travel_station_a.value, Stage.region_plane_a.value),
     AE3EntranceMeta(Stage.entrance_level_21.value, Stage.travel_station_a.value, Stage.region_hong_a.value),
+
     AE3EntranceMeta(Stage.entrance_level_22.value, Stage.travel_station_a.value, Stage.region_boss5.value),
+
     AE3EntranceMeta(Stage.entrance_level_23.value, Stage.travel_station_a.value, Stage.region_bay_a.value),
     AE3EntranceMeta(Stage.entrance_level_24.value, Stage.travel_station_a.value, Stage.region_tomo_a1.value),
+
     AE3EntranceMeta(Stage.entrance_level_25.value, Stage.travel_station_a.value, Stage.region_boss6.value),
+
     AE3EntranceMeta(Stage.entrance_level_26.value, Stage.travel_station_a.value, Stage.region_space_a.value),
+
     AE3EntranceMeta(Stage.entrance_level_27.value, Stage.travel_station_a.value, Stage.region_specter1.value),
     AE3EntranceMeta(Stage.entrance_level_28.value, Stage.travel_station_a.value, Stage.region_specter2.value),
+
     AE3EntranceMeta(Stage.entrance_level_29.value, Stage.travel_station_a.value, Stage.zero.value)
 ]
 
