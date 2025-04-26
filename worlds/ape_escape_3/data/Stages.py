@@ -381,8 +381,7 @@ STAGES_BOSSES : Sequence[str] = [
 STAGES_MASTER : Sequence[str] = [
     *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY, *STAGES_STUDIO,
     *STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_ONSEN, *STAGES_SNOWFESTA, *STAGES_EDOTOWN, *STAGES_HEAVEN,
-    *STAGES_TOYHOUSE, *STAGES_ICELAND, *STAGES_ARABIAN,
-    # *STAGES_ASIA, *STAGES_PLANE, *STAGES_HONG,
+    *STAGES_TOYHOUSE, *STAGES_ICELAND, *STAGES_ARABIAN, *STAGES_ASIA, *STAGES_PLANE, *STAGES_HONG,
     # *STAGES_BAY, *STAGES_TOMO, *STAGES_SPACE,
     *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB
 ]
@@ -629,6 +628,8 @@ ENTRANCES_MAIN : list[AE3EntranceMeta] = [
     AE3EntranceMeta(Stage.entrance_asia_d1a4.value, Stage.region_asia_d1.value, Stage.region_asia_a4.value),
     AE3EntranceMeta(Stage.entrance_asia_d2a2.value, Stage.region_asia_d2.value, Stage.region_asia_a2.value),
     AE3EntranceMeta(Stage.entrance_asia_ea3.value, Stage.region_asia_e.value, Stage.region_asia_a3.value),
+    AE3EntranceMeta(Stage.entrance_asia_ef.value, Stage.region_asia_e.value, Stage.region_asia_f.value),
+    AE3EntranceMeta(Stage.entrance_asia_fe.value, Stage.region_asia_f.value, Stage.region_asia_e.value),
     AE3EntranceMeta(Stage.entrance_asia_e2a5.value, Stage.region_asia_e2.value, Stage.region_asia_a5.value),
 
     # Plane
@@ -661,6 +662,8 @@ ENTRANCES_MAIN : list[AE3EntranceMeta] = [
     AE3EntranceMeta(Stage.entrance_hong_cb1.value, Stage.region_hong_c.value, Stage.region_hong_b1.value),
     AE3EntranceMeta(Stage.entrance_hong_ce.value, Stage.region_hong_c.value, Stage.region_hong_e.value),
     AE3EntranceMeta(Stage.entrance_hong_cd.value, Stage.region_hong_c.value, Stage.region_hong_d.value),
+    AE3EntranceMeta(Stage.entrance_hong_ch.value, Stage.region_hong_c.value, Stage.region_hong_h.value),
+    AE3EntranceMeta(Stage.entrance_hong_hc.value, Stage.region_hong_h.value, Stage.region_hong_c.value),
     AE3EntranceMeta(Stage.entrance_hong_ec.value, Stage.region_hong_e.value, Stage.region_hong_c.value),
     AE3EntranceMeta(Stage.entrance_hong_dc.value, Stage.region_hong_d.value, Stage.region_hong_c.value),
     AE3EntranceMeta(Stage.entrance_hong_dg.value, Stage.region_hong_d.value, Stage.region_hong_g.value),
@@ -1209,6 +1212,8 @@ ENTRANCES_ASIA : list[str] = [
     Stage.entrance_asia_d2a2.value,
     Stage.entrance_asia_ea3.value,
     Stage.entrance_asia_ee1.value,
+    Stage.entrance_asia_ef.value,
+    Stage.entrance_asia_fe.value,
     Stage.entrance_asia_e1e.value,
     Stage.entrance_asia_e1e2.value,
     Stage.entrance_asia_e2e.value,
@@ -1261,6 +1266,8 @@ ENTRANCES_HONG : list[str] = [
     Stage.entrance_hong_cc1.value,
     Stage.entrance_hong_ce.value,
     Stage.entrance_hong_cd.value,
+    Stage.entrance_hong_ch.value,
+    Stage.entrance_hong_hc.value,
     Stage.entrance_hong_c1c.value,
     Stage.entrance_hong_c1c2.value,
     Stage.entrance_hong_c2c.value,

@@ -260,7 +260,7 @@ def generate_item_groups() -> dict[str : set[str]]:
     ])
 
     # Catch (Long)
-    groups.setdefault(APHelper.attack.value, set()).update([
+    groups.setdefault(APHelper.catch_long.value, set()).update([
         Itm.morph_cowboy.value, Itm.morph_ninja.value, Itm.morph_magician.value, Itm.morph_hero.value
     ])
 

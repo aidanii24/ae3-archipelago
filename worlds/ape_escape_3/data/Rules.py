@@ -1,3 +1,4 @@
+from mmap import ACCESS_COPY
 from typing import Callable, Set
 
 from .Locations import MONKEYS_INDEX
@@ -250,6 +251,75 @@ class Hard(LogicPreference):
             Stage.entrance_arabian_bg.value     : Rulesets(event_invoked(Events.arabian_g_exit.value)),
             Stage.entrance_arabian_bf.value     : Rulesets(event_invoked(Events.arabian_g_exit.value)),
             Stage.entrance_arabian_e1e.value    : Rulesets(AccessRule.MAGICIAN),
+
+            # Asia
+            Stage.entrance_asia_ab.value        : Rulesets(AccessRule.SWIM, AccessRule.HERO),
+            Stage.entrance_asia_aa1.value       : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_aa5.value       : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_a1a.value       : Rulesets(AccessRule.SWIM, AccessRule.HERO),
+            Stage.entrance_asia_a1b1.value      : Rulesets(AccessRule.SWIM, AccessRule.HERO),
+            Stage.entrance_asia_a1a2.value      : Rulesets(AccessRule.HERO),
+            Stage.entrance_asia_a1a3.value      : Rulesets(AccessRule.SWIM, [AccessRule.HERO,
+                                                            event_invoked(Events.asia_a2_block.value)]),
+            Stage.entrance_asia_a1a4.value      : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_a2a1.value      : Rulesets(AccessRule.SWIM, AccessRule.HERO),
+            Stage.entrance_asia_a2a3.value      : Rulesets([event_invoked(Events.asia_a_block.value),
+                                                            event_invoked(Events.asia_a1_block.value),
+                                                            event_invoked(Events.asia_a2_block.value)],
+                                                           AccessRule.HERO),
+            Stage.entrance_asia_a2a4.value      : Rulesets(AccessRule.SWIM, AccessRule.HERO),
+            Stage.entrance_asia_a3a1.value      : Rulesets(AccessRule.SWIM, [AccessRule.HERO,
+                                                            event_invoked(Events.asia_a2_block.value)]),
+            Stage.entrance_asia_a3a4.value      : Rulesets(AccessRule.SWIM, [AccessRule.HERO,
+                                                            event_invoked(Events.asia_a2_block.value)]),
+            Stage.entrance_asia_a3a2.value      : Rulesets([event_invoked(Events.asia_a_block.value),
+                                                            event_invoked(Events.asia_a1_block.value),
+                                                            event_invoked(Events.asia_a2_block.value)],
+                                                           AccessRule.HERO),
+            Stage.entrance_asia_a3e.value       : Rulesets([event_invoked(Events.asia_a_block.value),
+                                                            event_invoked(Events.asia_a1_block.value),
+                                                            event_invoked(Events.asia_a2_block.value)]),
+            Stage.entrance_asia_a4a1.value      : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_a4a3.value      : Rulesets(AccessRule.SWIM, [AccessRule.HERO,
+                                                            event_invoked(Events.asia_a2_block.value)]),
+            Stage.entrance_asia_a4a5.value      : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_a5a6.value      : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_a6a5.value      : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_bb1.value       : Rulesets(AccessRule.SHOOT, AccessRule.FLY),
+            Stage.entrance_asia_bb2.value       : Rulesets(AccessRule.HERO,
+                                                           event_invoked(Events.asia_b2_button.value)),
+            Stage.entrance_asia_b1b2.value      : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_b2b1.value      : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_d1a4.value      : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_dd1.value       : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_ee1.value       : Rulesets([AccessRule.DASH, AccessRule.RCC]),
+            Stage.entrance_asia_ef.value        : Rulesets(AccessRule.MONKEY),
+            Stage.entrance_asia_e1e.value       : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_asia_e1e2.value      : Rulesets(AccessRule.SHOOT, [AccessRule.ATTACK, AccessRule.RCC],
+                                                           critical={AccessRule.FLY}),
+            Stage.entrance_asia_e2e.value       : Rulesets([event_invoked(Events.asia_e1_button.value),
+                                                            AccessRule.SWIM]),
+
+            # Plane
+            Stage.entrance_plane_aa1.value      : Rulesets(AccessRule.NINJA),
+            Stage.entrance_plane_ac.value       : Rulesets(AccessRule.RCC, AccessRule.DASH),
+            Stage.entrance_plane_cc1.value      : Rulesets(AccessRule.MAGICIAN),
+            Stage.entrance_plane_cg.value       : Rulesets(AccessRule.MONKEY),
+            Stage.entrance_plane_ed.value       : Rulesets(event_invoked(Events.plane_d_clapper.value)),
+
+            # Hong
+            Stage.entrance_hong_aa1.value       : Rulesets(AccessRule.KUNGFU, AccessRule.HERO),
+            Stage.entrance_hong_a1a2.value      : Rulesets(AccessRule.HIT),
+            Stage.entrance_hong_bb1.value       : Rulesets(AccessRule.KUNGFU),
+            Stage.entrance_hong_b1b.value       : Rulesets(event_invoked(Events.hong_b_kungfu.value)),
+            Stage.entrance_hong_bb2.value       : Rulesets(event_invoked(Events.hong_b2_button.value)),
+            Stage.entrance_hong_b1f.value       : Rulesets(AccessRule.MONKEY),
+            Stage.entrance_hong_b2b.value       : Rulesets(event_invoked(Events.hong_b2_button.value)),
+            Stage.entrance_hong_cc1.value       : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_hong_c1c.value       : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_hong_c1c2.value      : Rulesets(AccessRule.NINJA, AccessRule.HERO),
+            Stage.entrance_hong_ee1.value       : Rulesets(AccessRule.KUNGFU),
+            Stage.entrance_hong_dg.value        : Rulesets(AccessRule.KUNGFU)
         })
 
 class Normal(Hard):
@@ -386,7 +456,7 @@ class Normal(Hard):
             Events.asia_b2_button.value                 : Rulesets(AccessRule.HIT),
 
             # Plane
-            Events.plane_d_button.value                 : Rulesets(AccessRule.HIT),
+            Events.plane_d_clapper.value                : Rulesets(AccessRule.HIT),
 
             # Hong
             Events.hong_b2_button.value                 : Rulesets(AccessRule.HIT),
@@ -444,6 +514,14 @@ class Normal(Hard):
 
             # Iceland
             Stage.entrance_iceland_a1a.value    : Rulesets(AccessRule.HIT),
+
+            # Asia
+            Stage.entrance_asia_a4d1.value      : Rulesets(AccessRule.HIT),
+            Stage.entrance_asia_bb2.value       : Rulesets(event_invoked(Events.asia_b2_button.value)),
+            Stage.entrance_asia_b2b.value       : Rulesets(AccessRule.HIT),
+
+            # Plane
+            Stage.entrance_plane_de.value       : Rulesets(AccessRule.HIT),
         })
 
 class Casual(Normal):
@@ -598,7 +676,7 @@ class Casual(Normal):
             Events.asia_b2_button.value                 : Rulesets(AccessRule.ATTACK),
 
             # Plane
-            Events.plane_d_button.value                 : Rulesets(AccessRule.ATTACK),
+            Events.plane_d_clapper.value                 : Rulesets(AccessRule.ATTACK),
 
             # Hong
             Events.hong_b2_button.value                 : Rulesets(AccessRule.ATTACK),
@@ -686,5 +764,38 @@ class Casual(Normal):
             Stage.entrance_iceland_aa2.value    : Rulesets(AccessRule.GLIDE),
             Stage.entrance_iceland_a2a.value    : Rulesets(AccessRule.GLIDE),
             Stage.entrance_iceland_be.value     : Rulesets(AccessRule.DASH),
+
+            # Asia
+            Stage.entrance_asia_ab.value        : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_a1a.value       : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_a1b1.value      : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_a1a3.value      : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_a2a1.value      : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_a2a3.value      : Rulesets([event_invoked(Events.asia_a_block.value),
+                                                      event_invoked(Events.asia_a1_block.value),
+                                                      event_invoked(Events.asia_a2_block.value)]),
+            Stage.entrance_asia_a2a4.value      : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_a3a1.value      : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_a3a4.value      : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_a3a2.value      : Rulesets([event_invoked(Events.asia_a_block.value),
+                                                      event_invoked(Events.asia_a1_block.value),
+                                                      event_invoked(Events.asia_a2_block.value)]),
+            Stage.entrance_asia_a4a3.value      : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_a4d1.value      : Rulesets(AccessRule.ATTACK),
+            Stage.entrance_asia_b2b.value       : Rulesets(AccessRule.ATTACK),
+            Stage.entrance_asia_dd1.value       : Rulesets([AccessRule.SWIM, AccessRule.FLY]),
+
+            # Plane
+            Stage.entrance_plane_de.value       : Rulesets(AccessRule.ATTACK),
+            Stage.entrance_plane_b1h.value      : Rulesets(AccessRule.RCC, AccessRule.HERO),
+            Stage.entrance_plane_hb1.value      : Rulesets(AccessRule.RCC, AccessRule.HERO),
+            Stage.entrance_plane_b1b2.value     : Rulesets(AccessRule.RCC, AccessRule.HERO),
+            Stage.entrance_plane_b2b1.value     : Rulesets(AccessRule.RCC, AccessRule.HERO),
+
+            # Hong
+            Stage.entrance_hong_aa1.value       : Rulesets(AccessRule.KUNGFU),
+            Stage.entrance_hong_a1a2.value      : Rulesets(AccessRule.ATTACK),
+            Stage.entrance_hong_cc1.value       : Rulesets([AccessRule.ATTACK, AccessRule.GLIDE]),
+            Stage.entrance_hong_c1c.value       : Rulesets([AccessRule.ATTACK, AccessRule.GLIDE])
         })
 
