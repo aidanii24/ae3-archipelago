@@ -1,4 +1,3 @@
-from mmap import ACCESS_COPY
 from typing import Callable, Set
 
 from .Locations import MONKEYS_INDEX
@@ -127,6 +126,19 @@ class Hard(LogicPreference):
             Loc.hong_muki_muki.value        : Rulesets(AccessRule.SHOOT, AccessRule.FLY),
             Loc.hong_bankan.value           : Rulesets(AccessRule.NINJA, AccessRule.HERO),
             Loc.hong_sukei.value            : Rulesets(AccessRule.SHOOT, AccessRule.NINJA),
+
+            # Bay
+            Loc.bay_shiny_pete.value        : Rulesets(AccessRule.SHOOT),
+            Loc.bay_gimo.value              : Rulesets(AccessRule.SHOOT),
+            Loc.bay_jimo.value              : Rulesets([AccessRule.FLY, AccessRule.KUNGFU, AccessRule.SWIM]),
+
+            # Tomo
+            Loc.tomo_riley.value            : Rulesets(AccessRule.MAGICIAN),
+            Loc.tomo_pipo_ron.value         : Rulesets(AccessRule.KUNGFU),
+
+            # Space
+            Loc.space_rokkun.value          : Rulesets(AccessRule.RCC),
+            Loc.space_sal_3000.value        : Rulesets(AccessRule.SHOOT),
         })
 
         self.event_rules.update({
@@ -153,6 +165,16 @@ class Hard(LogicPreference):
 
             # Hong
             Events.hong_b_kungfu.value                  : Rulesets(AccessRule.KUNGFU),
+
+            # Bay
+            Events.bay_e1_button.value                  : Rulesets(AccessRule.SHOOT),
+
+            # Tomo
+            Events.tomo_e2_kungfu.value                 : Rulesets(AccessRule.KUNGFU),
+
+            # Space
+            Events.space_g_button.value                 : Rulesets(AccessRule.SWIM),
+            Events.space_f1_kungfu.value                : Rulesets(AccessRule.KUNGFU),
         })
 
         self.entrance_rules.update({
@@ -319,7 +341,66 @@ class Hard(LogicPreference):
             Stage.entrance_hong_c1c.value       : Rulesets(AccessRule.GLIDE),
             Stage.entrance_hong_c1c2.value      : Rulesets(AccessRule.NINJA, AccessRule.HERO),
             Stage.entrance_hong_ee1.value       : Rulesets(AccessRule.KUNGFU),
-            Stage.entrance_hong_dg.value        : Rulesets(AccessRule.KUNGFU)
+            Stage.entrance_hong_dg.value        : Rulesets(AccessRule.KUNGFU),
+
+            # Bay
+            Stage.entrance_bay_aa1.value        : Rulesets(AccessRule.SHOOT, AccessRule.HERO),
+            Stage.entrance_bay_a1a.value        : Rulesets(AccessRule.SWIM, AccessRule.HERO),
+            Stage.entrance_bay_a1b.value        : Rulesets(AccessRule.RCC),
+            Stage.entrance_bay_a1a2.value       : Rulesets(AccessRule.SWIM),
+            Stage.entrance_bay_a2a1.value       : Rulesets(AccessRule.SWIM),
+            Stage.entrance_bay_a2a3.value       : Rulesets(AccessRule.SWIM),
+            Stage.entrance_bay_a2e.value        : Rulesets(AccessRule.SWIM),
+            Stage.entrance_bay_a3a2.value       : Rulesets(AccessRule.SWIM),
+            Stage.entrance_bay_a3a6.value       : Rulesets(event_invoked(Events.bay_a7_button.value)),
+            Stage.entrance_bay_a4d1.value       : Rulesets(AccessRule.SLING),
+            Stage.entrance_bay_a6f.value        : Rulesets(AccessRule.MONKEY),
+            Stage.entrance_bay_d1d.value        : Rulesets(AccessRule.KUNGFU),
+            Stage.entrance_bay_ea2.value        : Rulesets(AccessRule.SWIM),
+            Stage.entrance_bay_ee1.value        : Rulesets(AccessRule.SHOOT),
+            Stage.entrance_bay_ee2.value        : Rulesets(event_invoked(Events.bay_e1_button.value)),
+            Stage.entrance_bay_e1e2.value       : Rulesets(AccessRule.HIT),
+
+            # Tomo
+            Stage.entrance_tomo_aa1.value       : Rulesets(AccessRule.HERO),
+            Stage.entrance_tomo_a1a.value       : Rulesets(AccessRule.HERO),
+            Stage.entrance_tomo_e1i.value       : Rulesets(AccessRule.MONKEY),
+            Stage.entrance_tomo_e2e3.value      : Rulesets(AccessRule.KUNGFU),
+            Stage.entrance_tomo_e3e2.value      : Rulesets(event_invoked(Events.tomo_e2_kungfu.value)),
+            Stage.entrance_tomo_f1f2.value      : Rulesets(AccessRule.NINJA, AccessRule.HERO),
+            Stage.entrance_tomo_f2f1.value      : Rulesets(AccessRule.NINJA, AccessRule.HERO),
+            Stage.entrance_tomo_gg1.value       : Rulesets(AccessRule.KUNGFU),
+            Stage.entrance_tomo_g1f.value       : Rulesets(event_invoked(Events.tomo_g_kungfu.value)),
+            Stage.entrance_tomo_h1h.value       : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_tomo_ha.value        : Rulesets(AccessRule.SHOOT),
+
+            # Space
+            Stage.entrance_space_bi.value       : Rulesets([event_invoked(Events.space_e1_button.value),
+                                                            event_invoked(Events.space_f2_button.value),
+                                                            event_invoked(Events.space_g1_button.value),
+                                                            event_invoked(Events.space_d_button.value)]),
+            Stage.entrance_space_e1e.value      : Rulesets(event_invoked(Events.space_e1_button.value)),
+            Stage.entrance_space_ee1_2.value    : Rulesets(event_invoked(Events.space_e1_button.value)),
+            Stage.entrance_space_e1e_2.value    : Rulesets([AccessRule.RCC, AccessRule.MORPH_NO_MONKEY]),
+            Stage.entrance_space_ee1.value      : Rulesets(event_invoked(Events.space_e1_button.value)),
+            Stage.entrance_space_eh.value       : Rulesets(AccessRule.MONKEY),
+            Stage.entrance_space_gg1.value      : Rulesets(event_invoked(Events.space_g1_button.value)),
+            Stage.entrance_space_gg1_2.value    : Rulesets(AccessRule.SWIM),
+            Stage.entrance_space_g1g.value      : Rulesets(event_invoked(Events.space_g_button.value)),
+            Stage.entrance_space_g1g_2.value    : Rulesets(event_invoked(Events.space_g1_button.value)),
+            Stage.entrance_space_ff2.value      : Rulesets(event_invoked(Events.space_f2_button.value)),
+            Stage.entrance_space_ff1.value      : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_space_f1f2.value     : Rulesets(AccessRule.KUNGFU),
+            Stage.entrance_space_f2f1.value     : Rulesets(event_invoked(Events.space_f1_kungfu.value)),
+            Stage.entrance_space_f2f.value      : Rulesets(event_invoked(Events.space_f2_button.value)),
+            Stage.entrance_space_dd.value       : Rulesets(AccessRule.ATTACK),
+            Stage.entrance_space_dd_2.value     : Rulesets(AccessRule.ATTACK),
+            Stage.entrance_space_ib.value       : Rulesets([event_invoked(Events.space_e1_button.value),
+                                                     event_invoked(Events.space_f2_button.value),
+                                                     event_invoked(Events.space_g1_button.value),
+                                                     event_invoked(Events.space_d_button.value)]),
+            Stage.entrance_space_jj1.value      : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_space_j1j.value      : Rulesets(AccessRule.GLIDE),
         })
 
 class Normal(Hard):
@@ -411,6 +492,32 @@ class Normal(Hard):
             Loc.plane_jeloh.value               : Rulesets(AccessRule.HIT),
             Loc.plane_bongo.value               : Rulesets(AccessRule.HIT),
 
+            # Bay
+            Loc.bay_nadamon.value               : Rulesets(AccessRule.HIT),
+            Loc.bay_nakabi.value                : Rulesets(AccessRule.HIT),
+            Loc.bay_gimi_gimi.value             : Rulesets(AccessRule.HIT),
+            Loc.bay_pokkini.value               : Rulesets(AccessRule.HIT),
+
+            # Tomo
+            Loc.tomo_kichibeh.value             : Rulesets(AccessRule.HIT),
+            Loc.tomo_bonchicchi.value           : Rulesets(AccessRule.HIT),
+            Loc.tomo_mikibon.value              : Rulesets(AccessRule.HIT),
+            Loc.tomo_chimpy.value               : Rulesets(AccessRule.MORPH_NO_MONKEY),
+            Loc.tomo_kajitan.value              : Rulesets(AccessRule.MORPH_NO_MONKEY),
+            Loc.tomo_uka_uka.value              : Rulesets(AccessRule.MORPH_NO_MONKEY),
+            Loc.tomo_mil_mil.value              : Rulesets(AccessRule.MORPH_NO_MONKEY),
+            Loc.tomo_tomio.value                : Rulesets(AccessRule.HIT),
+            Loc.tomo_gario.value                : Rulesets(AccessRule.HIT),
+            Loc.tomo_sal_13.value               : Rulesets(AccessRule.HIT),
+            Loc.tomo_sal_12.value               : Rulesets(AccessRule.HIT),
+
+            # Space
+            Loc.space_freet.value               : Rulesets(AccessRule.HIT),
+            Loc.space_chico.value               : Rulesets(AccessRule.HIT),
+            Loc.space_ukki_love.value           : Rulesets(AccessRule.MAGICIAN),
+            Loc.space_sal_10.value              : Rulesets(AccessRule.HIT),
+            Loc.space_sal_11.value              : Rulesets(AccessRule.HIT),
+
             # Bosses
             Loc.boss_monkey_white.value         : Rulesets(AccessRule.HIT),
             Loc.boss_monkey_blue.value          : Rulesets(AccessRule.HIT),
@@ -460,6 +567,14 @@ class Normal(Hard):
 
             # Hong
             Events.hong_b2_button.value                 : Rulesets(AccessRule.HIT),
+
+            # Bay
+            Events.bay_a7_button.value                  : Rulesets(AccessRule.HIT),
+
+            # Space
+            Events.space_e1_button.value                : Rulesets(AccessRule.ATTACK),
+            Events.space_g1_button.value                : Rulesets(AccessRule.ATTACK),
+            Events.space_f2_button.value                : Rulesets(AccessRule.ATTACK),
         })
 
         self.entrance_rules.update({
@@ -522,6 +637,13 @@ class Normal(Hard):
 
             # Plane
             Stage.entrance_plane_de.value       : Rulesets(AccessRule.HIT),
+
+            # Bay
+            Stage.entrance_bay_cc1.value        : Rulesets(AccessRule.HIT),
+
+            # Tomo
+            Stage.entrance_tomo_ee1.value       : Rulesets(AccessRule.KNIGHT),
+            Stage.entrance_tomo_ee2.value       : Rulesets(AccessRule.RCC),
         })
 
 class Casual(Normal):
@@ -629,6 +751,35 @@ class Casual(Normal):
             Loc.hong_bankan.value               : Rulesets(AccessRule.NINJA),
             Loc.hong_sukei.value                : Rulesets(AccessRule.SHOOT),
 
+            # Bay
+            Loc.bay_nadamon.value               : Rulesets(AccessRule.ATTACK),
+            Loc.bay_nakabi.value                : Rulesets(AccessRule.ATTACK),
+            Loc.bay_gimi_gimi.value             : Rulesets(AccessRule.ATTACK),
+            Loc.bay_pokkini.value               : Rulesets(AccessRule.ATTACK),
+
+            # Tomo
+            Loc.tomo_kichibeh.value             : Rulesets(AccessRule.ATTACK),
+            Loc.tomo_bonchicchi.value           : Rulesets(AccessRule.ATTACK),
+            Loc.tomo_mikibon.value              : Rulesets(AccessRule.ATTACK),
+            Loc.tomo_dj_tamo.value              : Rulesets(AccessRule.DASH),
+            Loc.tomo_chimpy.value               : Rulesets(AccessRule.KUNGFU, AccessRule.NINJA),
+            Loc.tomo_kajitan.value              : Rulesets(AccessRule.KUNGFU, AccessRule.NINJA),
+            Loc.tomo_uka_uka.value              : Rulesets(AccessRule.KUNGFU, AccessRule.NINJA),
+            Loc.tomo_mil_mil.value              : Rulesets(AccessRule.KUNGFU, AccessRule.NINJA),
+            Loc.tomo_goro_san.value             : Rulesets(AccessRule.KNIGHT),
+            Loc.tomo_tomio.value                : Rulesets(AccessRule.ATTACK),
+            Loc.tomo_gario.value                : Rulesets(AccessRule.ATTACK),
+            Loc.tomo_dj_pari.value              : Rulesets(AccessRule.DASH),
+            Loc.tomo_sal_13.value               : Rulesets(AccessRule.ATTACK),
+            Loc.tomo_sal_12.value               : Rulesets(AccessRule.ATTACK),
+
+            # Space
+            Loc.space_miluchy.value             : Rulesets(AccessRule.SHOOT, AccessRule.FLY),
+            Loc.space_freet.value               : Rulesets(AccessRule.ATTACK),
+            Loc.space_chico.value               : Rulesets(AccessRule.ATTACK),
+            Loc.space_sal_10.value              : Rulesets(AccessRule.ATTACK),
+            Loc.space_sal_11.value              : Rulesets(AccessRule.ATTACK),
+
             # Bosses
             Loc.boss_monkey_white.value         : Rulesets(AccessRule.ATTACK),
             Loc.boss_monkey_blue.value          : Rulesets(AccessRule.ATTACK),
@@ -680,6 +831,9 @@ class Casual(Normal):
 
             # Hong
             Events.hong_b2_button.value                 : Rulesets(AccessRule.ATTACK),
+
+            # Bay
+            Events.bay_a7_button.value                  : Rulesets(AccessRule.ATTACK),
         })
 
         self.entrance_rules.update({
@@ -796,6 +950,19 @@ class Casual(Normal):
             Stage.entrance_hong_aa1.value       : Rulesets(AccessRule.KUNGFU),
             Stage.entrance_hong_a1a2.value      : Rulesets(AccessRule.ATTACK),
             Stage.entrance_hong_cc1.value       : Rulesets([AccessRule.ATTACK, AccessRule.GLIDE]),
-            Stage.entrance_hong_c1c.value       : Rulesets([AccessRule.ATTACK, AccessRule.GLIDE])
+            Stage.entrance_hong_c1c.value       : Rulesets([AccessRule.ATTACK, AccessRule.GLIDE]),
+
+            # Bay
+            Stage.entrance_bay_aa1.value        : Rulesets([AccessRule.ATTACK, AccessRule.SHOOT, AccessRule.SWIM]),
+            Stage.entrance_bay_a1a.value        : Rulesets(AccessRule.SWIM),
+            Stage.entrance_bay_a3a4.value       : Rulesets(AccessRule.RCC),
+            Stage.entrance_bay_cc1.value        : Rulesets([AccessRule.ATTACK, AccessRule.FLY]),
+            Stage.entrance_bay_e1e2.value       : Rulesets(AccessRule.ATTACK),
+
+            # Tomo
+            Stage.entrance_tomo_bc.value        : Rulesets(AccessRule.GLIDE),
+
+            # Space
+            Stage.entrance_space_gg1.value      : Rulesets([AccessRule.ATTACK, AccessRule.ATTACK]),
         })
 

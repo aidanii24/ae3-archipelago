@@ -1944,19 +1944,27 @@ EVENTS_TOMO_G : Sequence[str] = [
 ]
 
 EVENTS_TOMO_H : Sequence[str] = [
-    Events.tomo_h_button.value, Events.tomo_h_button1.value
+    Events.tomo_h_button.value
 ]
 
 EVENTS_SPACE_E1 : Sequence[str] = [
     Events.space_e1_button.value
 ]
 
+EVENTS_SPACE_G : Sequence[str] = [
+    Events.space_g_button.value
+]
+
 EVENTS_SPACE_G1 : Sequence[str] = [
     Events.space_g1_button.value
 ]
 
+EVENTS_SPACE_F1 : Sequence[str] = [
+    Events.space_f1_kungfu.value
+]
+
 EVENTS_SPACE_F2 : Sequence[str] = [
-    Events.space_f2_button.value, Events.space_f2_kungfu.value
+    Events.space_f2_button.value
 ]
 
 EVENTS_SPACE_D : Sequence[str] = [
@@ -1998,7 +2006,9 @@ EVENTS_INDEX : dict[str, Sequence[str]] = {
     Stage.region_tomo_g.value           : EVENTS_TOMO_G,
     Stage.region_tomo_h.value           : EVENTS_TOMO_H,
     Stage.region_space_e1.value         : EVENTS_SPACE_E1,
+    Stage.region_space_g.value         : EVENTS_SPACE_G,
     Stage.region_space_g1.value         : EVENTS_SPACE_G1,
+    Stage.region_space_f1.value         : EVENTS_SPACE_F1,
     Stage.region_space_f2.value         : EVENTS_SPACE_F2,
     Stage.region_space_d.value          : EVENTS_SPACE_D,
 }
