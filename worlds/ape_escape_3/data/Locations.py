@@ -1912,7 +1912,7 @@ EVENTS_ASIA_E1 : Sequence[str] = [
 ]
 
 EVENTS_PLANE_D : Sequence[str] = [
-    Events.plane_d_button.value
+    Events.plane_d_clapper.value
 ]
 
 EVENTS_HONG_B : Sequence[str] = [
