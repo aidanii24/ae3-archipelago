@@ -1903,6 +1903,7 @@ class APHelper(BaseEnum):
     # AP Options
     progression_mode =          "Progression_Mode"
     logic_preference =          "Logic_Preference"
+    goal_target =               "Goal_Target"
     monkeysanity =              "Monkeysanity"
     monkeysanitybr =            "Monkeysanity_BreakRooms"
     monkeysanitypw =            "Monkeysanity_Passwords"

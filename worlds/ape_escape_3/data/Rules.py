@@ -1,9 +1,13 @@
-from typing import Callable, Set
+from typing import TYPE_CHECKING, Callable, Set
 
-from .Locations import MONKEYS_INDEX
+from .Locations import CAMERAS_MASTER, CELLPHONES_MASTER, MONKEYS_BOSSES, MONKEYS_INDEX, MONKEYS_MASTER, \
+    MONKEYS_PASSWORDS, generate_name_to_id
 from .Logic import Rulesets, AccessRule, ProgressionMode, has_keys, event_invoked
-from .Strings import Loc, Stage, Events
+from .Strings import Loc, Stage, Events, APHelper
 from .Stages import STAGES_DIRECTORY, ENTRANCES_STAGE_SELECT
+
+if TYPE_CHECKING:
+    from ..AE3_Client import AE3Context
 
 class LogicPreference:
     """
@@ -62,6 +66,28 @@ class LogicPreference:
 
                 levels_count += 1
 
+class GoalTarget:
+    locations : set[str] = {}
+    location_ids : set[int]
+
+    amount : int = None
+
+    def __init__(self):
+        if not self.locations:
+            return
+
+        self.location_ids = {generate_name_to_id()[location] for location in self.locations}
+
+        if self.amount is None:
+            self.amount = len(self.locations)
+
+        print(self.locations, self.amount)
+
+    def check(self, ctx : 'AE3Context'):
+        if len(self.location_ids.intersection(ctx.cached_locations_checked)) >= self.amount:
+            ctx.goal()
+
+# [<--- LOGIC PREFERENCES --->]
 class Hard(LogicPreference):
     """
     RuleType for a hard experience. The player is assumed to play the game with in-depth knowledge of the game,
@@ -974,3 +1000,32 @@ LogicPreferenceOptions : list = [
     Normal,
     Hard
 ]
+
+# [<--- GOAL TARGETS --->]
+class Specter(GoalTarget):
+    locations = [Loc.boss_specter.value]
+
+class SpecterFinal(Specter):
+    locations = [Loc.boss_specter_final.value]
+
+class TripleThreat(GoalTarget):
+    locations = [*MONKEYS_BOSSES]
+
+    amount = 3
+
+class PlaySpike(GoalTarget):
+    locations = {*MONKEYS_MASTER}
+
+    amount = 209
+
+class PlayJimmy(PlaySpike):
+    amount = 300
+
+class DirectorsCut(GoalTarget):
+    locations = {*CAMERAS_MASTER}
+
+class PhoneCheck(DirectorsCut):
+    locations = {*CELLPHONES_MASTER}
+
+class PasswordHunt(DirectorsCut):
+    locations = {*MONKEYS_PASSWORDS}
