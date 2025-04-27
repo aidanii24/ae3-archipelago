@@ -28,9 +28,17 @@ def create_regions(world : "AE3World"):
     rule.set_level_progression_rules(world.progression)
 
     # Initialize Regions
-    stages : dict[str, Region] = { name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER
+    stages : dict[str, Region] = ({ name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER
                                    # Exclude Break Room if player does not want Break Room monkeys
-                                   if not world.options.Monkeysanity_BreakRooms and name not in STAGES_BREAK_ROOMS }
+                                   if name not in STAGES_BREAK_ROOMS } if not world.options.Monkeysanity_BreakRooms
+                                  else
+                                  { name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER } )
+
+    if stages:
+        for stage in stages.keys():
+            print(stage)
+    else:
+        print("No Stages Initialized.")
 
     # Connect Regions
     for entrance in [*ENTRANCES_MASTER]:
@@ -124,7 +132,7 @@ def create_regions(world : "AE3World"):
     # Send Regions to Archipelago
     world.multiworld.regions.extend(list(stages.values()))
 
-    # <!> DEBUG
-     # Connection Diagrams
+    # # <!> DEBUG
+    # # Connection Diagrams
     from Utils import visualize_regions
     visualize_regions(world.multiworld.get_region("Menu", world.player), "_region_diagram.puml")

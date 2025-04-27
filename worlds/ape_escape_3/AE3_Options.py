@@ -53,7 +53,7 @@ class MonkeysanityBreakRooms(Choice):
 
     > disabled : Break Room monkeys will not spawn
     > enabled : Break Room monkeys will spawn, but only when the Super Monkey morph is obtained
-    > early : Break Room monkeys will spawn, regardless if the player has obtained the Super Monkey morph
+    > early : Break Room monkeys will spawn, regardless of if the player has obtained the Super Monkey morph
     """
     display_name : str = "Pipo Monkeysanity - Break Rooms"
     default = 0
