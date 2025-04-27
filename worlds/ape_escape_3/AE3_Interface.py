@@ -198,8 +198,11 @@ class AEPS2Interface:
         return self.get_current_gadget() == 0xB
 
     def is_in_control(self) -> bool:
-        value : int = self.get_player_state()
-        return value != 0x00 and value != 0x02
+        state : int = self.get_player_state()
+        gui_status : int = self.get_gui_status()
+        in_control: bool = (state != 0x00 and state != 0x02) and (gui_status == 0)
+
+        return in_control
 
     def is_selecting_morph(self) -> bool:
         return self.get_player_state() == 0x03
@@ -209,6 +212,9 @@ class AEPS2Interface:
 
     def get_screen_fade_count(self) -> int:
         return self.pine.read_int8(self.addresses.GameStates[Game.screen_fade_count.value])
+
+    def get_gui_status(self) -> int:
+        return self.pine.read_int8(self.addresses.GameStates[Game.gui_status.value])
 
     def is_monkey_captured(self, name : str) -> bool:
         address : int = self.addresses.Locations[name]

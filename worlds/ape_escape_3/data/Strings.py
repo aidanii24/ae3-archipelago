@@ -1732,7 +1732,7 @@ class Game(BaseEnum):
     screen_fade_count =     "Screen Fade Count"
 
     # HUD/GUI
-    gui_active =            "GUI"
+    gui_status =            "GUI Status"
     hud_pointer =           "HUD Pointer"
 
 
