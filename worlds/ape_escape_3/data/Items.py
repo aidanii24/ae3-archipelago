@@ -4,7 +4,7 @@ from abc import ABC
 import random
 
 from BaseClasses import Item, ItemClassification
-from .Strings import Itm, Loc, Game, Meta, APHelper
+from .Strings import Itm, Game, Meta, APHelper
 from .Addresses import NTSCU
 
 ### [< --- HELPERS --- >]
@@ -59,19 +59,16 @@ class CollectableItem(AE3ItemMeta):
     """
 
     resource : str
-    hud_offset : int | None
     amount : int | float
     capacity : int
     weight : int
 
-    def __init__(self, name : str, resource : str, amount : int | float, weight : int, hud_offset : int = None,
-                 id_offset : int = 0):
+    def __init__(self, name : str, resource : str, amount : int | float, weight : int, id_offset : int = 0):
         self.name = name
         # Collectables can be assumed to always be in Addresses.Items. NTSCU version will be used as basis for the ID.
         self.address = NTSCU.GameStates[resource]
         self.item_id = self.address + id_offset
         self.resource = resource
-        self.hud_offset = hud_offset
 
         self.amount = amount
         self.capacity = Capacities[resource]
@@ -183,7 +180,7 @@ Jacket = CollectableItem(Itm.jacket.value, Game.jackets.value, 1, 5)
 Chip_1x = CollectableItem(Itm.chip_1x.value, Game.chips.value, 1, 40)
 Chip_5x = CollectableItem(Itm.chip_5x.value, Game.chips.value, 5, 35, 0x01)
 Chip_10x = CollectableItem(Itm.chip_10x.value, Game.chips.value, 10, 30, 0x02)
-Energy = CollectableItem(Itm.energy.value, Game.morph_gauge_active.value, 3.0, 40,25)
+Energy = CollectableItem(Itm.energy.value, Game.morph_gauge_active.value, 3.0, 40,0x0)
 Energy_Mega = CollectableItem(Itm.energy_mega.value, Game.morph_gauge_active.value, 30.0, 10,
                               0x01)
 
@@ -313,4 +310,5 @@ def generate_collectables(player : int, amt : int) -> list[AE3Item]:
 
     result : list[CollectableItem] = random.choices([*COLLECTABLES], [*weights], k = amt)
     items : list[AE3Item] = [c.to_item(player) for c in result]
+
     return items
