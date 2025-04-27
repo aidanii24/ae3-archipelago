@@ -1897,10 +1897,10 @@ class APHelper(BaseEnum):
 
     # AP Options
     progression_mode =          "Progression_Mode"
-    logic_preference =          "Logic Preference"
+    logic_preference =          "Logic_Preference"
     monkeysanity =              "Monkeysanity"
-    monkeysanitybr =            "Monkeysanity - Break Rooms"
-    monkeysanitypw =            "Monkeysanity - Passwords"
+    monkeysanitybr =            "Monkeysanity_BreakRooms"
+    monkeysanitypw =            "Monkeysanity_Passwords"
     camerasanity =              "Camerasanity"
     cellphonesanity =           "Cellphonesanity"
 

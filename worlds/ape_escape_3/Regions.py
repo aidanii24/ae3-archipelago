@@ -24,7 +24,7 @@ def establish_entrance(player : int, name : str, parent_region : Region, destina
     entrance.connect(destination)
 
 def create_regions(world : "AE3World"):
-    rule : LogicPreference = LogicPreferenceOptions[world.options.Logic_Preference.value]()
+    rule : LogicPreference = LogicPreferenceOptions[world.options.Logic_Preference]()
     rule.set_level_progression_rules(world.progression)
 
     # Initialize Regions
