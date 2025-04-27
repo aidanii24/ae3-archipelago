@@ -114,6 +114,10 @@ async def setup_level_select(ctx : 'AE3Context'):
     if ctx.ipc.is_a_level_confirmed():
         ctx.ipc.clear_spawn()
 
+        # Lock Super Monkey on Confirm when it is not the dummy morph
+        if ctx.dummy_morph >= 0:
+            ctx.ipc.lock_equipment(Itm.morph_monkey.value)
+
 
 async def setup_area(ctx : 'AE3Context'):
     # Check Screen Fading State in-game
