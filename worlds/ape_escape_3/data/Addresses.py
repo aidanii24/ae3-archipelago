@@ -715,6 +715,10 @@ class NTSCU(VersionAddresses):
         Game.screen_fade.value          : 0xce6024,     # 0x01 when not fading
         Game.screen_fade_count.value    : 0x851a50,     # 0x01 when not fading
 
+        # HUD
+        Game.gui_active.value           : 0x73A054,
+        Game.hud_pointer.value          : 0x691fe8,
+
         # Stats
         Game.morph_duration.value       : 0x0152cf10,
         Game.duration_knight_b.value    : 0x0152cf10,
@@ -776,6 +780,8 @@ class NTSCU(VersionAddresses):
         Game.progress.value             : [0x04, 0x1A0, 0x20, 0x0],
         Game.morph_gauge_active.value   : [0x44, 0x24, 0x38, 0x18],
         Game.equip_current.value        : [0x58, 0x44, 0x24, 0x38, 0x10],
+
+        Game.hud_pointer.value          : [0x0],
 
         Loc.boss_tomoki.value           : [0x2c, 0x1AC4],
 

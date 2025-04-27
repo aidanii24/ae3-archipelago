@@ -59,20 +59,24 @@ class CollectableItem(AE3ItemMeta):
     """
 
     resource : str
+    hud_offset : int | None
     amount : int | float
     capacity : int
     weight : int
 
-    def __init__(self, name : str, resource : str, amount : int | float, weight : int, id_offset : int = 0):
+    def __init__(self, name : str, resource : str, amount : int | float, weight : int, hud_offset : int = None,
+                 id_offset : int = 0):
         self.name = name
         # Collectables can be assumed to always be in Addresses.Items. NTSCU version will be used as basis for the ID.
         self.address = NTSCU.GameStates[resource]
         self.item_id = self.address + id_offset
         self.resource = resource
+        self.hud_offset = hud_offset
 
         self.amount = amount
         self.capacity = Capacities[resource]
         self.weight = weight
+
 
 class UpgradeableItem(AE3ItemMeta):
     """
@@ -128,6 +132,12 @@ Capacities : dict[str, int | float] = {
     Game.morph_stocks.value         : 1100.0,
     Game.ammo_boom.value            : 0x9,
     Game.ammo_homing.value          : 0x9,
+}
+
+HUD_OFFSETS : dict[str, int] = {
+    Game.jackets.value              : 0x0,
+    Game.cookies.value              : 0x4,
+    Game.chips.value                : 0x6,
 }
 
 AP : dict[str, int] = {

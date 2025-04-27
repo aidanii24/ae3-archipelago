@@ -214,6 +214,7 @@ async def check_items(ctx : 'AE3Context'):
         elif isinstance(item, CollectableItem) or isinstance(item, UpgradeableItem):
             i = item
             maximum : int | float = 0x0
+            hud_offset : int = None
 
             # Get Maximum Values
             if item.resource in Capacities:
