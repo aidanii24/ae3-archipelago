@@ -33,6 +33,32 @@ class LogicPreference(Choice):
     option_normal : int = 1
     option_hard : int = 2
 
+class GoalTarget(Choice):
+    """
+    Choose what will count as winning the game.
+    Default: specter
+
+    > specter - clear Specter's Battle (End Game)
+    > specter_final - clear Specter's Final Battle (Post Game)
+    > triple_threat - clear 3 Boss stages
+    > play_spike - capture 209 Monkeys
+    > play_jimmy - capture 300 Monkeys
+    > directors_cut - capture all 20 Monkey Films (this will enable the "Camerasanity" option)
+    > phone_check - activate all 53 Cellphones (this will enable the "Cellphonesanity" option)
+    > scavenger_hunt - capture all 8 password monkeys (this will set "Monkeysanity - Passwords" option to "hunt")
+    """
+    display_name : str = "Goal Target"
+    default = 0
+
+    option_specter : int = 0
+    option_specter_final : int = 1
+    option_triple_threat : int = 2
+    option_play_spike : int = 3
+    option_play_jimmy : int = 4
+    option_directors_cut : int = 5
+    option_phone_check : int = 6
+    option_scavenger_hunt : int = 7
+
 class Monkeysanity(DefaultOnToggle):
     """
     Choose if Pipo Monkeys (and Dr. Tomoki) should count as Locations.
@@ -209,7 +235,7 @@ class AutoEquipOnUnlock(Toggle):
     display_name : str = "Auto Equip Gadgets when obtained"
 
 ae3_option_groups : dict[str, list] = {
-    "Randomizer Options"        : [ProgressionMode, LogicPreference, Monkeysanity, MonkeysanityBreakRooms,
+    "Randomizer Options"        : [ProgressionMode, LogicPreference, GoalTarget, Monkeysanity, MonkeysanityBreakRooms,
                                    MonkeysanityPasswords, Camerasanity, Cellphonesanity,],
     "Item Options"              : [StartingGadget, StartingMorph, BaseMorphDuration, ShuffleMonkeyNet,
                                    ShuffleRCCarChassis, ShuffleMorphStocks, AddMorphExtensions],
@@ -222,6 +248,7 @@ ae3_option_groups : dict[str, list] = {
 class AE3Options(PerGameCommonOptions):
     Progression_Mode        : ProgressionMode
     Logic_Preference        : LogicPreference
+    Goal_Target             : GoalTarget
     Monkeysanity            : Monkeysanity
     Monkeysanity_BreakRooms : MonkeysanityBreakRooms
     Monkeysanity_Passwords  : MonkeysanityPasswords
@@ -255,6 +282,7 @@ def slot_data_options() -> list[str]:
     return [
         APHelper.progression_mode.value,
         APHelper.logic_preference.value,
+        APHelper.goal_target.value,
         APHelper.monkeysanity.value,
         APHelper.monkeysanitybr.value,
         APHelper.monkeysanitypw.value,

@@ -185,10 +185,6 @@ async def check_items(ctx : 'AE3Context'):
                 ctx.keys += 1
                 ctx.unlocked_channels = ctx.progression.get_current_progress(ctx.keys)
 
-            ### Update Server about Goal Achieved when Victory is achieved
-            if item.item_id == AP[APHelper.victory.value]:
-                await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
-
         ## Unlock Morphs and Gadgets
         elif isinstance(item, EquipmentItem):
             ctx.ipc.unlock_equipment(item.name, auto_equip)

@@ -1,8 +1,8 @@
+from argparse import ArgumentParser, Namespace
+from typing import Optional, Sequence
 import io
 import os.path
 import typing
-from argparse import ArgumentParser, Namespace
-from typing import Optional, Sequence
 import multiprocessing
 import traceback
 import asyncio
@@ -291,6 +291,9 @@ class AE3Context(CommonContext):
 
         self.ui = AE3Manager(self)
         self.ui_task = asyncio.create_task(self.ui.async_run(), name = "ui")
+
+    def goal(self):
+        self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
 
 
 def update_connection_status(ctx : AE3Context, status : bool):
