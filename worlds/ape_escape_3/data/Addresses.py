@@ -189,7 +189,7 @@ class NTSCU(VersionAddresses):
         Loc.castle_sal_1000.value               : 0x649be4,
 
         ## Monkey White Battle!
-        Loc.boss_monkey_white.value         : 0x649b40,
+        Loc.boss_monkey_white.value             : 0x649b40,
 
         ## The Big City
         Loc.ciscocity_ukima.value               : 0x6499f5,
@@ -263,7 +263,7 @@ class NTSCU(VersionAddresses):
         Loc.western_lucky_woo.value             : 0x649b78,
         Loc.western_pamela.value                : 0x649b79,
         Loc.western_ukki_monber.value           : 0x649b7a,
-        Loc.western_gaukichi.value               : 0x649b7b,
+        Loc.western_gaukichi.value              : 0x649b7b,
         Loc.western_shaluron.value              : 0x649a20,
         Loc.western_jay_mohn.value              : 0x649a21,
         Loc.western_munkee_joe.value            : 0x649a22,
@@ -716,7 +716,7 @@ class NTSCU(VersionAddresses):
         Game.screen_fade_count.value    : 0x851a50,     # 0x01 when not fading
 
         # HUD
-        Game.gui_active.value           : 0x73A054,
+        Game.gui_status.value           : 0x73A054,
         Game.hud_pointer.value          : 0x691fe8,
 
         # Stats
@@ -798,6 +798,3 @@ def get_version_addresses(game_id : str) -> VersionAddresses | None:
         return NTSCU()
 
     return None
-
-
-
