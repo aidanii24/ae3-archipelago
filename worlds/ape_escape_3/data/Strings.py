@@ -1731,6 +1731,11 @@ class Game(BaseEnum):
     screen_fade =           "Screen Fade"
     screen_fade_count =     "Screen Fade Count"
 
+    # HUD/GUI
+    gui_active =            "GUI"
+    hud_pointer =           "HUD Pointer"
+
+
     # Stats
     morph_duration =        "Morph Duration"
 

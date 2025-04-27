@@ -28,17 +28,7 @@ def create_regions(world : "AE3World"):
     rule.set_level_progression_rules(world.progression)
 
     # Initialize Regions
-    stages : dict[str, Region] = ({ name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER
-                                   # Exclude Break Room if player does not want Break Room monkeys
-                                   if name not in STAGES_BREAK_ROOMS } if not world.options.Monkeysanity_BreakRooms
-                                  else
-                                  { name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER } )
-
-    if stages:
-        for stage in stages.keys():
-            print(stage)
-    else:
-        print("No Stages Initialized.")
+    stages : dict[str, Region] = { name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER }
 
     # Connect Regions
     for entrance in [*ENTRANCES_MASTER]:
@@ -62,6 +52,12 @@ def create_regions(world : "AE3World"):
     # Define Regions
     for stage in stages.values():
         # Define Locations
+
+        # Skip stage if Monkeysanity Break Rooms is enabled and the stage is a break room.
+        # It should be safe to skip outright since there are no break rooms with Cameras or Cellphones in them.
+        if world.options.Monkeysanity_BreakRooms and stage in STAGES_BREAK_ROOMS:
+            continue
+
         ## Monkeys
         if stage.name in MONKEYS_INDEX:
             for monkeys in MONKEYS_INDEX[stage.name]:
@@ -131,6 +127,7 @@ def create_regions(world : "AE3World"):
 
     # Send Regions to Archipelago
     world.multiworld.regions.extend(list(stages.values()))
+    world.multiworld.get_location("Tomezo - Seaside Resort", world.player)
 
     # # <!> DEBUG
     # # Connection Diagrams

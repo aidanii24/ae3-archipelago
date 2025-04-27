@@ -2,8 +2,10 @@ from typing import Optional, Sequence
 from logging import Logger
 from enum import Enum
 import struct
+from math import ceil
 
 from .data.Addresses import VersionAddresses, get_version_addresses
+from .data.Items import HUD_OFFSETS
 from .data.Locations import CELLPHONES_ID_DUPLICATES, CELLPHONES_STAGE_DUPLICATES
 from .data.Strings import Itm, Loc, Meta, Game, APHelper, APConsole
 from .interface.pine import Pine
@@ -401,18 +403,44 @@ class AEPS2Interface:
     def give_collectable(self, address_name : str, amount : int | float = 0x1, maximum : int | float = 0x0):
         address : int = self.addresses.GameStates[address_name]
         current : int = self.pine.read_int32(address)
+        value : int = 0
 
         if isinstance(amount, int):
-            self.pine.write_int32(address, min(current + amount, maximum))
+            value = min(current + amount, maximum)
+            self.pine.write_int32(address, value)
         elif isinstance(amount, float):
             # Workaround for now; pine.write_float() seems to be broken
             ## Reinterpret read value as float
-            current_as_float : float = hex_int32_to_float(current)
+            current_as_float : float = min(hex_int32_to_float(current) + amount, maximum)
 
             ## Convert new value to an int that will be represented as the same hexadecimal value as the float
-            new_as_int : int = float_to_hex_int32(min(current_as_float + amount, maximum))
+            value = int(current_as_float)
+            as_int = float_to_hex_int32(current_as_float)
 
-            self.pine.write_int32(address, new_as_int)
+            self.pine.write_int32(address, as_int)
+
+        self.update_hud(address_name, value)
+
+    def update_hud(self, address_name : str, value : int):
+        if address_name not in HUD_OFFSETS:
+            return
+
+        address = self.follow_pointer_chain(self.addresses.GameStates[Game.hud_pointer.value], Game.hud_pointer.value)
+        if address <= 0x0:
+            return
+
+        # Apply Offset
+        address += HUD_OFFSETS[address_name]
+
+        # Get byte length of data and use the correct write function accordingly
+        size : int = ceil(value.bit_length() / 8)
+
+        if size <= 1:
+            self.pine.write_int8(address, value)
+        elif 1 < size <= 2:
+            self.pine.write_int16(address, value)
+        elif size > 2:
+            self.pine.write_int32(address, value)
 
     def give_morph_energy(self, amount : float = 3.0):
         # Check recharge state first
