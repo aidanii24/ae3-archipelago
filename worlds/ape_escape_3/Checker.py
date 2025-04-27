@@ -311,7 +311,7 @@ async def check_locations(ctx : 'AE3Context'):
             ctx.offline_locations_checked.update(cleared)
 
 def dispatch_dummy_morph(ctx : 'AE3Context', unlock : bool = False):
-    if ctx.dummy_morph < 0 and not ctx.morphs_unlocked[ctx.dummy_morph]:
+    if ctx.dummy_morph < 0 and ctx.morphs_unlocked[ctx.dummy_morph]:
         return
     elif ctx.dummy_morph >= 0 and any(state for state in ctx.morphs_unlocked):
         return
