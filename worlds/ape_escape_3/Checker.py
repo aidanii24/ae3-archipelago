@@ -156,7 +156,7 @@ async def check_states(ctx : 'AE3Context'):
         # Check for DeathLinks
         if ctx.death_link and ctx.pending_deathlinks:
             ctx.ipc.kill_player(100.0)
-            ctx.pending_deathlinks -= 1
+            ctx.pending_deathlinks = max(ctx.pending_deathlinks - 1, 0)
             ctx.command_state = 1
         # Send DeathLinks
         else:

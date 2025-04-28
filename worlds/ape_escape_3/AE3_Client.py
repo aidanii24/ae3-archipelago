@@ -254,6 +254,9 @@ class AE3Context(CommonContext):
     def on_deathlink(self, data: typing.Dict[str, typing.Any]) -> None:
         super().on_deathlink(data)
 
+        if not self.death_link:
+            return
+
         self.pending_deathlinks += 1
 
     def check_session_save(self) -> bool:
