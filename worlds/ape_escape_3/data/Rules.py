@@ -3,11 +3,12 @@ from typing import TYPE_CHECKING, Callable, Set
 from .Locations import CAMERAS_MASTER, CELLPHONES_MASTER, MONKEYS_BOSSES, MONKEYS_INDEX, MONKEYS_MASTER, \
     MONKEYS_PASSWORDS, generate_name_to_id
 from .Logic import Rulesets, AccessRule, ProgressionMode, has_keys, event_invoked
-from .Strings import Loc, Stage, Events, APHelper
+from .Strings import Loc, Stage, Events
 from .Stages import STAGES_DIRECTORY, ENTRANCES_STAGE_SELECT
 
 if TYPE_CHECKING:
     from ..AE3_Client import AE3Context
+
 
 class LogicPreference:
     """
@@ -66,6 +67,7 @@ class LogicPreference:
 
                 levels_count += 1
 
+
 class GoalTarget:
     locations : set[str] = {}
     location_ids : set[int]
@@ -86,6 +88,7 @@ class GoalTarget:
     def check(self, ctx : 'AE3Context'):
         if len(self.location_ids.intersection(ctx.cached_locations_checked)) >= self.amount:
             ctx.goal()
+
 
 # [<--- LOGIC PREFERENCES --->]
 class Hard(LogicPreference):
@@ -1005,27 +1008,39 @@ LogicPreferenceOptions : list = [
 class Specter(GoalTarget):
     locations = [Loc.boss_specter.value]
 
+
 class SpecterFinal(Specter):
     locations = [Loc.boss_specter_final.value]
+
 
 class TripleThreat(GoalTarget):
     locations = [*MONKEYS_BOSSES]
 
     amount = 3
 
+
 class PlaySpike(GoalTarget):
     locations = {*MONKEYS_MASTER}
 
     amount = 204
 
+
 class PlayJimmy(PlaySpike):
     amount = 300
+
 
 class DirectorsCut(GoalTarget):
     locations = {*CAMERAS_MASTER}
 
+
 class PhoneCheck(DirectorsCut):
     locations = {*CELLPHONES_MASTER}
 
+
 class PasswordHunt(DirectorsCut):
     locations = {*MONKEYS_PASSWORDS}
+
+
+GoalTargetOptions : list[Callable] = [
+    Specter, SpecterFinal, TripleThreat, PlaySpike, PlayJimmy, DirectorsCut, PhoneCheck, PasswordHunt
+]
