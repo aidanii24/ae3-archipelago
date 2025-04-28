@@ -93,6 +93,12 @@ async def setup_level_select(ctx : 'AE3Context'):
             ctx.ipc.set_progress(APHelper.pr_specter1.value)
         elif progress != APHelper.pr_round2.value:
             ctx.ipc.set_progress()
+
+        # Reset Game Mode Swap state and Set Game Mode value to an unexpected value
+        # as sign that the game has not yet set it
+        if ctx.swap_freeplay and not ctx.ipc.is_a_level_confirmed() and ctx.is_mode_swapped:
+            ctx.is_mode_swapped = False
+            ctx.ipc.set_game_mode(0xFFFF, False)
     elif progress != APHelper.pr_round2.value:
         ctx.ipc.set_progress()
 
@@ -113,6 +119,9 @@ async def setup_level_select(ctx : 'AE3Context'):
 
     if ctx.ipc.is_a_level_confirmed():
         ctx.ipc.clear_spawn()
+
+        # Toggle Freeplay when allowed and needed
+        toggle_freeplay(ctx)
 
         # Lock Super Monkey on Confirm when it is not the dummy morph
         if ctx.dummy_morph >= 0:
@@ -293,7 +302,7 @@ async def check_locations(ctx : 'AE3Context'):
 
     # Send newly checked locations to server
     if cleared:
-        ctx.cached_locations_checked.update(cleared)
+        ctx.locations_checked.update(cleared)
 
         if ctx.server:
             # Send Locations checked offline
@@ -302,7 +311,7 @@ async def check_locations(ctx : 'AE3Context'):
                 ctx.offline_locations_checked.clear()
 
             await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
-            ctx.goal_target.check(ctx)
+            await ctx.goal_target.check(ctx)
 
         else:
             # When offline, save checked locations to a different set
@@ -318,3 +327,18 @@ def dispatch_dummy_morph(ctx : 'AE3Context', unlock : bool = False):
         ctx.ipc.unlock_equipment(Itm.get_morphs_ordered()[ctx.dummy_morph])
     else:
         ctx.ipc.lock_equipment(Itm.get_morphs_ordered()[ctx.dummy_morph])
+
+def toggle_freeplay(ctx : 'AE3Context'):
+    if not ctx.swap_freeplay or ctx.is_mode_swapped:
+        return
+
+    current_mode : int = ctx.ipc.get_game_mode()
+
+    if current_mode == 0x001:
+        ctx.ipc.set_game_mode(0x100, False)
+    elif current_mode == 0x100:
+        ctx.ipc.set_game_mode(0x001, False)
+    else:
+        return
+
+    ctx.is_mode_swapped = True

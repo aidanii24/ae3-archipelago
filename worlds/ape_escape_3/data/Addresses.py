@@ -765,9 +765,12 @@ class NTSCU(VersionAddresses):
         Game.in_pink_stage.value        : 0x8519e0,
 
         Game.interact_data.value        : 0x7720d4,
+        Game.status_tracker.value       : 0x73f820,
         Game.pipo_camera.value          : -0x80,    # Offset from Interact Data Pointer
-        Game.cellphone.value            : -0x355,    # Offset from Interact Data Pointer
-        Game.cellphone_alt.value        : 0x1CB,
+        Game.cellphone.value            : -0x355,   # Offset from Interact Data Pointer
+        Game.game_mode.value            : 0x73FF38,
+        Game.net_status.value           : 0x04,
+        Game.club_status.value          : 0x08,
 
         # Commands
         Game.command.value              : 0x772030,
@@ -786,6 +789,7 @@ class NTSCU(VersionAddresses):
         Loc.boss_tomoki.value           : [0x2c, 0x1AC4],
 
         Game.interact_data.value        : [0x0],
+        Game.status_tracker.value       : [0x0, 0x78, 0x20]
     }
 
 def get_version_addresses(game_id : str) -> VersionAddresses | None:

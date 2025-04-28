@@ -161,6 +161,12 @@ class AEPS2Interface:
         room_as_bytes : bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_room.value], length)
         return room_as_bytes.decode("utf-8").replace("\x00", "")
 
+    def get_game_mode(self) -> int:
+        address = self.addresses.GameStates[Game.game_mode.value]
+        print("GET |", hex(address))
+
+        return self.pine.read_int32(address)
+
     def check_in_stage(self) -> bool:
         value : int = self.pine.read_int8(self.addresses.GameStates[Game.current_channel.value])
         return value > 0
@@ -305,6 +311,15 @@ class AEPS2Interface:
         for _ in range(3):
             self.pine.write_int32(address, 0x0)
             address += 4
+
+    def set_game_mode(self, mode : int = 0x100, restart : bool = True):
+        address = self.addresses.GameStates[Game.game_mode.value]
+        print("SET |", hex(address))
+
+        self.pine.write_int32(address, mode)
+
+        if restart:
+            self.send_command(Game.restart_stage.value)
 
     def set_cookies(self, amount : float):
         as_int : int = float_to_hex_int32(amount)
