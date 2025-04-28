@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Set, List
 
-from NetUtils import ClientStatus, NetworkItem
+from NetUtils import NetworkItem
 
 from .data.Items import ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem, Capacities, AP
 from .data.Strings import Game, Itm, APHelper
@@ -302,6 +302,8 @@ async def check_locations(ctx : 'AE3Context'):
                 ctx.offline_locations_checked.clear()
 
             await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
+            ctx.goal_target.check(ctx)
+
         else:
             # When offline, save checked locations to a different set
             ctx.offline_locations_checked.update(cleared)

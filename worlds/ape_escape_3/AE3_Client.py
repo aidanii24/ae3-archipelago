@@ -8,12 +8,14 @@ import traceback
 import asyncio
 import json
 
-from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled
+from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled, \
+                          ClientStatus
 import Utils
 
 from .data.Strings import Meta, APConsole
 from .data.Logic import ProgressionMode
 from .data.Locations import CELLPHONES_MASTER, MONKEYS_MASTER, generate_name_to_id
+from .data.Rules import GoalTarget, GoalTargetOptions
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
 from .Checker import *
 
@@ -122,6 +124,7 @@ class AE3Context(CommonContext):
 
     # Player Set Options
     progression: ProgressionMode = ProgressionMode.BOSS
+    goal_target : GoalTarget = GoalTarget()
     dummy_morph : int = -1
     camerasanity : int = None
     cellphonesanity : bool = None
@@ -147,7 +150,7 @@ class AE3Context(CommonContext):
         if not os.path.isdir(self.save_data_path):
             try:
                 os.mkdir(self.save_data_path)
-            except Exception:
+            except OSError:
                 self.save_data_path = ""
 
         if self.save_data_path:
@@ -175,6 +178,10 @@ class AE3Context(CommonContext):
             if not self.unlocked_channels and APHelper.progression_mode.value in self.slot_data:
                 self.progression = ProgressionMode.get_progression_mode(self.slot_data[APHelper.progression_mode.value])
                 self.unlocked_channels = self.progression.get_current_progress(0)
+
+            ## Goal Target
+            if not self.goal_target.locations and APHelper.goal_target.value in self.slot_data:
+                self.goal_target = GoalTargetOptions[self.slot_data[APHelper.goal_target.value]]()
 
             ## Monkeysanity - Break Rooms
             if APHelper.monkeysanitybr.value in self.slot_data:
@@ -292,8 +299,8 @@ class AE3Context(CommonContext):
         self.ui = AE3Manager(self)
         self.ui_task = asyncio.create_task(self.ui.async_run(), name = "ui")
 
-    def goal(self):
-        self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
+    async def goal(self):
+        await self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
 
 
 def update_connection_status(ctx : AE3Context, status : bool):
