@@ -226,21 +226,12 @@ class EnableShoppingArea(DefaultOnToggle):
     visibility = Visibility.none
     display_name : str = "Enable Shopping Area"
 
-# QoL/Bonus Options
-class AutoEquipOnUnlock(Toggle):
-    """
-    Choose if Gadgets should be automatically equipped on unset buttons when unlocked.
-    Default: Disabled
-    """
-    display_name : str = "Auto Equip Gadgets when obtained"
-
 ae3_option_groups : dict[str, list] = {
     "Randomizer Options"        : [ProgressionMode, LogicPreference, GoalTarget, Monkeysanity, MonkeysanityBreakRooms,
                                    MonkeysanityPasswords, Camerasanity, Cellphonesanity,],
     "Item Options"              : [StartingGadget, StartingMorph, BaseMorphDuration, ShuffleMonkeyNet,
                                    ShuffleRCCarChassis, ShuffleMorphStocks, AddMorphExtensions],
     "Preferences"               : [EarlyFreePlay, EnableShoppingArea],
-    "QoL Options"               : [AutoEquipOnUnlock],
     "Sync Options"              : [DeathLink]
 }
 
@@ -266,8 +257,6 @@ class AE3Options(PerGameCommonOptions):
 
     Early_Free_Play         : EarlyFreePlay
     Enable_Shopping_Area    : EnableShoppingArea
-
-    Auto_Equip              : AutoEquipOnUnlock
 
     death_link              : DeathLink
 
@@ -300,8 +289,6 @@ def slot_data_options() -> list[str]:
 
         APHelper.early_free_play.value,
         APHelper.enable_shopping_area.value,
-
-        APHelper.auto_equip.value,
 
         APHelper.death_link.value
     ]

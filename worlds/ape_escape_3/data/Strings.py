@@ -1927,9 +1927,16 @@ class APHelper(BaseEnum):
     early_free_play =           "Early_Free_Play"
     enable_shopping_area =      "Enable_Shopping_Area"
 
-    auto_equip =                "Auto_Equip"
-
     death_link =                "death_link"
+
+    # AP Settings
+    auto_equip =                "auto_equip"
+
+    auto_clean_saves =          "auto_clean_saves"
+    clean_on_excess =           "clean_on_excess"
+    date_threshold =            "date_threshold"
+
+
 
     # AP Client
     goaled =                    "Goaled"

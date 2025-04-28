@@ -12,12 +12,14 @@ import json
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled, \
                           ClientStatus
 import Utils
+from settings import get_settings
 
 from .data.Strings import Meta, APConsole
 from .data.Logic import ProgressionMode
 from .data.Locations import CELLPHONES_MASTER, MONKEYS_MASTER, generate_name_to_id
 from .data.Rules import GoalTarget, GoalTargetOptions
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
+from . import AE3Settings
 from .Checker import *
 
 
@@ -138,6 +140,11 @@ class AE3Context(CommonContext):
     specter1_defeated : bool = False
     game_goaled : bool = False
 
+    # Player Set Settings
+    settings : AE3Settings
+
+    auto_equip : bool = False
+
     # Player Set Options
     progression: ProgressionMode = ProgressionMode.BOSS
     goal_target : GoalTarget = GoalTarget()
@@ -149,12 +156,12 @@ class AE3Context(CommonContext):
 
     early_free_play : bool = False
 
-    auto_equip : bool = False
-
     death_link : bool = False
 
     def __init__(self, address, password):
         super().__init__(address, password)
+
+        # Initialize Variables
         Utils.init_logging(APConsole.Info.client_name.value + self.client_version)
 
         self.ipc = AEPS2Interface(logger)
@@ -162,6 +169,7 @@ class AE3Context(CommonContext):
         self.cached_locations_checked = set()
         self.cached_received_items = set()
 
+        # Define Save Data Path
         self.save_data_path = Utils.user_path() + "/data/saves"
         if not os.path.isdir(self.save_data_path):
             try:
@@ -171,6 +179,15 @@ class AE3Context(CommonContext):
 
         if self.save_data_path:
             self.save_data_path += "/"
+
+        # Load Settings
+        self.settings = get_settings().get("ape_escape_3_options", False)
+        assert self.settings, " [!!!] Cannot find Ape Escape 3 Settings!"
+
+        self.auto_equip = self.settings.auto_equip
+
+        # Attempt Session Save Directory Cleaning
+        self.clean_sessions()
 
     # Archipelago Server Authentication
     async def server_auth(self, password_requested : bool = False):
@@ -220,10 +237,6 @@ class AE3Context(CommonContext):
             if APHelper.early_free_play.value in self.slot_data:
                 self.early_free_play = self.slot_data[APHelper.early_free_play.value]
                 self.swap_freeplay = self.early_free_play
-
-            ## Auto-Equip
-            if APHelper.auto_equip.value in self.slot_data:
-                self.auto_equip = bool(self.slot_data[APHelper.auto_equip.value])
 
             ## DeathLink
             if APHelper.death_link.value in self.slot_data:
@@ -317,6 +330,9 @@ class AE3Context(CommonContext):
         if not self.check_session_save():
             return
 
+        if not self.settings or not self.settings.delete_goaled:
+            return
+
         try:
             if os.path.isfile(self.save_data_path + self.save_data_filename):
                 os.remove(self.save_data_path + self.save_data_filename)
@@ -332,6 +348,9 @@ class AE3Context(CommonContext):
         depending on the set user options.
         """
         if not self.save_data_path or not os.path.isdir(self.save_data_path):
+            return
+
+        if not self.settings.delete_goaled and not self.settings.delete_excess and not self.settings.delete_old:
             return
 
         files: dict[str, int] = {}
@@ -350,7 +369,7 @@ class AE3Context(CommonContext):
                 with io.open(self.save_data_path + self.save_data_filename, 'r') as save:
                     data = json.load(save)
 
-                    if APHelper.goaled.value in data:
+                    if self.settings.delete_goaled and APHelper.goaled.value in data:
                         if data[APHelper.goaled.value]:
                             discard.append(file)
                             continue
@@ -359,10 +378,10 @@ class AE3Context(CommonContext):
                         delta : int = (datetime.now() - datetime.strptime(data[APHelper.last_save.value],
                                                                              "%Y-%m-%dT%H:%M:%S.%fZ")).days
                         # Immediately add to discard pile if last save is more than the specified amount of days
-                        if delta > 30:
+                        if self.settings.delete_old and delta > self.settings.delete_old:
                             discard.append(file)
                         # Otherwise, send to be checked for excess remaining
-                        else:
+                        elif self.settings.delete_excess:
                             files.setdefault(file, delta)
             except OSError as error:
                 print(error)
@@ -370,7 +389,7 @@ class AE3Context(CommonContext):
 
         # Sort by days since last saved in ascending order, and remove the oldest ones that exceed the excess amount
         if len(files) > 10:
-            excess_amount : int = len(files) - 9
+            excess_amount : int = len(files) - self.settings.delete_excess - 1
             excess : list[str] = [*dict(sorted(files.items(), key=lambda file : file[1])).keys()]
 
             discard.extend(excess[-excess_amount:])
