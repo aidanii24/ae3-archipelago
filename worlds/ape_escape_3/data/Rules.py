@@ -1016,7 +1016,7 @@ class TripleThreat(GoalTarget):
 class PlaySpike(GoalTarget):
     locations = {*MONKEYS_MASTER}
 
-    amount = 209
+    amount = 204
 
 class PlayJimmy(PlaySpike):
     amount = 300
