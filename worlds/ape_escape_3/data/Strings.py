@@ -1759,10 +1759,14 @@ class Game(BaseEnum):
     in_pink_stage =         "Monkey Pink Battle! Stage"
 
     interact_data =         "Interact Data"
+    status_tracker =        "Status Tracker"
     pipo_camera =           "Pipo Camera"
     cellphone =             "Cellphone"
 
-    cellphone_alt =         "Cellphone Alt"
+    game_mode =             "Game Mode"
+    net_status =            "Net Status"
+    club_status =           "Club Status"
+
     conte =                 "conte"
 
     # Resources
@@ -1796,6 +1800,7 @@ class Game(BaseEnum):
     spawn =                 "Spawnpoint"
 
     change_area =           "changeArea"
+    restart_stage =         "restartStage"
     kill_player =           "killPlayer"
 
     @classmethod
@@ -1927,13 +1932,16 @@ class APHelper(BaseEnum):
     death_link =                "death_link"
 
     # AP Client
+    goaled =                    "Goaled"
+    last_save =                 "Last Save"
+
     item_count =                "item_count"
     cache_checked_locations =   "cache_checked_locations"
     offline_checked_locations = "offline_checked_locations"
 
     # AP Server
     cmd_conn =                  "Connected"
-    cmd_rminf =                 "RoomInfo"
+    cmd_rminfo =                "RoomInfo"
     cmd_bounce =                "Bounced"
 
     arg_sl_dt =                 "slot_data"

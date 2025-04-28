@@ -85,9 +85,9 @@ class GoalTarget:
 
         print(self.locations, self.amount)
 
-    def check(self, ctx : 'AE3Context'):
-        if len(self.location_ids.intersection(ctx.cached_locations_checked)) >= self.amount:
-            ctx.goal()
+    async def check(self, ctx : 'AE3Context'):
+        if len(self.location_ids.intersection(ctx.checked_locations)) >= self.amount:
+            await ctx.goal()
 
 
 # [<--- LOGIC PREFERENCES --->]

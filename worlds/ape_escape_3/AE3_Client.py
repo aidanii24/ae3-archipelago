@@ -1,5 +1,6 @@
 from argparse import ArgumentParser, Namespace
 from typing import Optional, Sequence
+from datetime import datetime
 import io
 import os.path
 import typing
@@ -26,8 +27,15 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
     def _cmd_status(self):
         if isinstance(self.ctx, AE3Context):
-            logger.info(f"{APConsole.Info.p_check.value}"
-                        f"{APConsole.Info.init.value if self.ctx.is_connected else APConsole.Info.exit.value}")
+            logger.info(f" [-^-] Client Status")
+            logger.info(f" [-o-] Game:\n         "
+                        f"{
+                        "Playing Ape Escape 3" if self.ctx.is_connected 
+                        else "Not Connected to PCSX2"
+                        }")
+            logger.info(f"\n [-=-] Settings")
+            logger.info(f"         Freeplay Swap is " f"{"ENABLED" if self.ctx.swap_freeplay else "DISABLED"}")
+            logger.info(f"         DeathLink is " f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
 
     def _cmd_freeplay(self):
         """
@@ -35,16 +43,21 @@ class AE3CommandProcessor(ClientCommandProcessor):
         earlier.
         """
         if isinstance(self.ctx, AE3Context):
-            self.ctx.early_free_play = not self.ctx.early_free_play
+            if isinstance(self.ctx, AE3Context):
+                if not self.ctx.early_free_play:
+                    logger.info(f" [!!!] Early Free Play was set to DISABLED. You cannot toggle Freeplay Swap.")
+                    return
 
-            logger.info(f"[-!-] Early Free Play is now " f"{"ENABLED" if self.ctx.early_free_play else "DISABLED"}")
+                self.ctx.swap_freeplay = not self.ctx.swap_freeplay
+
+                logger.info(f" [-!-] Freeplay Swap is now " f"{"ENABLED" if self.ctx.swap_freeplay else "DISABLED"}")
 
     def _cmd_deathlink(self):
         """Toggle if death links should be received."""
         if isinstance(self.ctx, AE3Context):
             self.ctx.death_link = not self.ctx.death_link
 
-            logger.info(f"[-!-] DeathLink is now " f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
+            logger.info(f" [-!-] DeathLink is now " f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
     # Debug commands
     def _cmd_unlock(self, unlocks : str = "28"):
         """<!> DEBUG | Unlock amount of levels given"""
@@ -114,6 +127,8 @@ class AE3Context(CommonContext):
     ##  0 - No Exclusive Command Sent
     ##  1 - Command has been sent, awaiting confirmation of execution
     ##  2 - Command Executed, awaiting confirmation to reset
+    swap_freeplay : bool = False
+    is_mode_swapped : bool = True
     command_state : int = 0
     sending_death : bool = False
     rcc_unlocked : bool = False
@@ -121,6 +136,7 @@ class AE3Context(CommonContext):
     morphs_unlocked : list[bool] = [False for _ in range(7)]
     tomoki_defeated : bool = False
     specter1_defeated : bool = False
+    game_goaled : bool = False
 
     # Player Set Options
     progression: ProgressionMode = ProgressionMode.BOSS
@@ -203,6 +219,7 @@ class AE3Context(CommonContext):
             ## Early Free Play
             if APHelper.early_free_play.value in self.slot_data:
                 self.early_free_play = self.slot_data[APHelper.early_free_play.value]
+                self.swap_freeplay = self.early_free_play
 
             ## Auto-Equip
             if APHelper.auto_equip.value in self.slot_data:
@@ -214,7 +231,7 @@ class AE3Context(CommonContext):
                 Utils.async_start(self.update_death_link(self.death_link))
 
         # Initialize Session on receive of RoomInfo Packet
-        elif cmd == APHelper.cmd_rminf.value:
+        elif cmd == APHelper.cmd_rminfo.value:
             seed: str = args[APHelper.arg_seed.value]
             if self.seed_name != seed:
                 self.seed_name = seed
@@ -268,14 +285,22 @@ class AE3Context(CommonContext):
             self.rcc_unlocked = data.get(Itm.gadget_rcc.value, False)
             self.swim_unlocked = data.get(Itm.gadget_swim.value, False)
 
+        self.ipc.logger.info(" [-!-] A Session Data save has been found and successfully loaded.")
+
     def save_session(self):
         """Save current session progress"""
+        if self.game_goaled:
+            return
+
         # Prevent Spammed Messages
         if not self.save_data_filename or not self.save_data_path:
             logger.warning(APConsole.Err.save_no_init.value)
             return
 
         data = {
+            APHelper.goaled.value                       : self.game_goaled,
+            APHelper.last_save.value                    : datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+
             APHelper.item_count.value                   : self.next_item_slot,
             APHelper.offline_checked_locations.value    : [*self.offline_locations_checked],
 
@@ -287,6 +312,76 @@ class AE3Context(CommonContext):
         }
         with io.open(self.save_data_path + self.save_data_filename, 'w') as save:
             save.write(json.dumps(data))
+
+    def delete_session(self):
+        if not self.check_session_save():
+            return
+
+        try:
+            if os.path.isfile(self.save_data_path + self.save_data_filename):
+                os.remove(self.save_data_path + self.save_data_filename)
+        except OSError:
+            pass
+
+        if not self.check_session_save():
+            self.ipc.logger.info(" [-!-] Current Session Data has successfully been erased.")
+
+    def clean_sessions(self):
+        """
+        This will attempt to delete Session Data that has already goaled or has not been saved too for too long
+        depending on the set user options.
+        """
+        if not self.save_data_path or not os.path.isdir(self.save_data_path):
+            return
+
+        files: dict[str, int] = {}
+        discard: list[str] = []
+
+        for file in self.save_data_path:
+            # Only check the AE3 Save JSON files
+            if not file.startswith("AE3_") and not file.endswith(".json"):
+                continue
+
+            # Ensure this is actually a file
+            if not os.path.isfile(self.save_data_path + "/" + file):
+                continue
+
+            try:
+                with io.open(self.save_data_path + self.save_data_filename, 'r') as save:
+                    data = json.load(save)
+
+                    if APHelper.goaled.value in data:
+                        if data[APHelper.goaled.value]:
+                            discard.append(file)
+                            continue
+
+                    if APHelper.last_save.value in data:
+                        delta : int = (datetime.now() - datetime.strptime(data[APHelper.last_save.value],
+                                                                             "%Y-%m-%dT%H:%M:%S.%fZ")).days
+                        # Immediately add to discard pile if last save is more than the specified amount of days
+                        if delta > 30:
+                            discard.append(file)
+                        # Otherwise, send to be checked for excess remaining
+                        else:
+                            files.setdefault(file, delta)
+            except OSError as error:
+                print(error)
+                return
+
+        # Sort by days since last saved in ascending order, and remove the oldest ones that exceed the excess amount
+        if len(files) > 10:
+            excess_amount : int = len(files) - 9
+            excess : list[str] = [*dict(sorted(files.items(), key=lambda file : file[1])).keys()]
+
+            discard.extend(excess[-excess_amount:])
+
+        if discard:
+            try:
+                for file in discard:
+                    os.remove(self.save_data_path + "/" + file)
+            except OSError as error:
+                print(error)
+                return
 
     # Client Command GUI
     def run_gui(self):
