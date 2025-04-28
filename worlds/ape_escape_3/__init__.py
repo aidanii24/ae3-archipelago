@@ -1,8 +1,9 @@
 from typing import ClassVar, List, Optional
 
-from BaseClasses import MultiWorld, Tutorial
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
+from BaseClasses import MultiWorld, Tutorial
+import settings
 
 from .data.Items import AE3Item, Chassis_Pudding, Nothing, Channel_Key, Victory, generate_collectables
 from .data.Strings import Loc, Meta, APHelper, APConsole
@@ -19,6 +20,34 @@ def run_client(_url : Optional[str] = None):
 
 components.append(
     Component(APConsole.Info.client_name.value, func = run_client, component_type = Type.CLIENT))
+
+class AE3Settings(settings.Group):
+    class GamePreferences(settings.Bool):
+        """
+        Preferences for game/client-enforcement behavior
+
+        > auto-equip : Automatically assign received gadgets to a face button
+        """
+
+
+    class ClientPreferences(settings.Bool):
+        """
+        Preferences for client behavior, primarily when handling local session data saves.
+
+        > delete_goaled : Delete session data if they have already goaled. Set this to `False` to disable.
+        > delete_excess : Delete the oldest session data if the amount of saved session data exceeds a certain amount.
+        Set this to `0` to disable it.
+        > delete_old : Delete session data if they have not been saved into for a certain amount of days.
+        Set this to `0` to disable.
+        """
+
+
+    auto_equip: GamePreferences | bool = False
+
+    delete_goaled : ClientPreferences | bool = True
+    delete_excess : int = 10
+    delete_old : int = 30
+
 
 class AE3Web(WebWorld):
     theme = "ocean"
@@ -45,6 +74,7 @@ class AE3World(World):
 
     # Define Basic Game Parameters
     game = Meta.game
+    settings : AE3Settings
     web : ClassVar[WebWorld] = AE3Web()
     topology_present = True
 
@@ -69,8 +99,6 @@ class AE3World(World):
 
     def generate_early(self):
         self.progression = ProgressionMode.get_progression_mode(self.options.Progression_Mode.value)
-
-        self.auto_equip = self.options.Auto_Equip
 
         self.item_pool = []
 
