@@ -1950,6 +1950,7 @@ class APHelper(BaseEnum):
     cmd_conn =                  "Connected"
     cmd_rcv =                   "ReceivedItems"
     cmd_rminfo =                "RoomInfo"
+    cmd_rmupdt =                "RoomUpdate"
     cmd_bounce =                "Bounced"
 
     arg_sl_dt =                 "slot_data"
