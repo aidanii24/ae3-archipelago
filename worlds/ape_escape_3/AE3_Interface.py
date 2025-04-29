@@ -205,10 +205,8 @@ class AEPS2Interface:
 
     def is_in_control(self) -> bool:
         state : int = self.get_player_state()
-        gui_status : int = self.get_gui_status()
-        in_control: bool = (state != 0x00 and state != 0x02) and (gui_status == 0)
 
-        return in_control
+        return state != 0x00 and state != 0x02
 
     def is_selecting_morph(self) -> bool:
         return self.get_player_state() == 0x03
