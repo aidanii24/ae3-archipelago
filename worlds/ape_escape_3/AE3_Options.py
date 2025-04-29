@@ -41,7 +41,7 @@ class GoalTarget(Choice):
     > specter - clear Specter's Battle (End Game)
     > specter_final - clear Specter's Final Battle (Post Game)
     > triple_threat - clear 3 Boss stages
-    > play_spike - capture 209 Monkeys
+    > play_spike - capture 204 Monkeys
     > play_jimmy - capture 300 Monkeys
     > directors_cut - capture all 20 Monkey Films (this will enable the "Camerasanity" option)
     > phone_check - activate all 53 Cellphones (this will enable the "Cellphonesanity" option)
