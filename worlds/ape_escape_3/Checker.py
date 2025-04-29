@@ -176,8 +176,8 @@ async def check_states(ctx : 'AE3Context'):
 async def check_items(ctx : 'AE3Context'):
     cache_batch_items : Set[NetworkItem] = set()
 
-    if not ctx.next_item_slot and ctx.items_received and ctx.locations_checked:
-        ctx.next_item_slot = len(ctx.items_received) - 1
+    if not ctx.next_item_slot and ctx.items_received and ctx.checked_locations:
+        ctx.next_item_slot = len(ctx.items_received)
         print("Syncing Next Item Slot: ", ctx.next_item_slot)
 
     # Get Difference to get only new items
