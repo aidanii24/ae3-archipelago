@@ -36,8 +36,16 @@ class AE3CommandProcessor(ClientCommandProcessor):
                         "Playing Ape Escape 3" if self.ctx.is_connected 
                         else "Not Connected to PCSX2"
                         }")
+            logger.info(f"         Goal Target is " 
+                        f"{self.ctx.goal_target}")
+            logger.info(f"         > Progress: "
+                        f"{str(self.ctx.goal_target.get_progress(self.ctx))} / "
+                        f"{self.ctx.goal_target.amount}")
             logger.info(f"\n [-=-] Settings")
-            logger.info(f"         Freeplay Swap is " f"{"ENABLED" if self.ctx.swap_freeplay else "DISABLED"}")
+            if self.ctx.early_free_play:
+                logger.info(f"         Freeplay Swap is " f"{"ENABLED" if self.ctx.swap_freeplay else "DISABLED"}")
+            else:
+                logger.info(f"         Early Freeplay is DISABLED and Freeplay Swap cannot be toggled.")
             logger.info(f"         DeathLink is " f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
 
     def _cmd_freeplay(self):

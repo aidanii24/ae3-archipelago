@@ -69,8 +69,11 @@ class LogicPreference:
 
 
 class GoalTarget:
+    name : str = "Empty Goal"
+    description : str = "A Generic Goal Target"
+
     locations : set[str] = {}
-    location_ids : set[int]
+    location_ids : set[int] = {}
 
     amount : int = None
 
@@ -83,13 +86,29 @@ class GoalTarget:
         if self.amount is None:
             self.amount = len(self.locations)
 
-        print(self.locations, self.amount)
+    def __str__(self):
+        return self.name + "\n         > " + self.description
 
     async def check(self, ctx : 'AE3Context'):
         checked: set[int] = ctx.locations_checked.union(ctx.checked_locations)
 
         if len(self.location_ids.intersection(checked)) >= self.amount and not ctx.game_goaled:
             await ctx.goal()
+
+    def get_progress(self, ctx : 'AE3Context') -> int:
+        checked: set[int] = ctx.locations_checked.union(ctx.checked_locations)
+        progress : int = len(self.location_ids.intersection(checked))
+
+        return progress
+
+    def get_remaining(self, ctx : 'AE3Context') -> list[str]:
+        checked: set[int] = ctx.locations_checked.union(ctx.checked_locations)
+        progressed : set[int] = self.location_ids.intersection(checked)
+
+        name_to_id : dict[str, int] = generate_name_to_id()
+        missing : list[str] = [ l for l in self.locations if name_to_id[l] not in progressed]
+
+        return missing
 
 
 # [<--- LOGIC PREFERENCES --->]
@@ -1008,38 +1027,61 @@ LogicPreferenceOptions : list = [
 
 # [<--- GOAL TARGETS --->]
 class Specter(GoalTarget):
+    name = "Specter"
+    description = "Capture Specter by clearing \"Specter Battle!\""
+
     locations = [Loc.boss_specter.value]
 
 
 class SpecterFinal(Specter):
+    name = "Specter Final"
+    description = "Capture Specter a second time by clearing \"Specter's Final Battle!\""
+
     locations = [Loc.boss_specter_final.value]
 
 
 class TripleThreat(GoalTarget):
+    name = "Triple Threat"
+    description = "Defeat at least 3 bosses!"
+
     locations = [*MONKEYS_BOSSES]
 
     amount = 3
 
 
 class PlaySpike(GoalTarget):
+    name = "Play Spike"
+    description = "Go and Capture 204 Pipo Monkeys!"
+
     locations = {*MONKEYS_MASTER}
 
     amount = 204
 
 
 class PlayJimmy(PlaySpike):
+    name = "Play Jimmy"
+    description = "Go and Capture 300 Pipo Monkeys!"
+
     amount = 300
 
 
 class DirectorsCut(GoalTarget):
+    name = "Director's Cut"
+    description = "Capture all 20 Monkey Films across all the channels!"
+
     locations = {*CAMERAS_MASTER}
 
 
 class PhoneCheck(DirectorsCut):
+    name = "Phone Check"
+    description = "Activate all 53 Cellphones scattered across the channels!"
+
     locations = {*CELLPHONES_MASTER}
 
 
 class PasswordHunt(DirectorsCut):
+    name = "Password Hunt"
+
     locations = {*MONKEYS_PASSWORDS}
 
 
