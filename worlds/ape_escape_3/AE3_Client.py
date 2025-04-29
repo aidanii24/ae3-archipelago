@@ -12,15 +12,17 @@ import json
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled, \
                           ClientStatus
 import Utils
+from Utils import deprecate
 from settings import get_settings
 
 from .data.Strings import Meta, APConsole
 from .data.Logic import ProgressionMode
-from .data.Locations import CELLPHONES_MASTER, MONKEYS_MASTER, generate_name_to_id
+from .data.Locations import CELLPHONES_MASTER, MONKEYS_MASTER
 from .data.Rules import GoalTarget, GoalTargetOptions
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
 from . import AE3Settings
 from .Checker import *
+from .data import Items, Locations
 
 
 class AE3CommandProcessor(ClientCommandProcessor):
@@ -110,7 +112,8 @@ class AE3Context(CommonContext):
     cached_received_items : Set[NetworkItem]
 
     # APWorld Properties
-    locations_name_to_id : dict[str, int] = generate_name_to_id()
+    locations_name_to_id : dict[str, int] = Locations.generate_name_to_id()
+    items_name_to_id : dict[str, int] = Items.generate_name_to_id()
 
     monkeys_checklist : Sequence[str] = MONKEYS_MASTER
     monkeys_checklist_count : int = 0
@@ -124,19 +127,26 @@ class AE3Context(CommonContext):
     current_stage : str = None
     character : int = -1
     player_control : bool = False
+
+    swap_freeplay : bool = False
+    is_mode_swapped : bool = True
+
     ## Command State can be in either of 3 stages:
     ##  0 - No Exclusive Command Sent
     ##  1 - Command has been sent, awaiting confirmation of execution
     ##  2 - Command Executed, awaiting confirmation to reset
-    swap_freeplay : bool = False
-    is_mode_swapped : bool = True
     command_state : int = 0
     sending_death : bool = False
+    are_item_status_synced : bool = False
+    are_location_status_synced : bool = False
+
     rcc_unlocked : bool = False
     swim_unlocked : bool = False
     morphs_unlocked : list[bool] = [False for _ in range(7)]
+
     tomoki_defeated : bool = False
     specter1_defeated : bool = False
+
     game_goaled : bool = False
 
     # Player Set Settings
@@ -151,7 +161,7 @@ class AE3Context(CommonContext):
     camerasanity : int = None
     cellphonesanity : bool = None
 
-    morph_duration: float = 0.0
+    morph_duration : float = 0.0
 
     early_free_play : bool = False
 
@@ -185,9 +195,6 @@ class AE3Context(CommonContext):
 
         self.auto_equip = self.settings.auto_equip
 
-        # Attempt Session Save Directory Cleaning
-        self.clean_sessions()
-
     # Archipelago Server Authentication
     async def server_auth(self, password_requested : bool = False):
         # Ask for Password if Requested so
@@ -201,10 +208,6 @@ class AE3Context(CommonContext):
         # First Connection Check
         if cmd == APHelper.cmd_conn.value:
             data = args[APHelper.arg_sl_dt.value]
-
-            ## Load Local Session Save Data
-            if self.check_session_save():
-                self.load_session()
 
             ## Progression Mode
             if not self.unlocked_channels and APHelper.progression_mode.value in data:
@@ -242,12 +245,62 @@ class AE3Context(CommonContext):
                 self.death_link = bool(data[APHelper.death_link.value])
                 Utils.async_start(self.update_death_link(self.death_link))
 
+            ## Location Status Sync
+            if self.are_location_status_synced or not self.checked_locations:
+                return
+
+            received_as_id : list[int] = [ l for l in self.checked_locations]
+
+            self.tomoki_defeated = self.locations_name_to_id[Loc.boss_tomoki.value] in received_as_id
+            self.specter1_defeated = self.locations_name_to_id[Loc.boss_specter.value] in received_as_id
+
+            self.are_location_status_synced = True
+
         elif cmd == APHelper.cmd_rcv.value:
             index = args["index"]
 
+            # Update Next Item Slot
             if index:
-                print("ReceivedItems Packet | index:", index)
                 self.next_item_slot = index
+
+            # Abort if there are no locations, as starting items might get duplicated
+            if not self.checked_locations:
+                self.are_item_status_synced = True
+
+            # Resync Important Item Statuses
+            if self.are_item_status_synced or not self.items_received:
+                return
+
+            # Set Character if not yet
+            if self.character < 0 and self.current_stage:
+                self.character = self.ipc.get_character()
+            print("Syncing Statuses")
+            received_as_id : list[int] = [ i.item for i in self.items_received]
+            print("Current Items:")
+            for item in received_as_id:
+                print(item)
+
+            ## Get Keys
+            self.keys = received_as_id.count(self.items_name_to_id[APHelper.channel_key.value])
+            self.unlocked_channels = self.progression.get_current_progress(self.keys)
+            print("Syncing Keys with ID:", self.items_name_to_id[APHelper.channel_key.value])
+
+            # Retrace Morph Duration
+            if self.morph_duration != 0:
+                self.morph_duration += received_as_id.count(self.items_name_to_id[Itm.acc_morph_ext.value]) * 2
+                print("Syncing Morph Duration with total duration of:", self.morph_duration,)
+                self.ipc.set_morph_duration(self.character, self.morph_duration)
+
+            # Check RC Car Unlock
+            for rcc in Itm.get_chassis_by_id():
+                if self.items_name_to_id[rcc] in received_as_id:
+                    self.rcc_unlocked = True
+                    break
+
+            # Check Water Net Unlock
+            self.swim_unlocked = self.items_name_to_id[Itm.gadget_swim.value] in received_as_id
+
+            self.are_item_status_synced = True
 
         # Initialize Session on receive of RoomInfo Packet
         elif cmd == APHelper.cmd_rminfo.value:
@@ -272,8 +325,9 @@ class AE3Context(CommonContext):
         elif not self.save_data_path:
             return False
 
-        return (os.path.isfile(self.save_data_path + self.save_data_filename) and
-                os.access(self.save_data_path + self.save_data_filename, os.R_OK))
+        # return (os.path.isfile(self.save_data_path + self.save_data_filename) and
+        #         os.access(self.save_data_path + self.save_data_filename, os.R_OK))
+        return False
 
     def load_session(self):
         """Load existing session"""
@@ -497,12 +551,12 @@ async def check_game(ctx : AE3Context):
             await asyncio.sleep(1)
             return
 
+        # Get Character
+        if ctx.character < 0:
+            ctx.character = ctx.ipc.get_character()
+
         # Setup Stage when needed and double check locations
         if ctx.current_channel == APHelper.travel_station.value:
-            # Initialize properties after tutorial
-            if ctx.character < 0:
-                ctx.character = ctx.ipc.get_character()
-
             await setup_level_select(ctx)
             await recheck_location_groups(ctx)
         else:
