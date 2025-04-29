@@ -22,16 +22,16 @@ async def check_background_states(ctx : 'AE3Context'):
     # Enforce Morph Duration
     if ctx.character >= 0:
         current_morph_duration : float = ctx.ipc.get_morph_duration(ctx.character)
-        unlocked_morphs : list[int] = [idx for idx, _ in enumerate(ctx.morphs_unlocked) if _]
+        dummy: str = ctx.dummy_morph if ctx.dummy_morph_needed else ""
 
         if current_morph_duration != ctx.morph_duration or current_morph_duration != 0.0:
-            ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration, unlocked_morphs)
+            ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration, dummy)
 
         # Character could be wrong if morph duration still is not equal after the first set
         current_morph_duration = ctx.ipc.get_morph_duration(ctx.character)
         if current_morph_duration != ctx.morph_duration or current_morph_duration != 0.0:
             ctx.character = ctx.ipc.get_character()
-            ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration, unlocked_morphs)
+            ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration, dummy)
 
     # Get which Monkey Group to actively check at the moment based on the stage
     if not new_channel or new_channel is None and not ctx.current_channel:
@@ -104,8 +104,11 @@ async def setup_level_select(ctx : 'AE3Context'):
 
     # If Super Monkey isn't properly unlocked yet, temporarily do so during level select to prevent Aki from
     # introducing and giving it to the player.
-    if not ctx.morphs_unlocked[-1]:
+    if ctx.dummy_morph_monkey_needed:
         ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
+
+    if ctx.dummy_morph_needed:
+        ctx.ipc.unlock_equipment(ctx.dummy_morph)
 
     # Temporarily unlock all Chassis when not in Travel Station to make sure their models load correctly when obtained
     # RC Car Chassis can't be changed in levels, so it is safe to keep them on until the next Travel Station visit
@@ -123,8 +126,8 @@ async def setup_level_select(ctx : 'AE3Context'):
         # Toggle Freeplay when allowed and needed
         toggle_freeplay(ctx)
 
-        # Lock Super Monkey on Confirm when it is not the dummy morph
-        if ctx.dummy_morph >= 0:
+        # Lock Super Monkey Morph as Aki won't give it at this point if it's still supposed to be locked
+        if ctx.dummy_morph_monkey_needed:
             ctx.ipc.lock_equipment(Itm.morph_monkey.value)
 
 
@@ -214,9 +217,16 @@ async def check_items(ctx : 'AE3Context'):
 
             ### Track Morphs Unlocked
             if item.name in Itm.get_morphs_ordered():
-                index : int = Itm.get_morphs_ordered().index(item.name)
-                ctx.morphs_unlocked[index] = True
-                ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration, [index], True)
+                # Update need of dummy morph
+                if Itm.morph_monkey.value == ctx.dummy_morph:
+                    if item.name == ctx.dummy_morph:
+                        ctx.dummy_morph_needed = False
+                        ctx.dummy_morph_monkey_needed = False
+                else:
+                    ctx.dummy_morph_needed = False
+
+                dummy: str = ctx.dummy_morph if ctx.dummy_morph_needed else ""
+                ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration, dummy)
 
         ## Handle Collectables
         elif isinstance(item, CollectableItem) or isinstance(item, UpgradeableItem):
@@ -239,8 +249,8 @@ async def check_items(ctx : 'AE3Context'):
             elif item.resource == Game.morph_duration.value:
                 ctx.morph_duration += item.amount
 
-                unlocked_morphs = [idx for idx, _ in enumerate(ctx.morphs_unlocked) if _]
-                ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration, unlocked_morphs, True)
+                dummy: str = ctx.dummy_morph if ctx.dummy_morph_needed else ""
+                ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration, dummy)
 
             ### Handle Generic Items
             else:
@@ -317,15 +327,13 @@ async def check_locations(ctx : 'AE3Context'):
             ctx.offline_locations_checked.update(cleared)
 
 def dispatch_dummy_morph(ctx : 'AE3Context', unlock : bool = False):
-    if ctx.dummy_morph < 0 and ctx.morphs_unlocked[ctx.dummy_morph]:
-        return
-    elif ctx.dummy_morph >= 0 and any(state for state in ctx.morphs_unlocked):
+    if not ctx.dummy_morph or ctx.dummy_morph is None or not ctx.dummy_morph_needed:
         return
 
     if unlock:
-        ctx.ipc.unlock_equipment(Itm.get_morphs_ordered()[ctx.dummy_morph])
+        ctx.ipc.unlock_equipment(ctx.dummy_morph)
     else:
-        ctx.ipc.lock_equipment(Itm.get_morphs_ordered()[ctx.dummy_morph])
+        ctx.ipc.lock_equipment(ctx.dummy_morph)
 
 def toggle_freeplay(ctx : 'AE3Context'):
     if not ctx.swap_freeplay or ctx.is_mode_swapped:

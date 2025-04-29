@@ -390,8 +390,7 @@ class AEPS2Interface:
         if target >= 0:
             self.pine.write_int32(target, gadget_id)
 
-    def set_morph_duration(self, character : int, duration : float, morphs : list[int] = None,
-                           exclusive : bool = False):
+    def set_morph_duration(self, character : int, duration : float, dummy : str = ""):
         if character < 0:
             return
 
@@ -399,17 +398,10 @@ class AEPS2Interface:
         if not durations:
             return
 
-        # If exclusive is True, ONLY set for specified morphs and leave others as is
-        if morphs and exclusive:
-            if len(morphs) > len(durations):
-                return
-
-            durations = [durations[idx] for idx in morphs]
-
         for idx, morph in enumerate(durations):
             duration_to_set : float = duration
             # Set duration to 0 if not specified in morphs and exclusive is false
-            if not exclusive and morphs and idx not in morphs:
+            if dummy and idx == self.addresses.Items[dummy]:
                 duration_to_set = 0.0
 
             self.pine.write_int32(morph, float_to_hex_int32(duration_to_set))

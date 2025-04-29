@@ -12,7 +12,6 @@ import json
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled, \
                           ClientStatus
 import Utils
-from Utils import deprecate
 from settings import get_settings
 
 from .data.Strings import Meta, APConsole
@@ -142,6 +141,8 @@ class AE3Context(CommonContext):
 
     rcc_unlocked : bool = False
     swim_unlocked : bool = False
+    dummy_morph_needed : bool = True
+    dummy_morph_monkey_needed : bool = True
     morphs_unlocked : list[bool] = [False for _ in range(7)]
 
     tomoki_defeated : bool = False
@@ -157,7 +158,7 @@ class AE3Context(CommonContext):
     # Player Set Options
     progression: ProgressionMode = ProgressionMode.BOSS
     goal_target : GoalTarget = GoalTarget()
-    dummy_morph : int = -1
+    dummy_morph : str = Itm.morph_monkey.value
     camerasanity : int = None
     cellphonesanity : bool = None
 
@@ -221,7 +222,7 @@ class AE3Context(CommonContext):
             ## Monkeysanity - Break Rooms
             if APHelper.monkeysanitybr.value in data:
                 if data[APHelper.monkeysanitybr.value] < 2:
-                    self.dummy_morph = 0
+                    self.dummy_morph = Itm.morph_knight.value
 
             ## Camerasanity
             if self.camerasanity is None and APHelper.camerasanity.value in data:
@@ -274,22 +275,27 @@ class AE3Context(CommonContext):
             # Set Character if not yet
             if self.character < 0 and self.current_stage:
                 self.character = self.ipc.get_character()
-            print("Syncing Statuses")
+
             received_as_id : list[int] = [ i.item for i in self.items_received]
-            print("Current Items:")
-            for item in received_as_id:
-                print(item)
 
             ## Get Keys
             self.keys = received_as_id.count(self.items_name_to_id[APHelper.channel_key.value])
             self.unlocked_channels = self.progression.get_current_progress(self.keys)
-            print("Syncing Keys with ID:", self.items_name_to_id[APHelper.channel_key.value])
+
+            # Check if dummy morph is needed
+            self.dummy_morph_monkey_needed = self.items_name_to_id[Itm.morph_monkey.value] not in received_as_id
+
+            if self.dummy_morph == Itm.morph_monkey.value:
+                self.dummy_morph_needed = self.dummy_morph_monkey_needed
+            else:
+                morph_ids : list[int] = [ self.items_name_to_id[morph] for morph in Itm.get_morphs_ordered() ]
+                self.dummy_morph_needed = not any(item in morph_ids for item in received_as_id)
 
             # Retrace Morph Duration
             if self.morph_duration != 0:
                 self.morph_duration += received_as_id.count(self.items_name_to_id[Itm.acc_morph_ext.value]) * 2
-                print("Syncing Morph Duration with total duration of:", self.morph_duration,)
-                self.ipc.set_morph_duration(self.character, self.morph_duration)
+                dummy : str = self.dummy_morph if self.dummy_morph_needed else ""
+                self.ipc.set_morph_duration(self.character, self.morph_duration, dummy)
 
             # Check RC Car Unlock
             for rcc in Itm.get_chassis_by_id():
@@ -477,7 +483,11 @@ class AE3Context(CommonContext):
         self.ui_task = asyncio.create_task(self.ui.async_run(), name = "ui")
 
     async def goal(self):
+        if self.game_goaled:
+            return
+
         await self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
+        self.game_goaled = True
 
 
 def update_connection_status(ctx : AE3Context, status : bool):
