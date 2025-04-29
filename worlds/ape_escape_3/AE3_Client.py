@@ -324,6 +324,7 @@ class AE3Context(CommonContext):
 
         self.pending_deathlinks += 1
 
+    # @deprecated("Local Storage of Session Data is unused at the moment.")
     def check_session_save(self) -> bool:
         """Check for valid save file"""
         if not self.save_data_filename:
@@ -335,6 +336,7 @@ class AE3Context(CommonContext):
         #         os.access(self.save_data_path + self.save_data_filename, os.R_OK))
         return False
 
+    # @deprecated("Local Storage of Session Data is unused at the moment.")
     def load_session(self):
         """Load existing session"""
         if not self.check_session_save():
@@ -369,6 +371,7 @@ class AE3Context(CommonContext):
 
         self.ipc.logger.info(" [-!-] A Session Data save has been found and successfully loaded.")
 
+    # @deprecated("Local Storage of Session Data is unused at the moment.")
     def save_session(self):
         """Save current session progress"""
         if self.game_goaled:
@@ -395,6 +398,7 @@ class AE3Context(CommonContext):
         with io.open(self.save_data_path + self.save_data_filename, 'w') as save:
             save.write(json.dumps(data))
 
+    # @deprecated("Local Storage of Session Data is unused at the moment.")
     def delete_session(self):
         if not self.check_session_save():
             return
@@ -411,6 +415,7 @@ class AE3Context(CommonContext):
         if not self.check_session_save():
             self.ipc.logger.info(" [-!-] Current Session Data has successfully been erased.")
 
+    # @deprecated("Local Storage of Session Data is unused at the moment.")
     def clean_sessions(self):
         """
         This will attempt to delete Session Data that has already goaled or has not been saved too for too long
