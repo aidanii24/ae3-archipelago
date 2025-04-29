@@ -176,8 +176,14 @@ async def check_states(ctx : 'AE3Context'):
 async def check_items(ctx : 'AE3Context'):
     cache_batch_items : Set[NetworkItem] = set()
 
+    if not ctx.next_item_slot and ctx.items_received and ctx.locations_checked:
+        ctx.next_item_slot = len(ctx.items_received) - 1
+        print("Syncing Next Item Slot: ", ctx.next_item_slot)
+
     # Get Difference to get only new items
     received : List[NetworkItem] = ctx.items_received[ctx.next_item_slot:]
+    print("Total Items Received:", len(ctx.items_received))
+    print("Next Item Slot:", len(ctx.items_received))
     ctx.next_item_slot += len(received)
 
     # Auto-equip if option is enabled or for handling the starting gadgets
@@ -185,6 +191,7 @@ async def check_items(ctx : 'AE3Context'):
 
     for server_item in received:
         item = Items.from_id(server_item.item)
+        print("Item Received:", item.name)
 
         # Handle Item depending on category
         ## Handle Archipelago Items

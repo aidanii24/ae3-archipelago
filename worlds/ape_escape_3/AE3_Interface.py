@@ -163,7 +163,6 @@ class AEPS2Interface:
 
     def get_game_mode(self) -> int:
         address = self.addresses.GameStates[Game.game_mode.value]
-        print("GET |", hex(address))
 
         return self.pine.read_int32(address)
 
@@ -312,7 +311,6 @@ class AEPS2Interface:
 
     def set_game_mode(self, mode : int = 0x100, restart : bool = True):
         address = self.addresses.GameStates[Game.game_mode.value]
-        print("SET |", hex(address))
 
         self.pine.write_int32(address, mode)
 
