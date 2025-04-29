@@ -103,7 +103,6 @@ class AE3Context(CommonContext):
     last_message : Optional[str] = None
 
     # Server Properties and Cache
-    slot_data : dict[str, Utils.Any]
     next_item_slot : int = 0
     pending_deathlinks : int = 0
     cached_locations_checked : Set[int]
@@ -201,47 +200,54 @@ class AE3Context(CommonContext):
     def on_package(self, cmd: str, args: dict):
         # First Connection Check
         if cmd == APHelper.cmd_conn.value:
-            self.slot_data = args[APHelper.arg_sl_dt.value]
+            data = args[APHelper.arg_sl_dt.value]
 
             ## Load Local Session Save Data
             if self.check_session_save():
                 self.load_session()
 
             ## Progression Mode
-            if not self.unlocked_channels and APHelper.progression_mode.value in self.slot_data:
-                self.progression = ProgressionMode.get_progression_mode(self.slot_data[APHelper.progression_mode.value])
+            if not self.unlocked_channels and APHelper.progression_mode.value in data:
+                self.progression = ProgressionMode.get_progression_mode(data[APHelper.progression_mode.value])
                 self.unlocked_channels = self.progression.get_current_progress(0)
 
             ## Goal Target
-            if not self.goal_target.locations and APHelper.goal_target.value in self.slot_data:
-                self.goal_target = GoalTargetOptions[self.slot_data[APHelper.goal_target.value]]()
+            if not self.goal_target.locations and APHelper.goal_target.value in data:
+                self.goal_target = GoalTargetOptions[data[APHelper.goal_target.value]]()
 
             ## Monkeysanity - Break Rooms
-            if APHelper.monkeysanitybr.value in self.slot_data:
-                if self.slot_data[APHelper.monkeysanitybr.value] < 2:
+            if APHelper.monkeysanitybr.value in data:
+                if data[APHelper.monkeysanitybr.value] < 2:
                     self.dummy_morph = 0
 
             ## Camerasanity
-            if self.camerasanity is None and APHelper.camerasanity.value in self.slot_data:
-                self.camerasanity = self.slot_data[APHelper.camerasanity.value]
+            if self.camerasanity is None and APHelper.camerasanity.value in data:
+                self.camerasanity = data[APHelper.camerasanity.value]
 
             ## Cellphonesanity
-            if self.cellphonesanity is None and APHelper.cellphonesanity.value in self.slot_data:
-                self.cellphonesanity = self.slot_data[APHelper.cellphonesanity.value]
+            if self.cellphonesanity is None and APHelper.cellphonesanity.value in data:
+                self.cellphonesanity = data[APHelper.cellphonesanity.value]
 
             ## Morph Duration
-            if self.morph_duration == 0 and APHelper.base_morph_duration.value in self.slot_data:
-                self.morph_duration = float(self.slot_data[APHelper.base_morph_duration.value])
+            if self.morph_duration == 0 and APHelper.base_morph_duration.value in data:
+                self.morph_duration = float(data[APHelper.base_morph_duration.value])
 
             ## Early Free Play
-            if APHelper.early_free_play.value in self.slot_data:
-                self.early_free_play = self.slot_data[APHelper.early_free_play.value]
+            if APHelper.early_free_play.value in data:
+                self.early_free_play = data[APHelper.early_free_play.value]
                 self.swap_freeplay = self.early_free_play
 
             ## DeathLink
-            if APHelper.death_link.value in self.slot_data:
-                self.death_link = bool(self.slot_data[APHelper.death_link.value])
+            if APHelper.death_link.value in data:
+                self.death_link = bool(data[APHelper.death_link.value])
                 Utils.async_start(self.update_death_link(self.death_link))
+
+        elif cmd == APHelper.cmd_rcv.value:
+            index = args["index"]
+
+            if index:
+                print("ReceivedItems Packet | index:", index)
+                self.next_item_slot = index
 
         # Initialize Session on receive of RoomInfo Packet
         elif cmd == APHelper.cmd_rminfo.value:
@@ -278,7 +284,7 @@ class AE3Context(CommonContext):
             data : dict = json.load(save)
 
             # Retrieve Next Item Slot/Amount of Items Received
-            self.next_item_slot = data.get(APHelper.item_count.value, 0)
+            #self.next_item_slot = data.get(APHelper.item_count.value, 0)
 
             # Retrieve Offline Checked Locations
             self.offline_locations_checked = set(data.get(APHelper.offline_checked_locations.value, set()))
@@ -317,7 +323,7 @@ class AE3Context(CommonContext):
             APHelper.goaled.value                       : self.game_goaled,
             APHelper.last_save.value                    : datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
 
-            APHelper.item_count.value                   : self.next_item_slot,
+            #APHelper.item_count.value                   : self.next_item_slot,
             APHelper.offline_checked_locations.value    : [*self.offline_locations_checked],
 
             APHelper.channel_key.value                  : self.keys,
@@ -393,7 +399,7 @@ class AE3Context(CommonContext):
         # Sort by days since last saved in ascending order, and remove the oldest ones that exceed the excess amount
         if len(files) > 10:
             excess_amount : int = len(files) - self.settings.delete_excess - 1
-            excess : list[str] = [*dict(sorted(files.items(), key=lambda file : file[1])).keys()]
+            excess : list[str] = [*dict(sorted(files.items(), key=lambda f : file[1])).keys()]
 
             discard.extend(excess[-excess_amount:])
 

@@ -1948,6 +1948,7 @@ class APHelper(BaseEnum):
 
     # AP Server
     cmd_conn =                  "Connected"
+    cmd_rcv =                   "ReceivedItems"
     cmd_rminfo =                "RoomInfo"
     cmd_bounce =                "Bounced"
 
