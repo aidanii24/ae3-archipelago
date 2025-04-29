@@ -177,8 +177,6 @@ async def check_states(ctx : 'AE3Context'):
             ctx.command_state = 1
 
 async def check_items(ctx : 'AE3Context'):
-    cache_batch_items : Set[NetworkItem] = set()
-
     if not ctx.next_item_slot and ctx.items_received and ctx.checked_locations:
         ctx.next_item_slot = len(ctx.items_received)
 
@@ -256,11 +254,9 @@ async def check_items(ctx : 'AE3Context'):
             else:
                 ctx.ipc.give_collectable(item.resource, i.amount, maximum)
 
-        # Add to temporary container; to be cached as a single batched after
-        cache_batch_items.add(server_item)
-
-    # Add to Cache
-    ctx.cached_received_items.update(cache_batch_items)
+    if received:
+        # Recheck Locations when receiving items for cases when locations are checked manually by the server/host
+        await ctx.goal_target.check(ctx)
 
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
