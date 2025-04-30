@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING, Callable, Set
+from warnings import warn
 
 from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, CELLPHONES_MASTER, MONKEYS_BOSSES, \
     MONKEYS_INDEX, MONKEYS_MASTER, MONKEYS_PASSWORDS, generate_name_to_id
@@ -78,21 +79,24 @@ class GoalTarget:
     amount : int = 0
 
     def __init__(self, excluded_stages : list[str] = None, excluded_locations : list[str] = None):
-        print(self.locations)
         if not self.locations:
             return
 
-        print(excluded_stages)
-        print(excluded_locations)
+        # Exclude Specified Locations if any
         locations_excluded : list[str] = excluded_locations if excluded_locations is not None else []
         if excluded_stages is not None:
             for stage in excluded_stages:
-                print(locations for locations in MONKEYS_INDEX.get(stage, []))
                 locations_excluded.extend( locations for locations in MONKEYS_INDEX.get(stage, []) )
-                locations_excluded.extend([ locations for locations in CAMERAS_INDEX.get(stage, []) ])
-                locations_excluded.extend( locations for locations in CELLPHONES_INDEX.get(stage, []))
+                locations_excluded.extend( locations for locations in CAMERAS_INDEX.get(stage, []) )
+                locations_excluded.extend( locations for locations in CELLPHONES_INDEX.get(stage, []) )
 
-        self.locations = { location for location in self.locations if location not in locations_excluded }
+        if locations_excluded:
+            self.locations = { location for location in self.locations if location not in locations_excluded }
+            if len(self.locations) <= 0:
+                raise AssertionError("There are no locations to check. Please reduce the excluded locations.")
+            elif len(self.locations) < self.amount:
+                warn("Number of Locations required to check for Goal has been reduced due to excluded locations.")
+                self.amount = len(self.locations)
 
         self.location_ids = {generate_name_to_id()[location] for location in self.locations}
 
