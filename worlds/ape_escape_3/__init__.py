@@ -126,14 +126,6 @@ class AE3World(World):
 
         # <!> Push important items early for easy testing
         self.multiworld.push_precollected(Channel_Key.to_item(self.player))
-        # self.get_location(Loc.zero_ukki_pan.value).place_locked_item(Channel_Key.to_item(self.player))
-        # self.get_location(Loc.seaside_ukkitan.value).place_locked_item(Channel_Key.to_item(self.player))
-        # self.get_location(Loc.seaside_ukki_pia.value).place_locked_item(Channel_Key.to_item(self.player))
-        # self.get_location(Loc.seaside_nessal.value).place_locked_item(Channel_Key.to_item(self.player))
-        # self.get_location(Loc.seaside_salurin.value).place_locked_item(Channel_Key.to_item(self.player))
-        # self.get_location(Loc.seaside_sarubo.value).place_locked_item(Channel_Key.to_item(self.player))
-        # self.get_location(Loc.seaside_morella.value).place_locked_item(Channel_Key.to_item(self.player))
-        # self.get_location(Loc.seaside_ukki_ben.value).place_locked_item(Channel_Key.to_item(self.player))
 
         equipment : List[AE3Item] = [stun_club, monkey_radar, super_hoop, slingback_shooter, water_net, rc_car,
                                   sky_flyer]
@@ -176,23 +168,9 @@ class AE3World(World):
         # Add Archipelago Items
         self.item_pool += self.progression.generate_keys(self)
 
-        # Manually Set Items
-        # self.get_location(Loc.boss_specter.value).place_locked_item(Victory.to_item(self.player))
-
-        # <!> DEBUG - Temporarily preset Password Monkeys with Nothing Items for now
-        # self.get_location(Loc.castle_sal_1000.value).place_locked_item(Nothing.to_item(self.player))
-        # self.get_location(Loc.woods_spork.value).place_locked_item(Nothing.to_item(self.player))
-        # self.get_location(Loc.snowfesta_pipotron_yellow.value).place_locked_item(Nothing.to_item(self.player))
-        # self.get_location(Loc.toyhouse_pipotron_red.value).place_locked_item(Nothing.to_item(self.player))
-        # self.get_location(Loc.hong_dark_master.value).place_locked_item(Nothing.to_item(self.player))
-        # self.get_location(Loc.space_sal_3000.value).place_locked_item(Nothing.to_item(self.player))
-
         # Fill remaining locations with Collectables
         unfilled : int = len(self.multiworld.get_unfilled_locations()) - len(self.item_pool)
         self.item_pool += generate_collectables(self.player, unfilled)
-
-        # Set Win Condition
-        # self.multiworld.completion_condition[self.player] = lambda state : is_goal_achieved(state, self.player)
 
         # Add Items to ItemPool
         self.multiworld.itempool = self.item_pool

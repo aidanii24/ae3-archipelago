@@ -266,9 +266,7 @@ class AE3Context(CommonContext):
             ## Check Break Room Monkeys and Password Monkeys options to use with Goal Target
             excluded_stages : list[str] = []
 
-            print(APHelper.monkeysanitybr.value in data)
             if APHelper.monkeysanitybr.value in data:
-                print(data[APHelper.monkeysanitybr.value])
                 if not data[APHelper.monkeysanitybr.value]:
                     excluded_stages = [*STAGES_BREAK_ROOMS]
 
