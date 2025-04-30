@@ -33,7 +33,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
         if isinstance(self.ctx, AE3Context):
             logger.info(f" [-^-] Client Status")
 
-            logger.info(f" [-o-] Game:")
+            logger.info(f" [-o-] Game")
 
             if self.ctx.server:
                 logger.info(f"{
@@ -271,8 +271,11 @@ class AE3Context(CommonContext):
                     excluded_stages = [*STAGES_BREAK_ROOMS]
 
             ## Goal Target
+            goal_target : int = 0
+
             if not self.goal_target.locations and APHelper.goal_target.value in data:
-                self.goal_target = GoalTargetOptions[data[APHelper.goal_target.value]](excluded_stages)
+                goal_target = data[APHelper.goal_target.value]
+                self.goal_target = GoalTargetOptions[goal_target](excluded_stages)
 
             ## Monkeysanity - Break Rooms
             if APHelper.monkeysanitybr.value in data:
@@ -281,11 +284,11 @@ class AE3Context(CommonContext):
 
             ## Camerasanity
             if self.camerasanity is None and APHelper.camerasanity.value in data:
-                self.camerasanity = data[APHelper.camerasanity.value]
+                self.camerasanity = data[APHelper.camerasanity.value] or goal_target == 5
 
             ## Cellphonesanity
             if self.cellphonesanity is None and APHelper.cellphonesanity.value in data:
-                self.cellphonesanity = data[APHelper.cellphonesanity.value]
+                self.cellphonesanity = data[APHelper.cellphonesanity.value] or goal_target == 6
 
             ## Morph Duration
             if self.morph_duration == 0 and APHelper.base_morph_duration.value in data:
@@ -294,7 +297,6 @@ class AE3Context(CommonContext):
             ## Early Free Play
             if APHelper.early_free_play.value in data:
                 self.early_free_play = data[APHelper.early_free_play.value]
-                self.swap_freeplay = self.early_free_play
 
             ## DeathLink
             if APHelper.death_link.value in data:

@@ -177,8 +177,8 @@ MONKEYS_CASTLE_F : Sequence[str] = [
 ]
 
 MONKEYS_CASTLE : Sequence[str] = [
-    *MONKEYS_CASTLE_A1, *MONKEYS_CASTLE_B1, *MONKEYS_CASTLE_C, *MONKEYS_CASTLE_D, *MONKEYS_CASTLE_D1,
-    *MONKEYS_CASTLE_E, *MONKEYS_CASTLE_F
+    *MONKEYS_CASTLE_A1, *MONKEYS_CASTLE_B, *MONKEYS_CASTLE_B1, *MONKEYS_CASTLE_C, *MONKEYS_CASTLE_D,
+    *MONKEYS_CASTLE_D1, *MONKEYS_CASTLE_E, *MONKEYS_CASTLE_F
 ]
 
 # Boss1
@@ -1673,12 +1673,12 @@ CELLPHONES_INDEX : dict[str, Sequence[str]] = {
     Stage.region_edotown_c1.value               : CELLPHONES_EDOTOWN_C1,
     Stage.region_edotown_c2.value               : CELLPHONES_EDOTOWN_C2,
 
-    Stage.region_heaven_a1.value                 : CELLPHONES_HEAVEN_A1,
+    Stage.region_heaven_a1.value                : CELLPHONES_HEAVEN_A1,
 
     Stage.region_toyhouse_c.value               : CELLPHONES_TOYHOUSE_C,
     Stage.region_toyhouse_g.value               : CELLPHONES_TOYHOUSE_G,
 
-    Stage.region_iceland_a1.value                : CELLPHONES_ICELAND_A1,
+    Stage.region_iceland_a1.value               : CELLPHONES_ICELAND_A1,
     Stage.region_iceland_d.value                : CELLPHONES_ICELAND_D,
 
     Stage.region_arabian_a.value                : CELLPHONES_ARABIAN_A,
@@ -2028,7 +2028,7 @@ def generate_name_to_id() -> dict[str, int]:
 
     # Cellphones
     name_to_id.update(
-        {cell.name: cell.loc_id for cell in [CellphoneLocation(name) for name in CELLPHONES_MASTER]}
+        {cell.name : cell.loc_id for cell in [CellphoneLocation(name) for name in CELLPHONES_MASTER]}
     )
 
     return name_to_id
