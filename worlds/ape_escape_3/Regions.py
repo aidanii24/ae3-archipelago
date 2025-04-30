@@ -27,6 +27,9 @@ def create_regions(world : "AE3World"):
     rule : LogicPreference = LogicPreferenceOptions[world.options.Logic_Preference]()
     rule.set_level_progression_rules(world.progression)
 
+    add_cameras : bool = world.options.Camerasanity or world.options.Goal_Target == 5
+    add_cellphones : bool = world.options.Cellphonesanity or world.options.Goal_Target == 6
+
     # Initialize Regions
     stages : dict[str, Region] = { name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER }
 
@@ -80,7 +83,7 @@ def create_regions(world : "AE3World"):
                 stage.locations.append(loc)
 
         ## Cameras
-        if world.options.Camerasanity and stage.name in CAMERAS_INDEX:
+        if add_cameras and stage.name in CAMERAS_INDEX:
             camera : str = CAMERAS_INDEX[stage.name]
             meta : CameraLocation = CameraLocation(camera, CAMERAS_MASTER.index(camera))
             loc : Location = meta.to_location(world.player, stage)
@@ -106,7 +109,7 @@ def create_regions(world : "AE3World"):
             stage.locations.append(loc)
 
         ## Cellphones
-        if world.options.Cellphonesanity:
+        if add_cellphones:
             if stage.name in CELLPHONES_INDEX:
                 for cellphone in CELLPHONES_INDEX[stage.name]:
                     meta : CellphoneLocation = CellphoneLocation(cellphone)
@@ -127,7 +130,6 @@ def create_regions(world : "AE3World"):
 
     # Send Regions to Archipelago
     world.multiworld.regions.extend(list(stages.values()))
-    world.multiworld.get_location("Tomezo - Seaside Resort", world.player)
 
     # # <!> DEBUG
     # # Connection Diagrams

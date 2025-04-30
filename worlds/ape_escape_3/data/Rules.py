@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING, Callable, Set
 from warnings import warn
 
-from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, CELLPHONES_MASTER, MONKEYS_BOSSES, \
+from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, CELLPHONES_MASTER, Cellphone_Name_to_ID, \
+    MONKEYS_BOSSES, \
     MONKEYS_INDEX, MONKEYS_MASTER, MONKEYS_PASSWORDS, generate_name_to_id
 from .Logic import Rulesets, AccessRule, ProgressionMode, has_keys, event_invoked
 from .Strings import Loc, Stage, Events
@@ -100,7 +101,7 @@ class GoalTarget:
 
         self.location_ids = {generate_name_to_id()[location] for location in self.locations}
 
-        if self.amount is None:
+        if not self.amount or self.amount is None:
             self.amount = len(self.locations)
 
     def __bool__(self) -> bool:
@@ -1096,7 +1097,7 @@ class PhoneCheck(DirectorsCut):
     name = "Phone Check"
     description = "Activate all Cellphones scattered across the channels!"
 
-    locations = {*CELLPHONES_MASTER}
+    locations = {*Cellphone_Name_to_ID.values()}
 
 
 class PasswordHunt(DirectorsCut):
