@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Callable, Set
 
-from .Locations import CAMERAS_MASTER, CELLPHONES_MASTER, MONKEYS_BOSSES, MONKEYS_INDEX, MONKEYS_MASTER, \
-    MONKEYS_PASSWORDS, generate_name_to_id
+from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, CELLPHONES_MASTER, MONKEYS_BOSSES, \
+    MONKEYS_INDEX, MONKEYS_MASTER, MONKEYS_PASSWORDS, generate_name_to_id
 from .Logic import Rulesets, AccessRule, ProgressionMode, has_keys, event_invoked
 from .Strings import Loc, Stage, Events
 from .Stages import STAGES_DIRECTORY, ENTRANCES_STAGE_SELECT
@@ -75,19 +75,35 @@ class GoalTarget:
     locations : set[str] = {}
     location_ids : set[int] = {}
 
-    amount : int = None
+    amount : int = 0
 
-    def __init__(self):
+    def __init__(self, excluded_stages : list[str] = None, excluded_locations : list[str] = None):
+        print(self.locations)
         if not self.locations:
             return
+
+        print(excluded_stages)
+        print(excluded_locations)
+        locations_excluded : list[str] = excluded_locations if excluded_locations is not None else []
+        if excluded_stages is not None:
+            for stage in excluded_stages:
+                print(locations for locations in MONKEYS_INDEX.get(stage, []))
+                locations_excluded.extend( locations for locations in MONKEYS_INDEX.get(stage, []) )
+                locations_excluded.extend([ locations for locations in CAMERAS_INDEX.get(stage, []) ])
+                locations_excluded.extend( locations for locations in CELLPHONES_INDEX.get(stage, []))
+
+        self.locations = { location for location in self.locations if location not in locations_excluded }
 
         self.location_ids = {generate_name_to_id()[location] for location in self.locations}
 
         if self.amount is None:
             self.amount = len(self.locations)
 
+    def __bool__(self) -> bool:
+        return bool(self.amount)
+
     def __str__(self):
-        return self.name + "\n         > " + self.description
+        return self.name + "\n         [ " + self.description + " ]"
 
     async def check(self, ctx : 'AE3Context'):
         checked: set[int] = ctx.locations_checked.union(ctx.checked_locations)
@@ -1053,7 +1069,7 @@ class PlaySpike(GoalTarget):
     name = "Play Spike"
     description = "Go and Capture 204 Pipo Monkeys!"
 
-    locations = {*MONKEYS_MASTER}
+    locations = {monkey for monkey in MONKEYS_MASTER if monkey != Loc.boss_tomoki.value}
 
     amount = 204
 
@@ -1067,14 +1083,14 @@ class PlayJimmy(PlaySpike):
 
 class DirectorsCut(GoalTarget):
     name = "Director's Cut"
-    description = "Capture all 20 Monkey Films across all the channels!"
+    description = "Capture all Monkey Films across all the channels!"
 
     locations = {*CAMERAS_MASTER}
 
 
 class PhoneCheck(DirectorsCut):
     name = "Phone Check"
-    description = "Activate all 53 Cellphones scattered across the channels!"
+    description = "Activate all Cellphones scattered across the channels!"
 
     locations = {*CELLPHONES_MASTER}
 

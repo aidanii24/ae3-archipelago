@@ -17,6 +17,7 @@ from settings import get_settings
 from .data.Strings import Meta, APConsole
 from .data.Logic import ProgressionMode
 from .data.Locations import CELLPHONES_MASTER, MONKEYS_MASTER
+from .data.Stages import STAGES_BREAK_ROOMS
 from .data.Rules import GoalTarget, GoalTargetOptions
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
 from . import AE3Settings
@@ -31,22 +32,62 @@ class AE3CommandProcessor(ClientCommandProcessor):
     def _cmd_status(self):
         if isinstance(self.ctx, AE3Context):
             logger.info(f" [-^-] Client Status")
-            logger.info(f" [-o-] Game:\n         "
-                        f"{
-                        "Playing Ape Escape 3" if self.ctx.is_connected 
-                        else "Not Connected to PCSX2"
-                        }")
-            logger.info(f"         Goal Target is " 
-                        f"{self.ctx.goal_target}")
-            logger.info(f"         > Progress: "
-                        f"{str(self.ctx.goal_target.get_progress(self.ctx))} / "
-                        f"{self.ctx.goal_target.amount}")
+
+            logger.info(f" [-o-] Game:")
+
+            if self.ctx.server:
+                logger.info(f"{
+                            "         Playing Ape Escape 3" if self.ctx.is_connected 
+                            else "         No Game Detected"
+                            }")
+                logger.info(f"         Goal Target is " 
+                            f"{self.ctx.goal_target}")
+                logger.info(f"         > Progress: "
+                            f"{str(self.ctx.goal_target.get_progress(self.ctx))} / "
+                            f"{self.ctx.goal_target.amount}")
+            else:
+                logger.info(f"         Disconnected from Server")
+
             logger.info(f"\n [-=-] Settings")
+            logger.info(f"         Auto-Equip is " 
+                        f"{"ENABLED" if self.ctx.auto_equip else "DISABLED"}")
+
             if self.ctx.early_free_play:
-                logger.info(f"         Freeplay Swap is " f"{"ENABLED" if self.ctx.swap_freeplay else "DISABLED"}")
+                logger.info(f"         Freeplay Swap is " 
+                            f"{"ENABLED" if self.ctx.swap_freeplay else "DISABLED"}")
             else:
                 logger.info(f"         Early Freeplay is DISABLED and Freeplay Swap cannot be toggled.")
-            logger.info(f"         DeathLink is " f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
+
+            logger.info(f"         DeathLink is " 
+                        f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
+
+    def _cmd_remaining(self):
+        """
+        List remaining locations to check to Goal.
+        """
+        if not isinstance(self.ctx, AE3Context):
+            return
+
+        if not self.ctx.server or not self.ctx.goal_target:
+            logger.info(f" [!!!] Please connect to an Archipelago Server first!")
+        elif self.ctx.game_goaled:
+            logger.info(f" [-!-] You have already Goaled! You have no more remaining checks!")
+
+        logger.info(f" [-!-] Remaining Target Locations:")
+        remaining : list[str] = self.ctx.goal_target.get_remaining(self.ctx)
+
+        for location in remaining:
+            logger.info(f"         > " f"{location}")
+
+    def _cmd_auto_equip(self):
+        """
+        Toggle if Gadgets should automatically be assigned to a free face button when received.
+        """
+        if isinstance(self.ctx, AE3Context):
+            self.ctx.auto_equip = not self.ctx.auto_equip
+
+            logger.info(f" [-!-] Freeplay Swap is now " f"{"ENABLED" if self.ctx.swap_freeplay else "DISABLED"}")
+
 
     def _cmd_freeplay(self):
         """
@@ -54,14 +95,13 @@ class AE3CommandProcessor(ClientCommandProcessor):
         earlier.
         """
         if isinstance(self.ctx, AE3Context):
-            if isinstance(self.ctx, AE3Context):
-                if not self.ctx.early_free_play:
-                    logger.info(f" [!!!] Early Free Play was set to DISABLED. You cannot toggle Freeplay Swap.")
-                    return
+            if not self.ctx.early_free_play:
+                logger.info(f" [!!!] Early Free Play was set to DISABLED. You cannot toggle Freeplay Swap.")
+                return
 
-                self.ctx.swap_freeplay = not self.ctx.swap_freeplay
+            self.ctx.swap_freeplay = not self.ctx.swap_freeplay
 
-                logger.info(f" [-!-] Freeplay Swap is now " f"{"ENABLED" if self.ctx.swap_freeplay else "DISABLED"}")
+            logger.info(f" [-!-] Freeplay Swap is now " f"{"ENABLED" if self.ctx.swap_freeplay else "DISABLED"}")
 
     def _cmd_deathlink(self):
         """Toggle if death links should be received."""
@@ -223,9 +263,18 @@ class AE3Context(CommonContext):
                 self.progression = ProgressionMode.get_progression_mode(data[APHelper.progression_mode.value])
                 self.unlocked_channels = self.progression.get_current_progress(0)
 
+            ## Check Break Room Monkeys and Password Monkeys options to use with Goal Target
+            excluded_stages : list[str] = []
+
+            print(APHelper.monkeysanitybr.value in data)
+            if APHelper.monkeysanitybr.value in data:
+                print(data[APHelper.monkeysanitybr.value])
+                if not data[APHelper.monkeysanitybr.value]:
+                    excluded_stages = [*STAGES_BREAK_ROOMS]
+
             ## Goal Target
             if not self.goal_target.locations and APHelper.goal_target.value in data:
-                self.goal_target = GoalTargetOptions[data[APHelper.goal_target.value]]()
+                self.goal_target = GoalTargetOptions[data[APHelper.goal_target.value]](excluded_stages)
 
             ## Monkeysanity - Break Rooms
             if APHelper.monkeysanitybr.value in data:
