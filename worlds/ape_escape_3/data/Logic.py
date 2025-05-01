@@ -261,15 +261,23 @@ class ProgressionMode(Enum):
     BOSS_INCL =     [3, 5, 4, 5, 4, 3, 1, 1, 1]
 
     def generate_keys(self, world : "AE3World") -> list[AE3Item]:
-        amt : int = len(self.value)
+        amt : int = len(self.value) - 1
         auto_set : bool = False
 
         if self == self.BOSS:
             auto_set = True
 
         # Automatically assign to bosses (except both Specter bosses) if autoset_bosses is True
+        reduce : int = 2
+
+        # Channel Keys will only consider Specter's Final Battle (final level) when Post-Game Access Rule is set
+        # to "After End"
+        if world.options.Post_Game_Access_Rule == 5:
+            reduce = 1
+            amt += 1
+
         if auto_set:
-            bosses : int = len(MONKEYS_BOSSES) - 2
+            bosses : int = len(MONKEYS_BOSSES) - reduce
             for _ in range(0, bosses):
                 world.get_location(MONKEYS_BOSSES[_]).place_locked_item(Channel_Key.to_item(world.player))
 
