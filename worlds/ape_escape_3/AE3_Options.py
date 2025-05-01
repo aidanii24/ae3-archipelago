@@ -20,6 +20,7 @@ class ProgressionMode(Choice):
     option_boss : int = 1
     option_boss_inclusive : int = 2
 
+
 class LogicPreference(Choice):
     """
     Choose a certain logic preset that determines how difficult the game will be and how much expertise is asked from
@@ -32,6 +33,7 @@ class LogicPreference(Choice):
     option_casual : int = 0
     option_normal : int = 1
     option_hard : int = 2
+
 
 class GoalTarget(Choice):
     """
@@ -59,6 +61,31 @@ class GoalTarget(Choice):
     option_phone_check : int = 6
     option_scavenger_hunt : int = 7
 
+
+class PostGameAccessRule(Choice):
+    """
+    Choose how the final level post-game level should be unlocked. This is only relevant if the Goal Target requires
+    this level.
+    Default: vanilla
+
+    > vanilla - Capture all base and break room monkeys (This will set Monkeysanity - Break Rooms to 'enabled')
+    > active_monkeys - Capture all monkeys marked as locations
+    > all_cameras - Capture all Monkey Films (This will set Camerasanity to 'enabled')
+    > all_cellphones - Activate all Cellphones (This will set Cellhponesanity to `enabled`)
+    > channel_key - Provide an extra channel key to unlock this level
+    > after_end - The extra channel key will be placed on Specter (End Game).
+    """
+    display_name : str = "Post-Game Access Rule"
+    default = 0
+
+    option_vanilla : int = 0
+    option_active_monkeys : int = 1
+    option_all_cameras : int = 2
+    option_all_cellphones : int = 3
+    option_channel_key : int = 4
+    option_after_end : int = 5
+
+
 class Monkeysanity(DefaultOnToggle):
     """
     Choose if Pipo Monkeys (and Dr. Tomoki) should count as Locations.
@@ -71,15 +98,16 @@ class Monkeysanity(DefaultOnToggle):
     visibility = Visibility.none
     display_name : str = "Pipo Monkeysanity"
 
+
 class MonkeysanityBreakRooms(Choice):
     """
     Choose if Break Room monkeys should count as locations, and if so, if the Super Monkey morph must first be
     obtained before the game allows them to spawn.
     Default: disabled
 
-    > disabled : Break Room monkeys will not spawn
-    > enabled : Break Room monkeys will spawn, but only when the Super Monkey morph is obtained
-    > early : Break Room monkeys will spawn, regardless of if the player has obtained the Super Monkey morph
+    > disabled - Break Room monkeys will not spawn
+    > enabled - Break Room monkeys will spawn, but only when the Super Monkey morph is obtained
+    > early - Break Room monkeys will spawn, regardless of if the player has obtained the Super Monkey morph
     """
     display_name : str = "Pipo Monkeysanity - Break Rooms"
     default = 0
@@ -88,15 +116,17 @@ class MonkeysanityBreakRooms(Choice):
     option_enabled : int = 1
     option_early : int = 2
 
+
 class MonkeysanityPasswords(Choice):
     """
     Choose if Password monkeys should count as locations, and if so, how they should be unlocked.
     Default: disabled
 
-    > disabled : Password monkeys will not spawn
-    > enabled : Password monkeys will be unlocked from the start and spawn in their rooms.
-    > hunt : Password monkeys will be unlocked when certain conditions are met, and only then will they spawn.
+    > disabled - Password monkeys will not spawn
+    > enabled - Password monkeys will be unlocked from the start and spawn in their rooms.
+    > hunt - Password monkeys will be unlocked when certain conditions are met, and only then will they spawn.
     """
+    visibility = Visibility.none
     display_name: str = "Pipo Monkeysanity - Passwords"
     default = 0
 
@@ -104,16 +134,17 @@ class MonkeysanityPasswords(Choice):
     option_enabled: int = 1
     option_hunt: int = 2
 
+
 class Camerasanity(Choice):
     """
     Choose if Pipo Cameras should count as Locations.
     Default: Disabled
 
-    > disabled : Pipo Cameras will not count as locations
-    > enabled : Pipo Cameras will count as locations, and is counted when a Monkey Film is recorded.
+    > disabled - Pipo Cameras will not count as locations
+    > enabled - Pipo Cameras will count as locations, and is counted when a Monkey Film is recorded.
     This means that the Pipo Monkey actors MUST BE PRESENT to acquire the item, or it will be missable until
     Free Play mode is unlocked for the channel upon clearing it.
-    > no_actors : Pipo Cameras will count as locations, regardless if the Pipo Monkey Actors are present
+    > no_actors - Pipo Cameras will count as locations, regardless if the Pipo Monkey Actors are present
     """
     display_name = "Pipo Camerasanity"
     default = 0
@@ -122,12 +153,14 @@ class Camerasanity(Choice):
     option_enabled : int = 1
     option_no_actors : int = 2
 
+
 class Cellphonesanity(Toggle):
     """
     Choose if Cellphones should count as locations
     default: Disabled
     """
     display_name = "Cellphonesanity"
+
 
 class StartingGadget(Choice):
     """
@@ -147,6 +180,7 @@ class StartingGadget(Choice):
     option_rc_car : int = 6
     option_sky_flyer : int = 7
 
+
 class StartingMorph(Choice):
     """
     Choose a Morph to Start the game with.
@@ -165,6 +199,7 @@ class StartingMorph(Choice):
     option_cyber_ace : int = 6
     option_super_monkey : int = 7
 
+
 class BaseMorphDuration(Choice):
     """
     Choose the base duration of morphs. This does not affect recharge durations.
@@ -179,6 +214,7 @@ class BaseMorphDuration(Choice):
     option_40s : int = 40
     option_60s : int = 60
 
+
 class ShuffleMonkeyNet(Toggle):
     """
     Choose if the Monkey Net should also be shuffled. This will skip the tutorial level immediately.
@@ -186,6 +222,7 @@ class ShuffleMonkeyNet(Toggle):
     """
     visibility = Visibility.none
     display_name : str = "Shuffle Monkey Net"
+
 
 class ShuffleRCCarChassis(Toggle):
     """
@@ -195,12 +232,14 @@ class ShuffleRCCarChassis(Toggle):
     """
     display_name : str = "Shuffle RC Car Chassis"
 
+
 class ShuffleMorphStocks(Toggle):
     """
     Choose if Morph Stocks should also be included in the pool.
     Default: Disabled
     """
     display_name : str = "Shuffle Morph Stocks"
+
 
 class AddMorphExtensions(Toggle):
     """
@@ -210,6 +249,7 @@ class AddMorphExtensions(Toggle):
     """
     display_name : str = "Add Morph Extensions"
 
+
 class EarlyFreePlay(Toggle):
     """
     Allows Free Play mode to be available without needing to fully clear a channel. Useful when wanting Camerasanity
@@ -217,6 +257,7 @@ class EarlyFreePlay(Toggle):
     default: Disabled.
     """
     display_name : str = "Early Free Play"
+
 
 class EnableShoppingArea(DefaultOnToggle):
     """
@@ -226,9 +267,10 @@ class EnableShoppingArea(DefaultOnToggle):
     visibility = Visibility.none
     display_name : str = "Enable Shopping Area"
 
+
 ae3_option_groups : dict[str, list] = {
-    "Randomizer Options"        : [ProgressionMode, LogicPreference, GoalTarget, Monkeysanity, MonkeysanityBreakRooms,
-                                   MonkeysanityPasswords, Camerasanity, Cellphonesanity,],
+    "Randomizer Options"        : [ProgressionMode, LogicPreference, GoalTarget, PostGameAccessRule, Monkeysanity,
+                                   MonkeysanityBreakRooms, MonkeysanityPasswords, Camerasanity, Cellphonesanity],
     "Item Options"              : [StartingGadget, StartingMorph, BaseMorphDuration, ShuffleMonkeyNet,
                                    ShuffleRCCarChassis, ShuffleMorphStocks, AddMorphExtensions],
     "Preferences"               : [EarlyFreePlay, EnableShoppingArea],
@@ -240,6 +282,7 @@ class AE3Options(PerGameCommonOptions):
     Progression_Mode        : ProgressionMode
     Logic_Preference        : LogicPreference
     Goal_Target             : GoalTarget
+    Post_Game_Access_Rule   : PostGameAccessRule
     Monkeysanity            : Monkeysanity
     Monkeysanity_BreakRooms : MonkeysanityBreakRooms
     Monkeysanity_Passwords  : MonkeysanityPasswords
@@ -272,6 +315,7 @@ def slot_data_options() -> list[str]:
         APHelper.progression_mode.value,
         APHelper.logic_preference.value,
         APHelper.goal_target.value,
+        APHelper.post_game_access_rule,
         APHelper.monkeysanity.value,
         APHelper.monkeysanitybr.value,
         APHelper.monkeysanitypw.value,
