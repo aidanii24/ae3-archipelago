@@ -1149,7 +1149,9 @@ class Vanilla(PostGameAccessRule):
                  if monkey != Loc.boss_tomoki.value or monkey not in MONKEYS_PASSWORDS }
 
     def verify(self, state : CollectionState, player : int) -> bool:
-        for region in STAGES_MASTER:
+        stages : list[str] = [ stage for stage in STAGES_MASTER if stage != Stage.region_specter2.value ]
+
+        for region in stages:
             if not state.can_reach_region(region, player):
                 return False
 
@@ -1162,9 +1164,10 @@ class ActiveMonkeys(PostGameAccessRule):
     locations = {monkey for monkey in MONKEYS_MASTER if monkey != Loc.boss_tomoki.value}
 
     def verify(self, state: CollectionState, player: int) -> bool:
-        stages : list[str] = [*STAGES_MASTER]
+        stages : list[str] = [ stage for stage in STAGES_MASTER if stage != Stage.region_specter2.value ]
+
         if STAGES_BREAK_ROOMS[0] not in stages:
-            stages = [ stage for stage in stages if stage not in STAGES_BREAK_ROOMS ]
+            stages = [ stage for stage in stages if stage not in STAGES_BREAK_ROOMS]
 
         for region in stages:
             if not state.can_reach_region(region, player):
