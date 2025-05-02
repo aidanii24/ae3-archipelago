@@ -16,9 +16,9 @@ from settings import get_settings
 
 from .data.Strings import Meta, APConsole
 from .data.Logic import ProgressionMode
-from .data.Locations import CELLPHONES_MASTER, MONKEYS_MASTER
+from .data.Locations import CELLPHONES_MASTER, MONKEYS_MASTER, MONKEYS_PASSWORDS
 from .data.Stages import STAGES_BREAK_ROOMS
-from .data.Rules import GoalTarget, GoalTargetOptions
+from .data.Rules import GoalTarget, GoalTargetOptions, PostGameAccessRule, PostGameAccessRuleOptions
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
 from . import AE3Settings
 from .Checker import *
@@ -45,6 +45,22 @@ class AE3CommandProcessor(ClientCommandProcessor):
                 logger.info(f"         > Progress: "
                             f"{str(self.ctx.goal_target.get_progress(self.ctx))} / "
                             f"{self.ctx.goal_target.amount}")
+
+                if (len(self.ctx.goal_target.locations) == 1 and Loc.boss_specter_final.value in
+                        self.ctx.goal_target.locations):
+                    logger.info(f"\n         Post-Game Requirement is "
+                                f"{self.ctx.post_game_access_rule}")
+                    logger.info(f"         > Progress: "
+                                f"{str(self.ctx.post_game_access_rule.get_progress(self.ctx))} /"
+                                f"{self.ctx.post_game_access_rule.amount}")
+
+                all_keys : int = len(self.ctx.progression.value) - 1
+                if self.ctx.post_game_access_rule_option != 4:
+                    all_keys -= 1
+
+                logger.info(f"\n         Channel Keys: {self.ctx.keys} / {all_keys}")
+                logger.info(f"         Available Levels: {self.ctx.unlocked_channels + 1} / 28")
+
             else:
                 logger.info(f"         Disconnected from Server")
 
@@ -212,6 +228,8 @@ class AE3Context(CommonContext):
     # Player Set Options
     progression: ProgressionMode = ProgressionMode.BOSS
     goal_target : GoalTarget = GoalTarget()
+    post_game_access_rule_option : int = 0
+    post_game_access_rule : PostGameAccessRule = PostGameAccessRule()
     dummy_morph : str = Itm.morph_monkey.value
     camerasanity : int = None
     cellphonesanity : bool = None
@@ -269,32 +287,48 @@ class AE3Context(CommonContext):
                 self.progression = ProgressionMode.get_progression_mode(data[APHelper.progression_mode.value])
                 self.unlocked_channels = self.progression.get_current_progress(0)
 
+            ## Progression
+            goal_target: int = 0
+            post_game_access_rule : int = 0
+
+            ## Post-Game Access Rule
+            if APHelper.post_game_access_rule.value in data:
+                self.post_game_access_rule_option = data[APHelper.post_game_access_rule.value]
+
             ## Check Break Room Monkeys and Password Monkeys options to use with Goal Target
+            add_break_rooms : bool = post_game_access_rule == 0
+
             excluded_stages : list[str] = []
-
-            if APHelper.monkeysanitybr.value in data:
-                if not data[APHelper.monkeysanitybr.value]:
-                    excluded_stages = [*STAGES_BREAK_ROOMS]
-
-            ## Goal Target
-            goal_target : int = 0
-
-            if not self.goal_target.locations and APHelper.goal_target.value in data:
-                goal_target = data[APHelper.goal_target.value]
-                self.goal_target = GoalTargetOptions[goal_target](excluded_stages)
+            excluded_locations : list[str] = [*MONKEYS_PASSWORDS]
 
             ## Monkeysanity - Break Rooms
             if APHelper.monkeysanitybr.value in data:
+                add_break_rooms = add_break_rooms or bool(data[APHelper.monkeysanitybr.value])
+
                 if data[APHelper.monkeysanitybr.value] < 2:
                     self.dummy_morph = Itm.morph_knight.value
 
+            if not add_break_rooms:
+                excluded_stages = [*STAGES_BREAK_ROOMS]
+
+            ## Post Game Access Rule Initialization
+            if post_game_access_rule < 4:
+                self.post_game_access_rule = PostGameAccessRuleOptions[post_game_access_rule](excluded_stages,
+                                                                                              excluded_locations)
+
+            # Goal Target
+            if not self.goal_target.locations and APHelper.goal_target.value in data:
+                goal_target = data[APHelper.goal_target.value]
+                self.goal_target = GoalTargetOptions[goal_target](excluded_stages, excluded_locations)
+
             ## Camerasanity
             if self.camerasanity is None and APHelper.camerasanity.value in data:
-                self.camerasanity = data[APHelper.camerasanity.value] or goal_target == 5
+                self.camerasanity = data[APHelper.camerasanity.value] or goal_target == 5 or post_game_access_rule == 2
 
             ## Cellphonesanity
             if self.cellphonesanity is None and APHelper.cellphonesanity.value in data:
-                self.cellphonesanity = data[APHelper.cellphonesanity.value] or goal_target == 6
+                self.cellphonesanity = (data[APHelper.cellphonesanity.value] or goal_target == 6 or
+                                        post_game_access_rule == 3)
 
             ## Morph Duration
             if self.morph_duration == 0 and APHelper.base_morph_duration.value in data:
