@@ -6,6 +6,8 @@ from BaseClasses import MultiWorld, Tutorial
 import settings
 
 from .data.Items import AE3Item, Chassis_Pudding, Nothing, Channel_Key, Victory, generate_collectables
+from .data.Stages import STAGES_BREAK_ROOMS
+from .data.Rules import PostGameAccessRule, PostGameAccessRuleOptions
 from .data.Strings import Loc, Meta, APHelper, APConsole
 from .data.Logic import is_goal_achieved, are_goals_achieved, ProgressionMode
 from .AE3_Options import AE3Options, create_option_groups, slot_data_options
@@ -89,6 +91,7 @@ class AE3World(World):
     item_name_groups = Items.generate_item_groups()
 
     progression : ProgressionMode
+    post_game_access_rule : PostGameAccessRule
 
     def __init__(self, multiworld : MultiWorld, player: int):
         self.auto_equip : bool = False
@@ -99,6 +102,12 @@ class AE3World(World):
 
     def generate_early(self):
         self.progression = ProgressionMode.get_progression_mode(self.options.Progression_Mode.value)
+
+        add_break_rooms: list[str] = []
+        if self.options.Post_Game_Access_Rule == 1:
+            add_break_rooms = [*STAGES_BREAK_ROOMS]
+
+        self.post_game_access_rule = PostGameAccessRuleOptions[self.options.Post_Game_Access_Rule](add_break_rooms)
 
         self.item_pool = []
 

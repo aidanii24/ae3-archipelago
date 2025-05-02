@@ -59,7 +59,7 @@ class GoalTarget(Choice):
     option_play_jimmy : int = 4
     option_directors_cut : int = 5
     option_phone_check : int = 6
-    option_scavenger_hunt : int = 7
+    # option_scavenger_hunt : int = 7
 
 
 class PostGameAccessRule(Choice):
@@ -315,7 +315,7 @@ def slot_data_options() -> list[str]:
         APHelper.progression_mode.value,
         APHelper.logic_preference.value,
         APHelper.goal_target.value,
-        APHelper.post_game_access_rule,
+        APHelper.post_game_access_rule.value,
         APHelper.monkeysanity.value,
         APHelper.monkeysanitybr.value,
         APHelper.monkeysanitypw.value,

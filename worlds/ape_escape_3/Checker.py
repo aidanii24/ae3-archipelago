@@ -317,6 +317,7 @@ async def check_locations(ctx : 'AE3Context'):
 
             await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
             await ctx.goal_target.check(ctx)
+            ctx.post_game_access_rule.check(ctx)
 
         else:
             # When offline, save checked locations to a different set

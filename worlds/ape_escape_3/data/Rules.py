@@ -136,7 +136,8 @@ class LogicPreference:
 
         return rules
 
-    def set_level_progression_rules(self, progression : ProgressionMode, post_game_rules : list[Callable] = None):
+    def set_level_progression_rules(self, progression : ProgressionMode, post_game_access_rule_option : int = 0,
+                                    post_game_rules : list[Callable] = None):
         if post_game_rules is None:
             post_game_rules = []
 
@@ -153,7 +154,9 @@ class LogicPreference:
                 if sets > 0:
                     rule = Rulesets(has_keys(req))
                 elif sets == len(progression.value) - 1:
-                    req -= 1
+                    if post_game_access_rule_option < 4:
+                        req -= 1
+
                     final_rule : list[Callable] = [ *self.final_level_rule.add(has_keys(req)) ]
 
                     if post_game_rules:
@@ -1146,7 +1149,8 @@ class Vanilla(PostGameAccessRule):
     description = "Capture all Base and Break Room Monkeys"
 
     locations = {monkey for monkey in MONKEYS_MASTER
-                 if monkey != Loc.boss_tomoki.value or monkey not in MONKEYS_PASSWORDS }
+                 if monkey != Loc.boss_tomoki.value and monkey != Loc.boss_specter_final.value and monkey not in
+                 MONKEYS_PASSWORDS }
 
     def verify(self, state : CollectionState, player : int) -> bool:
         stages : list[str] = [ stage for stage in STAGES_MASTER if stage != Stage.region_specter2.value ]
@@ -1161,7 +1165,8 @@ class ActiveMonkeys(PostGameAccessRule):
     name = "Active Monkeys"
     description = "Capture all Active Monkeys (marked as locations)"
 
-    locations = {monkey for monkey in MONKEYS_MASTER if monkey != Loc.boss_tomoki.value}
+    locations = {monkey for monkey in MONKEYS_MASTER if monkey != Loc.boss_tomoki.value and monkey !=
+                 Loc.boss_specter_final.value}
 
     def verify(self, state: CollectionState, player: int) -> bool:
         stages : list[str] = [ stage for stage in STAGES_MASTER if stage != Stage.region_specter2.value ]
@@ -1185,17 +1190,23 @@ class AllCellphones(PostGameAccessRule):
     name = "All Cellphones"
     description = "Activate all Cellphones"
 
-    locations = { *CELLPHONES_INDEX }
+    locations = { *Cellphone_Name_to_ID.values() }
 
-class AfterEnd(PostGameAccessRule):
-    name = "After End"
-    description = "Defeat Specter in Specter's Battle!"
+class ChannelKey(PostGameAccessRule):
+    name = "Channel Key"
+    description = "Find the extra Channel Key"
 
     locations = { Loc.boss_specter.value }
 
     def verify(self, state : CollectionState, player : int) -> bool:
         return state.can_reach_location(Loc.boss_specter.value, player)
 
+class AfterEnd(ChannelKey):
+    name = "After End"
+    description = "Defeat Specter in Specter's Battle!"
+
+    locations = { Loc.boss_specter.value }
+
 PostGameAccessRuleOptions : list[Callable] = [
-    Vanilla, ActiveMonkeys, AllCameras, AllCellphones, PostGameAccessRule, AfterEnd
+    Vanilla, ActiveMonkeys, AllCameras, AllCellphones, ChannelKey, AfterEnd
 ]
