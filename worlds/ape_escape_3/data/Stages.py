@@ -2,7 +2,6 @@ from typing import Callable, Sequence
 from dataclasses import dataclass
 
 from .Strings import Stage, APHelper
-from .Logic import Rulesets
 
 
 ### [< --- HELPERS --- >]
@@ -12,28 +11,13 @@ class AE3EntranceMeta:
     Base Data Class for the entrances of various Stages.
 
     Parameters:
-        destination : Name of Stage Destination in Strings.py
-        rules : Sets of AccessRules for the Entrance. Can be an AccessRule, Set of AccessRule, or a full Ruleset.
-        Passing callables will add them as Normal Rules. To assign critical rules, pass a Ruleset instead.
+        name : Name of the entrance
+        parent : Name of the Parent Region
+        destination : Name of Stage Destination
     """
     name : str
     parent : str
     destination : str
-    rules : Rulesets
-
-    def __init__(self, name : str, parent : str, destination : str,
-                 *rules : Callable | list[Callable] | list[list[Callable]] | Rulesets | None,
-                 critical : set = None):
-        self.name = name
-        self.parent = parent
-        self.destination = destination
-        self.rules = Rulesets()
-
-        for rule in rules:
-            if isinstance(rule, Rulesets):
-                self.rules = rule
-            else:
-                self.rules = Rulesets(*rules, critical=critical)
 
 ### [< --- STAGE GROUPS --- >]
 LEVELS_BY_ORDER : Sequence[str] = [
@@ -1046,7 +1030,7 @@ ENTRANCES_STAGE_SELECT : list[AE3EntranceMeta] = [
 ]
 
 ENTRANCES_MASTER : list[AE3EntranceMeta] = [
-    *ENTRANCES_MAIN, *ENTRANCES_SUBREGIONS, *ENTRANCES_STAGE_SELECT
+    *ENTRANCES_MAIN, *ENTRANCES_SUBREGIONS
 ]
 
 ### [< --- VANILLA ENTRANCES GROUPS --- >]

@@ -1,9 +1,10 @@
-from typing import TYPE_CHECKING, Set, Callable
-from enum import Enum
+from typing import TYPE_CHECKING, Set, Sequence, Callable
+import random
 
-from BaseClasses import CollectionState
+from BaseClasses import CollectionState, Item
 
-from .Items import AE3Item, Channel_Key
+from .Items import Channel_Key
+from .Stages import AE3EntranceMeta, ENTRANCES_STAGE_SELECT
 from .Strings import Itm, APHelper
 
 if TYPE_CHECKING:
@@ -250,49 +251,206 @@ class Rulesets:
         return lambda state : self.check(state, player)
 
 from .Locations import MONKEYS_BOSSES
-class ProgressionMode(Enum):
-    """
-    Defines how the game should progress and the goal to achieve
-    """
+class ProgressionMode:
+    progression : Sequence[int] = []
+    order : Sequence[int] = [ 1 for _ in range(27) ]
+    level_select_entrances : Sequence[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
 
-    # Seaside Resort is unlocked at value 0, so starting unlocked levels are 1 less than actually represented.
-    SINGLES =       [1 for _ in range(27)]
-    BOSS =          [2, 1, 4, 1, 3, 1, 4, 1, 3, 1, 2, 1, 1, 1, 1]
-    BOSS_INCL =     [3, 5, 4, 5, 4, 3, 1, 1, 1]
+    boss_indices : Sequence[int] = [ 3, 8, 12, 17, 21, 24, 26, 27]
 
-    def generate_keys(self, world : "AE3World") -> list[AE3Item]:
-        amt : int = len(self.value) - 1
-        auto_set : bool = False
+    def shuffle(self, world : 'AE3World'):
+        pass
 
-        if self == self.BOSS:
-            auto_set = True
+    def set_progression(self, progression : Sequence[int] = None):
+        if progression is None or not progression:
+            return
 
-        # Automatically assign to bosses (except both Specter bosses) if autoset_bosses is True
-        reduce : int = 2
+        self.progression = progression
 
-        if auto_set:
-            bosses : int = len(MONKEYS_BOSSES) - reduce
-            for _ in range(0, bosses):
-                world.get_location(MONKEYS_BOSSES[_]).place_locked_item(Channel_Key.to_item(world.player))
+    def generate_keys(self, world : 'AE3World') -> list[Item]:
+        # First Set of Level(s) will not cost keys, so subtract one from total length of progression
+        amount: int = len(self.progression) - 1
 
-            amt -= bosses
+        # Pre-place Key and reduce generate key when Post-Game Access Rule asks for it
+        if world.options.Post_Game_Access_Rule != 4:
+            amount -= 1
 
         if world.options.Post_Game_Access_Rule == 5:
             world.get_location(MONKEYS_BOSSES[-2]).place_locked_item(Channel_Key.to_item(world.player))
-            amt -= 1
 
-        return Channel_Key.to_items(world.player, amt)
+        return Channel_Key.to_items(world.player, amount)
 
-    def get_current_progress(self, keys : int) -> int:
-        unlocks : int = 0
-        for i, unlocked in enumerate(self.value):
-            unlocks += unlocked
+    def get_progress(self, keys : int):
+        return sum(self.progression[:keys + 1])
 
-            if i >= keys:
-                break
 
-        return unlocks
+class Singles(ProgressionMode):
+    progression : Sequence[int] = [ 1 for _ in range(28)]
 
-    @classmethod
-    def get_progression_mode(cls, index : int):
-        return [*cls][index]
+    def shuffle(self, world : 'AE3World'):
+        new_order : list[int] = [ _ for _ in range(28)]
+        random.shuffle(new_order)
+
+        # Apply the chosen Shuffle Mode
+        if world.options.Shuffle_Channel == 1:
+            new_boss_order : list[int] = [ _ for _ in new_order if _ in self.boss_indices ]
+
+            for index in range(len(self.boss_indices)):
+                new_order.insert(self.boss_indices[index], new_boss_order[index])
+
+        # Re-insert Channels specified to be preserved in their vanilla indices
+        if world.options.Preserve_Channel:
+            preserve_indices: list[int] = []
+
+            if world.options.Preserve_Channel == 1:
+                preserve_indices = [*self.boss_indices]
+            elif world.options.Preserve_Channel == 2:
+                preserve_indices = [*self.boss_indices[-2:]]
+            elif world.options.Preserve_Channel ==  3:
+                preserve_indices = [self.boss_indices[-1]]
+
+            if preserve_indices:
+                for index in preserve_indices:
+                    new_order.insert(index, index)
+
+        base_destination_order : list[str] = [ entrance.destination for entrance in ENTRANCES_STAGE_SELECT]
+        new_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
+
+        # Update Entrance Destinations based on the Shuffle Result
+        for level in new_order:
+            new_entrances[level].destination = base_destination_order[level]
+
+        # Update with the new orders
+        self.order = [*new_order]
+        self.level_select_entrances = [*new_entrances]
+
+class Group(ProgressionMode):
+    progression : Sequence[int] = [ 2, 1, 4, 1, 3, 1, 4, 1, 3, 1, 2, 1, 1, 1, 1 ]   # 15 Sets
+
+    def shuffle(self, world : 'AE3World'):
+        new_order : list[int] = [ _ for _ in range(28)]
+        random.shuffle(new_order)
+
+        # Apply the chosen Shuffle Mode
+        if world.options.Shuffle_Channel == 1:
+            new_boss_order : list[int] = [ _ for _ in new_order if _ in self.boss_indices ]
+
+            for index in range(len(self.boss_indices)):
+                new_order.insert(self.boss_indices[index], new_boss_order[index])
+
+        # Re-insert Channels specified to be preserved in their vanilla indices
+        if world.options.Preserve_Channel:
+            preserve_indices: list[int] = []
+
+            if world.options.Preserve_Channel == 1:
+                preserve_indices = [*self.boss_indices]
+            elif world.options.Preserve_Channel == 2:
+                preserve_indices = [*self.boss_indices[-2:]]
+            elif world.options.Preserve_Channel ==  3:
+                preserve_indices = [self.boss_indices[-1]]
+
+            if preserve_indices:
+                for index in preserve_indices:
+                    new_order.insert(index, index)
+
+        base_destination_order : list[str] = [ entrance.destination for entrance in ENTRANCES_STAGE_SELECT]
+        new_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
+
+        # Update Entrance Destinations based on the Shuffle Result
+        # and track channel being processed to create the new progression.
+        new_progression : list[int] = [0]
+        is_last_index_boss : bool = False
+        sets : int = 0
+        for level in new_order:
+            # Split the level group before and after boss
+            if level in self.boss_indices:
+                is_last_index_boss = True
+
+                # Do not raise set if this is the first level group
+                if sets:
+                    sets += 1
+
+                    if len(new_progression) - sets <= 0:
+                        new_progression.insert(sets, 0)
+            elif is_last_index_boss:
+                sets += 1
+                is_last_index_boss = False
+
+                if len(new_progression) - sets <= 0:
+                    new_progression.insert(sets, 0)
+
+            new_entrances[level].destination = base_destination_order[level]
+            new_progression[sets] += 1
+
+        # Update with the new orders
+        self.progression = [*new_progression]
+        self.order = [*new_order]
+        self.level_select_entrances = [*new_entrances]
+
+    def generate_keys(self, world : 'AE3World'):
+        amount = len(super().generate_keys(world))
+
+        amount -= len(MONKEYS_BOSSES) - 2
+        for boss in range(len(MONKEYS_BOSSES) - 2):
+            if self.progression[-1] == self.boss_indices[boss]:
+                continue
+
+            world.get_location(MONKEYS_BOSSES[boss]).place_locked_item(Channel_Key.to_item(world.player))
+
+        return Channel_Key.to_items(world.player, amount)
+
+class World(ProgressionMode):
+    progression : Sequence[int] = [ 3, 5, 4, 5, 4, 3, 1, 1, 1 ] # 9 Sets
+
+    def shuffle(self, world : 'AE3World'):
+        new_order : list[int] = [ _ for _ in range(28)]
+        random.shuffle(new_order)
+
+        # Apply the chosen Shuffle Mode
+        if world.options.Shuffle_Channel == 1:
+            new_boss_order : list[int] = [ _ for _ in new_order if _ in self.boss_indices ]
+
+            for index in range(len(self.boss_indices)):
+                new_order.insert(self.boss_indices[index], new_boss_order[index])
+
+        # Re-insert Channels specified to be preserved in their vanilla indices
+        if world.options.Preserve_Channel:
+            preserve_indices: list[int] = []
+
+            if world.options.Preserve_Channel == 1:
+                preserve_indices = [*self.boss_indices]
+            elif world.options.Preserve_Channel == 2:
+                preserve_indices = [*self.boss_indices[-2:]]
+            elif world.options.Preserve_Channel ==  3:
+                preserve_indices = [self.boss_indices[-1]]
+
+            if preserve_indices:
+                for index in preserve_indices:
+                    new_order.insert(index, index)
+
+        base_destination_order : list[str] = [ entrance.destination for entrance in ENTRANCES_STAGE_SELECT]
+        new_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
+
+        # Update Entrance Destinations based on the Shuffle Result
+        # and track channel being processed to create the new progression.
+        new_progression : list[int] = [0]
+        sets : int = 0
+        for level in new_order:
+            new_entrances[level].destination = base_destination_order[level]
+            new_progression[sets] += 1
+
+            # Split the level group only after the level boss
+            if level in self.boss_indices:
+                sets += 1
+
+                if len(new_progression) - sets <= 0:
+                    new_progression.insert(sets, 0)
+
+        # Update with the new orders
+        self.progression = [*new_progression]
+        self.order = [*new_order]
+        self.level_select_entrances = [*new_entrances]
+
+ProgressionModeOptions : Sequence[Callable] = [
+    Singles, Group, World
+]

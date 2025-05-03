@@ -15,7 +15,7 @@ import Utils
 from settings import get_settings
 
 from .data.Strings import Meta, APConsole
-from .data.Logic import ProgressionMode
+from .data.Logic import ProgressionMode, ProgressionModeOptions
 from .data.Locations import CELLPHONES_MASTER, MONKEYS_MASTER, MONKEYS_PASSWORDS
 from .data.Stages import STAGES_BREAK_ROOMS
 from .data.Rules import GoalTarget, GoalTargetOptions, PostGameAccessRule, PostGameAccessRuleOptions
@@ -54,7 +54,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
                                 f"{str(self.ctx.post_game_access_rule.get_progress(self.ctx))} / "
                                 f"{self.ctx.post_game_access_rule.amount}")
 
-                all_keys : int = len(self.ctx.progression.value) - 1
+                all_keys : int = len(self.ctx.progression.progression) - 1
                 if self.ctx.post_game_access_rule_option < 4:
                     all_keys -= 1
 
@@ -191,7 +191,6 @@ class AE3Context(CommonContext):
     cellphones_checklist : Sequence[str] = CELLPHONES_MASTER
 
     # Session Properties
-    channel_order : set[int] = {}
     keys : int = 0
     unlocked_channels : int = 0
     current_channel: str = None
@@ -228,10 +227,11 @@ class AE3Context(CommonContext):
     auto_equip : bool = False
 
     # Player Set Options
-    progression: ProgressionMode = ProgressionMode.BOSS
+    progression : ProgressionMode = ProgressionModeOptions
     goal_target : GoalTarget = GoalTarget()
     post_game_access_rule_option : int = 0
     post_game_access_rule : PostGameAccessRule = PostGameAccessRule()
+    shuffle_channel : bool = False
     dummy_morph : str = Itm.morph_monkey.value
     camerasanity : int = None
     cellphonesanity : bool = None
@@ -286,8 +286,8 @@ class AE3Context(CommonContext):
 
             ## Progression Mode
             if not self.unlocked_channels and APHelper.progression_mode.value in data:
-                self.progression = ProgressionMode.get_progression_mode(data[APHelper.progression_mode.value])
-                self.unlocked_channels = self.progression.get_current_progress(0)
+                self.progression = ProgressionModeOptions[data[APHelper.progression_mode.value]]()
+                self.unlocked_channels = self.progression.get_progress(0)
 
             ## Progression
             goal_target: int = 0
@@ -321,9 +321,13 @@ class AE3Context(CommonContext):
                 goal_target = data[APHelper.goal_target.value]
                 self.goal_target = GoalTargetOptions[goal_target](excluded_stages, excluded_locations)
 
+            # Shuffle Channel
+            if APHelper.shuffle_channel.value in data:
+                self.shuffle_channel = data[APHelper.shuffle_channel.value]
+
             # Channel Order
-            if APHelper.channel_order.value in data:
-                self.channel_order = data[APHelper.channel_order.value]
+            if APHelper.channel_order.value in data and self.progression:
+                self.progression.set_progression(data[APHelper.channel_order.value])
 
             ## Camerasanity
             if self.camerasanity is None and APHelper.camerasanity.value in data:
@@ -382,7 +386,7 @@ class AE3Context(CommonContext):
 
             ## Get Keys
             self.keys = received_as_id.count(self.items_name_to_id[APHelper.channel_key.value])
-            self.unlocked_channels = self.progression.get_current_progress(self.keys)
+            self.unlocked_channels = self.progression.get_progress(self.keys)
 
             # Check if dummy morph is needed
             self.dummy_morph_monkey_needed = self.items_name_to_id[Itm.morph_monkey.value] not in received_as_id
@@ -456,7 +460,7 @@ class AE3Context(CommonContext):
             # Retrieve Key
             if APHelper.channel_key.value in data:
                 self.keys = data[APHelper.channel_key.value]
-                self.unlocked_channels = self.progression.get_current_progress(self.keys)
+                self.unlocked_channels = self.progression.get_progress(self.keys)
 
             # Retrieve Character
             if Game.character.value in data:

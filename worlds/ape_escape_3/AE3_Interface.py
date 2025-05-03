@@ -296,7 +296,7 @@ class AEPS2Interface:
     def set_unlocked_stages(self, index : int):
         self.pine.write_int32(self.addresses.GameStates[Game.channels_unlocked.value], index)
 
-    def set_selected_stage(self, index : int):
+    def set_selected_channel(self, index : int):
         self.pine.write_int32(self.addresses.GameStates[Game.channel_selected.value], index)
 
     def set_change_area_destination(self, area : str):

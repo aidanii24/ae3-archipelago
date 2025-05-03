@@ -17,8 +17,8 @@ class ProgressionMode(Choice):
     default = 1
 
     option_singles : int = 0
-    option_boss : int = 1
-    option_boss_inclusive : int = 2
+    option_group : int = 1
+    option_world : int = 2
 
 
 class LogicPreference(Choice):
@@ -86,17 +86,17 @@ class PostGameAccessRule(Choice):
     option_after_end : int = 5
 
 
-class ChannelShuffle(Choice):
+class ShuffleChannel(Choice):
     """
     Choose if Channel Order should be randomized.
     Default: disabled
 
     > disabled - Channel Order will not be shuffled
     > type_shuffle - Normal channels will only be shuffled with other normal levels, same for boss channels.
-    This preserves the slots of the bosses.
+    This preserves the slots of the bosses, but the order of the bosses themselves will still be shuffled.
     > full_shuffle - All channels will be shuffled regardless
     """
-    display_name : str = "Channel Shuffle"
+    display_name : str = "Shuffle Channels"
     default = 0
 
     option_disabled : int = 0
@@ -104,7 +104,7 @@ class ChannelShuffle(Choice):
     option_full_shuffle : int = 2
 
 
-class ChannelPreserve(Choice):
+class PreserveChannel(Choice):
     """
     If Channel Order is not disabled, choose which channel should preserve their number.
     Default: none
@@ -306,8 +306,8 @@ class EnableShoppingArea(DefaultOnToggle):
 
 
 ae3_option_groups : dict[str, list] = {
-    "Randomizer Options"        : [ProgressionMode, LogicPreference, GoalTarget, PostGameAccessRule, ChannelShuffle,
-                                   ChannelPreserve, Monkeysanity, MonkeysanityBreakRooms, MonkeysanityPasswords,
+    "Randomizer Options"        : [ProgressionMode, LogicPreference, GoalTarget, PostGameAccessRule, ShuffleChannel,
+                                   PreserveChannel, Monkeysanity, MonkeysanityBreakRooms, MonkeysanityPasswords,
                                    Camerasanity, Cellphonesanity],
     "Item Options"              : [StartingGadget, StartingMorph, BaseMorphDuration, ShuffleMonkeyNet,
                                    ShuffleRCCarChassis, ShuffleMorphStocks, AddMorphExtensions],
@@ -321,8 +321,8 @@ class AE3Options(PerGameCommonOptions):
     Logic_Preference        : LogicPreference
     Goal_Target             : GoalTarget
     Post_Game_Access_Rule   : PostGameAccessRule
-    Channel_Shuffle         : ChannelShuffle
-    Channel_Preserve        : ChannelPreserve
+    Shuffle_Channel         : ShuffleChannel
+    Preserve_Channel        : PreserveChannel
     Monkeysanity            : Monkeysanity
     Monkeysanity_BreakRooms : MonkeysanityBreakRooms
     Monkeysanity_Passwords  : MonkeysanityPasswords
@@ -356,8 +356,8 @@ def slot_data_options() -> list[str]:
         APHelper.logic_preference.value,
         APHelper.goal_target.value,
         APHelper.post_game_access_rule.value,
-        APHelper.channel_shuffle.value,
-        APHelper.channel_preserve.value,
+        APHelper.shuffle_channel.value,
+        APHelper.preserve_channel.value,
         APHelper.monkeysanity.value,
         APHelper.monkeysanitybr.value,
         APHelper.monkeysanitypw.value,

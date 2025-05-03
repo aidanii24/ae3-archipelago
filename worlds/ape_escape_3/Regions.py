@@ -26,7 +26,7 @@ def establish_entrance(player : int, name : str, parent_region : Region, destina
 def create_regions(world : "AE3World"):
     rule : LogicPreference = LogicPreferenceOptions[world.options.Logic_Preference]()
     (rule.set_level_progression_rules(world.progression, world.options.Post_Game_Access_Rule.value,
-     [world.post_game_access_rule.as_access_rule(world.player)]))
+     [world.post_game_access_rule.as_access_rule()]))
 
     add_cameras : bool = (world.options.Camerasanity or world.options.Goal_Target == 5 or
                           world.options.Post_Game_Access_Rule == 2)
@@ -38,7 +38,7 @@ def create_regions(world : "AE3World"):
     stages : dict[str, Region] = { name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER }
 
     # Connect Regions
-    for entrance in [*ENTRANCES_MASTER]:
+    for entrance in [*ENTRANCES_MASTER, *world.progression.level_select_entrances]:
         ruleset : Rulesets | None = None
 
         if entrance.parent in stages:
