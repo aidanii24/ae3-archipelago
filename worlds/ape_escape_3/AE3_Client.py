@@ -191,6 +191,7 @@ class AE3Context(CommonContext):
     cellphones_checklist : Sequence[str] = CELLPHONES_MASTER
 
     # Session Properties
+    channel_order : set[int] = {}
     keys : int = 0
     unlocked_channels : int = 0
     current_channel: str = None
@@ -319,6 +320,10 @@ class AE3Context(CommonContext):
             if not self.goal_target.locations and APHelper.goal_target.value in data:
                 goal_target = data[APHelper.goal_target.value]
                 self.goal_target = GoalTargetOptions[goal_target](excluded_stages, excluded_locations)
+
+            # Channel Order
+            if APHelper.channel_order.value in data:
+                self.channel_order = data[APHelper.channel_order.value]
 
             ## Camerasanity
             if self.camerasanity is None and APHelper.camerasanity.value in data:
