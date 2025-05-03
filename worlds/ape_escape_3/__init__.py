@@ -189,6 +189,7 @@ class AE3World(World):
 
     def fill_slot_data(self):
         slot_data : dict = self.options.as_dict(*slot_data_options())
+        slot_data[APHelper.progression.value] = self.progression.progression
         slot_data[APHelper.channel_order.value] = self.progression.order
 
         return slot_data

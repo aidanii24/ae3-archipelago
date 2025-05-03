@@ -289,7 +289,7 @@ class AE3Context(CommonContext):
                 self.progression = ProgressionModeOptions[data[APHelper.progression_mode.value]]()
                 self.unlocked_channels = self.progression.get_progress(0)
 
-            ## Progression
+            # Define Goal Target for other options that need it
             goal_target: int = 0
 
             ## Post-Game Access Rule
@@ -325,9 +325,13 @@ class AE3Context(CommonContext):
             if APHelper.shuffle_channel.value in data:
                 self.shuffle_channel = data[APHelper.shuffle_channel.value]
 
-            # Channel Order
+            ## Progression
+            if APHelper.progression.value in data and self.progression:
+                self.progression.set_progression(data[APHelper.progression.value])
+
+            ## Channel Order
             if APHelper.channel_order.value in data and self.progression:
-                self.progression.set_progression(data[APHelper.channel_order.value])
+                self.progression.set_order(data[APHelper.channel_order.value])
 
             ## Camerasanity
             if self.camerasanity is None and APHelper.camerasanity.value in data:
