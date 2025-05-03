@@ -274,7 +274,6 @@ class ProgressionMode(Enum):
             bosses : int = len(MONKEYS_BOSSES) - reduce
             for _ in range(0, bosses):
                 world.get_location(MONKEYS_BOSSES[_]).place_locked_item(Channel_Key.to_item(world.player))
-                print(MONKEYS_BOSSES[_])
 
             amt -= bosses
 
