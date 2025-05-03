@@ -1198,6 +1198,13 @@ class ChannelKey(PostGameAccessRule):
 
     locations = { Loc.boss_specter.value }
 
+    def get_progress(self, ctx : 'AE3Context') -> int:
+        all_keys = len(ctx.progression.value) - 1
+        if ctx.post_game_access_rule_option < 4:
+            all_keys -= 1
+
+        return int(ctx.keys / all_keys)
+
     def verify(self, state : CollectionState, player : int) -> bool:
         return state.can_reach_location(Loc.boss_specter.value, player)
 
