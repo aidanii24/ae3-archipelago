@@ -1900,6 +1900,8 @@ class APHelper(BaseEnum):
     specter2 =              "b_8"
 
     # Game Progress
+    channel_order =         "Channel_Order"
+
     pr_boss6 =              "boss6"
     pr_specter1 =           "specter1"
     pr_specter2 =           "specter2"
@@ -1910,6 +1912,8 @@ class APHelper(BaseEnum):
     logic_preference =          "Logic_Preference"
     goal_target =               "Goal_Target"
     post_game_access_rule =     "Post_Game_Access_Rule"
+    channel_shuffle =           "Channel_Shuffle"
+    channel_preserve =          "Channel_Preserve"
     monkeysanity =              "Monkeysanity"
     monkeysanitybr =            "Monkeysanity_BreakRooms"
     monkeysanitypw =            "Monkeysanity_Passwords"

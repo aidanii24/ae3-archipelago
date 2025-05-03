@@ -92,6 +92,7 @@ class AE3World(World):
 
     progression : ProgressionMode
     post_game_access_rule : PostGameAccessRule
+    channel_order : set[int] = {}
 
     def __init__(self, multiworld : MultiWorld, player: int):
         self.auto_equip : bool = False
@@ -182,7 +183,10 @@ class AE3World(World):
         self.multiworld.itempool = self.item_pool
 
     def fill_slot_data(self):
-        return self.options.as_dict(*slot_data_options())
+        slot_data : dict = self.options.as_dict(*slot_data_options())
+        slot_data[APHelper.channel_order.value] = self.channel_order
+
+        return slot_data
 
     def generate_output(self, directory : str):
         datas = {

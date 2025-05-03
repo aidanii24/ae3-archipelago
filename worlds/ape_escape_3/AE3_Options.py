@@ -86,6 +86,43 @@ class PostGameAccessRule(Choice):
     option_after_end : int = 5
 
 
+class ChannelShuffle(Choice):
+    """
+    Choose if Channel Order should be randomized.
+    Default: disabled
+
+    > disabled - Channel Order will not be shuffled
+    > type_shuffle - Normal channels will only be shuffled with other normal levels, same for boss channels.
+    This preserves the slots of the bosses.
+    > full_shuffle - All channels will be shuffled regardless
+    """
+    display_name : str = "Channel Shuffle"
+    default = 0
+
+    option_disabled : int = 0
+    option_type_shuffle : int = 1
+    option_full_shuffle : int = 2
+
+
+class ChannelPreserve(Choice):
+    """
+    If Channel Order is not disabled, choose which channel should preserve their number.
+    Default: none
+
+    > none - No channel will be exempted from the Channel Shuffle
+    > bosses - Bosses will not be shuffled
+    > specters - Specter and Specter Final will not be shuffled
+    > specter_final - Specter Final will not be shuffled
+    """
+    display_name : str = "Channel Shuffle Preserve"
+    default = 0
+
+    option_none : int = 0
+    option_bosses : int = 1
+    option_specters : int = 2
+    option_specter_final : int = 3
+
+
 class Monkeysanity(DefaultOnToggle):
     """
     Choose if Pipo Monkeys (and Dr. Tomoki) should count as Locations.
@@ -269,8 +306,9 @@ class EnableShoppingArea(DefaultOnToggle):
 
 
 ae3_option_groups : dict[str, list] = {
-    "Randomizer Options"        : [ProgressionMode, LogicPreference, GoalTarget, PostGameAccessRule, Monkeysanity,
-                                   MonkeysanityBreakRooms, MonkeysanityPasswords, Camerasanity, Cellphonesanity],
+    "Randomizer Options"        : [ProgressionMode, LogicPreference, GoalTarget, PostGameAccessRule, ChannelShuffle,
+                                   ChannelPreserve, Monkeysanity, MonkeysanityBreakRooms, MonkeysanityPasswords,
+                                   Camerasanity, Cellphonesanity],
     "Item Options"              : [StartingGadget, StartingMorph, BaseMorphDuration, ShuffleMonkeyNet,
                                    ShuffleRCCarChassis, ShuffleMorphStocks, AddMorphExtensions],
     "Preferences"               : [EarlyFreePlay, EnableShoppingArea],
@@ -283,6 +321,8 @@ class AE3Options(PerGameCommonOptions):
     Logic_Preference        : LogicPreference
     Goal_Target             : GoalTarget
     Post_Game_Access_Rule   : PostGameAccessRule
+    Channel_Shuffle         : ChannelShuffle
+    Channel_Preserve        : ChannelPreserve
     Monkeysanity            : Monkeysanity
     Monkeysanity_BreakRooms : MonkeysanityBreakRooms
     Monkeysanity_Passwords  : MonkeysanityPasswords
@@ -316,6 +356,8 @@ def slot_data_options() -> list[str]:
         APHelper.logic_preference.value,
         APHelper.goal_target.value,
         APHelper.post_game_access_rule.value,
+        APHelper.channel_shuffle.value,
+        APHelper.channel_preserve.value,
         APHelper.monkeysanity.value,
         APHelper.monkeysanitybr.value,
         APHelper.monkeysanitypw.value,
