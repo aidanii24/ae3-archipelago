@@ -5,7 +5,7 @@ from worlds.LauncherComponents import Component, components, launch_subprocess, 
 from BaseClasses import MultiWorld, Tutorial
 import settings
 
-from .data.Items import AE3Item, Chassis_Pudding, Nothing, Channel_Key, Victory, generate_collectables
+from .data.Items import AE3Item, generate_collectables
 from .data.Stages import STAGES_BREAK_ROOMS
 from .data.Rules import PostGameAccessRule, PostGameAccessRuleOptions
 from .data.Strings import Loc, Meta, APHelper, APConsole
@@ -132,9 +132,6 @@ class AE3World(World):
         kungfu = Items.Morph_Kungfu.to_item(self.player)
         hero = Items.Morph_Hero.to_item(self.player)
         monkey = Items.Morph_Monkey.to_item(self.player)
-
-        # <!> Push important items early for easy testing
-        self.multiworld.push_precollected(Channel_Key.to_item(self.player))
 
         equipment : List[AE3Item] = [stun_club, monkey_radar, super_hoop, slingback_shooter, water_net, rc_car,
                                   sky_flyer]

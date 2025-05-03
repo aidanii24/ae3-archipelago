@@ -270,11 +270,6 @@ class ProgressionMode(Enum):
         # Automatically assign to bosses (except both Specter bosses) if autoset_bosses is True
         reduce : int = 2
 
-        # Channel Keys will only consider Specter's Final Battle (final level) when Post-Game Access Rule is set
-        # to "Channel Key or ""After End"
-        if not world.options.Post_Game_Access_Rule >= 4:
-            amt -= 1
-
         if auto_set:
             bosses : int = len(MONKEYS_BOSSES) - reduce
             for _ in range(0, bosses):
@@ -282,10 +277,11 @@ class ProgressionMode(Enum):
                 print(MONKEYS_BOSSES[_])
 
             amt -= bosses
-        elif world.options.Post_Game_Access_Rule == 5:
-            world.get_location(MONKEYS_BOSSES[-2]).place_locked_item(Channel_Key.to_item(world.player))
 
-        print("Keys:", amt + (len(MONKEYS_BOSSES) - reduce))
+        if world.options.Post_Game_Access_Rule == 5:
+            world.get_location(MONKEYS_BOSSES[-2]).place_locked_item(Channel_Key.to_item(world.player))
+            amt -= 1
+
         return Channel_Key.to_items(world.player, amt)
 
     def get_current_progress(self, keys : int) -> int:
