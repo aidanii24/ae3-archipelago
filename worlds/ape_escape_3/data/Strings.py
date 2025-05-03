@@ -1909,6 +1909,7 @@ class APHelper(BaseEnum):
 
     # AP Options
     progression_mode =          "Progression_Mode"
+    progression =               "Progression"
     logic_preference =          "Logic_Preference"
     goal_target =               "Goal_Target"
     post_game_access_rule =     "Post_Game_Access_Rule"

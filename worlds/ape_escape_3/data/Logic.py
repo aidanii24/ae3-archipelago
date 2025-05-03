@@ -267,6 +267,12 @@ class ProgressionMode:
 
         self.progression = progression
 
+    def set_order(self, order : Sequence[int] = None):
+        if order is None or not order:
+            return
+
+        self.order = order
+
     def generate_keys(self, world : 'AE3World') -> list[Item]:
         # First Set of Level(s) will not cost keys, so subtract one from total length of progression
         amount: int = len(self.progression) - 1
