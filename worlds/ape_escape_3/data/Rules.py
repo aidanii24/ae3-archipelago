@@ -76,13 +76,13 @@ class GoalTarget:
 
     def verify(self, state : CollectionState, player : int) -> bool:
         for location in self.locations:
-            if not state.can_reach_region(location, player):
+            if not state.can_reach_location(location, player):
                 return False
 
         return True
 
-    def as_access_rule(self, player : int) -> Callable[[CollectionState], bool]:
-        return lambda state : self.verify(state, player)
+    def as_access_rule(self) -> Callable[[CollectionState, int], bool]:
+        return lambda state, player : self.verify(state, player)
 
 class PostGameAccessRule(GoalTarget):
     name: str = "No Post Game Access Rule"
@@ -142,7 +142,7 @@ class LogicPreference:
             post_game_rules = []
 
         levels_count : int = 0
-        for sets, levels in enumerate(progression.value):
+        for sets, levels in enumerate(progression.progression):
             extra: int = 0
             if sets < 1:
                 extra = 1
@@ -153,14 +153,17 @@ class LogicPreference:
 
                 if sets > 0:
                     rule = Rulesets(has_keys(req))
-                elif sets == len(progression.value) - 1:
+                if sets == len(progression.progression) - 1:
                     if post_game_access_rule_option < 4:
                         req -= 1
 
-                    final_rule : list[Callable] = [ *self.final_level_rule.add(has_keys(req)) ]
+                    final_rule : list[Callable] = [has_keys(req)]
+                    final_rule.extend(self.final_level_rule)
 
                     if post_game_rules:
                         final_rule.append(*post_game_rules)
+
+                    rule = Rulesets(final_rule)
 
                 self.entrance_rules[ENTRANCES_STAGE_SELECT[levels_count].name] = rule
 

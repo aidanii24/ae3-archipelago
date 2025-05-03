@@ -9,7 +9,7 @@ from .data.Items import AE3Item, generate_collectables
 from .data.Stages import STAGES_BREAK_ROOMS
 from .data.Rules import PostGameAccessRule, PostGameAccessRuleOptions
 from .data.Strings import Loc, Meta, APHelper, APConsole
-from .data.Logic import is_goal_achieved, are_goals_achieved, ProgressionMode
+from .data.Logic import is_goal_achieved, are_goals_achieved, ProgressionMode, ProgressionModeOptions
 from .AE3_Options import AE3Options, create_option_groups, slot_data_options
 from .Regions import create_regions
 from .data import Items, Locations
@@ -92,7 +92,6 @@ class AE3World(World):
 
     progression : ProgressionMode
     post_game_access_rule : PostGameAccessRule
-    channel_order : set[int] = {}
 
     def __init__(self, multiworld : MultiWorld, player: int):
         self.auto_equip : bool = False
@@ -102,8 +101,14 @@ class AE3World(World):
         super(AE3World, self).__init__(multiworld, player)
 
     def generate_early(self):
-        self.progression = ProgressionMode.get_progression_mode(self.options.Progression_Mode.value)
+        # Get ProgressionMode
+        self.progression = ProgressionModeOptions[self.options.Progression_Mode.value]()
 
+        # Shuffle Channel if needed
+        if self.options.Shuffle_Channel:
+            self.progression.shuffle(self)
+
+        # Get Post Game Access Rule and exclude locations as necessary
         add_break_rooms: list[str] = []
         if self.options.Post_Game_Access_Rule == 1:
             add_break_rooms = [*STAGES_BREAK_ROOMS]
@@ -184,7 +189,7 @@ class AE3World(World):
 
     def fill_slot_data(self):
         slot_data : dict = self.options.as_dict(*slot_data_options())
-        slot_data[APHelper.channel_order.value] = self.channel_order
+        slot_data[APHelper.channel_order.value] = self.progression.order
 
         return slot_data
 

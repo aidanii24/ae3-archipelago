@@ -5,7 +5,6 @@ from abc import ABC
 from BaseClasses import Location, Region, ItemClassification
 
 from .Strings import Loc, Stage, Events, Meta, APHelper
-from .Logic import Rulesets
 from .Addresses import NTSCU
 
 
@@ -17,11 +16,9 @@ class AE3Location(Location):
 
     Attributes:
         game : Name of the Game
-        rules : Sets of AccessRules to check if the Location is reachable
     """
 
     game : str = Meta.game
-    rules : Rulesets
 
 @dataclass
 class AE3LocationMeta(ABC):
@@ -30,7 +27,6 @@ class AE3LocationMeta(ABC):
     name : str
     loc_id : int
     address : int
-    rules : Rulesets
 
 @dataclass
 class MonkeyLocation(AE3LocationMeta):
@@ -47,7 +43,6 @@ class MonkeyLocation(AE3LocationMeta):
         # Locations can be assumed to always be in Addresses.Locations. NTSCU version will be used as basis for the ID.
         self.loc_id = NTSCU.Locations[name]
         self.address = self.loc_id
-        self.rules = Rulesets()
 
     def to_location(self, player : int, parent : Region) -> Location:
         return Location(player, self.name, self.loc_id, parent)
@@ -58,7 +53,6 @@ class CameraLocation(AE3LocationMeta):
         # Cameras will be id'd linearly, based on the starting id definied by Pipo Camera in addresses.py
         self.loc_id = NTSCU.Locations[Loc.pipo_camera.value] + offset
         self.address = self.loc_id
-        self.rules = Rulesets()
 
     def to_location(self, player : int, parent : Region) -> Location:
         return Location(player, self.name, self.loc_id, parent)
@@ -69,22 +63,16 @@ class CellphoneLocation(AE3LocationMeta):
         # Locations can be assumed to always be in Addresses.Locations. NTSCU version will be used as basis for the ID.
         self.loc_id = NTSCU.Locations[text_id]
         self.address = self.loc_id
-        self.rules = Rulesets()
 
     def to_location(self, player : int, parent : Region) -> Location:
         return Location(player, self.name, self.loc_id, parent)
 
 class EventMeta(AE3LocationMeta):
     """Base Class for all events."""
-    def __init__(self, name : str, rules : Rulesets = None):
+    def __init__(self, name : str):
         self.name = name
         self.loc_id = 0x0
         self.address = 0x0
-
-        self.rules = Rulesets()
-
-        if isinstance(rules, Rulesets):
-            self.rules = rules
 
     def to_event_location(self, player : int, parent : Region) -> Location:
         from .Items import AE3Item

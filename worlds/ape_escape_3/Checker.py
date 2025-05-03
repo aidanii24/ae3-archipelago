@@ -70,7 +70,7 @@ async def setup_level_select(ctx : 'AE3Context'):
     # Force Unlocked Stages to be in sync with the player's chosen option,
     # maxing out at 0x1B as supported by the game
     if ctx.unlocked_channels is None:
-        ctx.unlocked_channels = ctx.progression.get_current_progress(ctx.keys)
+        ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys)
 
     if ctx.ipc.get_unlocked_channels() > max(0, min(ctx.unlocked_channels, 0x1B)):
         ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
@@ -81,7 +81,7 @@ async def setup_level_select(ctx : 'AE3Context'):
     # In case player scrolls beyond intended levels before unlocked stages are enforced,
     # force selected level to be the latest unlocked stage
     if selected_stage > ctx.unlocked_channels:
-        ctx.ipc.set_selected_stage(ctx.unlocked_channels)
+        ctx.ipc.set_selected_channel(ctx.unlocked_channels)
 
     # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
     if ctx.ipc.is_on_warp_gate():
@@ -122,6 +122,10 @@ async def setup_level_select(ctx : 'AE3Context'):
 
     if ctx.ipc.is_a_level_confirmed():
         ctx.ipc.clear_spawn()
+
+        # If Channel Shuffle is enabled, force switch the game to load the randomized channel
+        if ctx.shuffle_channel:
+            ctx.ipc.set_selected_channel(min(ctx.progression.progression[ctx.ipc.get_selected_channel()], 0x1B))
 
         # Toggle Freeplay when allowed and needed
         toggle_freeplay(ctx)
@@ -196,7 +200,7 @@ async def check_items(ctx : 'AE3Context'):
             ### Add Key Count and unlock levels accordingly
             if item.item_id == AP[APHelper.channel_key.value]:
                 ctx.keys += 1
-                ctx.unlocked_channels = ctx.progression.get_current_progress(ctx.keys)
+                ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys)
 
         ## Unlock Morphs and Gadgets
         elif isinstance(item, EquipmentItem):
