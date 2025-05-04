@@ -6,10 +6,11 @@ from BaseClasses import MultiWorld, Tutorial
 import settings
 
 from .data.Items import AE3Item, generate_collectables
+from .data.Locations import MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED, MONKEYS_PASSWORDS
 from .data.Stages import STAGES_BREAK_ROOMS
-from .data.Rules import PostGameAccessRule, PostGameAccessRuleOptions
+from .data.Rules import GoalTarget, GoalTargetOptions, PostGameAccessRule, PostGameAccessRuleOptions
 from .data.Strings import Loc, Meta, APHelper, APConsole
-from .data.Logic import is_goal_achieved, are_goals_achieved, ProgressionMode, ProgressionModeOptions
+from .data.Logic import is_goal_achieved, are_goals_achieved, Rulesets, ProgressionMode, ProgressionModeOptions
 from .AE3_Options import AE3Options, create_option_groups, slot_data_options
 from .Regions import create_regions
 from .data import Items, Locations
@@ -90,6 +91,7 @@ class AE3World(World):
 
     item_name_groups = Items.generate_item_groups()
 
+    goal_target : GoalTarget = GoalTarget
     progression : ProgressionMode
     post_game_access_rule : PostGameAccessRule
 
@@ -104,17 +106,29 @@ class AE3World(World):
         # Get ProgressionMode
         self.progression = ProgressionModeOptions[self.options.Progression_Mode.value]()
 
-        # Shuffle Channel if needed
+        # Shuffle Channel if desired
         if self.options.Shuffle_Channel:
             self.progression.shuffle(self)
 
         # Get Post Game Access Rule and exclude locations as necessary
-        add_break_rooms: list[str] = []
+        exclude_regions: list[str] = []
+        exclude_locations: list[str] = []
+
+        exclude_locations.extend(MONKEYS_PASSWORDS)
+
+        # Get Goal Target
+        self.goal_target = GoalTargetOptions[self.options.Goal_Target.value](exclude_regions, exclude_locations)
+
         if self.options.Post_Game_Access_Rule == 1:
-            add_break_rooms = [*STAGES_BREAK_ROOMS]
+            exclude_regions.extend([*STAGES_BREAK_ROOMS])
 
-        self.post_game_access_rule = PostGameAccessRuleOptions[self.options.Post_Game_Access_Rule](add_break_rooms)
+        # When Channels are shuffled, exclude locations from the channel randomized into the post-game slot
+        exclude_locations.extend(MONKEYS_MASTER_ORDERED[self.progression.order[-1]])
+        exclude_locations.append(CAMERAS_MASTER_ORDERED[self.progression.order[-1]])
+        exclude_locations.extend(CELLPHONES_MASTER_ORDERED[self.progression.order[-1]])
 
+        self.post_game_access_rule = PostGameAccessRuleOptions[self.options.Post_Game_Access_Rule](exclude_regions,
+                                                                                                   exclude_locations)
         self.item_pool = []
 
     def create_regions(self):
@@ -186,6 +200,10 @@ class AE3World(World):
 
         # Add Items to ItemPool
         self.multiworld.itempool = self.item_pool
+
+        # Set Goal
+        self.multiworld.completion_condition[self.player] = Rulesets(self.goal_target.as_access_rule()).condense(
+            self.player)
 
     def fill_slot_data(self):
         slot_data : dict = self.options.as_dict(*slot_data_options())
