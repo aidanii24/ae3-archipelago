@@ -180,7 +180,6 @@ class LogicPreference:
             if sets < 1:
                 extra = 1
 
-
             for _ in range(levels + extra):
                 rule : Rulesets = Rulesets()
                 req : int = sets
