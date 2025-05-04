@@ -220,8 +220,8 @@ class AE3World(World):
         self.multiworld.itempool = self.item_pool
 
         # Set Goal
-        self.multiworld.completion_condition[self.player] = Rulesets(self.goal_target.as_access_rule()).condense(
-            self.player)
+        # self.multiworld.completion_condition[self.player] = Rulesets(self.goal_target.as_access_rule()).condense(
+        #     self.player)
 
     def fill_slot_data(self):
         slot_data : dict = self.options.as_dict(*slot_data_options())

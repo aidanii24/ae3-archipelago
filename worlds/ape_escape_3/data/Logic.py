@@ -252,22 +252,22 @@ class Rulesets:
 
 from .Locations import MONKEYS_BOSSES
 class ProgressionMode:
-    progression : Sequence[int] = []
-    order : Sequence[int] = [ 1 for _ in range(27) ]
-    level_select_entrances : Sequence[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
+    progression : list[int] = []
+    order : list[int] = [ 1 for _ in range(27) ]
+    level_select_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
 
     boss_indices : Sequence[int] = [ 3, 8, 12, 17, 21, 24, 26, 27]
 
     def shuffle(self, world : 'AE3World'):
         pass
 
-    def set_progression(self, progression : Sequence[int] = None):
+    def set_progression(self, progression : list[int] = None):
         if progression is None or not progression:
             return
 
         self.progression = progression
 
-    def set_order(self, order : Sequence[int] = None):
+    def set_order(self, order : list[int] = None):
         if order is None or not order:
             return
 
@@ -302,7 +302,7 @@ class ProgressionMode:
 
 
 class Singles(ProgressionMode):
-    progression : Sequence[int] = [ 0, *[1 for _ in range(1, 28)]]
+    progression : list[int] = [ 0, *[1 for _ in range(1, 28)]]
 
     def shuffle(self, world : 'AE3World'):
         new_order : list[int] = [ _ for _ in range(28)]
@@ -346,7 +346,7 @@ class Singles(ProgressionMode):
         self.level_select_entrances = [*new_entrances]
 
 class Group(ProgressionMode):
-    progression : Sequence[int] = [ 2, 1, 4, 1, 3, 1, 4, 1, 3, 1, 2, 1, 1, 1, 1 ]   # 15 Sets
+    progression : list[int] = [ 2, 1, 4, 1, 3, 1, 4, 1, 3, 1, 2, 1, 1, 1, 1 ]   # 15 Sets
 
     def shuffle(self, world : 'AE3World'):
         new_order : list[int] = [ _ for _ in range(28)]
@@ -428,7 +428,7 @@ class Group(ProgressionMode):
         return Channel_Key.to_items(world.player, amount + 10)
 
 class World(ProgressionMode):
-    progression : Sequence[int] = [ 3, 5, 4, 5, 4, 3, 1, 1, 1 ] # 9 Sets
+    progression : list[int] = [ 3, 5, 4, 5, 4, 3, 1, 1, 1 ] # 9 Sets
 
     def shuffle(self, world : 'AE3World'):
         new_order : list[int] = [ _ for _ in range(28)]
