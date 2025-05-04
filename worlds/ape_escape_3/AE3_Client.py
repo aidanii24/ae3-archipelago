@@ -16,7 +16,8 @@ from settings import get_settings
 
 from .data.Strings import Meta, APConsole
 from .data.Logic import ProgressionMode, ProgressionModeOptions
-from .data.Locations import CELLPHONES_MASTER, MONKEYS_MASTER, MONKEYS_PASSWORDS
+from .data.Locations import CELLPHONES_MASTER, MONKEYS_MASTER, MONKEYS_PASSWORDS, MONKEYS_MASTER_ORDERED, \
+    CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED
 from .data.Stages import STAGES_BREAK_ROOMS
 from .data.Rules import GoalTarget, GoalTargetOptions, PostGameAccessRule, PostGameAccessRuleOptions
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
@@ -227,7 +228,7 @@ class AE3Context(CommonContext):
     auto_equip : bool = False
 
     # Player Set Options
-    progression : ProgressionMode = ProgressionModeOptions
+    progression : ProgressionMode = ProgressionModeOptions[0]
     goal_target : GoalTarget = GoalTarget()
     post_game_access_rule_option : int = 0
     post_game_access_rule : PostGameAccessRule = PostGameAccessRule()
@@ -287,6 +288,15 @@ class AE3Context(CommonContext):
             ## Progression Mode
             if not self.unlocked_channels and APHelper.progression_mode.value in data:
                 self.progression = ProgressionModeOptions[data[APHelper.progression_mode.value]]()
+
+                ## Progression
+                if APHelper.progression.value in data and self.progression:
+                    self.progression.set_progression(data[APHelper.progression.value])
+
+                ## Channel Order
+                if APHelper.channel_order.value in data and self.progression:
+                    self.progression.set_order(data[APHelper.channel_order.value])
+
                 self.unlocked_channels = self.progression.get_progress(0)
 
             # Define Goal Target for other options that need it
@@ -312,26 +322,23 @@ class AE3Context(CommonContext):
             if not add_break_rooms:
                 excluded_stages = [*STAGES_BREAK_ROOMS]
 
-            ## Post Game Access Rule Initialization
-            self.post_game_access_rule = PostGameAccessRuleOptions[self.post_game_access_rule_option](
-                excluded_stages, excluded_locations)
-
-            # Goal Target
+            ## Goal Target
             if not self.goal_target.locations and APHelper.goal_target.value in data:
                 goal_target = data[APHelper.goal_target.value]
                 self.goal_target = GoalTargetOptions[goal_target](excluded_stages, excluded_locations)
 
-            # Shuffle Channel
+            ### Exclude locations from final channel
+            excluded_locations.extend(MONKEYS_MASTER_ORDERED[self.progression.order[-1]])
+            excluded_locations.extend(CELLPHONES_MASTER_ORDERED[self.progression.order[-1]])
+            excluded_locations.append(CAMERAS_MASTER_ORDERED[self.progression.order[-1]])
+
+            ## Post Game Access Rule Initialization
+            self.post_game_access_rule = PostGameAccessRuleOptions[self.post_game_access_rule_option](
+                    excluded_stages, excluded_locations)
+
+            ## Shuffle Channel
             if APHelper.shuffle_channel.value in data:
                 self.shuffle_channel = data[APHelper.shuffle_channel.value]
-
-            ## Progression
-            if APHelper.progression.value in data and self.progression:
-                self.progression.set_progression(data[APHelper.progression.value])
-
-            ## Channel Order
-            if APHelper.channel_order.value in data and self.progression:
-                self.progression.set_order(data[APHelper.channel_order.value])
 
             ## Camerasanity
             if self.camerasanity is None and APHelper.camerasanity.value in data:

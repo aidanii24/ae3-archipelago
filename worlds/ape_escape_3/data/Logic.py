@@ -291,7 +291,7 @@ class ProgressionMode:
 
 
 class Singles(ProgressionMode):
-    progression : Sequence[int] = [ 1 for _ in range(28)]
+    progression : Sequence[int] = [ 0, *[1 for _ in range(1, 28)]]
 
     def shuffle(self, world : 'AE3World'):
         new_order : list[int] = [ _ for _ in range(28)]
@@ -300,6 +300,7 @@ class Singles(ProgressionMode):
         # Apply the chosen Shuffle Mode
         if world.options.Shuffle_Channel == 1:
             new_boss_order : list[int] = [ _ for _ in new_order if _ in self.boss_indices ]
+            new_order = [_ for _ in new_order if _ not in self.boss_indices]
 
             for index in range(len(self.boss_indices)):
                 new_order.insert(self.boss_indices[index], new_boss_order[index])
@@ -316,6 +317,8 @@ class Singles(ProgressionMode):
                 preserve_indices = [self.boss_indices[-1]]
 
             if preserve_indices:
+                new_order = [_ for _ in new_order if _ not in preserve_indices]
+
                 for index in preserve_indices:
                     new_order.insert(index, index)
 
@@ -340,6 +343,7 @@ class Group(ProgressionMode):
         # Apply the chosen Shuffle Mode
         if world.options.Shuffle_Channel == 1:
             new_boss_order : list[int] = [ _ for _ in new_order if _ in self.boss_indices ]
+            new_order = [ _ for _ in new_order if _ not in self.boss_indices ]
 
             for index in range(len(self.boss_indices)):
                 new_order.insert(self.boss_indices[index], new_boss_order[index])
@@ -356,6 +360,8 @@ class Group(ProgressionMode):
                 preserve_indices = [self.boss_indices[-1]]
 
             if preserve_indices:
+                new_order = [ _ for _ in new_order if _ not in preserve_indices ]
+
                 for index in preserve_indices:
                     new_order.insert(index, index)
 
@@ -364,20 +370,23 @@ class Group(ProgressionMode):
 
         # Update Entrance Destinations based on the Shuffle Result
         # and track channel being processed to create the new progression.
-        new_progression : list[int] = [0]
+        new_progression : list[int] = [-1]
         is_last_index_boss : bool = False
         sets : int = 0
+
         for level in new_order:
             # Split the level group before and after boss
             if level in self.boss_indices:
                 is_last_index_boss = True
 
-                # Do not raise set if this is the first level group
-                if sets:
-                    sets += 1
+                # If the current set has no levels counted yet, increment it first before incrementing the set number
+                if new_progression[max(sets, 0)] < 1:
+                    new_progression[0] += 1
 
-                    if len(new_progression) - sets <= 0:
-                        new_progression.insert(sets, 0)
+                sets += 1
+                if len(new_progression) - sets <= 0:
+                    new_progression.insert(sets, 0)
+
             elif is_last_index_boss:
                 sets += 1
                 is_last_index_boss = False
@@ -395,15 +404,16 @@ class Group(ProgressionMode):
 
     def generate_keys(self, world : 'AE3World'):
         amount = len(super().generate_keys(world))
+        bosses_in_order : list = [ self.boss_indices.index(boss) for boss in self.order if boss in self.boss_indices ]
 
-        amount -= len(MONKEYS_BOSSES) - 2
-        for boss in range(len(MONKEYS_BOSSES) - 2):
-            if self.progression[-1] == self.boss_indices[boss]:
+        amount -= len(bosses_in_order) - 2
+        for boss in bosses_in_order[:len(bosses_in_order) - 2]:
+            if self.order[-1] in self.boss_indices or (world.options.Post_Game_Access_Rule == 5 and boss >= 6):
                 continue
 
             world.get_location(MONKEYS_BOSSES[boss]).place_locked_item(Channel_Key.to_item(world.player))
 
-        return Channel_Key.to_items(world.player, amount)
+        return Channel_Key.to_items(world.player, amount + 10)
 
 class World(ProgressionMode):
     progression : Sequence[int] = [ 3, 5, 4, 5, 4, 3, 1, 1, 1 ] # 9 Sets
@@ -414,7 +424,8 @@ class World(ProgressionMode):
 
         # Apply the chosen Shuffle Mode
         if world.options.Shuffle_Channel == 1:
-            new_boss_order : list[int] = [ _ for _ in new_order if _ in self.boss_indices ]
+            new_boss_order: list[int] = [_ for _ in new_order if _ in self.boss_indices]
+            new_order = [_ for _ in new_order if _ not in self.boss_indices]
 
             for index in range(len(self.boss_indices)):
                 new_order.insert(self.boss_indices[index], new_boss_order[index])
@@ -427,10 +438,12 @@ class World(ProgressionMode):
                 preserve_indices = [*self.boss_indices]
             elif world.options.Preserve_Channel == 2:
                 preserve_indices = [*self.boss_indices[-2:]]
-            elif world.options.Preserve_Channel ==  3:
+            elif world.options.Preserve_Channel == 3:
                 preserve_indices = [self.boss_indices[-1]]
 
             if preserve_indices:
+                new_order = [_ for _ in new_order if _ not in preserve_indices]
+
                 for index in preserve_indices:
                     new_order.insert(index, index)
 
@@ -439,7 +452,7 @@ class World(ProgressionMode):
 
         # Update Entrance Destinations based on the Shuffle Result
         # and track channel being processed to create the new progression.
-        new_progression : list[int] = [0]
+        new_progression : list[int] = [-1]
         sets : int = 0
         for level in new_order:
             new_entrances[level].destination = base_destination_order[level]
@@ -449,8 +462,8 @@ class World(ProgressionMode):
             if level in self.boss_indices:
                 sets += 1
 
-                if len(new_progression) - sets <= 0:
-                    new_progression.insert(sets, 0)
+                if len(new_progression) - sets <= 0 and level != new_order[-1]:
+                    new_progression.append(0)
 
         # Update with the new orders
         self.progression = [*new_progression]

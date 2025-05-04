@@ -26,16 +26,22 @@ class GoalTarget:
         if not self.locations:
             return
 
+        if excluded_locations is None:
+            excluded_locations = []
+
+        if excluded_stages is None:
+            excluded_stages = []
+
         # Exclude Specified Locations if any
-        locations_excluded : list[str] = excluded_locations if excluded_locations is not None else []
-        if excluded_stages is not None:
+        locations_excluded : list[str] = excluded_locations if excluded_locations else []
+        if excluded_stages:
             for stage in excluded_stages:
                 locations_excluded.extend( locations for locations in MONKEYS_INDEX.get(stage, []) )
                 locations_excluded.extend( locations for locations in CAMERAS_INDEX.get(stage, []) )
                 locations_excluded.extend( locations for locations in CELLPHONES_INDEX.get(stage, []) )
 
         if locations_excluded:
-            self.locations = { location for location in self.locations if location not in locations_excluded }
+            self.locations.difference_update(set(locations_excluded))
             if len(self.locations) <= 0:
                 raise AssertionError("There are no locations to check. Please reduce the excluded locations.")
             elif len(self.locations) < self.amount:
@@ -52,6 +58,11 @@ class GoalTarget:
 
     def __str__(self):
         return self.name + "\n         [ " + self.description + " ]"
+
+    def exclude(self, locations : list[str] = None):
+        if locations is None or not locations:
+            self.locations = { location for location in self.locations if location not in locations }
+            self.location_ids = {generate_name_to_id()[location] for location in self.locations}
 
     async def check(self, ctx : 'AE3Context'):
         checked: set[int] = ctx.locations_checked.union(ctx.checked_locations)
@@ -143,9 +154,10 @@ class LogicPreference:
 
         levels_count : int = 0
         for sets, levels in enumerate(progression.progression):
-            extra: int = 0
+            extra : int = 0
             if sets < 1:
                 extra = 1
+
 
             for _ in range(levels + extra):
                 rule : Rulesets = Rulesets()
@@ -1088,21 +1100,21 @@ class Specter(GoalTarget):
     name = "Specter"
     description = "Capture Specter by clearing \"Specter Battle!\""
 
-    locations = [Loc.boss_specter.value]
+    locations = {Loc.boss_specter.value}
 
 
 class SpecterFinal(Specter):
     name = "Specter Final"
     description = "Capture Specter a second time by clearing \"Specter's Final Battle!\""
 
-    locations = [Loc.boss_specter_final.value]
+    locations = {Loc.boss_specter_final.value}
 
 
 class TripleThreat(GoalTarget):
     name = "Triple Threat"
     description = "Defeat at least 3 bosses!"
 
-    locations = [*MONKEYS_BOSSES]
+    locations = {*MONKEYS_BOSSES}
 
     amount = 3
 
@@ -1111,7 +1123,8 @@ class PlaySpike(GoalTarget):
     name = "Play Spike"
     description = "Go and Capture 204 Pipo Monkeys!"
 
-    locations = {monkey for monkey in MONKEYS_MASTER if monkey != Loc.boss_tomoki.value}
+    locations = {monkey for monkey in MONKEYS_MASTER if monkey != Loc.boss_tomoki.value and monkey not in
+                MONKEYS_PASSWORDS}
 
     amount = 204
 
@@ -1152,8 +1165,7 @@ class Vanilla(PostGameAccessRule):
     description = "Capture all Base and Break Room Monkeys"
 
     locations = {monkey for monkey in MONKEYS_MASTER
-                 if monkey != Loc.boss_tomoki.value and monkey != Loc.boss_specter_final.value and monkey not in
-                 MONKEYS_PASSWORDS }
+                 if monkey != Loc.boss_tomoki.value and monkey not in MONKEYS_PASSWORDS }
 
     def verify(self, state : CollectionState, player : int) -> bool:
         stages : list[str] = [ stage for stage in STAGES_MASTER if stage != Stage.region_specter2.value ]
@@ -1168,8 +1180,7 @@ class ActiveMonkeys(PostGameAccessRule):
     name = "Active Monkeys"
     description = "Capture all Active Monkeys (marked as locations)"
 
-    locations = {monkey for monkey in MONKEYS_MASTER if monkey != Loc.boss_tomoki.value and monkey !=
-                 Loc.boss_specter_final.value}
+    locations = {monkey for monkey in MONKEYS_MASTER if monkey != Loc.boss_tomoki.value }
 
     def verify(self, state: CollectionState, player: int) -> bool:
         stages : list[str] = [ stage for stage in STAGES_MASTER if stage != Stage.region_specter2.value ]
@@ -1202,7 +1213,7 @@ class ChannelKey(PostGameAccessRule):
     locations = { Loc.boss_specter.value }
 
     def get_progress(self, ctx : 'AE3Context') -> int:
-        all_keys = len(ctx.progression.value) - 1
+        all_keys = len(ctx.progression.progression) - 1
         if ctx.post_game_access_rule_option < 4:
             all_keys -= 1
 

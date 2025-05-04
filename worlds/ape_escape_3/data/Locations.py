@@ -981,6 +981,15 @@ MONKEYS_MASTER : Sequence[str] = [
     *MONKEYS_BAY, *MONKEYS_TOMO, *MONKEYS_SPACE, *MONKEYS_BOSSES
 ]
 
+MONKEYS_MASTER_ORDERED : Sequence[list] = [
+    MONKEYS_SEASIDE, MONKEYS_WOODS, MONKEYS_CASTLE, [Loc.boss_monkey_white.value], MONKEYS_CISCOCITY, MONKEYS_STUDIO,
+    MONKEYS_HALLOWEEN, MONKEYS_WESTERN, [Loc.boss_monkey_blue.value], MONKEYS_ONSEN, MONKEYS_SNOWFESTA,
+    MONKEYS_EDOTOWN, [Loc.boss_monkey_yellow.value], MONKEYS_HEAVEN, MONKEYS_TOYHOUSE, MONKEYS_ICELAND,
+    MONKEYS_ARABIAN, [Loc.boss_monkey_pink.value], MONKEYS_ASIA, MONKEYS_PLANE, MONKEYS_HONG,
+    [Loc.boss_monkey_red.value], MONKEYS_BAY, MONKEYS_TOMO, [Loc.boss_tomoki.value], MONKEYS_SPACE,
+    [Loc.boss_specter.value], [Loc.boss_specter_final.value]
+]
+
 MONKEYS_INDEX : dict[str, Sequence] = {
     # Zero
     Stage.zero.value                    : MONKEYS_ZERO,
@@ -1271,6 +1280,14 @@ CAMERAS_MASTER : Sequence[str] = [
     Loc.heaven_cam.value, Loc.toyhouse_cam.value, Loc.iceland_cam.value, Loc.arabian_cam.value,
     Loc.asia_cam.value, Loc.plane_cam.value, Loc.hong_cam.value, Loc.bay_cam.value, Loc.tomo_cam.value,
     Loc.space_cam.value
+]
+
+CAMERAS_MASTER_ORDERED : Sequence[str] = [
+    Loc.seaside_cam.value, Loc.woods_cam.value, Loc.castle_cam.value, "", Loc.ciscocity_cam.value, Loc.studio_cam.value,
+    Loc.halloween_cam.value, Loc.western_cam.value, "", Loc.onsen_cam.value, Loc.snowfesta_cam.value,
+    Loc.edotown_cam.value, "", Loc.heaven_cam.value, Loc.toyhouse_cam.value, Loc.iceland_cam.value,
+    Loc.arabian_cam.value, "", Loc.asia_cam.value, Loc.plane_cam.value, Loc.hong_cam.value, "",
+    Loc.bay_cam.value, Loc.tomo_cam.value, "", Loc.space_cam.value, "", ""
 ]
 
 CAMERAS_INDEX : dict[str, str] = {
@@ -1623,6 +1640,13 @@ CELLPHONES_MASTER : Sequence[str] = [
     *CELLPHONES_HALLOWEEN, *CELLPHONES_WESTERN, *CELLPHONES_ONSEN, *CELLPHONES_SNOWFESTA, *CELLPHONES_EDOTOWN,
     *CELLPHONES_HEAVEN, *CELLPHONES_TOYHOUSE, *CELLPHONES_ICELAND, *CELLPHONES_ARABIAN, *CELLPHONES_ASIA,
     *CELLPHONES_PLANE, *CELLPHONES_HONG, *CELLPHONES_BAY, *CELLPHONES_TOMO, *CELLPHONES_SPACE
+]
+
+CELLPHONES_MASTER_ORDERED : Sequence[list] = [
+    CELLPHONES_SEASIDE, CELLPHONES_WOODS, CELLPHONES_CASTLE, [], CELLPHONES_CISCOCITY, CELLPHONES_STUDIO,
+    CELLPHONES_HALLOWEEN, CELLPHONES_WESTERN, [], CELLPHONES_ONSEN, CELLPHONES_SNOWFESTA, CELLPHONES_EDOTOWN, [],
+    CELLPHONES_HEAVEN, CELLPHONES_TOYHOUSE, CELLPHONES_ICELAND, CELLPHONES_ARABIAN, [], CELLPHONES_ASIA,
+    CELLPHONES_PLANE, CELLPHONES_HONG, [], CELLPHONES_BAY, CELLPHONES_TOMO, [], CELLPHONES_SPACE, [], []
 ]
 
 CELLPHONES_INDEX : dict[str, Sequence[str]] = {
