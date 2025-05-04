@@ -69,6 +69,8 @@ async def correct_progress(ctx : 'AE3Context'):
 async def setup_level_select(ctx : 'AE3Context'):
     # Force Unlocked Stages to be in sync with the player's chosen option,
     # maxing out at 0x1B as supported by the game
+    is_a_level_confirmed : bool = ctx.ipc.is_a_level_confirmed()
+
     if ctx.unlocked_channels is None:
         ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys)
 
@@ -79,8 +81,9 @@ async def setup_level_select(ctx : 'AE3Context'):
     selected_stage: int = ctx.ipc.get_selected_channel()
 
     # In case player scrolls beyond intended levels before unlocked stages are enforced,
-    # force selected level to be the latest unlocked stage
-    if selected_stage > ctx.unlocked_channels:
+    # force selected level to be the latest unlocked stage,
+    # except if when a level is to be swapped due to channel shuffle
+    if selected_stage > ctx.unlocked_channels and not is_a_level_confirmed:
         ctx.ipc.set_selected_channel(ctx.unlocked_channels)
 
     # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
@@ -101,6 +104,9 @@ async def setup_level_select(ctx : 'AE3Context'):
             ctx.ipc.set_game_mode(0xFFFF, False)
     elif progress != APHelper.pr_round2.value:
         ctx.ipc.set_progress()
+    else:
+        if ctx.is_channel_swapped:
+            ctx.is_channel_swapped = False
 
     # If Super Monkey isn't properly unlocked yet, temporarily do so during level select to prevent Aki from
     # introducing and giving it to the player.
@@ -120,12 +126,13 @@ async def setup_level_select(ctx : 'AE3Context'):
             for _ in range(3):
                 ctx.ipc.unlock_chassis_direct(_)
 
-    if ctx.ipc.is_a_level_confirmed():
+    if is_a_level_confirmed:
         ctx.ipc.clear_spawn()
 
         # If Channel Shuffle is enabled, force switch the game to load the randomized channel
-        if ctx.shuffle_channel:
-            ctx.ipc.set_selected_channel(min(ctx.progression.progression[ctx.ipc.get_selected_channel()], 0x1B))
+        if ctx.shuffle_channel and not ctx.is_channel_swapped:
+            ctx.ipc.set_selected_channel(min(ctx.progression.order[ctx.ipc.get_selected_channel()], 0x1B))
+            ctx.is_channel_swapped = True
 
         # Toggle Freeplay when allowed and needed
         toggle_freeplay(ctx)

@@ -47,8 +47,8 @@ class AE3CommandProcessor(ClientCommandProcessor):
                             f"{str(self.ctx.goal_target.get_progress(self.ctx))} / "
                             f"{self.ctx.goal_target.amount}")
 
-                if (len(self.ctx.goal_target.locations) == 1 and Loc.boss_specter_final.value in
-                        self.ctx.goal_target.locations):
+                if ((len(self.ctx.goal_target.locations) == 1 and Loc.boss_specter_final.value in
+                        self.ctx.goal_target.locations) or self.ctx.shuffle_channel):
                     logger.info(f"\n         Post-Game Requirement is "
                                 f"{self.ctx.post_game_access_rule}")
                     logger.info(f"         > Progress: "
@@ -62,10 +62,9 @@ class AE3CommandProcessor(ClientCommandProcessor):
                 logger.info(f"\n         Progression:")
                 logger.info(f"         Channel Keys: {self.ctx.keys} / {all_keys}")
                 logger.info(f"         Available Levels: {self.ctx.unlocked_channels + 1} / 28\n")
-                logger.info(f"Available Levels:")
-                for level in range(self.ctx.unlocked_channels):
-
-                    logger.info(f"    [-{level}-] {LEVELS_BY_ORDER[self.ctx.progression.order[level]]}")
+                logger.info(f"         Available Levels:")
+                for level in range(self.ctx.unlocked_channels + 1):
+                    logger.info(f"         [ {level} ] {LEVELS_BY_ORDER[self.ctx.progression.order[level]]}")
 
             else:
                 logger.info(f"         Disconnected from Server")
@@ -205,6 +204,7 @@ class AE3Context(CommonContext):
 
     swap_freeplay : bool = False
     is_mode_swapped : bool = True
+    is_channel_swapped : bool = False
 
     ## Command State can be in either of 3 stages:
     ##  0 - No Exclusive Command Sent

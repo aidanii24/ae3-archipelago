@@ -507,8 +507,8 @@ class Hard(LogicPreference):
             Stage.entrance_bay_e1e2.value       : Rulesets(AccessRule.HIT),
 
             # Tomo
-            Stage.entrance_tomo_aa1.value       : Rulesets(AccessRule.HERO),
-            Stage.entrance_tomo_a1a.value       : Rulesets(AccessRule.HERO),
+            Stage.entrance_tomo_aa1.value       : Rulesets(AccessRule.HERO, AccessRule.NINJA),
+            Stage.entrance_tomo_a1a.value       : Rulesets(AccessRule.HERO, AccessRule.NINJA),
             Stage.entrance_tomo_e1i.value       : Rulesets(AccessRule.MONKEY),
             Stage.entrance_tomo_e2e3.value      : Rulesets(AccessRule.KUNGFU),
             Stage.entrance_tomo_e3e2.value      : Rulesets(event_invoked(Events.tomo_e2_kungfu.value)),
