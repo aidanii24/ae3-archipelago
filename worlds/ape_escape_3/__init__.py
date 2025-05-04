@@ -6,7 +6,8 @@ from BaseClasses import MultiWorld, Tutorial
 import settings
 
 from .data.Items import AE3Item, generate_collectables
-from .data.Locations import MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED, MONKEYS_PASSWORDS
+from .data.Locations import MONKEYS_BOSSES, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED, \
+    MONKEYS_PASSWORDS
 from .data.Stages import STAGES_BREAK_ROOMS
 from .data.Rules import GoalTarget, GoalTargetOptions, PostGameAccessRule, PostGameAccessRuleOptions
 from .data.Strings import Loc, Meta, APHelper, APConsole
@@ -113,22 +114,38 @@ class AE3World(World):
         # Get Post Game Access Rule and exclude locations as necessary
         exclude_regions: list[str] = []
         exclude_locations: list[str] = []
+        additional_locations : list[str] = []
 
         exclude_locations.extend(MONKEYS_PASSWORDS)
 
         # Get Goal Target
         self.goal_target = GoalTargetOptions[self.options.Goal_Target.value](exclude_regions, exclude_locations)
 
-        if self.options.Post_Game_Access_Rule == 1:
-            exclude_regions.extend([*STAGES_BREAK_ROOMS])
-
         # When Channels are shuffled, exclude locations from the channel randomized into the post-game slot
         exclude_locations.extend(MONKEYS_MASTER_ORDERED[self.progression.order[-1]])
         exclude_locations.append(CAMERAS_MASTER_ORDERED[self.progression.order[-1]])
         exclude_locations.extend(CELLPHONES_MASTER_ORDERED[self.progression.order[-1]])
 
+        # Active Monkeys options should respect Monkeysanity options
+        if self.options.Post_Game_Access_Rule == 1 and not self.options.Monkeysanity_BreakRooms:
+            exclude_regions.extend([*STAGES_BREAK_ROOMS])
+        # If Specter is a Post Game Access Rule, and he gets shuffled to become the post game channel, change the
+        # required location to the next penultimate placed boss
+        elif self.options.Post_Game_Access_Rule >= 4 and self.progression.order[-1] == self.progression.boss_indices[
+            -2]:
+            if MONKEYS_BOSSES[-2] in exclude_locations:
+                exclude_locations.remove(MONKEYS_BOSSES[-2])
+
+                for level in reversed(self.progression.order):
+                    if level == self.progression.boss_indices[-2]:
+                        continue
+                    elif level in self.progression.boss_indices:
+                        additional_locations.append(MONKEYS_BOSSES[self.progression.boss_indices.index(level)])
+                        break
+
         self.post_game_access_rule = PostGameAccessRuleOptions[self.options.Post_Game_Access_Rule](exclude_regions,
-                                                                                                   exclude_locations)
+                                                                                                   exclude_locations,
+                                                                                                   additional_locations)
         self.item_pool = []
 
     def create_regions(self):
