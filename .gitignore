@@ -9,7 +9,10 @@ apworld/
 _generate.sh
 
 test/*
+fuzz_output/*
+fuzz.py
 _testing.py
+host.yaml
 
 worlds/ape_escape_3/test/*
 _region_diagram.puml

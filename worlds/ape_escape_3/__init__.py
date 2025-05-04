@@ -193,7 +193,8 @@ class AE3World(World):
         self.item_pool += [*equipment]
 
         if self.options.Shuffle_Chassis:
-            self.item_pool.remove(rc_car)
+            if rc_car in self.item_pool:
+                self.item_pool.remove(rc_car)
 
             chassis_twin = Items.Chassis_Twin.to_item(self.player)
             chassis_black = Items.Chassis_Black.to_item(self.player)
