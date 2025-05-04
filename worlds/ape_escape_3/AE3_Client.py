@@ -62,7 +62,6 @@ class AE3CommandProcessor(ClientCommandProcessor):
                 logger.info(f"\n         Progression:")
                 logger.info(f"         Channel Keys: {self.ctx.keys} / {all_keys}")
                 logger.info(f"         Available Levels: {self.ctx.unlocked_channels + 1} / 28\n")
-                logger.info(f"         Available Levels:")
                 for level in range(self.ctx.unlocked_channels + 1):
                     logger.info(f"         [ {level} ] {LEVELS_BY_ORDER[self.ctx.progression.order[level]]}")
 
