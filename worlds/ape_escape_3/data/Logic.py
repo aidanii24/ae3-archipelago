@@ -338,7 +338,7 @@ class Singles(ProgressionMode):
         new_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
 
         # Update Entrance Destinations based on the Shuffle Result
-        for level in new_order:
+        for slot, level in enumerate(new_order):
             new_entrances[level].destination = base_destination_order[level]
 
         # Update with the new orders
@@ -386,7 +386,7 @@ class Group(ProgressionMode):
         is_last_index_boss : bool = False
         sets : int = 0
 
-        for level in new_order:
+        for slot, level in enumerate(new_order):
             # Split the level group before and after boss
             if level in self.boss_indices:
                 is_last_index_boss = True
@@ -406,11 +406,10 @@ class Group(ProgressionMode):
                 if len(new_progression) - sets <= 0:
                     new_progression.insert(sets, 0)
 
-            new_entrances[level].destination = base_destination_order[level]
+            new_entrances[slot].destination = base_destination_order[level]
             new_progression[sets] += 1
 
         # Update with the new orders
-        print(new_order)
         self.progression = [*new_progression]
         self.order = [*new_order]
         self.level_select_entrances = [*new_entrances]
@@ -467,8 +466,8 @@ class World(ProgressionMode):
         # and track channel being processed to create the new progression.
         new_progression : list[int] = [-1]
         sets : int = 0
-        for level in new_order:
-            new_entrances[level].destination = base_destination_order[level]
+        for slot, level in enumerate(new_order):
+            new_entrances[slot].destination = base_destination_order[level]
             new_progression[sets] += 1
 
             # Split the level group only after the level boss

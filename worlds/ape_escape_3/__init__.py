@@ -104,6 +104,15 @@ class AE3World(World):
         super(AE3World, self).__init__(multiworld, player)
 
     def generate_early(self):
+        #<!> DEBUG PRINT
+        print("=====================")
+        print("Progression Mode:", self.options.Progression_Mode.value)
+        print("Gaol Target:", self.options.Goal_Target.value)
+        print("Post Game:", self.options.Post_Game_Access_Rule.value)
+        print("Channel Shuffle:", self.options.Shuffle_Channel.value)
+        print("Logic Preference:", self.options.Logic_Preference.value)
+        print("=====================")
+
         # Get ProgressionMode
         self.progression = ProgressionModeOptions[self.options.Progression_Mode.value]()
 
