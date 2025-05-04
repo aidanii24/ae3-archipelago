@@ -282,7 +282,18 @@ class ProgressionMode:
             amount -= 1
 
         if world.options.Post_Game_Access_Rule == 5:
-            world.get_location(MONKEYS_BOSSES[-2]).place_locked_item(Channel_Key.to_item(world.player))
+            target : str = MONKEYS_BOSSES[-2]
+
+            # If Specter1 becomes the final level, set the key to the penultimate boss
+            if self.order[-1] == self.boss_indices[-2]:
+                for level in reversed(self.order):
+                    if level == self.boss_indices[-2]:
+                        continue
+                    elif level in self.boss_indices:
+                        target : str = MONKEYS_BOSSES[self.boss_indices.index(level)]
+                        break
+
+            world.get_location(target).place_locked_item(Channel_Key.to_item(world.player))
 
         return Channel_Key.to_items(world.player, amount)
 
@@ -300,6 +311,7 @@ class Singles(ProgressionMode):
         # Apply the chosen Shuffle Mode
         if world.options.Shuffle_Channel == 1:
             new_boss_order : list[int] = [ _ for _ in new_order if _ in self.boss_indices ]
+
             new_order = [_ for _ in new_order if _ not in self.boss_indices]
 
             for index in range(len(self.boss_indices)):
@@ -398,6 +410,7 @@ class Group(ProgressionMode):
             new_progression[sets] += 1
 
         # Update with the new orders
+        print(new_order)
         self.progression = [*new_progression]
         self.order = [*new_order]
         self.level_select_entrances = [*new_entrances]

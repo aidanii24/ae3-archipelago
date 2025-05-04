@@ -21,49 +21,47 @@ class AE3EntranceMeta:
 
 ### [< --- STAGE GROUPS --- >]
 LEVELS_BY_ORDER : Sequence[str] = [
-    Stage.region_seaside_a.value,
-    Stage.region_woods_a.value,
-    Stage.region_castle_a1.value,
+    Stage.seaside.value,
+    Stage.woods.value,
+    Stage.castle.value,
 
     Stage.region_boss1.value,
 
-    Stage.region_ciscocity_a.value,
-    Stage.region_studio_a.value,
-    Stage.region_halloween_a1.value,
-    Stage.region_western_a.value,
+    Stage.ciscocity.value,
+    Stage.studio.value,
+    Stage.halloween.value,
+    Stage.western.value,
 
     Stage.region_boss2.value,
 
-    Stage.region_onsen_a.value,
-    Stage.region_snowfesta_a.value,
-    Stage.region_edotown_a1.value,
+    Stage.onsen.value,
+    Stage.snowfesta.value,
+    Stage.edotown.value,
 
     Stage.region_boss3.value,
 
-    Stage.region_heaven_a1.value,
-    Stage.region_toyhouse_a.value,
-    Stage.region_iceland_a1.value,
-    Stage.region_arabian_a.value,
+    Stage.heaven.value,
+    Stage.toyhouse.value,
+    Stage.iceland.value,
+    Stage.arabian.value,
 
     Stage.region_boss4.value,
 
-    Stage.region_asia_a.value,
-    Stage.region_plane_a.value,
-    Stage.region_hong_a.value,
+    Stage.asia.value,
+    Stage.plane.value,
+    Stage.hong.value,
 
     Stage.region_boss5.value,
 
-    Stage.region_bay_a.value,
-    Stage.region_tomo_a1.value,
+    Stage.bay.value,
+    Stage.tomo.value,
 
     Stage.region_boss6.value,
 
-    Stage.region_space_a.value,
+    Stage.space.value,
 
     Stage.region_specter1.value,
     Stage.region_specter2.value,
-
-    Stage.zero.value,
 ]
 
 STAGES_TITLE : Sequence[str] = [

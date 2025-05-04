@@ -22,7 +22,8 @@ class GoalTarget:
 
     amount : int = 0
 
-    def __init__(self, excluded_stages : list[str] = None, excluded_locations : list[str] = None):
+    def __init__(self, excluded_stages : list[str] = None, excluded_locations : list[str] = None,
+                 additional_locations : list[str] = None):
         if not self.locations:
             return
 
@@ -31,6 +32,12 @@ class GoalTarget:
 
         if excluded_stages is None:
             excluded_stages = []
+
+        if additional_locations is None:
+            additional_locations = []
+
+        # Add Extra Locations
+        self.locations = {*self.locations, *additional_locations}
 
         # Exclude Specified Locations if any
         locations_excluded : list[str] = excluded_locations if excluded_locations else []
@@ -41,9 +48,21 @@ class GoalTarget:
                 locations_excluded.extend( locations for locations in CELLPHONES_INDEX.get(stage, []) )
 
         if locations_excluded:
+            actual : str = "Actual:" if self.locations else "[ No Set Locations ] |"
+            for location in self.locations:
+                actual += f"> {location}"
+
             self.locations.difference_update(set(locations_excluded))
             if len(self.locations) <= 0:
-                raise AssertionError("There are no locations to check. Please reduce the excluded locations.")
+                excluded : str = "Excluded:"
+                for stage in excluded_stages:
+                    excluded += f"> {stage}"
+
+                for location in locations_excluded:
+                    excluded += f">{location} |"
+
+                raise AssertionError(f"There are no locations to check. Please reduce the excluded locations.",
+                                     f"{actual}", f"{excluded}")
             elif len(self.locations) < self.amount:
                 warn("Number of Locations required to check for Goal has been reduced due to excluded locations.")
                 self.amount = len(self.locations)
@@ -63,6 +82,9 @@ class GoalTarget:
         if locations is None or not locations:
             self.locations = { location for location in self.locations if location not in locations }
             self.location_ids = {generate_name_to_id()[location] for location in self.locations}
+
+    def append(self, *locations : str):
+        self.locations = { * self.locations, *locations }
 
     async def check(self, ctx : 'AE3Context'):
         checked: set[int] = ctx.locations_checked.union(ctx.checked_locations)
