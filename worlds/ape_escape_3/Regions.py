@@ -17,7 +17,7 @@ def establish_entrance(player : int, name : str, parent_region : Region, destina
     """Connects the parent region to its destinations and assigns access rules where present."""
     entrance : Entrance = Entrance(player, name, parent_region)
 
-    if ruleset:
+    if ruleset is not None or ruleset:
         entrance.access_rule = ruleset.condense(player)
 
     parent_region.exits.append(entrance)
@@ -39,7 +39,7 @@ def create_regions(world : "AE3World"):
 
     # Connect Regions
     for entrance in [*ENTRANCES_MASTER, *world.progression.level_select_entrances]:
-        ruleset : Rulesets | None = None
+        ruleset : Rulesets = Rulesets()
 
         if entrance.parent in stages:
             parent = stages[entrance.parent]
@@ -81,7 +81,6 @@ def create_regions(world : "AE3World"):
 
                 ruleset.critical.update(rule.default_critical_rule)
 
-                # Generate Access Rule from Ruleset
                 loc.access_rule = ruleset.condense(world.player)
 
                 stage.locations.append(loc)
