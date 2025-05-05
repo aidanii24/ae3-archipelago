@@ -184,8 +184,12 @@ class LogicPreference:
                 rule : Rulesets = Rulesets()
                 req : int = sets
 
-                if sets > 0:
+                if sets <= 0:
+                    levels_count += 1
+                    continue
+                elif sets > 0:
                     rule = Rulesets(has_keys(req))
+
                 if sets == len(progression.progression) - 1:
                     if post_game_access_rule_option < 4:
                         req -= 1

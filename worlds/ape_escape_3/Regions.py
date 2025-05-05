@@ -17,7 +17,7 @@ def establish_entrance(player : int, name : str, parent_region : Region, destina
     """Connects the parent region to its destinations and assigns access rules where present."""
     entrance : Entrance = Entrance(player, name, parent_region)
 
-    if ruleset is not None or ruleset:
+    if ruleset is not None and ruleset:
         entrance.access_rule = ruleset.condense(player)
 
     parent_region.exits.append(entrance)
