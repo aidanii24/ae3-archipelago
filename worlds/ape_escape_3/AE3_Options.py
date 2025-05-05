@@ -47,7 +47,6 @@ class GoalTarget(Choice):
     > play_jimmy - capture 300 Monkeys
     > directors_cut - capture all 20 Monkey Films (this will enable the "Camerasanity" option)
     > phone_check - activate all 53 Cellphones (this will enable the "Cellphonesanity" option)
-    > scavenger_hunt - capture all 8 password monkeys (this will set "Monkeysanity - Passwords" option to "hunt")
     """
     display_name : str = "Goal Target"
     default = 0
