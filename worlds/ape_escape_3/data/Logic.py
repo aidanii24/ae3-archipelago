@@ -308,6 +308,12 @@ class Singles(ProgressionMode):
         new_order : list[int] = [ _ for _ in range(28)]
         random.shuffle(new_order)
 
+        # Make sure Tomoki City is not the only available level at the beginning
+        # if the player does not start with flying equipment or Cellphonesanity isn't enabled
+        if world.options.Starting_Gadget == 6 or world.options.Starting_Gadget == 3 or world.options.Cellphonesanity:
+            while new_order[0] == 23 and new_order[1] in self.boss_indices:
+                random.shuffle(new_order)
+
         # Apply the chosen Shuffle Mode
         if world.options.Shuffle_Channel == 1:
             new_boss_order : list[int] = [ _ for _ in new_order if _ in self.boss_indices ]
@@ -351,6 +357,12 @@ class Group(ProgressionMode):
     def shuffle(self, world : 'AE3World'):
         new_order : list[int] = [ _ for _ in range(28)]
         random.shuffle(new_order)
+
+        # Make sure Tomoki City is not the only available level at the beginning
+        # if the player does not start with flying equipment or Cellphonesanity isn't enabled
+        if world.options.Starting_Gadget == 6 or world.options.Starting_Gadget == 3 or world.options.Cellphonesanity:
+            while new_order[0] == 23 and new_order[1] in self.boss_indices:
+                random.shuffle(new_order)
 
         # Apply the chosen Shuffle Mode
         if world.options.Shuffle_Channel == 1:
@@ -433,6 +445,12 @@ class World(ProgressionMode):
     def shuffle(self, world : 'AE3World'):
         new_order : list[int] = [ _ for _ in range(28)]
         random.shuffle(new_order)
+
+        # Make sure Tomoki City is not the only available level at the beginning
+        # if the player does not start with flying equipment or Cellphonesanity isn't enabled
+        if world.options.Starting_Gadget == 6 or world.options.Starting_Gadget == 3 or world.options.Cellphonesanity:
+            while new_order[0] == 23 and new_order[1] in self.boss_indices:
+                random.shuffle(new_order)
 
         # Apply the chosen Shuffle Mode
         if world.options.Shuffle_Channel == 1:
