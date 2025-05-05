@@ -217,7 +217,7 @@ class AE3World(World):
         self.item_pool += generate_collectables(self.player, unfilled)
 
         # Add Items to ItemPool
-        self.multiworld.itempool = self.item_pool
+        self.multiworld.itempool += self.item_pool
 
         # Set Goal
         self.multiworld.completion_condition[self.player] = Rulesets(self.goal_target.as_access_rule()).condense(
