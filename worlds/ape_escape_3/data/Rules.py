@@ -4,7 +4,7 @@ from warnings import warn
 from BaseClasses import CollectionState
 
 from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, Cellphone_Name_to_ID, MONKEYS_BOSSES, \
-    MONKEYS_INDEX, MONKEYS_MASTER, MONKEYS_PASSWORDS, generate_name_to_id
+    MONKEYS_BREAK_ROOMS, MONKEYS_INDEX, MONKEYS_MASTER, MONKEYS_PASSWORDS, generate_name_to_id
 from .Logic import Rulesets, AccessRule, ProgressionMode, has_keys, event_invoked
 from .Strings import Loc, Stage, Events
 from .Stages import STAGES_BREAK_ROOMS, STAGES_DIRECTORY, ENTRANCES_STAGE_SELECT, STAGES_MASTER
@@ -935,7 +935,7 @@ class Casual(Normal):
             Loc.boss_monkey_pink.value          : Rulesets(AccessRule.MORPH_NO_MONKEY),
             Loc.boss_monkey_red.value           : Rulesets(AccessRule.ATTACK),
             Loc.boss_specter.value              : Rulesets(AccessRule.ATTACK),
-            Loc.boss_specter_final.value        : Rulesets(AccessRule.ATTACK)
+            Loc.boss_specter_final.value        : Rulesets(AccessRule.ATTACK, AccessRule.SWIM)
         })
 
         self.event_rules.update({
@@ -1193,10 +1193,12 @@ class Vanilla(PostGameAccessRule):
                  if monkey != Loc.boss_tomoki.value and monkey not in MONKEYS_PASSWORDS }
 
     def verify(self, state : CollectionState, player : int) -> bool:
-        stages : list[str] = [ stage for stage in STAGES_MASTER if stage != Stage.region_specter2.value ]
+        minimum_equipment: list[Callable] = [AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC,
+                                             AccessRule.MAGICIAN, AccessRule.KUNGFU, AccessRule.HERO]
 
-        for region in stages:
-            if not state.can_reach_region(region, player):
+        for rule in [AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC, AccessRule.MAGICIAN,
+                     AccessRule.KUNGFU, AccessRule.HERO]:
+            if not rule(state, player):
                 return False
 
         return True
@@ -1208,13 +1210,14 @@ class ActiveMonkeys(PostGameAccessRule):
     locations = {monkey for monkey in MONKEYS_MASTER if monkey != Loc.boss_tomoki.value }
 
     def verify(self, state: CollectionState, player: int) -> bool:
-        stages : list[str] = [ stage for stage in STAGES_MASTER if stage != Stage.region_specter2.value ]
+        minimum_equipment : list[Callable] = [AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC,
+                                              AccessRule.MAGICIAN, AccessRule.KUNGFU, AccessRule.HERO]
 
-        if STAGES_BREAK_ROOMS[0] not in stages:
-            stages = [ stage for stage in stages if stage not in STAGES_BREAK_ROOMS]
+        if any(monkey in MONKEYS_BREAK_ROOMS for monkey in self.locations):
+            minimum_equipment.append(AccessRule.MONKEY)
 
-        for region in stages:
-            if not state.can_reach_region(region, player):
+        for rule in minimum_equipment:
+            if not rule(state, player):
                 return False
 
         return True

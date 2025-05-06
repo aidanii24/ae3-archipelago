@@ -311,7 +311,7 @@ class Singles(ProgressionMode):
         # Make sure Tomoki City is not the only available level at the beginning
         # if the player does not start with flying equipment or Cellphonesanity isn't enabled
         if world.options.Starting_Gadget == 6 or world.options.Starting_Gadget == 3 or world.options.Cellphonesanity:
-            while new_order[0] == 23 and new_order[1] in self.boss_indices:
+            while new_order[0] in [18, 20, 23] and new_order[1] in self.boss_indices:
                 random.shuffle(new_order)
 
         # Apply the chosen Shuffle Mode
@@ -361,7 +361,7 @@ class Group(ProgressionMode):
         # Make sure Tomoki City is not the only available level at the beginning
         # if the player does not start with flying equipment or Cellphonesanity isn't enabled
         if world.options.Starting_Gadget == 6 or world.options.Starting_Gadget == 3 or world.options.Cellphonesanity:
-            while new_order[0] == 23 and new_order[1] in self.boss_indices:
+            while new_order[0] in [18, 20, 23] and new_order[1] in self.boss_indices:
                 random.shuffle(new_order)
 
         # Apply the chosen Shuffle Mode
@@ -397,17 +397,18 @@ class Group(ProgressionMode):
         new_progression : list[int] = [-1]
         is_last_index_boss : bool = False
         sets : int = 0
-
         for slot, level in enumerate(new_order):
             # Split the level group before and after boss
             if level in self.boss_indices:
                 is_last_index_boss = True
 
                 # If the current set has no levels counted yet, increment it first before incrementing the set number
-                if new_progression[max(sets, 0)] < 1:
+                if (not sets and new_progression[sets] < 0) or (sets and new_progression[sets] < 1):
                     new_progression[0] += 1
 
-                sets += 1
+                if not new_progression[sets] < 0:
+                    sets += 1
+
                 if len(new_progression) - sets <= 0:
                     new_progression.insert(sets, 0)
 
@@ -419,6 +420,7 @@ class Group(ProgressionMode):
                     new_progression.insert(sets, 0)
 
             new_entrances[slot].destination = base_destination_order[level]
+
             new_progression[sets] += 1
 
         # Update with the new orders
@@ -449,7 +451,7 @@ class World(ProgressionMode):
         # Make sure Tomoki City is not the only available level at the beginning
         # if the player does not start with flying equipment or Cellphonesanity isn't enabled
         if world.options.Starting_Gadget == 6 or world.options.Starting_Gadget == 3 or world.options.Cellphonesanity:
-            while new_order[0] == 23 and new_order[1] in self.boss_indices:
+            while new_order[0] in [18, 20, 23] and new_order[1] in self.boss_indices:
                 random.shuffle(new_order)
 
         # Apply the chosen Shuffle Mode
