@@ -261,6 +261,44 @@ class ProgressionMode:
     def shuffle(self, world : 'AE3World'):
         pass
 
+    def generate_new_order(self, world : 'AE3World') -> list[int]:
+        new_order: list[int] = [_ for _ in range(28)]
+        random.shuffle(new_order)
+
+        # Make sure Tomoki City is not the only available level at the beginning
+        # if the player does not start with flying equipment or Cellphonesanity isn't enabled
+        if world.options.Starting_Gadget == 6 or world.options.Starting_Gadget == 3 or world.options.Cellphonesanity:
+            while new_order[0] in [18, 20, 23] and new_order[1] in self.boss_indices:
+                random.shuffle(new_order)
+
+        # Apply the chosen Shuffle Mode
+        if world.options.Shuffle_Channel == 1:
+            new_boss_order: list[int] = [_ for _ in new_order if _ in self.boss_indices]
+
+            new_order = [_ for _ in new_order if _ not in self.boss_indices]
+
+            for index in range(len(self.boss_indices)):
+                new_order.insert(self.boss_indices[index], new_boss_order[index])
+
+        # Re-insert Channels specified to be preserved in their vanilla indices
+        if world.options.Preserve_Channel:
+            preserve_indices: list[int] = []
+
+            if world.options.Preserve_Channel == 1:
+                preserve_indices = [*self.boss_indices]
+            elif world.options.Preserve_Channel == 2:
+                preserve_indices = [*self.boss_indices[-2:]]
+            elif world.options.Preserve_Channel == 3:
+                preserve_indices = [self.boss_indices[-1]]
+
+            if preserve_indices:
+                new_order = [_ for _ in new_order if _ not in preserve_indices]
+
+                for index in preserve_indices:
+                    new_order.insert(index, index)
+
+        return new_order
+
     def set_progression(self, progression : list[int] = None):
         if progression is None or not progression:
             return
@@ -305,40 +343,7 @@ class Singles(ProgressionMode):
     progression : list[int] = [ 0, *[1 for _ in range(1, 28)]]
 
     def shuffle(self, world : 'AE3World'):
-        new_order : list[int] = [ _ for _ in range(28)]
-        random.shuffle(new_order)
-
-        # Make sure Tomoki City is not the only available level at the beginning
-        # if the player does not start with flying equipment or Cellphonesanity isn't enabled
-        if world.options.Starting_Gadget == 6 or world.options.Starting_Gadget == 3 or world.options.Cellphonesanity:
-            while new_order[0] in [18, 20, 23] and new_order[1] in self.boss_indices:
-                random.shuffle(new_order)
-
-        # Apply the chosen Shuffle Mode
-        if world.options.Shuffle_Channel == 1:
-            new_boss_order : list[int] = [ _ for _ in new_order if _ in self.boss_indices ]
-
-            new_order = [_ for _ in new_order if _ not in self.boss_indices]
-
-            for index in range(len(self.boss_indices)):
-                new_order.insert(self.boss_indices[index], new_boss_order[index])
-
-        # Re-insert Channels specified to be preserved in their vanilla indices
-        if world.options.Preserve_Channel:
-            preserve_indices: list[int] = []
-
-            if world.options.Preserve_Channel == 1:
-                preserve_indices = [*self.boss_indices]
-            elif world.options.Preserve_Channel == 2:
-                preserve_indices = [*self.boss_indices[-2:]]
-            elif world.options.Preserve_Channel ==  3:
-                preserve_indices = [self.boss_indices[-1]]
-
-            if preserve_indices:
-                new_order = [_ for _ in new_order if _ not in preserve_indices]
-
-                for index in preserve_indices:
-                    new_order.insert(index, index)
+        new_order : list[int] = self.generate_new_order(world)
 
         base_destination_order : list[str] = [ entrance.destination for entrance in ENTRANCES_STAGE_SELECT]
         new_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
@@ -355,39 +360,7 @@ class Group(ProgressionMode):
     progression : list[int] = [ 2, 1, 4, 1, 3, 1, 4, 1, 3, 1, 2, 1, 1, 1, 1 ]   # 15 Sets
 
     def shuffle(self, world : 'AE3World'):
-        new_order : list[int] = [ _ for _ in range(28)]
-        random.shuffle(new_order)
-
-        # Make sure Tomoki City is not the only available level at the beginning
-        # if the player does not start with flying equipment or Cellphonesanity isn't enabled
-        if world.options.Starting_Gadget == 6 or world.options.Starting_Gadget == 3 or world.options.Cellphonesanity:
-            while new_order[0] in [18, 20, 23] and new_order[1] in self.boss_indices:
-                random.shuffle(new_order)
-
-        # Apply the chosen Shuffle Mode
-        if world.options.Shuffle_Channel == 1:
-            new_boss_order : list[int] = [ _ for _ in new_order if _ in self.boss_indices ]
-            new_order = [ _ for _ in new_order if _ not in self.boss_indices ]
-
-            for index in range(len(self.boss_indices)):
-                new_order.insert(self.boss_indices[index], new_boss_order[index])
-
-        # Re-insert Channels specified to be preserved in their vanilla indices
-        if world.options.Preserve_Channel:
-            preserve_indices: list[int] = []
-
-            if world.options.Preserve_Channel == 1:
-                preserve_indices = [*self.boss_indices]
-            elif world.options.Preserve_Channel == 2:
-                preserve_indices = [*self.boss_indices[-2:]]
-            elif world.options.Preserve_Channel ==  3:
-                preserve_indices = [self.boss_indices[-1]]
-
-            if preserve_indices:
-                new_order = [ _ for _ in new_order if _ not in preserve_indices ]
-
-                for index in preserve_indices:
-                    new_order.insert(index, index)
+        new_order : list[int] = self.generate_new_order(world)
 
         base_destination_order : list[str] = [ entrance.destination for entrance in ENTRANCES_STAGE_SELECT]
         new_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
@@ -445,39 +418,7 @@ class World(ProgressionMode):
     progression : list[int] = [ 3, 5, 4, 5, 4, 3, 1, 1, 1 ] # 9 Sets
 
     def shuffle(self, world : 'AE3World'):
-        new_order : list[int] = [ _ for _ in range(28)]
-        random.shuffle(new_order)
-
-        # Make sure Tomoki City is not the only available level at the beginning
-        # if the player does not start with flying equipment or Cellphonesanity isn't enabled
-        if world.options.Starting_Gadget == 6 or world.options.Starting_Gadget == 3 or world.options.Cellphonesanity:
-            while new_order[0] in [18, 20, 23] and new_order[1] in self.boss_indices:
-                random.shuffle(new_order)
-
-        # Apply the chosen Shuffle Mode
-        if world.options.Shuffle_Channel == 1:
-            new_boss_order: list[int] = [_ for _ in new_order if _ in self.boss_indices]
-            new_order = [_ for _ in new_order if _ not in self.boss_indices]
-
-            for index in range(len(self.boss_indices)):
-                new_order.insert(self.boss_indices[index], new_boss_order[index])
-
-        # Re-insert Channels specified to be preserved in their vanilla indices
-        if world.options.Preserve_Channel:
-            preserve_indices: list[int] = []
-
-            if world.options.Preserve_Channel == 1:
-                preserve_indices = [*self.boss_indices]
-            elif world.options.Preserve_Channel == 2:
-                preserve_indices = [*self.boss_indices[-2:]]
-            elif world.options.Preserve_Channel == 3:
-                preserve_indices = [self.boss_indices[-1]]
-
-            if preserve_indices:
-                new_order = [_ for _ in new_order if _ not in preserve_indices]
-
-                for index in preserve_indices:
-                    new_order.insert(index, index)
+        new_order : list[int] = self.generate_new_order(world)
 
         base_destination_order : list[str] = [ entrance.destination for entrance in ENTRANCES_STAGE_SELECT]
         new_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
