@@ -1979,7 +1979,7 @@ class APConsole:
         world_ver =     " World v0.4.00a R-PA"
 
         p_check =       " [|?|] Confirming PCSX2 Status..."
-        p_init =        " [...] Starting PINE Interface. Connecting to PCSX2..."
+        p_init =        " [...] Connecting to PCSX2..."
         p_init_g =      " [...] Confirming Running Game..."
         p_init_s =      " [...] Connecting to an Archipelago Server..."
         p_init_sre =    " [...] Waiting for player to reconnect to server..."
