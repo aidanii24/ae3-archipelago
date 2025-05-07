@@ -174,6 +174,11 @@ class LogicPreference:
         if post_game_rules is None:
             post_game_rules = []
 
+        print("Progression Mode:", progression)
+        print("Progression:", sum(progression.progression) + 1, "Levels", len(progression.progression), "Sets",
+              progression.progression)
+        print("Order:", len(progression.order), progression.order)
+        print("Entrances:", len(progression.level_select_entrances))
         levels_count : int = 0
         for sets, levels in enumerate(progression.progression):
             extra : int = 0
@@ -183,8 +188,9 @@ class LogicPreference:
             for _ in range(levels + extra):
                 rule : Rulesets = Rulesets()
                 req : int = sets
-
+                #print(levels_count)
                 if sets <= 0:
+                    print(req, progression.level_select_entrances[levels_count].destination)
                     levels_count += 1
                     continue
                 elif sets > 0:
@@ -203,7 +209,7 @@ class LogicPreference:
                     rule = Rulesets(final_rule)
 
                 self.entrance_rules[ENTRANCES_STAGE_SELECT[levels_count].name] = rule
-
+                print(req, progression.level_select_entrances[levels_count].destination)
                 levels_count += 1
 
 # [<--- LOGIC PREFERENCES --->]
@@ -1153,6 +1159,19 @@ class PlaySpike(GoalTarget):
 
     amount = 204
 
+    def verify(self, state: CollectionState, player: int) -> bool:
+        minimum_equipment : list[Callable] = [AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC,
+                                              AccessRule.MAGICIAN, AccessRule.KUNGFU, AccessRule.HERO]
+
+        if any(monkey in MONKEYS_BREAK_ROOMS for monkey in self.locations):
+            minimum_equipment.append(AccessRule.MONKEY)
+
+        for rule in minimum_equipment:
+            if not rule(state, player):
+                return False
+
+        return True
+
 
 class PlayJimmy(PlaySpike):
     name = "Play Jimmy"
@@ -1193,9 +1212,6 @@ class Vanilla(PostGameAccessRule):
                  if monkey != Loc.boss_tomoki.value and monkey not in MONKEYS_PASSWORDS }
 
     def verify(self, state : CollectionState, player : int) -> bool:
-        minimum_equipment: list[Callable] = [AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC,
-                                             AccessRule.MAGICIAN, AccessRule.KUNGFU, AccessRule.HERO]
-
         for rule in [AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC, AccessRule.MAGICIAN,
                      AccessRule.KUNGFU, AccessRule.HERO]:
             if not rule(state, player):
