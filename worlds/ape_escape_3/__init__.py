@@ -131,8 +131,8 @@ class AE3World(World):
             exclude_regions.extend([*STAGES_BREAK_ROOMS])
         # If Specter is a Post Game Access Rule, and he gets shuffled to become the post game channel, change the
         # required location to the next penultimate placed boss
-        elif self.options.Post_Game_Access_Rule >= 4 and self.progression.order[-1] == self.progression.boss_indices[
-            -2]:
+        elif (self.options.Post_Game_Access_Rule >= 4 and
+              self.progression.order[-1] == self.progression.boss_indices[-2]):
             if MONKEYS_BOSSES[-2] in exclude_locations:
                 exclude_locations.remove(MONKEYS_BOSSES[-2])
 

@@ -257,27 +257,25 @@ class ProgressionMode:
     level_select_entrances : list[AE3EntranceMeta] = None
 
     boss_indices : Sequence[int] = [ 3, 8, 12, 17, 21, 24, 26, 27]
-    no_first_level : Sequence[int] = [15, 18, 20, 23]
+    no_first_level : Sequence[int] = [6, 15, 18, 20, 22, 23]
 
     def __init__(self):
         self.progression = self.progression
-        self.order = [ 1 for _ in range(27) ]
+        self.order = [ _ for _ in range(27) ]
         self.level_select_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
 
     def shuffle(self, world : 'AE3World'):
         pass
 
     def generate_new_order(self, world : 'AE3World') -> list[int]:
-        new_order: list[int] = [_ for _ in range(28)]
+        new_order : list[int] = [_ for _ in range(28)]
         random.shuffle(new_order)
 
-        # Make sure Tomoki City is not the only available level at the beginning
-        # if the player does not start with flying equipment or Cellphonesanity isn't enabled
-        if not (world.options.Starting_Gadget == 6 or world.options.Starting_Gadget == 3 or
-              world.options.Cellphonesanity):
-            while (len(set(new_order[:5]).intersection(self.no_first_level)) > 0 and
-                   len(set(new_order[:5]).intersection(self.no_first_level))) >= 3:
-                random.shuffle(new_order)
+        # Do not allow Bosses or problematic levels to be in the first few levels
+        invalid_start : bool = True
+        while (len(set(new_order[:5]).intersection(self.no_first_level)) > 0 and
+               len(set(new_order[:3]).intersection(self.boss_indices)) > 0):
+            random.shuffle(new_order)
 
         # Apply the chosen Shuffle Mode
         if world.options.Shuffle_Channel == 1:
@@ -324,8 +322,19 @@ class ProgressionMode:
         amount: int = len(self.progression) - 1
 
         # Reduce Generated Keys for PostGameAccessRules other than "Channel Key"
-        if world.options.Post_Game_Access_Rule != 4:
+        if world.options.Post_Game_Access_Rule < 4:
             amount -= 1
+        # Reduce Generate Key for PostGameAccessRule "After End" and place it on the second to the last boss
+        # (Which in Vanilla order, is always Specter 1
+        elif world.options.Post_Game_Access_Rule == 5:
+            amount -= 1
+            print(self.order)
+            bosses_in_order : list[int] = [ level for level in self.order if level in self.boss_indices ]
+            print("Bosses In Order:", bosses_in_order)
+            penultimate : str = MONKEYS_BOSSES[self.boss_indices.index(bosses_in_order[-2])]
+            print("Penultimate Boss:", penultimate)
+
+            world.get_location(penultimate).place_locked_item(Channel_Key.to_item(world.player))
 
         print("Generated Keys - Default:", amount)
         return Channel_Key.to_items(world.player, amount)
@@ -338,7 +347,9 @@ class Singles(ProgressionMode):
     progression : list[int] = [ 0, *[1 for _ in range(1, 28)]]
 
     def shuffle(self, world : 'AE3World'):
+        print("-- SINGLES MODE --")
         new_order : list[int] = self.generate_new_order(world)
+        print(new_order)
 
         base_destination_order : list[str] = [ entrance.destination for entrance in ENTRANCES_STAGE_SELECT]
         new_entrances : list[AE3EntranceMeta] = []
@@ -352,6 +363,7 @@ class Singles(ProgressionMode):
         # Update with the new orders
         self.order = [*new_order]
         self.level_select_entrances = [*new_entrances]
+        print(self.order)
 
 class Group(ProgressionMode):
     progression : list[int] = [ 2, 1, 4, 1, 3, 1, 4, 1, 3, 1, 2, 1, 1, 1, 1 ]   # 15 Sets
@@ -369,18 +381,22 @@ class Group(ProgressionMode):
         sets : int = 0
 
         for slot, level in enumerate(new_order):
+            print(ENTRANCES_CHANNELS[slot], base_destination_order[level])
             has_incremented : bool = False
 
             # Split the level group before and after boss
             if level in self.boss_indices:
+                print("! ! Is Boss")
                 is_last_index_boss = True
 
                 # If the current set has no levels counted yet, increment it first before incrementing the set number
                 if (not sets and new_progression[sets] < 0) or (sets and new_progression[sets] < 1):
+                    print("< < INCREMENTING RETROACTIVELY")
                     new_progression[sets] += 1
                     has_incremented = True
 
                 if not new_progression[sets] < 0:
+                    print("> > MOVING SET")
                     sets += 1
 
                 if len(new_progression) - sets <= 0:
@@ -388,9 +404,13 @@ class Group(ProgressionMode):
 
             elif is_last_index_boss:
                 # Do not increment set when coming from the first set that only has a boss level
+                print("o o AFTER BOSS")
+
                 if sets == 1 and new_progression[1] > 0:
+                    print("> > MOVING SET")
                     sets += 1
-                elif sets > 1:
+                elif sets > 1 and new_progression[sets] > 0:
+                    print("> > MOVING SET")
                     sets += 1
 
                 is_last_index_boss = False
@@ -403,7 +423,10 @@ class Group(ProgressionMode):
             new_entrances.append(entrance)
 
             if not has_incremented:
+                print("+ + INCREMENTING SET")
                 new_progression[sets] += 1
+
+            print("- Current Progression:", new_progression)
 
         # Update with the new orders
         self.progression = [*new_progression]
@@ -411,7 +434,13 @@ class Group(ProgressionMode):
         self.level_select_entrances = [*new_entrances]
 
     def generate_keys(self, world : 'AE3World'):
-        amount = len(super().generate_keys(world))
+        # First Set of Level(s) will not cost keys, so subtract one from total length of progression
+        amount: int = len(self.progression) - 1
+
+        # Reduce Generated Keys for PostGameAccessRules other than "Channel Key"
+        if world.options.Post_Game_Access_Rule != 4:
+            amount -= 1
+
         bosses_in_order : list = [ self.boss_indices.index(boss) for boss in self.order if boss in self.boss_indices ]
 
         # When the PostGameAccessRule is "After End", place keys up until the penultimate boss instead
