@@ -9,7 +9,8 @@ from .data.Items import AE3Item, generate_collectables
 from .data.Locations import MONKEYS_BOSSES, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED, \
     MONKEYS_PASSWORDS
 from .data.Stages import STAGES_BREAK_ROOMS
-from .data.Rules import GoalTarget, GoalTargetOptions, PostGameAccessRule, PostGameAccessRuleOptions
+from .data.Rules import GoalTarget, GoalTargetOptions, LogicPreference, LogicPreferenceOptions, PostGameAccessRule, \
+    PostGameAccessRuleOptions
 from .data.Strings import Loc, Meta, APHelper, APConsole
 from .data.Logic import is_goal_achieved, are_goals_achieved, Rulesets, ProgressionMode, ProgressionModeOptions
 from .AE3_Options import AE3Options, create_option_groups, slot_data_options
@@ -92,6 +93,7 @@ class AE3World(World):
 
     item_name_groups = Items.generate_item_groups()
 
+    logic_preference : LogicPreference
     goal_target : GoalTarget = GoalTarget
     progression : ProgressionMode
     post_game_access_rule : PostGameAccessRule
@@ -104,6 +106,9 @@ class AE3World(World):
         super(AE3World, self).__init__(multiworld, player)
 
     def generate_early(self):
+        # Get Logic Preference
+        self.logic_preference = LogicPreferenceOptions[self.options.Logic_Preference]()
+
         # Get ProgressionMode
         self.progression = ProgressionModeOptions[self.options.Progression_Mode.value]()
 

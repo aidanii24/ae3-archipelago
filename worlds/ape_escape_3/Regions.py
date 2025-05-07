@@ -6,7 +6,7 @@ from .data.Stages import STAGES_BREAK_ROOMS, STAGES_DIRECTORY, STAGES_MASTER, EN
 from .data.Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, CameraLocation, CellphoneLocation, \
     EventMeta, MONKEYS_PASSWORDS, MonkeyLocation, MONKEYS_INDEX, EVENTS_INDEX
 from .data.Logic import Rulesets
-from .data.Rules import LogicPreference, LogicPreferenceOptions
+from .data.Rules import LogicPreference
 
 if TYPE_CHECKING:
     from . import AE3World
@@ -24,9 +24,7 @@ def establish_entrance(player : int, name : str, parent_region : Region, destina
     entrance.connect(destination)
 
 def create_regions(world : "AE3World"):
-    print("PLAYER", world.player)
-    rule : LogicPreference = LogicPreferenceOptions[world.options.Logic_Preference]()
-    rule.set_level_progression_rules(world.progression, world.options.Post_Game_Access_Rule.value,
+    world.logic_preference.set_level_progression_rules(world.progression, world.options.Post_Game_Access_Rule.value,
      [world.post_game_access_rule.as_access_rule()])
 
     add_cameras : bool = (world.options.Camerasanity or world.options.Goal_Target == 5 or
@@ -77,10 +75,10 @@ def create_regions(world : "AE3World"):
 
                 # Initialize Ruleset for Location
                 ruleset : Rulesets = Rulesets()
-                if monkeys in rule.monkey_rules.keys():
-                    ruleset = rule.monkey_rules[monkeys]
+                if monkeys in world.logic_preference.monkey_rules.keys():
+                    ruleset = world.logic_preference.monkey_rules[monkeys]
 
-                ruleset.critical.update(rule.default_critical_rule)
+                ruleset.critical.update(world.logic_preference.default_critical_rule)
 
                 loc.access_rule = ruleset.condense(world.player)
 
@@ -106,7 +104,7 @@ def create_regions(world : "AE3World"):
                     break
 
                 if parent_channel:
-                    ruleset = rule.get_channel_clear_rules(parent_channel)
+                    ruleset = world.logic_preference.get_channel_clear_rules(parent_channel)
 
                 loc.access_rule = ruleset.condense(world.player)
 
@@ -127,8 +125,8 @@ def create_regions(world : "AE3World"):
                 meta : EventMeta = EventMeta(event)
                 loc : Location = meta.to_event_location(world.player, stage)
 
-                if event in rule.event_rules:
-                    loc.access_rule = rule.event_rules[event].condense(world.player)
+                if event in world.logic_preference.event_rules:
+                    loc.access_rule = world.logic_preference.event_rules[event].condense(world.player)
 
                 stage.locations.append(loc)
 
@@ -137,5 +135,5 @@ def create_regions(world : "AE3World"):
 
     # # <!> DEBUG
     # # Connection Diagrams
-    from Utils import visualize_regions
-    visualize_regions(world.multiworld.get_region("Menu", world.player), "_region_diagram.puml")
+    # from Utils import visualize_regions
+    # visualize_regions(world.multiworld.get_region("Menu", world.player), "_region_diagram.puml")
