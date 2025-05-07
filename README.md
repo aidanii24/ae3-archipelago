@@ -17,14 +17,14 @@ Features
 
 Setup
 -----
-Please see our [setup guide](./worlds/ape_escape_3/docs/setup.md) for a full guide on getting started with Ape Escape 3 Archipelago. For using the Archipelago software itself to generate or host games, please refer to their own .
+Please see our [setup guide](./worlds/ape_escape_3/docs/setup.md) for a full guide on getting started with Ape Escape 3 Archipelago.
 
 **Prerequisites:**
 - Archipelago (0.6.1 or higher) [[Install](https://github.com/ArchipelagoMW/Archipelago)] [[Guide](https://archipelago.gg/tutorial/Archipelago/setup/en)]
 - PCSX2 Emulator (1.7 or higher) [[Install](https://pcsx2.net/downloads)] [[Guide](https://pcsx2.net/docs/category/setup)]
 - Ape Escape 3 [Please acquire and dump your own copy]
     - NTSC-U `SCUS-97501`
-- Ape Escape 3 APWorld [Please refer to our releases]
+- Ape Escape 3 APWorld [Releases](https://github.com/aidanii24/ae3-archipelago/releases)
 
 Support
 -------

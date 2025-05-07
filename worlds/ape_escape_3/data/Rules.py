@@ -7,7 +7,7 @@ from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, Cellphon
     MONKEYS_BREAK_ROOMS, MONKEYS_INDEX, MONKEYS_MASTER, MONKEYS_PASSWORDS, generate_name_to_id
 from .Logic import Rulesets, AccessRule, ProgressionMode, has_keys, event_invoked
 from .Strings import Loc, Stage, Events
-from .Stages import STAGES_BREAK_ROOMS, STAGES_DIRECTORY, ENTRANCES_STAGE_SELECT, STAGES_MASTER
+from .Stages import STAGES_DIRECTORY, ENTRANCES_STAGE_SELECT
 
 if TYPE_CHECKING:
     from ..AE3_Client import AE3Context
@@ -143,6 +143,7 @@ class LogicPreference:
     entrance_rules : dict[str, Rulesets] = {}
 
     default_critical_rule : Set[Callable] = [AccessRule.CATCH]
+    small_starting_channels : list[int] = [6, 15, 18, 20, 22, 23]
     final_level_rule : Set[Callable] = {AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC,
                                         AccessRule.MAGICIAN, AccessRule.KUNGFU, AccessRule.HERO, AccessRule.MONKEY}
 
@@ -174,11 +175,6 @@ class LogicPreference:
         if post_game_rules is None:
             post_game_rules = []
 
-        print("Progression Mode:", progression)
-        print("Progression:", sum(progression.progression) + 1, "Levels", len(progression.progression), "Sets",
-              progression.progression)
-        print("Order:", len(progression.order), progression.order)
-        print("Entrances:", len(progression.level_select_entrances))
         levels_count : int = 0
         for sets, levels in enumerate(progression.progression):
             extra : int = 0
@@ -188,9 +184,8 @@ class LogicPreference:
             for _ in range(levels + extra):
                 rule : Rulesets = Rulesets()
                 req : int = sets
-                #print(levels_count)
+
                 if sets <= 0:
-                    print(req, progression.level_select_entrances[levels_count].destination)
                     levels_count += 1
                     continue
                 elif sets > 0:
@@ -209,7 +204,6 @@ class LogicPreference:
                     rule = Rulesets(final_rule)
 
                 self.entrance_rules[ENTRANCES_STAGE_SELECT[levels_count].name] = rule
-                print(req, progression.level_select_entrances[levels_count].destination)
                 levels_count += 1
 
 # [<--- LOGIC PREFERENCES --->]
@@ -221,6 +215,8 @@ class Hard(LogicPreference):
 
     def __init__(self):
         super().__init__()
+
+        self.small_starting_areas = [6, 18, 20, 22, 23]
 
         self.monkey_rules.update({
             # Seaside
@@ -565,6 +561,8 @@ class Normal(Hard):
     def __init__(self):
         super().__init__()
 
+        self.small_starting_areas = [6, 9, 11, 15, 18, 20, 22, 23]
+
         self.monkey_rules.update({
             # Seaside
             Loc.seaside_morella.value           : Rulesets(AccessRule.SHOOT, AccessRule.FLY),
@@ -808,6 +806,8 @@ class Casual(Normal):
 
     def __init__(self):
         super().__init__()
+
+        self.small_starting_areas = [6, 9, 11, 13, 15, 18, 20, 22, 23]
 
         self.monkey_rules.update({
             # Woods

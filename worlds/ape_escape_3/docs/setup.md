@@ -11,7 +11,7 @@ Ape Escape 3 Archipelago is simply an implementation of Ape Escape 3 into Archip
 - Ape Escape 3 [Please acquire and dump your own copy.]
     - NTSC-U `SCUS-97501`
 
-After installing these applications, please see our [Releases]() to download the APWorld file.
+After installing these applications, please see our [Releases](https://github.com/aidanii24/ae3-archipelago/releases) to download the APWorld file.
 
 Installation
 ------------
@@ -26,7 +26,7 @@ Settings
 --------
 This implementation interfaces with PCSX2 via its PINE connection to apply and enforce randomization and logic rules.
 
-By default, PINE features are disabled in PCSX2. Please follow the following steps to enable it:
+By default, PINE features are disabled in PCSX2. Please follow these steps to enable it:
 1. Under `Tools`, check `Show Advanced Settings`.
 2. Under `System`. open `Settings`
 3. In the `Advanced Tab`, under the `PINE Settings` section, check `Enabled` and ensure that the `slot` field is set to `28011`.
@@ -41,7 +41,7 @@ A template YAML file is provided along the APWorld in the releases page. To crea
 When generating the game, the host must acquire the YAML files of all participating players and then generate a game with the APWorlds of all relevant games installed in their Archipelago. Ape Escape 3 Archipelago is not an officially supported implementation, and so any games including it must be generated locally. To generate locally, gather all the YAML files under the `players` folder in the Archipelago folder, then click `Generate`.
 
 ### Configuration
-Ape Escape 3 Archipelago is very customizable in the player experience it aims to provide. For a general overview of configuring YAML file, please refer to this [guide](https://archipelago.gg/tutorial/Archipelago/advanced_settings/en). 
+Ape Escape 3 Archipelago is very customizable in the player experience it aims to provide. For a general overview of configuring the YAML file, please refer to this [guide](https://archipelago.gg/tutorial/Archipelago/advanced_settings/en). 
 
 The options for configuring the game are inside the YAML files, and they are all accompanied by detailed descriptions in how they will change the game. For persistent, cross-session options, please refer to your `host.yaml` file and look under the Ape Escape 3 options. This file can be accessed by clicking the `host.yaml` button in Archipelago, or in the root of the Archipelago directory.
 
@@ -49,7 +49,7 @@ The options for configuring the game are inside the YAML files, and they are all
 After the host has successfully generated a game, a server zip will appear in the `outputs` folder of the Archipelago directory. Once found, follow these [steps](https://archipelago.gg/tutorial/Archipelago/setup/en#hosting-an-archipelago-server) from the official guides of Archipelago for hosting a game.
 
 ### Connecting
-Once the host has a room ready, players must open the Archipelago Clients for their respective games and connect to the room. For Ape Escape 3 Archipelago, click the `Ape Escape 3 Archipelgo` button in Archipelago. Once the client open, provide the URL of the room at the top of the screen and press `Connect`.
+Once the host has a room ready, players must open the Archipelago Clients for their respective games and connect to the room. For Ape Escape 3 Archipelago, click the `Ape Escape 3 Archipelgo` button in Archipelago. Once the client opens, provide the URL of the room at the top of the screen and press `Connect`.
 
 ### Starting
 After connecting to Archipelago, the client will begin looking for PCSX2. If PCSX2 is already open, it would have connected already. 

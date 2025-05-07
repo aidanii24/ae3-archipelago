@@ -10,8 +10,8 @@ class ProgressionMode(Choice):
     Default: Boss
 
     > Singles - Each Stage will be unlocked one by one, as long as you find the Channel Key.
-    > Boss - Alternate between unlocking groups of stages and the bosses in between.
-    > Boss_Inclusive - Progression is similar to Boss, but the bosses are unlocked along with their preceding stages.
+    > Group - Alternate between unlocking groups of stages and the bosses in between.
+    > World - Progression is similar to Boss, but the bosses are unlocked along with their preceding stages.
     """
     display_name : str = "Progression Mode"
     default = 1
@@ -72,7 +72,7 @@ class PostGameAccessRule(Choice):
     > all_cameras - Capture all Monkey Films (This will set Camerasanity to 'enabled')
     > all_cellphones - Activate all Cellphones (This will set Cellhponesanity to `enabled`)
     > channel_key - Provide an extra channel key to unlock this level
-    > after_end - The extra channel key will be placed on Specter (End Game).
+    > after_end - The extra channel key will be placed on the penultimate boss (Specter in Vanilla Channel Order)
     """
     display_name : str = "Post-Game Access Rule"
     default = 0

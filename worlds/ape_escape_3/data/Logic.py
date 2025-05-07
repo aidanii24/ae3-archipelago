@@ -257,7 +257,7 @@ class ProgressionMode:
     level_select_entrances : list[AE3EntranceMeta] = None
 
     boss_indices : Sequence[int] = [ 3, 8, 12, 17, 21, 24, 26, 27]
-    no_first_level : Sequence[int] = [6, 15, 18, 20, 22, 23]
+    small_starting_channels : Sequence[int] = [6, 9, 11, 13, 15, 18, 20, 22, 23]
 
     def __init__(self):
         self.progression = self.progression
@@ -271,10 +271,11 @@ class ProgressionMode:
         new_order : list[int] = [_ for _ in range(28)]
         random.shuffle(new_order)
 
+        self.small_starting_channels = world.logic_preference.small_starting_channels.copy()
+
         # Do not allow Bosses or problematic levels to be in the first few levels
-        invalid_start : bool = True
-        while (len(set(new_order[:5]).intersection(self.no_first_level)) > 0 and
-               len(set(new_order[:3]).intersection(self.boss_indices)) > 0):
+        while (len(set(new_order[:5]).intersection(self.small_starting_channels)) > 0 or
+               len(set(new_order[:3]).intersection([*self.boss_indices, *self.small_starting_channels])) > 0):
             random.shuffle(new_order)
 
         # Apply the chosen Shuffle Mode
@@ -328,15 +329,12 @@ class ProgressionMode:
         # (Which in Vanilla order, is always Specter 1
         elif world.options.Post_Game_Access_Rule == 5:
             amount -= 1
-            print(self.order)
+
             bosses_in_order : list[int] = [ level for level in self.order if level in self.boss_indices ]
-            print("Bosses In Order:", bosses_in_order)
             penultimate : str = MONKEYS_BOSSES[self.boss_indices.index(bosses_in_order[-2])]
-            print("Penultimate Boss:", penultimate)
 
             world.get_location(penultimate).place_locked_item(Channel_Key.to_item(world.player))
 
-        print("Generated Keys - Default:", amount)
         return Channel_Key.to_items(world.player, amount)
 
     def get_progress(self, keys : int):
@@ -347,9 +345,7 @@ class Singles(ProgressionMode):
     progression : list[int] = [ 0, *[1 for _ in range(1, 28)]]
 
     def shuffle(self, world : 'AE3World'):
-        print("-- SINGLES MODE --")
         new_order : list[int] = self.generate_new_order(world)
-        print(new_order)
 
         base_destination_order : list[str] = [ entrance.destination for entrance in ENTRANCES_STAGE_SELECT]
         new_entrances : list[AE3EntranceMeta] = []
@@ -363,7 +359,7 @@ class Singles(ProgressionMode):
         # Update with the new orders
         self.order = [*new_order]
         self.level_select_entrances = [*new_entrances]
-        print(self.order)
+
 
 class Group(ProgressionMode):
     progression : list[int] = [ 2, 1, 4, 1, 3, 1, 4, 1, 3, 1, 2, 1, 1, 1, 1 ]   # 15 Sets
@@ -381,22 +377,18 @@ class Group(ProgressionMode):
         sets : int = 0
 
         for slot, level in enumerate(new_order):
-            print(ENTRANCES_CHANNELS[slot], base_destination_order[level])
             has_incremented : bool = False
 
             # Split the level group before and after boss
             if level in self.boss_indices:
-                print("! ! Is Boss")
                 is_last_index_boss = True
 
                 # If the current set has no levels counted yet, increment it first before incrementing the set number
                 if (not sets and new_progression[sets] < 0) or (sets and new_progression[sets] < 1):
-                    print("< < INCREMENTING RETROACTIVELY")
                     new_progression[sets] += 1
                     has_incremented = True
 
                 if not new_progression[sets] < 0:
-                    print("> > MOVING SET")
                     sets += 1
 
                 if len(new_progression) - sets <= 0:
@@ -404,13 +396,10 @@ class Group(ProgressionMode):
 
             elif is_last_index_boss:
                 # Do not increment set when coming from the first set that only has a boss level
-                print("o o AFTER BOSS")
 
                 if sets == 1 and new_progression[1] > 0:
-                    print("> > MOVING SET")
                     sets += 1
                 elif sets > 1 and new_progression[sets] > 0:
-                    print("> > MOVING SET")
                     sets += 1
 
                 is_last_index_boss = False
@@ -423,10 +412,7 @@ class Group(ProgressionMode):
             new_entrances.append(entrance)
 
             if not has_incremented:
-                print("+ + INCREMENTING SET")
                 new_progression[sets] += 1
-
-            print("- Current Progression:", new_progression)
 
         # Update with the new orders
         self.progression = [*new_progression]
@@ -459,8 +445,8 @@ class Group(ProgressionMode):
 
         amount -= processed
 
-        print("Generated Keys - Group Type:", amount)
         return Channel_Key.to_items(world.player, amount)
+
 
 class World(ProgressionMode):
     progression : list[int] = [ 3, 5, 4, 5, 4, 3, 1, 1, 1 ] # 9 Sets
