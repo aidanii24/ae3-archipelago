@@ -40,13 +40,13 @@ class GoalTarget(Choice):
     Choose what will count as winning the game.
     Default: specter
 
-    > specter - clear Specter's Battle (End Game)
-    > specter_final - clear Specter's Final Battle (Post Game)
-    > triple_threat - clear 3 Boss stages
-    > play_spike - capture 204 Monkeys
-    > play_jimmy - capture 300 Monkeys
-    > directors_cut - capture all 20 Monkey Films (this will enable the "Camerasanity" option)
-    > phone_check - activate all 53 Cellphones (this will enable the "Cellphonesanity" option)
+    > specter - Clear Specter's Battle (End Game)
+    > specter_final - Clear Specter's Final Battle (Post Game)
+    > triple_threat - Clear 3 Boss stages
+    > play_spike - Capture 204 Monkeys
+    > play_jimmy - Capture 300 Monkeys
+    > directors_cut - Capture all 20 Monkey Films (this will enable the "Camerasanity" option)
+    > phone_check - Activate all 53 Cellphones (this will enable the "Cellphonesanity" option)
     """
     display_name : str = "Goal Target"
     default = 0
