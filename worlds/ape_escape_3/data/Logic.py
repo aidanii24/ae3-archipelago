@@ -4,8 +4,8 @@ import random
 from BaseClasses import CollectionState, Item
 
 from .Items import Channel_Key
-from .Stages import AE3EntranceMeta, ENTRANCES_STAGE_SELECT
-from .Strings import Itm, APHelper
+from .Stages import AE3EntranceMeta, ENTRANCES_STAGE_SELECT, ENTRANCES_CHANNELS
+from .Strings import Itm, Stage, APHelper
 
 if TYPE_CHECKING:
     from .. import AE3World
@@ -252,11 +252,17 @@ class Rulesets:
 
 from .Locations import MONKEYS_BOSSES
 class ProgressionMode:
-    progression : list[int] = []
-    order : list[int] = [ 1 for _ in range(27) ]
-    level_select_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
+    progression : list[int] = None
+    order : list[int] = None
+    level_select_entrances : list[AE3EntranceMeta] = None
 
     boss_indices : Sequence[int] = [ 3, 8, 12, 17, 21, 24, 26, 27]
+    no_first_level : Sequence[int] = [15, 18, 20, 23]
+
+    def __init__(self):
+        self.progression = self.progression
+        self.order = [ 1 for _ in range(27) ]
+        self.level_select_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
 
     def shuffle(self, world : 'AE3World'):
         pass
@@ -267,8 +273,10 @@ class ProgressionMode:
 
         # Make sure Tomoki City is not the only available level at the beginning
         # if the player does not start with flying equipment or Cellphonesanity isn't enabled
-        if world.options.Starting_Gadget == 6 or world.options.Starting_Gadget == 3 or world.options.Cellphonesanity:
-            while new_order[0] in [18, 20, 23] and new_order[1] in self.boss_indices:
+        if not (world.options.Starting_Gadget == 6 or world.options.Starting_Gadget == 3 or
+              world.options.Cellphonesanity):
+            while (len(set(new_order[:5]).intersection(self.no_first_level)) > 0 and
+                   len(set(new_order[:5]).intersection(self.no_first_level))) >= 3:
                 random.shuffle(new_order)
 
         # Apply the chosen Shuffle Mode
@@ -315,24 +323,11 @@ class ProgressionMode:
         # First Set of Level(s) will not cost keys, so subtract one from total length of progression
         amount: int = len(self.progression) - 1
 
-        # Pre-place Key and reduce generate key when Post-Game Access Rule asks for it
+        # Reduce Generated Keys for PostGameAccessRules other than "Channel Key"
         if world.options.Post_Game_Access_Rule != 4:
             amount -= 1
 
-        if world.options.Post_Game_Access_Rule == 5:
-            target : str = MONKEYS_BOSSES[-2]
-
-            # If Specter1 becomes the final level, set the key to the penultimate boss
-            if self.order[-1] == self.boss_indices[-2]:
-                for level in reversed(self.order):
-                    if level == self.boss_indices[-2]:
-                        continue
-                    elif level in self.boss_indices:
-                        target : str = MONKEYS_BOSSES[self.boss_indices.index(level)]
-                        break
-
-            world.get_location(target).place_locked_item(Channel_Key.to_item(world.player))
-
+        print("Generated Keys - Default:", amount)
         return Channel_Key.to_items(world.player, amount)
 
     def get_progress(self, keys : int):
@@ -346,11 +341,13 @@ class Singles(ProgressionMode):
         new_order : list[int] = self.generate_new_order(world)
 
         base_destination_order : list[str] = [ entrance.destination for entrance in ENTRANCES_STAGE_SELECT]
-        new_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
+        new_entrances : list[AE3EntranceMeta] = []
 
         # Update Entrance Destinations based on the Shuffle Result
         for slot, level in enumerate(new_order):
-            new_entrances[level].destination = base_destination_order[level]
+            entrance : AE3EntranceMeta = AE3EntranceMeta(ENTRANCES_CHANNELS[slot], Stage.travel_station_a.value,
+                                                         base_destination_order[level])
+            new_entrances.append(entrance)
 
         # Update with the new orders
         self.order = [*new_order]
@@ -363,21 +360,25 @@ class Group(ProgressionMode):
         new_order : list[int] = self.generate_new_order(world)
 
         base_destination_order : list[str] = [ entrance.destination for entrance in ENTRANCES_STAGE_SELECT]
-        new_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
+        new_entrances : list[AE3EntranceMeta] = []
 
         # Update Entrance Destinations based on the Shuffle Result
         # and track channel being processed to create the new progression.
         new_progression : list[int] = [-1]
         is_last_index_boss : bool = False
         sets : int = 0
+
         for slot, level in enumerate(new_order):
+            has_incremented : bool = False
+
             # Split the level group before and after boss
             if level in self.boss_indices:
                 is_last_index_boss = True
 
                 # If the current set has no levels counted yet, increment it first before incrementing the set number
                 if (not sets and new_progression[sets] < 0) or (sets and new_progression[sets] < 1):
-                    new_progression[0] += 1
+                    new_progression[sets] += 1
+                    has_incremented = True
 
                 if not new_progression[sets] < 0:
                     sets += 1
@@ -386,15 +387,23 @@ class Group(ProgressionMode):
                     new_progression.insert(sets, 0)
 
             elif is_last_index_boss:
-                sets += 1
+                # Do not increment set when coming from the first set that only has a boss level
+                if sets == 1 and new_progression[1] > 0:
+                    sets += 1
+                elif sets > 1:
+                    sets += 1
+
                 is_last_index_boss = False
 
                 if len(new_progression) - sets <= 0:
                     new_progression.insert(sets, 0)
 
-            new_entrances[slot].destination = base_destination_order[level]
+            entrance : AE3EntranceMeta = AE3EntranceMeta(ENTRANCES_CHANNELS[slot], Stage.travel_station_a.value,
+                                                        base_destination_order[level])
+            new_entrances.append(entrance)
 
-            new_progression[sets] += 1
+            if not has_incremented:
+                new_progression[sets] += 1
 
         # Update with the new orders
         self.progression = [*new_progression]
@@ -405,14 +414,24 @@ class Group(ProgressionMode):
         amount = len(super().generate_keys(world))
         bosses_in_order : list = [ self.boss_indices.index(boss) for boss in self.order if boss in self.boss_indices ]
 
-        amount -= len(bosses_in_order) - 2
-        for boss in bosses_in_order[:len(bosses_in_order) - 2]:
-            if self.order[-1] in self.boss_indices or (world.options.Post_Game_Access_Rule == 5 and boss >= 6):
+        # When the PostGameAccessRule is "After End", place keys up until the penultimate boss instead
+        processed : int = -1 if world.options.Post_Game_Access_Rule == 5 else 0
+        for boss in bosses_in_order[:len(bosses_in_order)]:
+            # Skip if this boss is in the post-game channel
+            if self.order[-1] == boss:
                 continue
 
             world.get_location(MONKEYS_BOSSES[boss]).place_locked_item(Channel_Key.to_item(world.player))
+            processed += 1
 
-        return Channel_Key.to_items(world.player, amount + 10)
+            # End pre-placement of keys once enough has been processed
+            if processed >= 5:
+                break
+
+        amount -= processed
+
+        print("Generated Keys - Group Type:", amount)
+        return Channel_Key.to_items(world.player, amount)
 
 class World(ProgressionMode):
     progression : list[int] = [ 3, 5, 4, 5, 4, 3, 1, 1, 1 ] # 9 Sets
@@ -421,14 +440,16 @@ class World(ProgressionMode):
         new_order : list[int] = self.generate_new_order(world)
 
         base_destination_order : list[str] = [ entrance.destination for entrance in ENTRANCES_STAGE_SELECT]
-        new_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
+        new_entrances : list[AE3EntranceMeta] = []
 
         # Update Entrance Destinations based on the Shuffle Result
         # and track channel being processed to create the new progression.
         new_progression : list[int] = [-1]
         sets : int = 0
         for slot, level in enumerate(new_order):
-            new_entrances[slot].destination = base_destination_order[level]
+            entrance: AE3EntranceMeta = AE3EntranceMeta(ENTRANCES_CHANNELS[slot], Stage.travel_station_a.value,
+                                                        base_destination_order[level])
+            new_entrances.append(entrance)
             new_progression[sets] += 1
 
             # Split the level group only after the level boss

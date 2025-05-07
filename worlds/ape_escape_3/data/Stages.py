@@ -981,7 +981,7 @@ ENTRANCES_SUBREGIONS : list[AE3EntranceMeta] = [
 ]
 
 ## Entrances for selecting a stage
-ENTRANCES_STAGE_SELECT : list[AE3EntranceMeta] = [
+ENTRANCES_STAGE_SELECT : Sequence[AE3EntranceMeta] = [
     AE3EntranceMeta(Stage.entrance_level_1.value, Stage.travel_station_a.value, Stage.region_seaside_a.value),
     AE3EntranceMeta(Stage.entrance_level_2.value, Stage.travel_station_a.value, Stage.region_woods_a.value),
     AE3EntranceMeta(Stage.entrance_level_3.value, Stage.travel_station_a.value, Stage.region_castle_a1.value),
@@ -1032,6 +1032,38 @@ ENTRANCES_MASTER : list[AE3EntranceMeta] = [
 ]
 
 ### [< --- VANILLA ENTRANCES GROUPS --- >]
+ENTRANCES_CHANNELS : list[str] = [
+    Stage.entrance_level_1.value,
+    Stage.entrance_level_2.value,
+    Stage.entrance_level_3.value,
+    Stage.entrance_level_4.value,
+    Stage.entrance_level_5.value,
+    Stage.entrance_level_6.value,
+    Stage.entrance_level_7.value,
+    Stage.entrance_level_8.value,
+    Stage.entrance_level_9.value,
+    Stage.entrance_level_10.value,
+    Stage.entrance_level_11.value,
+    Stage.entrance_level_12.value,
+    Stage.entrance_level_13.value,
+    Stage.entrance_level_14.value,
+    Stage.entrance_level_15.value,
+    Stage.entrance_level_16.value,
+    Stage.entrance_level_17.value,
+    Stage.entrance_level_18.value,
+    Stage.entrance_level_19.value,
+    Stage.entrance_level_20.value,
+    Stage.entrance_level_21.value,
+    Stage.entrance_level_22.value,
+    Stage.entrance_level_23.value,
+    Stage.entrance_level_24.value,
+    Stage.entrance_level_25.value,
+    Stage.entrance_level_26.value,
+    Stage.entrance_level_27.value,
+    Stage.entrance_level_28.value,
+    Stage.entrance_level_29.value,
+]
+
 ENTRANCES_SEASIDE : list[str] = [
     Stage.entrance_seaside_ab.value,
     Stage.entrance_seaside_ac.value,
