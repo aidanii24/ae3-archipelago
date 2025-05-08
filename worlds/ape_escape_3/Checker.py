@@ -74,7 +74,7 @@ async def setup_level_select(ctx : 'AE3Context'):
     if ctx.unlocked_channels is None:
         ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys)
 
-    if ctx.ipc.get_unlocked_channels() < max(0, min(ctx.unlocked_channels, 0x1B)):
+    if ctx.ipc.get_unlocked_channels() > max(0, min(ctx.unlocked_channels, 0x1B)):
         ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
     # Un-mark bosses as defeated to allow their levels to remain accessible
@@ -230,9 +230,10 @@ async def check_items(ctx : 'AE3Context'):
             ### Check if RC Car or any Chassis is unlocked
             if not ctx.rcc_unlocked and item.name in Itm.get_chassis_by_id():
                 ctx.rcc_unlocked = True
+                ctx.ipc.unlock_equipment(Itm.gadget_rcc.value)
 
                 # Relock all other RC cars
-                for idx, name in Itm.get_chassis_by_id(no_default=True):
+                for idx, name in enumerate(Itm.get_chassis_by_id(no_default=True)):
                     if name == item.name:
                         continue
 

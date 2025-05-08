@@ -330,8 +330,9 @@ class AEPS2Interface:
 
         # Redirect address to RC Car if the unlocked equipment is an RC Car Chassis
         if "Chassis" in address_name:
-            address : int = self.addresses.Items[Itm.gadget_rcc.value]
             is_equipped = self.unlock_chassis(address_name)
+            address : int = self.addresses.Items[Itm.gadget_rcc.value]
+            address_name = Itm.gadget_rcc.value
         else:
             address : int = self.addresses.Items[address_name]
 
@@ -344,14 +345,6 @@ class AEPS2Interface:
         self.pine.write_int8(self.addresses.Items[address_name], 0x1)
 
         is_rcc_unlocked : bool = self.pine.read_int32(self.addresses.Items[Itm.gadget_rcc.value]) == 0x2
-        # Default Chassis ID is 0
-        active_chassis : int = self.pine.read_int32(self.addresses.GameStates[Game.equip_chassis_active.value])
-
-        # Unlock RC Car if not already, equipping this chassis as well
-        if not is_rcc_unlocked:
-            if active_chassis == 0x0:
-                chassis_id : int = Itm.get_chassis_by_id().index(address_name)
-                self.pine.write_int32(self.addresses.GameStates[Game.equip_chassis_active.value], chassis_id)
 
         return is_rcc_unlocked
 
@@ -364,6 +357,9 @@ class AEPS2Interface:
 
         if chassis:
             self.pine.write_int8(self.addresses.Items[chassis], 0x0)
+
+    def set_chassis_direct(self, chassis_idx : int):
+        self.pine.write_int32(self.addresses.GameStates[Game.equip_chassis_active.value], chassis_idx)
 
     def lock_equipment(self, address_name : str):
         self.pine.write_int32(self.addresses.Items[address_name], 0x1)
