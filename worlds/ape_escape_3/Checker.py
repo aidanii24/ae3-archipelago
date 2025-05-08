@@ -74,7 +74,7 @@ async def setup_level_select(ctx : 'AE3Context'):
     if ctx.unlocked_channels is None:
         ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys)
 
-    if ctx.ipc.get_unlocked_channels() > max(0, min(ctx.unlocked_channels, 0x1B)):
+    if ctx.ipc.get_unlocked_channels() != max(0, min(ctx.unlocked_channels, 0x1B)):
         ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
     # Un-mark bosses as defeated to allow their levels to remain accessible
