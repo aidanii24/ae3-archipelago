@@ -363,6 +363,7 @@ class Singles(ProgressionMode):
 
         # Update with the new orders
         self.order = [*new_order]
+        self.progression = [0, *[1 for _ in range(1, 28)]]
         self.level_select_entrances = [*new_entrances]
 
 

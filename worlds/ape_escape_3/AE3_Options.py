@@ -7,7 +7,7 @@ from worlds.ape_escape_3 import APHelper
 class ProgressionMode(Choice):
     """
     Choose how the progression of the randomizer should be.
-    Default: Boss
+    Default: Group
 
     > Singles - Each Stage will be unlocked one by one, as long as you find the Channel Key.
     > Group - Alternate between unlocking groups of stages and the bosses in between.

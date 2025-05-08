@@ -67,14 +67,14 @@ async def correct_progress(ctx : 'AE3Context'):
     ctx.ipc.set_progress()
 
 async def setup_level_select(ctx : 'AE3Context'):
+    is_a_level_confirmed: bool = ctx.ipc.is_a_level_confirmed()
+
     # Force Unlocked Stages to be in sync with the player's chosen option,
     # maxing out at 0x1B as supported by the game
-    is_a_level_confirmed : bool = ctx.ipc.is_a_level_confirmed()
-
     if ctx.unlocked_channels is None:
         ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys)
 
-    if ctx.ipc.get_unlocked_channels() > max(0, min(ctx.unlocked_channels, 0x1B)):
+    if ctx.ipc.get_unlocked_channels() < max(0, min(ctx.unlocked_channels, 0x1B)):
         ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
     # Un-mark bosses as defeated to allow their levels to remain accessible
@@ -306,7 +306,7 @@ async def check_locations(ctx : 'AE3Context'):
             if ctx.ipc.is_camera_interacted():
 
                 are_actors_present : bool = True
-                if ctx.camerasanity == 2:
+                if ctx.camerasanity == 1:
                     for actor in ACTORS_INDEX[CAMERAS_STAGE_INDEX[ctx.current_stage]]:
                         are_actors_present = not ctx.ipc.is_monkey_captured(actor)
 
