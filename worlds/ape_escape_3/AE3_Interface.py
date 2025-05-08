@@ -477,6 +477,14 @@ class AEPS2Interface:
         value = float_to_hex_int32(value_as_float)
         self.pine.write_int32(address, value)
 
+    def capture_monkey(self, name : str):
+        address : int = self.addresses.Locations[name]
+        self.pine.write_int8(address, 0x01)
+
+    def release_monkey(self, name : str):
+        address : int = self.addresses.Locations[name]
+        self.pine.write_int8(address, 0x00)
+
     def send_command(self, command : str):
         as_bytes : bytes = command.encode() + b'\x00'
         self.pine.write_bytes(self.addresses.GameStates[Game.command.value], as_bytes)

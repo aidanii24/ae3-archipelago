@@ -77,6 +77,11 @@ async def setup_level_select(ctx : 'AE3Context'):
     if ctx.ipc.get_unlocked_channels() > max(0, min(ctx.unlocked_channels, 0x1B)):
         ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
+    # Un-mark bosses as defeated to allow their levels to remain accessible
+    for monkey in MONKEYS_BOSSES:
+        if ctx.ipc.is_monkey_captured(monkey):
+            ctx.ipc.release_monkey(monkey)
+
     progress : str = ctx.ipc.get_progress()
     selected_stage: int = ctx.ipc.get_selected_channel()
 
