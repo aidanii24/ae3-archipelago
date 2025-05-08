@@ -205,6 +205,7 @@ class AE3Context(CommonContext):
     ##  2 - Command Executed, awaiting confirmation to reset
     command_state : int = 0
     sending_death : bool = False
+    receiving_death : bool = True
     are_item_status_synced : bool = False
     are_location_status_synced : bool = False
 

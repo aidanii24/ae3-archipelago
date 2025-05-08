@@ -167,15 +167,19 @@ async def setup_area(ctx : 'AE3Context'):
 
 async def check_states(ctx : 'AE3Context'):
     if not ctx.command_state:
+        cookies: float = ctx.ipc.get_cookies()
+
         # Check for DeathLinks
-        if ctx.death_link and ctx.pending_deathlinks:
+        if ctx.death_link and ctx.pending_deathlinks and cookies > 0.0:
             ctx.ipc.kill_player(100.0)
             ctx.pending_deathlinks = max(ctx.pending_deathlinks - 1, 0)
+            ctx.receiving_death = True
             ctx.command_state = 1
-        # Send DeathLinks
-        else:
-            cookies : float = ctx.ipc.get_cookies()
-
+        # Disable the receiving deathlinks flag when deathlinks run out
+        elif not ctx.pending_deathlinks and cookies > 0.0:
+            ctx.receiving_death = False
+        # Send DeathLinks if there are no more deathlinks occuring
+        elif not ctx.receiving_death:
             if not ctx.sending_death and cookies <= 0.0:
                 await ctx.send_death()
                 ctx.sending_death = True
