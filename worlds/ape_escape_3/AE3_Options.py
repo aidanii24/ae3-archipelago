@@ -263,7 +263,7 @@ class ShuffleMonkeyNet(Toggle):
 class ShuffleRCCarChassis(Toggle):
     """
     Choose if the various RC Car Chassis should also be included in the pool. Unlocking any chassis will
-    automatically unlock the RC Car Gadget if it hasn't yet.
+    automatically unlock the RC Car Gadget if it hasn't yet. This does not automatically equip the chassis.
     Default: Disabled
     """
     display_name : str = "Shuffle RC Car Chassis"
@@ -271,7 +271,7 @@ class ShuffleRCCarChassis(Toggle):
 
 class ShuffleMorphStocks(Toggle):
     """
-    Choose if Morph Stocks should also be included in the pool.
+    Choose if Morph Stocks should also be included in the pool. This does not affect the Monkey Mart.
     Default: Disabled
     """
     display_name : str = "Shuffle Morph Stocks"
