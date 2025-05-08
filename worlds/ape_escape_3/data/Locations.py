@@ -1349,7 +1349,7 @@ ACTORS_INDEX : dict[str, list[str]] = {
     Loc.woods_cam.value                 : [Loc.woods_ukki_red.value],
     Loc.castle_cam.value                : [Loc.castle_saru_mon.value],
     Loc.ciscocity_cam.value             : [Loc.ciscocity_ginjiro.value, Loc.ciscocity_kichiemon.value],
-    Loc.studio_cam.value                : [Loc.studio_ukki_lee_ukki.value, Loc.studio_ukkida_jiro],
+    Loc.studio_cam.value                : [Loc.studio_ukki_lee_ukki.value, Loc.studio_ukkida_jiro.value],
     Loc.halloween_cam.value             : [Loc.halloween_ukkison.value],
     Loc.western_cam.value               : [Loc.western_shaluron.value],
     Loc.onsen_cam.value                 : [Loc.onsen_ukki_ichiro.value],
