@@ -223,8 +223,12 @@ async def check_items(ctx : 'AE3Context'):
         elif isinstance(item, EquipmentItem):
             ctx.ipc.unlock_equipment(item.name, auto_equip)
 
+            ## Check for Water Net
+            if not ctx.swim_unlocked and item.name == Itm.gadget_swim.value:
+                ctx.swim_unlocked = True
+
             ### Check if RC Car or any Chassis is unlocked
-            if ctx.rcc_unlocked and item.name in Itm.get_chassis_by_id():
+            if not ctx.rcc_unlocked and item.name in Itm.get_chassis_by_id():
                 ctx.rcc_unlocked = True
 
                 # Relock all other RC cars
