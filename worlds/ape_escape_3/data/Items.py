@@ -220,18 +220,18 @@ ARCHIPELAGO : Sequence[ArchipelagoItem] = [
     Channel_Key, Victory
 ]
 
-MASTER : Sequence[AE3ItemMeta] = [
+ITEMS_MASTER : Sequence[AE3ItemMeta] = [
     *GADGETS, *MORPHS, *ACCESSORIES, *UPGRADEABLES, *COLLECTABLES, *ARCHIPELAGO
 ]
 
-INDEX : Sequence[Sequence] = [
-    MASTER, GADGETS, MORPHS, EQUIPMENT, ACCESSORIES, UPGRADEABLES, COLLECTABLES, ARCHIPELAGO
+ITEMS_INDEX : Sequence[Sequence] = [
+    ITEMS_MASTER, GADGETS, MORPHS, EQUIPMENT, ACCESSORIES, UPGRADEABLES, COLLECTABLES, ARCHIPELAGO
 ]
 
 ### [< --- METHODS --- >]
 def from_id(item_id = int, category : int = 0):
     """Get Item by its ID"""
-    ref : Sequence = INDEX[category]
+    ref : Sequence = ITEMS_INDEX[category]
 
     i : AE3ItemMeta = next((i for i in ref if i.item_id == item_id), None)
     return i
@@ -239,7 +239,7 @@ def from_id(item_id = int, category : int = 0):
 def generate_name_to_id() -> dict[str : int]:
     """Get a Dictionary of all Items in Name-ID pairs"""
     i : AE3ItemMeta
-    return {i.name : i.item_id for i in MASTER}
+    return {i.name : i.item_id for i in ITEMS_MASTER}
 
 def generate_item_groups() -> dict[str : set[str]]:
     """Get a Dictionary of Item Groups"""

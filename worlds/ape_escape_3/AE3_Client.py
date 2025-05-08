@@ -125,30 +125,29 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
             logger.info(f" [-!-] DeathLink is now " f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
 
-    # # Debug commands
-    # def _cmd_unlock(self, unlocks : str = "28"):
-    #     """<!> DEBUG | Unlock amount of levels given"""
-    #     if not unlocks.isdigit():
-    #         logger.info("Please enter a number.")
-    #         return
-    #
-    #     if isinstance(self.ctx, AE3Context):
-    #         amount: int = int(unlocks)
-    #         self.ctx.unlocked_channels = max(min(amount, 28), 0)
-    #
-    # def _cmd_receive_death(self, count : str = "1"):
-    #     """<!> DEBUG | Simulate receiving a death link"""
-    #     if not count.isdigit():
-    #         logger.info("Please enter a number.")
-    #         return
-    #
-    #     if isinstance(self.ctx, AE3Context):
-    #         if self.ctx.death_link:
-    #             logger.info(" [!!!] DeathLink is currently DISABLED. Deathlink cannot be received.")
-    #             return
-    #
-    #         amount : int = int(count)
-    #         self.ctx.pending_deathlinks += amount
+    # Debug commands
+    def _cmd_unlock(self, unlocks : str = "28"):
+        """<!> DEBUG | Unlock amount of levels given"""
+        if not unlocks.isdigit():
+            logger.info("Please enter a number.")
+            return
+
+        if isinstance(self.ctx, AE3Context):
+            amount: int = int(unlocks)
+            self.ctx.unlocked_channels = max(min(amount, 28), 0)
+
+    def _cmd_receive_death(self, count : str = "1"):
+        """<!> DEBUG | Simulate receiving a death link"""
+        if not count.isdigit():
+            logger.info("Please enter a number.")
+            return
+
+        if isinstance(self.ctx, AE3Context):
+            if self.ctx.death_link:
+                logger.info(" [!!!] DeathLink is currently DISABLED. Deathlink cannot be received.")
+                return
+
+            self.ctx.on_deathlink({})
 
 class AE3Context(CommonContext):
     # Archipelago Meta

@@ -6,7 +6,7 @@ from worlds.LauncherComponents import Component, components, launch_subprocess, 
 from BaseClasses import MultiWorld, Tutorial
 import settings
 
-from .data.Items import AE3Item, AE3ItemMeta, INDEX, Nothing, generate_collectables
+from .data.Items import AE3Item, AE3ItemMeta, ITEMS_MASTER, Nothing, generate_collectables
 from .data.Locations import MONKEYS_BOSSES, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED, \
     MONKEYS_PASSWORDS
 from .data.Stages import STAGES_BREAK_ROOMS
@@ -158,12 +158,11 @@ class AE3World(World):
         create_regions(self)
 
     def create_item(self, item : str) -> AE3Item:
-        for itm in INDEX:
+        for itm in ITEMS_MASTER:
             if isinstance(itm, AE3ItemMeta):
                 if itm.name == item:
                     return itm.to_item(self.player)
 
-        warnings.warn(f"The item \"{item}\" does not exist. Creating a Nothing Item instead.")
         return Nothing.to_item(self.player)
 
     def create_items(self):
