@@ -392,6 +392,7 @@ class Hard(LogicPreference):
             Stage.entrance_snowfesta_ec.value   : Rulesets(event_invoked(Events.snowfesta_e_bell.value)),
 
             # Edotown
+            Stage.entrance_edotown_b1b2.value   : Rulesets(AccessRule.NINJA),
             Stage.entrance_edotown_b2b1.value   : Rulesets([event_invoked(Events.edotown_b1_button.value),
                                                             AccessRule.NINJA], AccessRule.SWIM, AccessRule.HERO),
             Stage.entrance_edotown_be.value     : Rulesets(event_invoked(Events.edotown_e_scroll.value)),
