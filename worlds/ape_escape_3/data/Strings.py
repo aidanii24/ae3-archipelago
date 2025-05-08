@@ -1975,8 +1975,8 @@ class APConsole:
         greet =         " Welcome to Ape Escape 3 Archipelago!"
         game_name =     " Ape Escape 3 Archipelago"
         client_name =   " Ape Escape 3 Client"
-        client_ver =    " Client v1.0.00"
-        world_ver =     " World v1.0.00"
+        client_ver =    " Client v1.0.10"
+        world_ver =     " World v1.0.10"
 
         p_check =       " [|?|] Confirming PCSX2 Status..."
         p_init =        " [...] Connecting to PCSX2..."
