@@ -323,7 +323,6 @@ class AE3Context(CommonContext):
 
                 if data[APHelper.monkeysanitybr.value] < 2:
                     self.dummy_morph = Itm.morph_knight.value
-                    self.dummy_morph_monkey_needed = False
 
             if not add_break_rooms:
                 excluded_stages = [*STAGES_BREAK_ROOMS]
