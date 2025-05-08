@@ -282,15 +282,6 @@ class ProgressionMode:
                len(set(new_order[:3]).intersection([*self.boss_indices, *self.small_starting_channels])) > 0):
             random.shuffle(new_order)
 
-        # Apply the chosen Shuffle Mode
-        if world.options.Shuffle_Channel == 1:
-            new_boss_order: list[int] = [_ for _ in new_order if _ in self.boss_indices]
-
-            new_order = [_ for _ in new_order if _ not in self.boss_indices]
-
-            for index in range(len(self.boss_indices)):
-                new_order.insert(self.boss_indices[index], new_boss_order[index])
-
         # Re-insert Channels specified to be preserved in their vanilla indices
         if world.options.Preserve_Channel:
             preserve_indices: list[int] = []
@@ -307,6 +298,15 @@ class ProgressionMode:
 
                 for index in preserve_indices:
                     new_order.insert(index, index)
+
+        # Apply the chosen Shuffle Mode
+        if world.options.Shuffle_Channel == 1:
+            new_boss_order: list[int] = [_ for _ in new_order if _ in self.boss_indices]
+
+            new_order = [_ for _ in new_order if _ not in self.boss_indices]
+
+            for index in range(len(self.boss_indices)):
+                new_order.insert(self.boss_indices[index], new_boss_order[index])
 
         return new_order
 
