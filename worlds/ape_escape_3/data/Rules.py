@@ -525,14 +525,14 @@ class Hard(LogicPreference):
             Stage.entrance_tomo_ha.value        : Rulesets(AccessRule.SHOOT),
 
             # Space
-            Stage.entrance_space_bi.value       : Rulesets([event_invoked(Events.space_e1_button.value),
+            Stage.entrance_space_bi.value       : Rulesets([event_invoked(Events.space_e_button.value),
                                                             event_invoked(Events.space_f2_button.value),
                                                             event_invoked(Events.space_g1_button.value),
                                                             event_invoked(Events.space_d_button.value)]),
-            Stage.entrance_space_e1e.value      : Rulesets(event_invoked(Events.space_e1_button.value)),
-            Stage.entrance_space_ee1_2.value    : Rulesets(event_invoked(Events.space_e1_button.value)),
+            Stage.entrance_space_e1e.value      : Rulesets(event_invoked(Events.space_e_button.value)),
+            Stage.entrance_space_ee1_2.value    : Rulesets(event_invoked(Events.space_e_button.value)),
             Stage.entrance_space_e1e_2.value    : Rulesets([AccessRule.RCC, AccessRule.MORPH_NO_MONKEY]),
-            Stage.entrance_space_ee1.value      : Rulesets(event_invoked(Events.space_e1_button.value)),
+            Stage.entrance_space_ee1.value      : Rulesets(event_invoked(Events.space_e_button.value)),
             Stage.entrance_space_eh.value       : Rulesets(AccessRule.MONKEY),
             Stage.entrance_space_gg1.value      : Rulesets(event_invoked(Events.space_g1_button.value)),
             Stage.entrance_space_gg1_2.value    : Rulesets(AccessRule.SWIM),
@@ -545,7 +545,7 @@ class Hard(LogicPreference):
             Stage.entrance_space_f2f.value      : Rulesets(event_invoked(Events.space_f2_button.value)),
             Stage.entrance_space_dd.value       : Rulesets(AccessRule.ATTACK),
             Stage.entrance_space_dd_2.value     : Rulesets(AccessRule.ATTACK),
-            Stage.entrance_space_ib.value       : Rulesets([event_invoked(Events.space_e1_button.value),
+            Stage.entrance_space_ib.value       : Rulesets([event_invoked(Events.space_e_button.value),
                                                      event_invoked(Events.space_f2_button.value),
                                                      event_invoked(Events.space_g1_button.value),
                                                      event_invoked(Events.space_d_button.value)]),
@@ -724,7 +724,7 @@ class Normal(Hard):
             Events.bay_a7_button.value                  : Rulesets(AccessRule.HIT),
 
             # Space
-            Events.space_e1_button.value                : Rulesets(AccessRule.ATTACK),
+            Events.space_e_button.value                : Rulesets(AccessRule.ATTACK),
             Events.space_g1_button.value                : Rulesets(AccessRule.ATTACK),
             Events.space_f2_button.value                : Rulesets(AccessRule.ATTACK),
         })

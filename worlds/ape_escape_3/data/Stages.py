@@ -1,4 +1,4 @@
-from typing import Callable, Sequence
+from typing import Sequence
 from dataclasses import dataclass
 
 from .Strings import Stage, APHelper

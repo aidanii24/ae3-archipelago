@@ -118,14 +118,13 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
             logger.info(f" [-!-] Freeplay Swap is now " f"{"ENABLED" if self.ctx.swap_freeplay else "DISABLED"}")
 
-    async def _cmd_deathlink(self):
+    def _cmd_deathlink(self):
         """Toggle if death links should be received."""
         if isinstance(self.ctx, AE3Context):
             self.ctx.death_link = not self.ctx.death_link
 
             logger.info(f" [-!-] DeathLink is now " f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
 
-            await self.ctx.update_death_link(self.ctx.death_link)
     # # Debug commands
     # def _cmd_unlock(self, unlocks : str = "28"):
     #     """<!> DEBUG | Unlock amount of levels given"""

@@ -762,7 +762,7 @@ class Events(BaseEnum):
     tomo_e2_kungfu                    = "Tomoki City - Activate Kung-Fu Switch (Tomoki Tower Abdomen)"
     tomo_g_button                     = "Tomoki City - Activate Second Floor Switch (Tomoki Tower Chest)"
     tomo_h_button                     = "Tomoki City - Cloud Buttons"
-    space_e1_button                   = "Space-TV Fortress - Studio 1 Control Panel Button"
+    space_e_button                    = "Space-TV Fortress - Studio 1 Control Panel Button"
     space_g_button                    = "Space-TV Fortress - Coral Button"
     space_g1_button                   = "Space-TV Fortress - Studio 2 Control Panel Button"
     space_f1_kungfu                   = "Space-TV Fortress - Reactor Kung-Fu Switch"

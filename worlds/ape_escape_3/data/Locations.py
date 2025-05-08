@@ -914,7 +914,8 @@ MONKEYS_SPACE_D : Sequence[str] = [
     Loc.space_uttey.value, Loc.space_emma.value, Loc.space_dokicchi.value, Loc.space_kamicchi.value,
     Loc.space_ukki_monda.value, Loc.space_porokko.value, Loc.space_zonelin.value
 ]
-MONKEYS_SPACE_E1 : Sequence[str] = [
+
+MONKEYS_SPACE_E : Sequence[str] = [
     Loc.space_tamano.value, Loc.space_nelson.value, Loc.space_koloneh.value, Loc.space_miluchy.value,
     Loc.space_robert.value, Loc.space_fronson.value, Loc.space_demekin.value
 ]
@@ -951,7 +952,7 @@ MONKEYS_SPACE_K : Sequence[str] = [
 ]
 
 MONKEYS_SPACE : Sequence[str] = [
-    *MONKEYS_SPACE_A, *MONKEYS_SPACE_B, *MONKEYS_SPACE_D, *MONKEYS_SPACE_E1, *MONKEYS_SPACE_F, *MONKEYS_SPACE_F1,
+    *MONKEYS_SPACE_A, *MONKEYS_SPACE_B, *MONKEYS_SPACE_D, *MONKEYS_SPACE_E, *MONKEYS_SPACE_F, *MONKEYS_SPACE_F1,
     *MONKEYS_SPACE_F2, *MONKEYS_SPACE_G, *MONKEYS_SPACE_G1, *MONKEYS_SPACE_H, *MONKEYS_SPACE_I, *MONKEYS_SPACE_K
 ]
 
@@ -1224,7 +1225,7 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.region_space_a.value          : MONKEYS_SPACE_A,
     Stage.region_space_b.value          : MONKEYS_SPACE_B,
     Stage.region_space_d.value          : MONKEYS_SPACE_D,
-    Stage.region_space_e1.value         : MONKEYS_SPACE_E1,
+    Stage.region_space_e.value          : MONKEYS_SPACE_E,
     Stage.region_space_f.value          : MONKEYS_SPACE_F,
     Stage.region_space_f1.value         : MONKEYS_SPACE_F1,
     Stage.region_space_f2.value         : MONKEYS_SPACE_F2,
@@ -1317,7 +1318,7 @@ CAMERAS_INDEX : dict[str, str] = {
     Stage.region_hong_c.value                  : Loc.hong_cam.value,
     Stage.region_bay_c1.value                  : Loc.bay_cam.value,
     Stage.region_tomo_b.value                  : Loc.tomo_cam.value,
-    Stage.region_space_e1.value                : Loc.space_cam.value
+    Stage.region_space_e.value                : Loc.space_cam.value
 }
 
 CAMERAS_STAGE_INDEX : dict[str, str] = {
@@ -1352,7 +1353,7 @@ ACTORS_INDEX : dict[str, list[str]] = {
     Loc.halloween_cam.value             : [Loc.halloween_ukkison.value],
     Loc.western_cam.value               : [Loc.western_shaluron.value],
     Loc.onsen_cam.value                 : [Loc.onsen_ukki_ichiro.value],
-    Loc.snowfesta_cam.value             : [Loc.snowfesta_konzo, Loc.snowfesta_takuo.value],
+    Loc.snowfesta_cam.value             : [Loc.snowfesta_konzo.value, Loc.snowfesta_takuo.value],
     Loc.edotown_cam.value               : [Loc.edotown_tomoku_chan.value],
     Loc.heaven_cam.value                : [Loc.heaven_ukkido.value],
     Loc.toyhouse_cam.value              : [Loc.toyhouse_bon_mota.value, Loc.toyhouse_bon_verna.value,
@@ -1972,8 +1973,8 @@ EVENTS_TOMO_H : Sequence[str] = [
     Events.tomo_h_button.value
 ]
 
-EVENTS_SPACE_E1 : Sequence[str] = [
-    Events.space_e1_button.value
+EVENTS_SPACE_E : Sequence[str] = [
+    Events.space_e_button.value
 ]
 
 EVENTS_SPACE_G : Sequence[str] = [
@@ -2030,7 +2031,7 @@ EVENTS_INDEX : dict[str, Sequence[str]] = {
     Stage.region_tomo_e2.value          : EVENTS_TOMO_E2,
     Stage.region_tomo_g.value           : EVENTS_TOMO_G,
     Stage.region_tomo_h.value           : EVENTS_TOMO_H,
-    Stage.region_space_e1.value         : EVENTS_SPACE_E1,
+    Stage.region_space_e.value          : EVENTS_SPACE_E,
     Stage.region_space_g.value          : EVENTS_SPACE_G,
     Stage.region_space_g1.value         : EVENTS_SPACE_G1,
     Stage.region_space_f1.value         : EVENTS_SPACE_F1,
