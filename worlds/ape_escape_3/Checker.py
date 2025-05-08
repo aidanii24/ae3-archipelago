@@ -131,6 +131,7 @@ async def setup_level_select(ctx : 'AE3Context'):
             for _ in range(3):
                 ctx.ipc.unlock_chassis_direct(_)
 
+    # Reset the spawnpoint properly as the game leaves it blank when coming from TV Station
     if is_a_level_confirmed:
         ctx.ipc.clear_spawn()
 

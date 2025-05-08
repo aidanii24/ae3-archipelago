@@ -1,3 +1,4 @@
+import time
 from argparse import ArgumentParser, Namespace
 from typing import Optional, Sequence
 from datetime import datetime
@@ -144,11 +145,16 @@ class AE3CommandProcessor(ClientCommandProcessor):
             return
 
         if isinstance(self.ctx, AE3Context):
-            if not self.ctx.death_link:
-                logger.info(" [!!!] DeathLink is currently DISABLED. Deathlink cannot be received.")
-                return
+            # if not self.ctx.death_link:
+            #     logger.info(" [!!!] DeathLink is currently DISABLED. Deathlink cannot be received.")
+            #     return
 
-            self.ctx.on_deathlink({})
+            death_notes : dict = {
+                "time" : time.time(),
+                "cause": "Test Command"
+            }
+
+            self.ctx.on_deathlink(death_notes)
 
 class AE3Context(CommonContext):
     # Archipelago Meta
@@ -447,10 +453,10 @@ class AE3Context(CommonContext):
             self.save_data_filename = Meta.game_acr + "_" + self.seed_name + ".json"
 
     def on_deathlink(self, data: typing.Dict[str, typing.Any]) -> None:
-        super().on_deathlink(data)
-
         if not self.death_link:
             return
+
+        super().on_deathlink(data)
 
         self.pending_deathlinks += 1
 
