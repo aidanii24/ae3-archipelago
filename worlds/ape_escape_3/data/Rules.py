@@ -427,6 +427,7 @@ class Hard(LogicPreference):
 
             # Asia
             Stage.entrance_asia_ab.value        : Rulesets(AccessRule.SWIM, AccessRule.HERO),
+            Stage.entrance_asia_ba.value        : Rulesets(AccessRule.SWIM, AccessRule.HERO),
             Stage.entrance_asia_aa1.value       : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_aa5.value       : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_a1a.value       : Rulesets(AccessRule.SWIM, AccessRule.HERO),
@@ -1076,6 +1077,7 @@ class Casual(Normal):
 
             # Asia
             Stage.entrance_asia_ab.value        : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_ba.value        : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_a1a.value       : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_a1b1.value      : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_a1a3.value      : Rulesets(AccessRule.SWIM),
