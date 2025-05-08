@@ -252,6 +252,7 @@ class Rulesets:
 
 from .Locations import MONKEYS_BOSSES
 class ProgressionMode:
+    name : str = "Generic Progression Mode"
     progression : list[int] = None
     order : list[int] = None
     level_select_entrances : list[AE3EntranceMeta] = None
@@ -263,6 +264,9 @@ class ProgressionMode:
         self.progression = self.progression
         self.order = [ _ for _ in range(27) ]
         self.level_select_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
+
+    def __str__(self):
+        return self.name
 
     def shuffle(self, world : 'AE3World'):
         pass
@@ -342,6 +346,7 @@ class ProgressionMode:
 
 
 class Singles(ProgressionMode):
+    name : str = "Singles"
     progression : list[int] = [ 0, *[1 for _ in range(1, 28)]]
 
     def shuffle(self, world : 'AE3World'):
@@ -362,6 +367,7 @@ class Singles(ProgressionMode):
 
 
 class Group(ProgressionMode):
+    name : str = "Group"
     progression : list[int] = [ 2, 1, 4, 1, 3, 1, 4, 1, 3, 1, 2, 1, 1, 1, 1 ]   # 15 Sets
 
     def shuffle(self, world : 'AE3World'):
@@ -449,6 +455,7 @@ class Group(ProgressionMode):
 
 
 class World(ProgressionMode):
+    name : str = "World"
     progression : list[int] = [ 3, 5, 4, 5, 4, 3, 1, 1, 1 ] # 9 Sets
 
     def shuffle(self, world : 'AE3World'):

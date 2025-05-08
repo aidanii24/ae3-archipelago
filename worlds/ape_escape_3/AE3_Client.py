@@ -59,9 +59,9 @@ class AE3CommandProcessor(ClientCommandProcessor):
                 if self.ctx.post_game_access_rule_option < 4:
                     all_keys -= 1
 
-                logger.info(f"\n         Progression:")
+                logger.info(f"\n         Progression: {self.ctx.progression}")
                 logger.info(f"         Channel Keys: {self.ctx.keys} / {all_keys}")
-                logger.info(f"         Available Levels: {self.ctx.unlocked_channels + 1} / 28\n")
+                logger.info(f"         Available Levels: {self.ctx.unlocked_channels + 1} / 28")
                 for level in range(min(self.ctx.unlocked_channels + 1, len(LEVELS_BY_ORDER))):
                     logger.info(f"         [ {level + 1} ] "
                                 f"{LEVELS_BY_ORDER[self.ctx.progression.order[min(level, len(LEVELS_BY_ORDER) - 1)]]}")
@@ -144,7 +144,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
             return
 
         if isinstance(self.ctx, AE3Context):
-            if self.ctx.death_link:
+            if not self.ctx.death_link:
                 logger.info(" [!!!] DeathLink is currently DISABLED. Deathlink cannot be received.")
                 return
 
