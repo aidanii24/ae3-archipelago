@@ -64,7 +64,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
                 logger.info(f"         Available Levels: {self.ctx.unlocked_channels + 1} / 28\n")
                 for level in range(self.ctx.unlocked_channels + 1):
                     logger.info(f"         [ {level + 1} ]"
-                                f"{LEVELS_BY_ORDER[self.ctx.progression.order[min(level, len(LEVELS_BY_ORDER))]]}")
+                                f"{LEVELS_BY_ORDER[self.ctx.progression.order[min(level, len(LEVELS_BY_ORDER - 1))]]}")
 
             else:
                 logger.info(f"         Disconnected from Server")
