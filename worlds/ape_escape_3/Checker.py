@@ -245,8 +245,11 @@ async def check_items(ctx : 'AE3Context'):
                     if item.name == ctx.dummy_morph:
                         ctx.dummy_morph_needed = False
                         ctx.dummy_morph_monkey_needed = False
-                else:
+                elif ctx.dummy_morph_needed:
                     ctx.dummy_morph_needed = False
+
+                    if item.name != ctx.dummy_morph:
+                        ctx.ipc.lock_equipment(ctx.dummy_morph)
 
                 dummy: str = ctx.dummy_morph if ctx.dummy_morph_needed else ""
                 ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration, dummy)
