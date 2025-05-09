@@ -1270,9 +1270,12 @@ class ChannelKey(PostGameAccessRule):
         return int(ctx.keys / all_keys)
 
     def verify(self, state : CollectionState, player : int) -> bool:
-        for boss in MONKEYS_BOSSES[:2]:
+        for idx, boss in enumerate(MONKEYS_BOSSES):
             if not state.can_reach_location(boss, player):
                 return False
+
+            if idx >= 6:
+                return True
 
         return True
 
