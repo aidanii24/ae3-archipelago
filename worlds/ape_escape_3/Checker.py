@@ -253,11 +253,16 @@ async def check_items(ctx : 'AE3Context'):
                     if ctx.dummy_morph_monkey_needed:
                         ctx.dummy_morph_monkey_needed = False
 
-                    if item.name == ctx.dummy_morph and ctx.dummy_morph_needed:
+                    if ctx.dummy_morph_needed:
                         ctx.dummy_morph_needed = False
-                elif ctx.dummy_morph_needed:
+
+                        if ctx.dummy_morph != item.name:
+                            ctx.ipc.lock_equipment(ctx.dummy_morph)
+                elif ctx.dummy_morph != Itm.morph_monkey.value and ctx.dummy_morph_needed:
                     ctx.dummy_morph_needed = False
 
+                    # Force Lock Fantasy Knight to prevent it from being able to be always available afterward,
+                    # even if it wasn't the morph unlocked
                     if item.name != ctx.dummy_morph:
                         ctx.ipc.lock_equipment(ctx.dummy_morph)
 
