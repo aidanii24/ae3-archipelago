@@ -304,10 +304,14 @@ class AEPS2Interface:
         self.pine.write_bytes(self.addresses.GameStates[Game.area_dest.value], as_bytes)
 
     def clear_spawn(self):
-        address : int = self.addresses.GameStates[Game.spawn.value]
+        spawn_address : int = self.addresses.GameStates[Game.spawn.value]
+        dest_address : int = self.addresses.GameStates[Game.area_dest.value]
         for _ in range(3):
-            self.pine.write_int32(address, 0x0)
-            address += 4
+            self.pine.write_int32(spawn_address, 0x0)
+            self.pine.write_int32(dest_address, 0x0)
+            spawn_address += 4
+            dest_address += 4
+
 
     def set_game_mode(self, mode : int = 0x100, restart : bool = True):
         address = self.addresses.GameStates[Game.game_mode.value]

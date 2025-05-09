@@ -161,6 +161,10 @@ async def setup_area(ctx : 'AE3Context'):
             # and to spawn Break Room loading zones
             dispatch_dummy_morph(ctx, True)
 
+            # Obsolete Interact Data to prevent false checking of phones when transitioning into an adjacent
+            # stage with a phone of the same ID
+            ctx.ipc.obsolete_interact_data()
+
             ctx.current_stage = ctx.ipc.get_stage()
             ctx.command_state = 2
 
@@ -331,10 +335,6 @@ async def check_locations(ctx : 'AE3Context'):
             if tele_text_id in Cellphone_Name_to_ID:
                 location_id : int = ctx.locations_name_to_id[Cellphone_Name_to_ID[tele_text_id]]
                 cleared.add(location_id)
-
-                # Obsolete Interact Data to prevent false checking of phones when transitioning into an adjacent
-                # stage with a phone of the same ID
-                ctx.ipc.obsolete_interact_data()
 
     # Get newly checked locations
     cleared = cleared.difference(ctx.checked_locations)
