@@ -108,9 +108,12 @@ class GoalTarget:
         return missing
 
     def verify(self, state : CollectionState, player : int) -> bool:
-        for location in self.locations:
+        for index, location in enumerate(self.locations):
             if not state.can_reach_location(location, player):
                 return False
+
+            if index + 1 >= self.amount:
+                return True
 
         return True
 
@@ -1267,7 +1270,11 @@ class ChannelKey(PostGameAccessRule):
         return int(ctx.keys / all_keys)
 
     def verify(self, state : CollectionState, player : int) -> bool:
-        return state.can_reach_location(Loc.boss_specter.value, player)
+        for boss in MONKEYS_BOSSES[:2]:
+            if not state.can_reach_location(boss, player):
+                return False
+
+        return True
 
 class AfterEnd(ChannelKey):
     name = "After End"

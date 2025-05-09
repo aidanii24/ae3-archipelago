@@ -245,10 +245,12 @@ async def check_items(ctx : 'AE3Context'):
             ### Track Morphs Unlocked
             if item.name in Itm.get_morphs_ordered():
                 # Update need of dummy morph
-                if Itm.morph_monkey.value == ctx.dummy_morph:
-                    if item.name == ctx.dummy_morph:
-                        ctx.dummy_morph_needed = False
+                if item.name == Itm.morph_monkey.value:
+                    if ctx.dummy_morph_monkey_needed:
                         ctx.dummy_morph_monkey_needed = False
+
+                    if item.name == ctx.dummy_morph and ctx.dummy_morph_needed:
+                        ctx.dummy_morph_needed = False
                 elif ctx.dummy_morph_needed:
                     ctx.dummy_morph_needed = False
 

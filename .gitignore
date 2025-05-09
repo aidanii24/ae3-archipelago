@@ -62,3 +62,4 @@ worlds/generic/*
 
 # IDE files
 .idea/*
+/fuzz_options.yaml
