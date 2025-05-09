@@ -417,7 +417,7 @@ class Hard(LogicPreference):
             Stage.entrance_iceland_cb.value     : Rulesets(event_invoked(Events.iceland_c_jumbo_robo.value)),
 
             # Arabian
-            Stage.entrance_arabian_ac.value     : Rulesets([AccessRule.RCC, AccessRule.SHOOT]),
+            Stage.entrance_arabian_ac.value     : Rulesets([AccessRule.RCC, AccessRule.SLING]),
             Stage.entrance_arabian_ac1.value    : Rulesets(event_invoked(Events.arabian_c1_exit.value)),
             Stage.entrance_arabian_cc1.value    : Rulesets(event_invoked(Events.arabian_c_golden_mon.value)),
             Stage.entrance_arabian_c1c.value    : Rulesets(event_invoked(Events.arabian_c_golden_mon.value)),
