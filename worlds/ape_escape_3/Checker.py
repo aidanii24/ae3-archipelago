@@ -143,8 +143,9 @@ async def setup_level_select(ctx : 'AE3Context'):
         # Toggle Freeplay when allowed and needed
         toggle_freeplay(ctx)
 
-        # Lock Super Monkey Morph as Aki won't give it at this point if it's still supposed to be locked
-        if ctx.dummy_morph_monkey_needed:
+        # Lock Super Monkey Morph as Aki won't give it at this point if it's still supposed to be locked,
+        # unless required to keep Break Rooms open
+        if ctx.dummy_morph_monkey_needed and ctx.dummy_morph != Itm.morph_monkey.value:
             ctx.ipc.lock_equipment(Itm.morph_monkey.value)
 
 
