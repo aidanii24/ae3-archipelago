@@ -108,11 +108,13 @@ class GoalTarget:
         return missing
 
     def verify(self, state : CollectionState, player : int) -> bool:
-        for index, location in enumerate(self.locations):
+        checks : int = 0
+        for location in self.locations:
             if not state.can_reach_location(location, player):
                 return False
 
-            if index + 1 >= self.amount:
+            checks += 1
+            if checks >= self.amount:
                 return True
 
         return True
@@ -1142,7 +1144,7 @@ class Specter(GoalTarget):
 
 class SpecterFinal(Specter):
     name = "Specter Final"
-    description = "Capture Specter a second time by clearing \"Specter's Final Battle!\""
+    description = "Capture Specter by clearing \"Specter's Final Battle!\""
 
     locations = {Loc.boss_specter_final.value}
 
@@ -1270,18 +1272,20 @@ class ChannelKey(PostGameAccessRule):
         return int(ctx.keys / all_keys)
 
     def verify(self, state : CollectionState, player : int) -> bool:
-        for idx, boss in enumerate(MONKEYS_BOSSES):
+        checks : int = 0
+        for boss in MONKEYS_BOSSES:
             if not state.can_reach_location(boss, player):
                 return False
 
-            if idx >= 6:
+            checks += 1
+            if checks >= 6:
                 return True
 
         return True
 
 class AfterEnd(ChannelKey):
     name = "After End"
-    description = "Defeat Specter in Specter's Battle!"
+    description = "Defeat the Final Boss before tackling the Post Game!"
 
     locations = { Loc.boss_specter.value }
 
