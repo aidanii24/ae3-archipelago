@@ -242,17 +242,33 @@ class AEPS2Interface:
         return as_string == Game.conte.value
 
     def get_cellphone_interacted(self, stage : str = "") -> str:
-        address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
+        base_address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
                                                   Game.interact_data.value)
-        address += self.addresses.GameStates[Game.cellphone.value]
+        address : int = base_address + self.addresses.GameStates[Game.cellphone.value]
 
         # Return an empty string if either addresses return 0
+        if not address <= 0x0:
+            as_bytes: bytes = self.pine.read_bytes(address, 3)
+
+            # Try to decode to string, and immediately return if it cannot be decoded
+            try:
+                as_string : str = as_bytes.decode().replace("\x00", "")
+            except UnicodeDecodeError:
+                as_string = ""
+
+            if as_string.isdigit():
+                if as_string in CELLPHONES_ID_DUPLICATES and stage in CELLPHONES_STAGE_DUPLICATES:
+                    as_string = as_string.replace("0", "1", 1)
+                return as_string
+
+        # Use alternative Cellphone address when the first one fails
+        address = base_address + self.addresses.GameStates[Game.cellphone2.value]
+
         if address <= 0x0:
             return ""
 
         as_bytes: bytes = self.pine.read_bytes(address, 3)
 
-        # Try to decode to string, and immediately return if it cannot be decoded
         try:
             as_string : str = as_bytes.decode().replace("\x00", "")
         except UnicodeDecodeError:

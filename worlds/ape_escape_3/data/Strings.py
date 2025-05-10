@@ -1762,6 +1762,7 @@ class Game(BaseEnum):
     status_tracker =        "Status Tracker"
     pipo_camera =           "Pipo Camera"
     cellphone =             "Cellphone"
+    cellphone2 =            "Cellphone2"
 
     game_mode =             "Game Mode"
     net_status =            "Net Status"
