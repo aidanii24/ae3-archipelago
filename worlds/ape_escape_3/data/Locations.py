@@ -1364,7 +1364,7 @@ ACTORS_INDEX : dict[str, list[str]] = {
     Loc.plane_cam.value                 : [Loc.plane_prince_bertus.value, Loc.plane_chai_bunny.value],
     Loc.hong_cam.value                  : [Loc.hong_bassili_ukki.value],
     Loc.bay_cam.value                   : [Loc.bay_shiny_pete.value, Loc.bay_gimo.value],
-    Loc.tomo_cam.value                  : [Loc.tomo_pon_jiro.value, Loc.tomo_ukkine.value],
+    Loc.tomo_cam.value                  : [Loc.tomo_ukkinaka.value, Loc.tomo_ukkine.value],
     Loc.space_cam.value                 : [Loc.space_robert.value],
 }
 

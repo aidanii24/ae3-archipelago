@@ -330,6 +330,7 @@ async def check_locations(ctx : 'AE3Context'):
                         are_actors_present = not ctx.ipc.is_monkey_captured(actor)
 
                         if not are_actors_present:
+                            are_actors_present = False
                             break
 
                 if are_actors_present:
