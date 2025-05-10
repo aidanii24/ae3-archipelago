@@ -306,7 +306,7 @@ class AEPS2Interface:
     def clear_spawn(self):
         spawn_address : int = self.addresses.GameStates[Game.spawn.value]
         dest_address : int = self.addresses.GameStates[Game.area_dest.value]
-        for _ in range(3):
+        for _ in range(6):
             self.pine.write_int32(spawn_address, 0x0)
             self.pine.write_int32(dest_address, 0x0)
             spawn_address += 4
