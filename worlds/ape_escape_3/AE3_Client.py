@@ -213,16 +213,12 @@ class AE3Context(CommonContext):
     sending_death : bool = False
     receiving_death : bool = True
     are_item_status_synced : bool = False
-    are_location_status_synced : bool = False
 
     rcc_unlocked : bool = False
     swim_unlocked : bool = False
     dummy_morph_needed : bool = True
     dummy_morph_monkey_needed : bool = True
     morphs_unlocked : list[bool] = [False for _ in range(7)]
-
-    tomoki_defeated : bool = False
-    specter1_defeated : bool = False
 
     game_goaled : bool = False
 
@@ -381,17 +377,6 @@ class AE3Context(CommonContext):
             if APHelper.death_link.value in data:
                 self.death_link = bool(data[APHelper.death_link.value])
                 Utils.async_start(self.update_death_link(self.death_link))
-
-            ## Location Status Sync
-            if self.are_location_status_synced or not self.checked_locations:
-                return
-
-            received_as_id : list[int] = [ l for l in self.checked_locations]
-
-            self.tomoki_defeated = self.locations_name_to_id[Loc.boss_tomoki.value] in received_as_id
-            self.specter1_defeated = self.locations_name_to_id[Loc.boss_specter.value] in received_as_id
-
-            self.are_location_status_synced = True
 
         elif cmd == APHelper.cmd_rcv.value:
             index = args["index"]

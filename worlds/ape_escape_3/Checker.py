@@ -94,10 +94,10 @@ async def setup_level_select(ctx : 'AE3Context'):
     # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
     if ctx.ipc.is_on_warp_gate():
         # Dr. Tomoki Battle!
-        if selected_stage == 0x18 and not ctx.tomoki_defeated:
+        if selected_stage == 0x18:
             ctx.ipc.set_progress(APHelper.pr_boss6.value)
         # Specter Battle!
-        elif selected_stage == 0x1A and not ctx.specter1_defeated:
+        elif selected_stage == 0x1A:
             ctx.ipc.set_progress(APHelper.pr_specter1.value)
         elif progress != APHelper.pr_round2.value:
             ctx.ipc.set_progress()
@@ -315,9 +315,6 @@ async def check_locations(ctx : 'AE3Context'):
 
         if ctx.ipc.is_monkey_captured(monkey):
             cleared.add(ctx.locations_name_to_id[monkey])
-
-            if monkey == Loc.boss_specter.value:
-                ctx.specter1_defeated = True
 
     if not ctx.current_channel == APHelper.travel_station.value:
         # Camera Check
