@@ -210,8 +210,12 @@ async def check_states(ctx : 'AE3Context'):
             ctx.command_state = 1
 
 async def check_items(ctx : 'AE3Context'):
+    # Resync Next Item Slot if empty and locations have been checked
     if not ctx.next_item_slot and ctx.items_received and ctx.checked_locations:
         ctx.next_item_slot = len(ctx.items_received)
+    # Reset Next Item Slot if not empty and no locations have been checked
+    elif ctx.next_item_slot and not ctx.checked_locations and ctx.items_received and ctx.items_received[-1].player < 1:
+        ctx.next_item_slot = 0
 
     # Get Difference to get only new items
     received : List[NetworkItem] = ctx.items_received[ctx.next_item_slot:]

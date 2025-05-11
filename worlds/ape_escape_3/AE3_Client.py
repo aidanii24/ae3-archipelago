@@ -438,7 +438,12 @@ class AE3Context(CommonContext):
         # Initialize Session on receive of RoomInfo Packet
         elif cmd == APHelper.cmd_rminfo.value:
             seed: str = args[APHelper.arg_seed.value]
+
+            # Assume mismatched seeds is an attempt at a new world, and clear local cache of locations
             if self.seed_name != seed:
+                self.checked_locations.clear()
+                self.locations_checked.clear()
+
                 self.seed_name = seed
 
             self.save_data_filename = Meta.game_acr + "_" + self.seed_name + ".json"
