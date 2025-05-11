@@ -501,7 +501,7 @@ class Hard(LogicPreference):
             Stage.entrance_hong_dg.value        : Rulesets(AccessRule.KUNGFU),
 
             # Bay
-            Stage.entrance_bay_aa1.value        : Rulesets(AccessRule.SHOOT, AccessRule.HERO),
+            Stage.entrance_bay_aa1.value        : Rulesets([AccessRule.SHOOT, AccessRule.SWIM], AccessRule.HERO),
             Stage.entrance_bay_a1a.value        : Rulesets(AccessRule.SWIM, AccessRule.HERO),
             Stage.entrance_bay_a1b.value        : Rulesets(AccessRule.RCC),
             Stage.entrance_bay_a1a2.value       : Rulesets(AccessRule.SWIM),
