@@ -121,11 +121,15 @@ class AE3CommandProcessor(ClientCommandProcessor):
             logger.info(f" [-!-] Freeplay Swap is now " f"{"ENABLED" if self.ctx.swap_freeplay else "DISABLED"}")
 
     def _cmd_deathlink(self):
-        """Toggle if death links should be received."""
+        """Toggle if death links should be enabled. This affects both receiving and sending deaths."""
         if isinstance(self.ctx, AE3Context):
-            self.ctx.death_link = not self.ctx.death_link
+            if not self.ctx.should_deathlink_tag_update:
+                self.ctx.death_link = not self.ctx.death_link
+                self.ctx.should_deathlink_tag_update = True
 
-            logger.info(f" [-!-] DeathLink is now " f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
+                logger.info(f" [-!-] DeathLink is now " f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
+            else:
+                logger.info(f"[...] A DeathLink toggle has already been requested. Please try again in a few seconds.")
 
     # Debug commands
     def _cmd_unlock(self, unlocks : str = "28"):
@@ -145,9 +149,9 @@ class AE3CommandProcessor(ClientCommandProcessor):
             return
 
         if isinstance(self.ctx, AE3Context):
-            # if not self.ctx.death_link:
-            #     logger.info(" [!!!] DeathLink is currently DISABLED. Deathlink cannot be received.")
-            #     return
+            if not self.ctx.death_link:
+                logger.info(" [!!!] DeathLink is currently DISABLED. Deathlink cannot be received.")
+                return
 
             death_notes : dict = {
                 "time" : time.time(),
@@ -183,6 +187,8 @@ class AE3Context(CommonContext):
     cached_locations_checked : Set[int]
     offline_locations_checked : Set[int] = set()
     cached_received_items : Set[NetworkItem]
+
+    should_deathlink_tag_update : bool = False
 
     # APWorld Properties
     locations_name_to_id : dict[str, int] = Locations.generate_name_to_id()
@@ -641,16 +647,21 @@ async def main_sync_task(ctx : AE3Context):
     while not ctx.exit_event.is_set():
         try:
             # Check connection to PCSX2 first
-            is_connected = ctx.ipc.get_connection_state()
-            update_connection_status(ctx, is_connected)
+            is_game_connected = ctx.ipc.get_connection_state()
+            update_connection_status(ctx, is_game_connected)
 
             # Check Progress if connection is good
-            if is_connected:
+            if is_game_connected:
                 await check_game(ctx)
 
             # Attempt reconnection to PCSX2 otherwise
             else:
                 await reconnect_game(ctx)
+
+            if ctx.server and ctx.should_deathlink_tag_update:
+                await ctx.update_death_link(ctx.death_link)
+                ctx.should_deathlink_tag_update = False
+
         except ConnectionError:
             ctx.ipc.disconnect_game()
         except Exception as e:

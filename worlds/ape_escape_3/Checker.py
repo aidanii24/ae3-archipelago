@@ -184,21 +184,25 @@ async def check_states(ctx : 'AE3Context'):
         cookies: float = ctx.ipc.get_cookies()
 
         # Check for DeathLinks
-        if ctx.death_link and ctx.pending_deathlinks and cookies > 0.0:
-            ctx.ipc.kill_player(100.0)
-            ctx.pending_deathlinks = max(ctx.pending_deathlinks - 1, 0)
-            ctx.receiving_death = True
-            ctx.command_state = 1
-        # Disable the receiving deathlinks flag when deathlinks run out
-        elif not ctx.pending_deathlinks and cookies > 0.0:
-            ctx.receiving_death = False
-        # Send DeathLinks if there are no more deathlinks occuring
-        elif not ctx.receiving_death:
-            if not ctx.sending_death and cookies <= 0.0:
-                await ctx.send_death()
-                ctx.sending_death = True
-            elif ctx.sending_death and cookies > 0.0:
-                ctx.sending_death = False
+        if ctx.death_link:
+            if ctx.pending_deathlinks and cookies > 0.0:
+                ctx.ipc.kill_player(100.0)
+                ctx.pending_deathlinks = max(ctx.pending_deathlinks - 1, 0)
+                ctx.receiving_death = True
+                ctx.command_state = 1
+            # Disable the receiving deathlinks flag when deathlinks run out
+            elif not ctx.pending_deathlinks and cookies > 0.0:
+                ctx.receiving_death = False
+            # Send DeathLinks if there are no more deathlinks occuring
+            elif not ctx.receiving_death:
+                if not ctx.sending_death and cookies <= 0.0:
+                    await ctx.send_death()
+                    ctx.sending_death = True
+                elif ctx.sending_death and cookies > 0.0:
+                    ctx.sending_death = False
+        else:
+            if ctx.receiving_death: ctx.receiving_death = False
+            if ctx.sending_death: ctx.sending_death = False
 
         # Check Swimming State
         if not ctx.swim_unlocked and ctx.ipc.is_on_water():
