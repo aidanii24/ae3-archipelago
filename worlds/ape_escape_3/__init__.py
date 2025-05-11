@@ -194,6 +194,9 @@ class AE3World(World):
 
         self.multiworld.push_precollected(monkey_net)
 
+        # Remove any Gadgets specified in Starting Inventory
+        equipment = [ gadget for gadget in equipment if gadget.name not in self.options.start_inventory]
+
         self.item_pool += [*equipment]
 
         equipment.clear()
@@ -203,6 +206,9 @@ class AE3World(World):
         if self.options.Starting_Morph > 0:
             self.multiworld.push_precollected(equipment[self.options.Starting_Morph - 1])
             del equipment[self.options.Starting_Morph - 1]
+
+        # Remove any Gadgets specified in Starting Inventory
+        equipment = [ morph for morph in equipment if morph.name not in self.options.start_inventory]
 
         self.item_pool += [*equipment]
 
