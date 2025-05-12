@@ -187,6 +187,7 @@ class AE3Context(CommonContext):
     cached_locations_checked : Set[int]
     offline_locations_checked : Set[int] = set()
     cached_received_items : Set[NetworkItem]
+    monkeys_index : list[Sequence[str]] = []
 
     should_deathlink_tag_update : bool = False
 
@@ -196,6 +197,7 @@ class AE3Context(CommonContext):
 
     monkeys_checklist : Sequence[str] = MONKEYS_MASTER
     monkeys_checklist_count : int = 0
+    checked_monkeys_cache : set[int] = set()
 
     cellphones_checklist : Sequence[str] = CELLPHONES_MASTER
 
@@ -264,6 +266,9 @@ class AE3Context(CommonContext):
 
         self.cached_locations_checked = set()
         self.cached_received_items = set()
+        for lists in [*MONKEYS_DIRECTORY.values()]:
+            if lists not in self.monkeys_index:
+                self.monkeys_index.append(lists)
 
         # Define Save Data Path
         self.save_data_path = Utils.user_path() + "/data/saves"
@@ -492,6 +497,9 @@ class AE3Context(CommonContext):
 
             # Retrieve Offline Checked Locations
             self.offline_locations_checked = set(data.get(APHelper.offline_checked_locations.value, set()))
+
+            # Retrieve Volatile Checked Locations
+            self.checked_volatile_locations = set(data.get(APHelper.checked_volatile_locations.value, set()))
 
             # Retrieve Key
             if APHelper.channel_key.value in data:

@@ -87,19 +87,19 @@ class GoalTarget:
         self.locations = { * self.locations, *locations }
 
     async def check(self, ctx : 'AE3Context'):
-        checked: set[int] = ctx.locations_checked.union(ctx.checked_locations)
+        checked: set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
 
         if len(self.location_ids.intersection(checked)) >= self.amount and not ctx.game_goaled:
             await ctx.goal()
 
     def get_progress(self, ctx : 'AE3Context') -> int:
-        checked: set[int] = ctx.locations_checked.union(ctx.checked_locations)
+        checked: set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
         progress : int = len(self.location_ids.intersection(checked))
 
         return progress
 
     def get_remaining(self, ctx : 'AE3Context') -> list[str]:
-        checked: set[int] = ctx.locations_checked.union(ctx.checked_locations)
+        checked: set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
         progressed : set[int] = self.location_ids.intersection(checked)
 
         name_to_id : dict[str, int] = generate_name_to_id()
@@ -132,9 +132,11 @@ class PostGameAccessRule(GoalTarget):
     amount: int = 0
 
     def check(self, ctx : 'AE3Context'):
-        checked: set[int] = ctx.locations_checked.union(ctx.checked_locations)
+        checked: set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
+        unlocked_sets: int = ctx.progression.get_progress(ctx.keys)
 
-        if ctx.unlocked_channels == 0x1A and len(self.location_ids.intersection(checked)) >= self.amount:
+        if (unlocked_sets >= sum(ctx.progression.progression[:-1]) and len(self.location_ids.intersection(checked)) >=
+                self.amount):
             ctx.unlocked_channels = 0x1B
 
 
@@ -1209,7 +1211,7 @@ class PasswordHunt(DirectorsCut):
 
 
 GoalTargetOptions : list[Callable] = [
-    Specter, SpecterFinal, TripleThreat, PlaySpike, PlayJimmy, DirectorsCut, PhoneCheck, PasswordHunt
+    Specter, SpecterFinal, TripleThreat, PlaySpike, PlayJimmy, DirectorsCut, PhoneCheck
 ]
 
 class Vanilla(PostGameAccessRule):

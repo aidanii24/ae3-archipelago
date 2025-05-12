@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Set, List
+from typing import Sequence, TYPE_CHECKING, Set, List
 
 from NetUtils import NetworkItem
 
@@ -56,10 +56,10 @@ async def check_background_states(ctx : 'AE3Context'):
     ctx.current_channel = new_channel
 
 async def recheck_location_groups(ctx : 'AE3Context'):
-    if ctx.monkeys_checklist_count >= len(MONKEYS_DIRECTORY.values()):
+    if ctx.monkeys_checklist_count >= len(ctx.monkeys_index):
         ctx.monkeys_checklist_count = 0
 
-    ctx.monkeys_checklist = [*MONKEYS_DIRECTORY.values()][ctx.monkeys_checklist_count]
+    ctx.monkeys_checklist = ctx.monkeys_index[ctx.monkeys_checklist_count]
     ctx.monkeys_checklist_count += 1
 
 # Ensure game is always set to "round2"
@@ -333,6 +333,7 @@ async def check_locations(ctx : 'AE3Context'):
         if ctx.ipc.is_monkey_captured(monkey):
             location_id : int = ctx.locations_name_to_id[monkey]
             cleared.add(location_id)
+            ctx.checked_monkeys_cache.add(location_id)
 
             if monkey in MONKEYS_BOSSES:
                 volatile_cleared.add(location_id)
