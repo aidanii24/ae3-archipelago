@@ -211,8 +211,7 @@ async def check_items(ctx : 'AE3Context'):
         return
     # Sync with Last Processed Item Index if necessary:
     elif ctx.last_item_processed_index:
-        ctx.next_item_slot = ctx.last_item_processed_index
-        ctx.last_item_processed_index = 0
+        ctx.next_item_slot = max(min(ctx.last_item_processed_index, ctx.next_item_slot), 0)
 
     # Resync Next Item Slot if empty and locations have been checked
     if not ctx.next_item_slot and ctx.items_received and ctx.checked_locations:
@@ -224,6 +223,7 @@ async def check_items(ctx : 'AE3Context'):
     # Get Difference to get only new items
     received : List[NetworkItem] = ctx.items_received[ctx.next_item_slot:]
     ctx.next_item_slot += len(received)
+    ctx.last_item_processed_index = ctx.next_item_slot
 
     # Auto-equip if option is enabled or for handling the starting gadgets
     auto_equip: bool = ctx.auto_equip or not ctx.cached_received_items
