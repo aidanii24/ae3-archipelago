@@ -1,6 +1,6 @@
 import time
 from argparse import ArgumentParser, Namespace
-from typing import Optional, Sequence
+from typing import Optional
 from datetime import datetime
 import io
 import os.path
