@@ -206,6 +206,14 @@ async def check_states(ctx : 'AE3Context'):
             ctx.command_state = 1
 
 async def check_items(ctx : 'AE3Context'):
+    # Check if there are items missed from since the client was open; Refuse to take items until this index is confirmed
+    if ctx.last_item_processed_index < 0:
+        return
+    # Sync with Last Processed Item Index if necessary:
+    elif ctx.last_item_processed_index:
+        ctx.next_item_slot = ctx.last_item_processed_index
+        ctx.last_item_processed_index = 0
+
     # Resync Next Item Slot if empty and locations have been checked
     if not ctx.next_item_slot and ctx.items_received and ctx.checked_locations:
         ctx.next_item_slot = len(ctx.items_received)
@@ -306,8 +314,12 @@ async def check_items(ctx : 'AE3Context'):
         # Recheck Locations when receiving items for cases when locations are checked manually by the server/host
         await ctx.goal_target.check(ctx)
 
+        # Save session for everytime there are new items received
+        ctx.save_session()
+
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
+    volatile_cleared : Set[int] = set()
 
     # Monkey Check
     for monkey in ctx.monkeys_checklist:
@@ -315,10 +327,15 @@ async def check_locations(ctx : 'AE3Context'):
         if ctx.current_channel == APHelper.boss6.value:
             if ctx.ipc.is_tomoki_defeated():
                 cleared.add(ctx.locations_name_to_id[Loc.boss_tomoki.value])
+                volatile_cleared.add(ctx.locations_name_to_id[Loc.boss_tomoki.value])
                 continue
 
         if ctx.ipc.is_monkey_captured(monkey):
-            cleared.add(ctx.locations_name_to_id[monkey])
+            location_id : int = ctx.locations_name_to_id[monkey]
+            cleared.add(location_id)
+
+            if monkey in MONKEYS_BOSSES:
+                volatile_cleared.add(location_id)
 
     if not ctx.current_channel == APHelper.travel_station.value:
         # Camera Check
@@ -331,7 +348,9 @@ async def check_locations(ctx : 'AE3Context'):
                         are_actors_ready = are_actors_ready and not ctx.ipc.is_monkey_captured(actor)
 
                 if are_actors_ready:
-                    cleared.add(ctx.locations_name_to_id[CAMERAS_STAGE_INDEX[ctx.current_stage]])
+                    location_id : int = ctx.locations_name_to_id[CAMERAS_STAGE_INDEX[ctx.current_stage]]
+                    cleared.add(location_id)
+                    volatile_cleared.add(location_id)
 
         # Check if there's any new checks from Monkeys/Cameras before checking cellphone
         cleared = cleared.difference(ctx.checked_locations)
@@ -344,9 +363,11 @@ async def check_locations(ctx : 'AE3Context'):
             if tele_text_id in CELLPHONES_STAGE_INDEX[ctx.current_stage] and tele_text_id in Cellphone_Name_to_ID:
                 location_id : int = ctx.locations_name_to_id[Cellphone_Name_to_ID[tele_text_id]]
                 cleared.add(location_id)
+                volatile_cleared.add(location_id)
 
     # Get newly checked locations
     cleared = cleared.difference(ctx.checked_locations)
+    volatile_cleared = volatile_cleared.intersection(cleared)
 
     # Send newly checked locations to server
     if cleared:
@@ -365,6 +386,11 @@ async def check_locations(ctx : 'AE3Context'):
         else:
             # When offline, save checked locations to a different set
             ctx.offline_locations_checked.update(cleared)
+
+    # Save Session when Volatile Locations have been checked
+    if volatile_cleared:
+        ctx.checked_volatile_locations.update(volatile_cleared)
+        ctx.save_session()
 
 def dispatch_dummy_morph(ctx : 'AE3Context', unlock : bool = False):
     if not ctx.dummy_morph or ctx.dummy_morph is None or not ctx.dummy_morph_needed:

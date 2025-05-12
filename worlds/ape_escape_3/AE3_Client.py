@@ -228,6 +228,11 @@ class AE3Context(CommonContext):
 
     game_goaled : bool = False
 
+    # Local Session Save Properties
+    last_item_processed_index : int = -1
+
+    checked_volatile_locations : set[int] = set()
+
     # Player Set Settings
     settings : AE3Settings
 
@@ -290,6 +295,14 @@ class AE3Context(CommonContext):
         # First Connection Check
         if cmd == APHelper.cmd_conn.value:
             data = args[APHelper.arg_sl_dt.value]
+
+            ## Load Local Session Save if present
+            if self.check_session_save():
+                self.load_session()
+            ## Initialize Local Session values if not
+            else:
+                self.last_item_processed_index = 0
+                self.checked_volatile_locations = set()
 
             ## Progression Mode
             if not self.unlocked_channels and APHelper.progression_mode.value in data:
@@ -456,7 +469,6 @@ class AE3Context(CommonContext):
 
         self.pending_deathlinks += 1
 
-    # @deprecated("Local Storage of Session Data is unused at the moment.")
     def check_session_save(self) -> bool:
         """Check for valid save file"""
         if not self.save_data_filename:
@@ -464,11 +476,9 @@ class AE3Context(CommonContext):
         elif not self.save_data_path:
             return False
 
-        # return (os.path.isfile(self.save_data_path + self.save_data_filename) and
-        #         os.access(self.save_data_path + self.save_data_filename, os.R_OK))
-        return False
+        return (os.path.isfile(self.save_data_path + self.save_data_filename) and
+                os.access(self.save_data_path + self.save_data_filename, os.R_OK))
 
-    # @deprecated("Local Storage of Session Data is unused at the moment.")
     def load_session(self):
         """Load existing session"""
         if not self.check_session_save():
@@ -478,7 +488,7 @@ class AE3Context(CommonContext):
             data : dict = json.load(save)
 
             # Retrieve Next Item Slot/Amount of Items Received
-            #self.next_item_slot = data.get(APHelper.item_count.value, 0)
+            self.last_item_processed_index = data.get(APHelper.last_itm_idx_prc.value, 0)
 
             # Retrieve Offline Checked Locations
             self.offline_locations_checked = set(data.get(APHelper.offline_checked_locations.value, set()))
@@ -503,7 +513,6 @@ class AE3Context(CommonContext):
 
         self.ipc.logger.info(" [-!-] A Session Data save has been found and successfully loaded.")
 
-    # @deprecated("Local Storage of Session Data is unused at the moment.")
     def save_session(self):
         """Save current session progress"""
         if self.game_goaled:
@@ -518,19 +527,13 @@ class AE3Context(CommonContext):
             APHelper.goaled.value                       : self.game_goaled,
             APHelper.last_save.value                    : datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
 
-            #APHelper.item_count.value                   : self.next_item_slot,
+            APHelper.last_itm_idx_prc.value             : self.next_item_slot,
             APHelper.offline_checked_locations.value    : [*self.offline_locations_checked],
-
-            APHelper.channel_key.value                  : self.keys,
-            Game.character.value                        : self.character,
-            Itm.gadget_rcc.value                        : self.rcc_unlocked,
-            Itm.gadget_swim.value                       : self.swim_unlocked,
-            Game.morph_duration.value                   : self.morph_duration
+            APHelper.checked_volatile_locations.value   : [*self.checked_volatile_locations],
         }
         with io.open(self.save_data_path + self.save_data_filename, 'w') as save:
             save.write(json.dumps(data))
 
-    # @deprecated("Local Storage of Session Data is unused at the moment.")
     def delete_session(self):
         if not self.check_session_save():
             return
@@ -547,10 +550,9 @@ class AE3Context(CommonContext):
         if not self.check_session_save():
             self.ipc.logger.info(" [-!-] Current Session Data has successfully been erased.")
 
-    # @deprecated("Local Storage of Session Data is unused at the moment.")
     def clean_sessions(self):
         """
-        This will attempt to delete Session Data that has already goaled or has not been saved too for too long
+        This will attempt to delete Session Data that has already goaled or has not been saved for too long
         depending on the set user options.
         """
         if not self.save_data_path or not os.path.isdir(self.save_data_path):
@@ -561,8 +563,7 @@ class AE3Context(CommonContext):
 
         files: dict[str, int] = {}
         discard: list[str] = []
-
-        for file in self.save_data_path:
+        for file in os.listdir(self.save_data_path):
             # Only check the AE3 Save JSON files
             if not file.startswith("AE3_") and not file.endswith(".json"):
                 continue
@@ -572,7 +573,7 @@ class AE3Context(CommonContext):
                 continue
 
             try:
-                with io.open(self.save_data_path + self.save_data_filename, 'r') as save:
+                with io.open(self.save_data_path + file, 'r') as save:
                     data = json.load(save)
 
                     if self.settings.delete_goaled and APHelper.goaled.value in data:
@@ -605,8 +606,10 @@ class AE3Context(CommonContext):
                 for file in discard:
                     os.remove(self.save_data_path + "/" + file)
             except OSError as error:
-                print(error)
+                logger.info(" [!!!] An error has occurred cleaning local session saves.\n", error)
                 return
+
+            logger.info(f" [-!-] Clean Sessions has run and deleted {len(discard)} total session saves.")
 
     # Client Command GUI
     def run_gui(self):
@@ -625,6 +628,9 @@ class AE3Context(CommonContext):
 
         await self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
         self.game_goaled = True
+
+        if self.settings.delete_goaled:
+            self.delete_session()
 
 
 def update_connection_status(ctx : AE3Context, status : bool):
@@ -647,6 +653,7 @@ async def main_sync_task(ctx : AE3Context):
     logger.info(APConsole.Info.decor.value)
     logger.info("\n")
     logger.info(APConsole.Info.p_init.value)
+    ctx.clean_sessions()
     ctx.ipc.connect_game()
 
     while not ctx.exit_event.is_set():

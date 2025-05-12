@@ -1943,7 +1943,9 @@ class APHelper(BaseEnum):
     clean_on_excess =           "clean_on_excess"
     date_threshold =            "date_threshold"
 
-
+    # Local Save
+    last_itm_idx_prc =          "last_item_index_processed"
+    checked_volatile_locations ="checked_volatile_locs"
 
     # AP Client
     goaled =                    "Goaled"

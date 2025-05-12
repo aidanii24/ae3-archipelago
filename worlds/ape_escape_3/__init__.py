@@ -50,9 +50,9 @@ class AE3Settings(settings.Group):
 
     auto_equip: GamePreferences | bool = False
 
-    # delete_goaled : ClientPreferences | bool = True
-    # delete_excess : int = 10
-    # delete_old : int = 30
+    delete_goaled : ClientPreferences | bool = True
+    delete_excess : int = 10
+    delete_old : int = 30
 
 
 class AE3Web(WebWorld):
