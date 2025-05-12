@@ -716,7 +716,7 @@ class NTSCU(VersionAddresses):
         Game.screen_fade_count.value    : 0x851a50,     # 0x01 when not fading
 
         # HUD
-        Game.gui_status.value           : 0x73A054,
+        Game.gui_status.value           : 0x73a054,
         Game.hud_pointer.value          : 0x691fe8,
 
         # Stats

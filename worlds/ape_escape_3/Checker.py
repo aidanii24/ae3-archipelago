@@ -162,10 +162,6 @@ async def setup_area(ctx : 'AE3Context'):
             # and to spawn Break Room loading zones
             dispatch_dummy_morph(ctx, True)
 
-            # Obsolete Interact Data to prevent false checking of phones when transitioning into an adjacent
-            # stage with a phone of the same ID
-            ctx.ipc.obsolete_interact_data()
-
             ctx.current_stage = ctx.ipc.get_stage()
             ctx.command_state = 2
 
@@ -329,22 +325,23 @@ async def check_locations(ctx : 'AE3Context'):
         if ctx.camerasanity and ctx.current_stage in CAMERAS_STAGE_INDEX:
             if ctx.ipc.is_camera_interacted():
 
-                are_actors_present : bool = True
+                are_actors_ready : bool = False
                 if ctx.camerasanity == 1:
                     for actor in ACTORS_INDEX[CAMERAS_STAGE_INDEX[ctx.current_stage]]:
-                        are_actors_present = not ctx.ipc.is_monkey_captured(actor)
+                        are_actors_ready = are_actors_ready and not ctx.ipc.is_monkey_captured(actor)
 
-                        if not are_actors_present:
-                            are_actors_present = False
-                            break
-
-                if are_actors_present:
+                if are_actors_ready:
                     cleared.add(ctx.locations_name_to_id[CAMERAS_STAGE_INDEX[ctx.current_stage]])
 
+        # Check if there's any new checks from Monkeys/Cameras before checking cellphone
+        cleared = cleared.difference(ctx.checked_locations)
+
         # Cellphone Check
-        if ctx.cellphonesanity and ctx.current_stage in CELLPHONES_STAGE_INDEX:
+        gui_status : int = ctx.ipc.get_gui_status()
+        interacting_with_phone : bool = gui_status > 1 or (gui_status and not cleared)
+        if ctx.cellphonesanity and interacting_with_phone and ctx.current_stage in CELLPHONES_STAGE_INDEX:
             tele_text_id : str = ctx.ipc.get_cellphone_interacted(ctx.current_stage)
-            if tele_text_id in Cellphone_Name_to_ID:
+            if tele_text_id in CELLPHONES_STAGE_INDEX[ctx.current_stage] and tele_text_id in Cellphone_Name_to_ID:
                 location_id : int = ctx.locations_name_to_id[Cellphone_Name_to_ID[tele_text_id]]
                 cleared.add(location_id)
 
