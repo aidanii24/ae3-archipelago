@@ -535,7 +535,7 @@ class AE3Context(CommonContext):
             APHelper.goaled.value                       : self.game_goaled,
             APHelper.last_save.value                    : datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
 
-            APHelper.last_itm_idx_prc.value             : self.next_item_slot,
+            APHelper.last_itm_idx_prc.value             : self.last_item_processed_index,
             APHelper.offline_checked_locations.value    : [*self.offline_locations_checked],
             APHelper.checked_volatile_locations.value   : [*self.checked_volatile_locations],
         }
