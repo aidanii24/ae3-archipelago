@@ -1,4 +1,4 @@
-from typing import Sequence, TYPE_CHECKING, Set, List
+from typing import TYPE_CHECKING, Set, List
 
 from NetUtils import NetworkItem
 
