@@ -95,12 +95,7 @@ async def setup_level_select(ctx : 'AE3Context'):
     # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
     if ctx.ipc.is_on_warp_gate():
         # Set to last slot (not the id of the level randomized) for convenience and consistency
-        print(ctx.last_selected_channel_index)
-        print("[?] Should Set to Last Slot?", 0 <= ctx.last_selected_channel_index,
-              ctx.last_selected_channel_index <= ctx.unlocked_channels,
-              not is_a_level_confirmed)
         if 0 <= ctx.last_selected_channel_index <= ctx.unlocked_channels and not is_a_level_confirmed:
-            print("[>] Setting Channel to Previous Slot...")
             ctx.ipc.set_selected_channel(ctx.last_selected_channel_index)
             ctx.last_selected_channel_index = -1
             selected_channel = ctx.ipc.get_selected_channel()
@@ -159,7 +154,6 @@ async def setup_level_select(ctx : 'AE3Context'):
         # If Channel Shuffle is enabled, force switch the game to load the randomized channel
         if ctx.shuffle_channel and not ctx.is_channel_swapped:
             if ctx.last_selected_channel_index < 0:
-                print("[<] Saving last selected channel...")
                 ctx.last_selected_channel_index = selected_channel
 
             ctx.ipc.set_selected_channel(min(ctx.progression.order[selected_channel], 0x1B))
