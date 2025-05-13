@@ -407,13 +407,13 @@ async def check_locations(ctx : 'AE3Context'):
         # Camera Check
         if ctx.camerasanity and ctx.current_stage in CAMERAS_STAGE_INDEX:
             if ctx.ipc.is_camera_interacted():
-
-                are_actors_ready : bool = False
+                are_actors_ready : bool = True
                 if ctx.camerasanity == 1:
                     for actor in ACTORS_INDEX[CAMERAS_STAGE_INDEX[ctx.current_stage]]:
                         are_actors_ready = are_actors_ready and not ctx.ipc.is_monkey_captured(actor)
 
                 if are_actors_ready:
+                    print("[^] Actors are Ready!")
                     location_id : int = ctx.locations_name_to_id[CAMERAS_STAGE_INDEX[ctx.current_stage]]
                     cleared.add(location_id)
                     volatile_cleared.add(location_id)
