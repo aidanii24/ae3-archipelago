@@ -704,6 +704,7 @@ class NTSCU(VersionAddresses):
         Game.state.value                : 0x8519e4,     # int32 (0x00 - 0x04)
         Game.character.value            : 0x649910,     # int32 (0x00 - 0x01)
         Game.progress.value             : 0x73f810,     # Pointer Lead - End Value is 64bit
+        Game.current_morph.value        : 0x64991c,
         Game.on_warp_gate.value         : 0x698298,     # boolean (0x00 - 0x01)
         Game.channels_unlocked.value    : 0x73ff2c,     # int32 (0x00 - 0x1B)
         Game.channel_selected.value     : 0x73ff28,     # int32 (0x00 - 0x1B)

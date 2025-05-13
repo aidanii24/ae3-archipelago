@@ -1404,6 +1404,10 @@ CELLPHONES_CASTLE_A1 : Sequence[str] = [
     Loc.tele_010.value, Loc.tele_009.value
 ]
 
+CELLPHONES_CASTLE_A_ALL : Sequence[str] = [
+    *CELLPHONES_CASTLE_A, *CELLPHONES_CASTLE_A1
+]
+
 CELLPHONES_CASTLE_D : Sequence[str] = [
     Loc.tele_011.value
 ]
@@ -1729,7 +1733,7 @@ CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
     Stage.woods_a.value                 : CELLPHONES_WOODS_A,
     Stage.woods_b.value                 : CELLPHONES_WOODS_B,
 
-    Stage.castle_a.value                : CELLPHONES_CASTLE_A,
+    Stage.castle_a.value                : CELLPHONES_CASTLE_A_ALL,
     Stage.castle_d.value                : CELLPHONES_CASTLE_D,
 
     Stage.ciscocity_a.value             : CELLPHONES_CISCOCITY_A,

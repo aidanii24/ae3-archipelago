@@ -115,12 +115,21 @@ async def setup_level_select(ctx : 'AE3Context'):
             ctx.is_channel_swapped = False
 
     # If Super Monkey isn't properly unlocked yet, temporarily do so during level select to prevent Aki from
-    # introducing and giving it to the player.
+    # introducing and giving it to the player. Lock them while on the Pause Menu as well to prevent equipping them
+    # from the Quick Morph Menu
+    gui_status : int = ctx.ipc.get_gui_status()
+
     if ctx.dummy_morph_monkey_needed:
-        ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
+        if gui_status < 3:
+            ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
+        else:
+            ctx.ipc.lock_equipment(Itm.morph_monkey.value)
 
     if ctx.dummy_morph_needed:
-        ctx.ipc.unlock_equipment(ctx.dummy_morph)
+        if gui_status < 3:
+            ctx.ipc.unlock_equipment(ctx.dummy_morph)
+        else:
+            ctx.ipc.lock_equipment(ctx.dummy_morph)
 
     # Temporarily unlock all Chassis when not in Travel Station to make sure their models load correctly when obtained
     # RC Car Chassis can't be changed in levels, so it is safe to keep them on until the next Travel Station visit
@@ -151,6 +160,25 @@ async def setup_level_select(ctx : 'AE3Context'):
 
 
 async def setup_area(ctx : 'AE3Context'):
+    # In case the Player uses a Morph they are not yet allowed, immediately unmorph them
+    current_morph_id : int = ctx.ipc.get_current_morph()
+    if current_morph_id:
+        is_reset : bool = False
+
+        # Lock in case of false unlocks when unlocking/relocking morphs
+        if ctx.dummy_morph_needed:
+            if ctx.dummy_morph == Itm.morph_monkey.value:
+                if current_morph_id >= 7:
+                    ctx.ipc.set_morph_gauge_timer()
+                    is_reset = True
+            elif ctx.dummy_morph == Itm.morph_knight.value and current_morph_id == 1:
+                ctx.ipc.set_morph_gauge_timer()
+
+        # Lock in case of Quick Morph Glitch (Intentionally by the player, or due to the nature of this client)
+        if not is_reset and not ctx.ipc.is_equipment_unlocked(Itm.get_morphs_ordered()[current_morph_id - 1]):
+            print(ctx.ipc.is_equipment_unlocked(Itm.get_morphs_ordered()[current_morph_id - 1]))
+            ctx.ipc.set_morph_gauge_timer()
+
     # Check Screen Fading State in-game
     if ctx.ipc.check_screen_fading() != 0x01 and ctx.ipc.get_player_state() != 0x03:
         # Check Start of Screen Fade

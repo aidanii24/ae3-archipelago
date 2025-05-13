@@ -501,24 +501,6 @@ class AE3Context(CommonContext):
             # Retrieve Volatile Checked Locations
             self.checked_volatile_locations = set(data.get(APHelper.checked_volatile_locations.value, set()))
 
-            # Retrieve Key
-            if APHelper.channel_key.value in data:
-                self.keys = data[APHelper.channel_key.value]
-                self.unlocked_channels = self.progression.get_progress(self.keys)
-
-            # Retrieve Character
-            if Game.character.value in data:
-                self.character = data[Game.character.value]
-
-                # Retrieve Morph Duration
-                if Game.morph_duration.value in data:
-                    self.morph_duration = data[Game.morph_duration.value]
-                    self.ipc.set_morph_duration(self.character, self.morph_duration)
-
-            # Retrieve Important Items
-            self.rcc_unlocked = data.get(Itm.gadget_rcc.value, False)
-            self.swim_unlocked = data.get(Itm.gadget_swim.value, False)
-
         self.ipc.logger.info(" [-!-] A Session Data save has been found and successfully loaded.")
 
     def save_session(self):

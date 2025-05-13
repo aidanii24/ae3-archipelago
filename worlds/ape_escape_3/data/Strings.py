@@ -1720,6 +1720,7 @@ class Game(BaseEnum):
     state =                 "Player State"
     character =             "Character"
     progress =              "Progress"
+    current_morph =         "Current Morph"
     channels_unlocked =     "Channels Unlocked"
     channel_selected =      "Channel Selected"
     on_warp_gate =          "On Warp Gate"
@@ -1734,7 +1735,6 @@ class Game(BaseEnum):
     # HUD/GUI
     gui_status =            "GUI Status"
     hud_pointer =           "HUD Pointer"
-
 
     # Stats
     morph_duration =        "Morph Duration"

@@ -200,6 +200,9 @@ class AEPS2Interface:
 
         return self.pine.read_int8(self.addresses.Items[chassis_name]) == 0x1
 
+    def get_current_morph(self):
+        return self.pine.read_int8(self.addresses.GameStates[Game.current_morph.value])
+
     def get_morph_duration(self, character : int = 0) -> float:
         return self.pine.read_int32(self.addresses.get_morph_duration_addresses(character)[0])
 
@@ -430,16 +433,15 @@ class AEPS2Interface:
         if not durations:
             return
 
+        dummy_index : int = Itm.get_morphs_ordered().index(dummy) if dummy else - 1
+
         for idx, morph in enumerate(durations):
             duration_to_set : float = duration
             # Set duration to 0 if not specified in morphs and exclusive is false
-            if dummy and idx == self.addresses.Items[dummy]:
+            if dummy and idx == dummy_index:
                 duration_to_set = 0.0
 
             self.pine.write_int32(morph, float_to_hex_int32(duration_to_set))
-
-    def obsolete_interact_data(self):
-        self.pine.write_int32(self.addresses.GameStates[Game.interact_data.value], 0x0)
 
     def give_collectable(self, address_name : str, amount : int | float = 0x1, maximum : int | float = 0x0):
         address : int = self.addresses.GameStates[address_name]
@@ -507,6 +509,25 @@ class AEPS2Interface:
         # Ranges from 0 to 30 in vanilla game.
         value_as_float: float = hex_int32_to_float(value) + amount
         value = float_to_hex_int32(value_as_float)
+        self.pine.write_int32(address, value)
+
+    def set_morph_gauge_charge(self, amount : float = 0.0):
+        # Check recharge state first
+        address: int = self.addresses.GameStates[Game.morph_gauge_recharge.value]
+
+        # Ranges from 0 to 100 for every Morph Stock, with a maximum of 1100 for all 10 Stocks filled.
+        value_as_int: int = float_to_hex_int32(amount)
+
+        self.pine.write_int32(address, value_as_int)
+
+    def set_morph_gauge_timer(self, amount : float = 0.0):
+        address = self.follow_pointer_chain(self.addresses.GameStates[Game.morph_gauge_active.value],
+                                            Game.morph_gauge_active.value)
+
+        if address == 0x0:
+            return
+
+        value = float_to_hex_int32(amount)
         self.pine.write_int32(address, value)
 
     def capture_monkey(self, name : str):
