@@ -150,7 +150,7 @@ class LogicPreference:
     entrance_rules : dict[str, Rulesets] = {}
 
     default_critical_rule : Set[Callable] = [AccessRule.CATCH]
-    small_starting_channels : list[int] = [6, 15, 18, 20, 22, 23]
+    small_starting_channels : list[int]
     final_level_rule : Set[Callable] = {AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC,
                                         AccessRule.MAGICIAN, AccessRule.KUNGFU, AccessRule.HERO, AccessRule.MONKEY}
 
@@ -223,7 +223,7 @@ class Hard(LogicPreference):
     def __init__(self):
         super().__init__()
 
-        self.small_starting_areas = [6, 18, 20, 22, 23]
+        self.small_starting_channels = [6, 18, 20, 22, 23]
 
         self.monkey_rules.update({
             # Seaside
@@ -570,7 +570,7 @@ class Normal(Hard):
     def __init__(self):
         super().__init__()
 
-        self.small_starting_areas = [6, 9, 11, 15, 18, 20, 22, 23]
+        self.small_starting_channels = [6, 9, 11, 15, 18, 20, 22, 23]
 
         self.monkey_rules.update({
             # Seaside
@@ -816,7 +816,7 @@ class Casual(Normal):
     def __init__(self):
         super().__init__()
 
-        self.small_starting_areas = [6, 9, 11, 13, 15, 18, 20, 22, 23]
+        self.small_starting_channels = [6, 9, 11, 13, 15, 18, 20, 22, 23]
 
         self.monkey_rules.update({
             # Woods

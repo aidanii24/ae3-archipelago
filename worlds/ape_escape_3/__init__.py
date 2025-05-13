@@ -207,7 +207,7 @@ class AE3World(World):
             self.multiworld.push_precollected(equipment[self.options.Starting_Morph - 1])
             del equipment[self.options.Starting_Morph - 1]
 
-        # Remove any Gadgets specified in Starting Inventory
+        # Remove any Morphs specified in Starting Inventory
         equipment = [ morph for morph in equipment if morph.name not in self.options.start_inventory]
 
         self.item_pool += [*equipment]

@@ -184,6 +184,22 @@ class AEPS2Interface:
     def get_cookies(self) -> float:
         return hex_int32_to_float(self.pine.read_int32(self.addresses.GameStates[Game.cookies.value]))
 
+    def is_equipment_unlocked(self, address_name : str) -> bool:
+        # Redirect address to RC Car if the unlocked equipment is an RC Car Chassis
+        if "Chassis" in address_name:
+            is_variant_unlocked = self.is_chassis_unlocked(address_name)
+            address_name = Itm.gadget_rcc.value
+        else:
+            is_variant_unlocked = True
+
+        return self.pine.read_int32(self.addresses.Items[address_name]) == 0x2 and is_variant_unlocked
+
+    def is_chassis_unlocked(self, chassis_name : str) -> bool:
+        if chassis_name not in Itm.get_chassis_by_id():
+            return True
+
+        return self.pine.read_int8(self.addresses.Items[chassis_name]) == 0x1
+
     def get_morph_duration(self, character : int = 0) -> float:
         return self.pine.read_int32(self.addresses.get_morph_duration_addresses(character)[0])
 
@@ -358,7 +374,7 @@ class AEPS2Interface:
 
         self.pine.write_int32(self.addresses.Items[address_name], 0x2)
 
-        if auto_equip and not is_equipped:
+        if auto_equip and not is_equipped and address_name in Itm.get_gadgets_ordered():
             self.auto_equip(self.addresses.get_gadget_id(address))
 
     def unlock_chassis(self, address_name : str) -> bool:

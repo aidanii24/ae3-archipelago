@@ -276,12 +276,25 @@ class ProgressionMode:
         random.shuffle(new_order)
 
         self.small_starting_channels = world.logic_preference.small_starting_channels.copy()
+        print(self.small_starting_channels)
 
         # Do not allow Bosses or problematic levels to be in the first few levels
         while (len(set(new_order[:5]).intersection(self.small_starting_channels)) > 0 or
                len(set(new_order[:3]).intersection([*self.boss_indices, *self.small_starting_channels])) > 0):
-            random.shuffle(new_order)
+            blacklists : list[int] = [*self.small_starting_channels, *self.boss_indices]
+            for idx, level in enumerate(new_order):
+                if idx > 3:
+                    blacklists = [*self.small_starting_channels]
 
+                swap : int = -1
+                swap_idx : int = -1
+                while swap < 0 or swap in blacklists:
+                    swap_idx = random.randrange(10, 25)
+                    swap = new_order[swap_idx]
+
+                new_order[idx], new_order[swap_idx] = new_order[swap_idx], new_order[idx]
+
+                if idx >= 5: break
         # Re-insert Channels specified to be preserved in their vanilla indices
         if world.options.Preserve_Channel:
             preserve_indices: list[int] = []

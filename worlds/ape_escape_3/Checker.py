@@ -2,7 +2,8 @@ from typing import TYPE_CHECKING, Set, List
 
 from NetUtils import NetworkItem
 
-from .data.Items import ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem, Capacities, AP
+from .data.Items import ACCESSORIES, ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem, Capacities, AP, \
+    EQUIPMENT
 from .data.Strings import Game, Itm, APHelper
 from .data.Addresses import NTSCU
 from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_INDEX, MONKEYS_BOSSES, \
@@ -316,6 +317,42 @@ async def check_items(ctx : 'AE3Context'):
 
         # Save session for everytime there are new items received
         ctx.save_session()
+
+async def resync_important_items(ctx : 'AE3Context'):
+    # Do not resync if no items have been processed at all yet
+    if ctx.last_item_processed_index < 1:
+        return
+
+    equipment : list[EquipmentItem] = [ *EQUIPMENT, *ACCESSORIES ]
+    received_id : list[int] = [ item[0] for item in ctx.items_received ]
+    for equip in equipment:
+        if equip.item_id in received_id:
+            if not ctx.ipc.is_equipment_unlocked(equip.name):
+                ctx.ipc.unlock_equipment(equip.name, ctx.auto_equip)
+
+                # Recheck RC Car Unlock
+                if not ctx.rcc_unlocked and equip.item_id in Itm.get_chassis_by_id():
+                    ctx.rcc_unlocked = True
+
+                # Recheck Water Net Unlock
+                if not ctx.swim_unlocked and equip.name == Itm.gadget_swim.value:
+                    ctx.swim_unlocked = True
+
+                # Recheck Dummy Morphs Status
+                if equip.name == Itm.morph_monkey.value:
+                    if ctx.dummy_morph_monkey_needed:
+                        ctx.dummy_morph_monkey_needed = False
+
+                    if ctx.dummy_morph_needed:
+                        ctx.dummy_morph_needed = False
+                elif ctx.dummy_morph_needed and equip.name in Itm.get_morphs_ordered():
+                    ctx.dummy_morph_needed = False
+
+    # Lock Fantasy Knight when it should not be available in case it remains open after dummy_morph_needed has changed
+    knight_id : int = ctx.items_name_to_id[Itm.morph_knight.value]
+    if knight_id not in received_id and not ctx.dummy_morph_needed and ctx.ipc.is_equipment_unlocked(
+            Itm.morph_knight.value):
+        ctx.ipc.lock_equipment(Itm.morph_knight.value)
 
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()

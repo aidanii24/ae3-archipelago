@@ -61,7 +61,7 @@ def create_regions(world : "AE3World"):
 
         # Skip stage if Monkeysanity Break Rooms is enabled and the stage is a break room.
         # It should be safe to skip outright since there are no break rooms with Cameras or Cellphones in them.
-        if add_break_rooms and stage in STAGES_BREAK_ROOMS:
+        if not add_break_rooms and stage in STAGES_BREAK_ROOMS:
             continue
 
         ## Monkeys

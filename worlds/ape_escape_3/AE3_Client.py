@@ -39,7 +39,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
             if self.ctx.server:
                 logger.info(f"{
-                            "         Playing Ape Escape 3" if self.ctx.is_connected 
+                            "         Playing Ape Escape 3" if self.ctx.is_game_connected 
                             else "         No Game Detected"
                             }")
                 logger.info(f"         Goal Target is " 
@@ -177,7 +177,8 @@ class AE3Context(CommonContext):
 
     # Interface Properties
     ipc : AEPS2Interface = AEPS2Interface
-    is_connected : bool = ConnectionStatus.DISCONNECTED
+    is_game_connected : bool = ConnectionStatus.DISCONNECTED
+    has_just_connected : bool = False
     interface_sync_task : asyncio.tasks = None
     last_message : Optional[str] = None
 
@@ -226,7 +227,6 @@ class AE3Context(CommonContext):
     swim_unlocked : bool = False
     dummy_morph_needed : bool = True
     dummy_morph_monkey_needed : bool = True
-    morphs_unlocked : list[bool] = [False for _ in range(7)]
 
     game_goaled : bool = False
 
@@ -642,15 +642,16 @@ class AE3Context(CommonContext):
 
 
 def update_connection_status(ctx : AE3Context, status : bool):
-    if ctx.is_connected == status:
+    if ctx.is_game_connected == status:
         return
 
     if status:
+        ctx.has_just_connected = True
         logger.info(APConsole.Info.init_game.value)
     else:
         logger.info(APConsole.Err.sock_fail.value + APConsole.Err.sock_re.value)
 
-    ctx.is_connected = status
+    ctx.is_game_connected = status
 
 # Main Client Loop
 async def main_sync_task(ctx : AE3Context):
@@ -734,6 +735,11 @@ async def check_game(ctx : AE3Context):
         # Check Progression
         await check_items(ctx)
         await check_locations(ctx)
+
+        # Revoke has just connected (of Game) status once the first checks are done
+        if ctx.has_just_connected:
+            await resync_important_items(ctx)
+            ctx.has_just_connected = False
 
         # Sleep functions keep the client from being unresponsive
         await asyncio.sleep(0.5)
