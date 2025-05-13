@@ -84,21 +84,32 @@ async def setup_level_select(ctx : 'AE3Context'):
             ctx.ipc.release_monkey(monkey)
 
     progress : str = ctx.ipc.get_progress()
-    selected_stage: int = ctx.ipc.get_selected_channel()
+    selected_channel: int = ctx.ipc.get_selected_channel()
 
     # In case player scrolls beyond intended levels before unlocked stages are enforced,
     # force selected level to be the latest unlocked stage,
     # except if when a level is to be swapped due to channel shuffle
-    if selected_stage > ctx.unlocked_channels and not is_a_level_confirmed:
+    if selected_channel > ctx.unlocked_channels and not is_a_level_confirmed:
         ctx.ipc.set_selected_channel(ctx.unlocked_channels)
 
     # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
     if ctx.ipc.is_on_warp_gate():
+        # Set to last slot (not the id of the level randomized) for convenience and consistency
+        print(ctx.last_selected_channel_index)
+        print("[?] Should Set to Last Slot?", 0 <= ctx.last_selected_channel_index,
+              ctx.last_selected_channel_index <= ctx.unlocked_channels,
+              not is_a_level_confirmed)
+        if 0 <= ctx.last_selected_channel_index <= ctx.unlocked_channels and not is_a_level_confirmed:
+            print("[>] Setting Channel to Previous Slot...")
+            ctx.ipc.set_selected_channel(ctx.last_selected_channel_index)
+            ctx.last_selected_channel_index = -1
+            selected_channel = ctx.ipc.get_selected_channel()
+
         # Dr. Tomoki Battle!
-        if selected_stage == 0x18:
+        if selected_channel == 0x18:
             ctx.ipc.set_progress(APHelper.pr_boss6.value)
         # Specter Battle!
-        elif selected_stage == 0x1A:
+        elif selected_channel == 0x1A:
             ctx.ipc.set_progress(APHelper.pr_specter1.value)
         elif progress != APHelper.pr_round2.value:
             ctx.ipc.set_progress()
@@ -147,7 +158,11 @@ async def setup_level_select(ctx : 'AE3Context'):
 
         # If Channel Shuffle is enabled, force switch the game to load the randomized channel
         if ctx.shuffle_channel and not ctx.is_channel_swapped:
-            ctx.ipc.set_selected_channel(min(ctx.progression.order[ctx.ipc.get_selected_channel()], 0x1B))
+            if ctx.last_selected_channel_index < 0:
+                print("[<] Saving last selected channel...")
+                ctx.last_selected_channel_index = selected_channel
+
+            ctx.ipc.set_selected_channel(min(ctx.progression.order[selected_channel], 0x1B))
             ctx.is_channel_swapped = True
 
         # Toggle Freeplay when allowed and needed
@@ -176,7 +191,6 @@ async def setup_area(ctx : 'AE3Context'):
 
         # Lock in case of Quick Morph Glitch (Intentionally by the player, or due to the nature of this client)
         if not is_reset and not ctx.ipc.is_equipment_unlocked(Itm.get_morphs_ordered()[current_morph_id - 1]):
-            print(ctx.ipc.is_equipment_unlocked(Itm.get_morphs_ordered()[current_morph_id - 1]))
             ctx.ipc.set_morph_gauge_timer()
 
     # Check Screen Fading State in-game
@@ -413,7 +427,6 @@ async def check_locations(ctx : 'AE3Context'):
                         are_actors_ready = are_actors_ready and not ctx.ipc.is_monkey_captured(actor)
 
                 if are_actors_ready:
-                    print("[^] Actors are Ready!")
                     location_id : int = ctx.locations_name_to_id[CAMERAS_STAGE_INDEX[ctx.current_stage]]
                     cleared.add(location_id)
                     volatile_cleared.add(location_id)

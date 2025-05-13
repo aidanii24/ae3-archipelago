@@ -207,6 +207,7 @@ class AE3Context(CommonContext):
     unlocked_channels : int = 0
     current_channel: str = None
     current_stage : str = None
+    last_selected_channel_index : int = -1
     character : int = -1
     player_control : bool = False
 
