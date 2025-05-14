@@ -235,11 +235,12 @@ class Rulesets:
         if not self.rules:
             return True
 
-        reachable: bool = False
+        reachable: bool = True
 
         for rulesets in self.rules:
-            if all(rule(state, player) for rule in rulesets if isinstance(rule, Callable)):
-                reachable = True
+            reachable = all(rule(state, player) for rule in rulesets)
+
+            if reachable:
                 break
 
         return reachable

@@ -50,8 +50,8 @@ def create_regions(world : "AE3World"):
         else:
             continue
 
-        if entrance.name in LogicPreference.entrance_rules:
-            ruleset = LogicPreference.entrance_rules[entrance.name]
+        if entrance.name in world.logic_preference.entrance_rules:
+            ruleset = world.logic_preference.entrance_rules[entrance.name]
 
         establish_entrance(world.player, entrance.name, parent, destination, ruleset)
 
