@@ -797,6 +797,10 @@ class Normal(Hard):
             Stage.entrance_asia_b2b.value       : Rulesets(AccessRule.HIT),
 
             # Plane
+            Stage.entrance_plane_b1h.value      : Rulesets(AccessRule.RCC, AccessRule.HERO),
+            Stage.entrance_plane_hb1.value      : Rulesets(AccessRule.RCC, AccessRule.HERO),
+            Stage.entrance_plane_b1b2.value     : Rulesets(AccessRule.RCC, AccessRule.HERO),
+            Stage.entrance_plane_b2b1.value     : Rulesets(AccessRule.RCC, AccessRule.HERO),
             Stage.entrance_plane_de.value       : Rulesets(AccessRule.HIT),
 
             # Bay
@@ -1105,10 +1109,6 @@ class Casual(Normal):
 
             # Plane
             Stage.entrance_plane_de.value       : Rulesets(AccessRule.ATTACK),
-            Stage.entrance_plane_b1h.value      : Rulesets(AccessRule.RCC, AccessRule.HERO),
-            Stage.entrance_plane_hb1.value      : Rulesets(AccessRule.RCC, AccessRule.HERO),
-            Stage.entrance_plane_b1b2.value     : Rulesets(AccessRule.RCC, AccessRule.HERO),
-            Stage.entrance_plane_b2b1.value     : Rulesets(AccessRule.RCC, AccessRule.HERO),
 
             # Hong
             Stage.entrance_hong_aa1.value       : Rulesets(AccessRule.KUNGFU),
