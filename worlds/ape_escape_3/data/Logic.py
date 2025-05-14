@@ -279,20 +279,30 @@ class ProgressionMode:
         print(self.small_starting_channels)
 
         # Do not allow Bosses or problematic levels to be in the first few levels
-        while (len(set(new_order[:5]).intersection(self.small_starting_channels)) > 0 or
+        if (len(set(new_order[:5]).intersection(self.small_starting_channels)) > 0 or
                len(set(new_order[:3]).intersection([*self.boss_indices, *self.small_starting_channels])) > 0):
             blacklists : list[int] = [*self.small_starting_channels, *self.boss_indices]
+            swap_indexes : list[int] = [ _ for _ in range(10, 25) if new_order[_] not in blacklists ]
             for idx, level in enumerate(new_order):
-                if idx > 3:
+                if level not in blacklists:
+                    continue
+
+                if idx > 3 and len(blacklists) > len(self.small_starting_channels):
                     blacklists = [*self.small_starting_channels]
 
                 swap : int = -1
                 swap_idx : int = -1
                 while swap < 0 or swap in blacklists:
-                    swap_idx = random.randrange(10, 25)
+                    if not swap_indexes:
+                        break
+
+                    swap_idx = random.choice(swap_indexes)
                     swap = new_order[swap_idx]
 
                 new_order[idx], new_order[swap_idx] = new_order[swap_idx], new_order[idx]
+
+                if swap_idx in swap_indexes:
+                    swap_indexes.remove(swap_idx)
 
                 if idx >= 5: break
         # Re-insert Channels specified to be preserved in their vanilla indices
