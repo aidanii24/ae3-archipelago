@@ -1,14 +1,12 @@
 from typing import ClassVar, List, Optional
-import warnings
-
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 from BaseClasses import MultiWorld, Tutorial
 import settings
 
 from .data.Items import AE3Item, AE3ItemMeta, ITEMS_MASTER, Nothing, generate_collectables
-from .data.Locations import MONKEYS_BOSSES, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED, \
-    MONKEYS_PASSWORDS
+from .data.Locations import Cellphone_Name_to_ID, MONKEYS_BOSSES, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, \
+    CELLPHONES_MASTER_ORDERED, MONKEYS_PASSWORDS
 from .data.Stages import STAGES_BREAK_ROOMS
 from .data.Rules import GoalTarget, GoalTargetOptions, LogicPreference, LogicPreferenceOptions, PostGameAccessRule, \
     PostGameAccessRuleOptions
@@ -128,13 +126,17 @@ class AE3World(World):
         self.goal_target = GoalTargetOptions[self.options.Goal_Target.value](exclude_regions, exclude_locations)
 
         # When Channels are shuffled, exclude locations from the channel randomized into the post-game slot
-        exclude_locations.extend(MONKEYS_MASTER_ORDERED[self.progression.order[-1]])
-        exclude_locations.append(CAMERAS_MASTER_ORDERED[self.progression.order[-1]])
-        exclude_locations.extend(CELLPHONES_MASTER_ORDERED[self.progression.order[-1]])
+        for x in range(self.progression.progression[-1]):
+            exclude_locations.extend(MONKEYS_MASTER_ORDERED[self.progression.order[-(x + 1)]])
+            exclude_locations.append(CAMERAS_MASTER_ORDERED[self.progression.order[-(x + 1)]])
+
+            excluded_phones_id : list[str] = CELLPHONES_MASTER_ORDERED[self.progression.order[-(x + 1)]]
+            exclude_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
 
         # Active Monkeys options should respect Monkeysanity options
         if self.options.Post_Game_Access_Rule == 1 and not self.options.Monkeysanity_BreakRooms:
             exclude_regions.extend([*STAGES_BREAK_ROOMS])
+
         # If Specter is a Post Game Access Rule, and he gets shuffled to become the post game channel, change the
         # required location to the next penultimate placed boss
         elif (self.options.Post_Game_Access_Rule >= 4 and
@@ -149,9 +151,8 @@ class AE3World(World):
                         additional_locations.append(MONKEYS_BOSSES[self.progression.boss_indices.index(level)])
                         break
 
-        self.post_game_access_rule = PostGameAccessRuleOptions[self.options.Post_Game_Access_Rule](exclude_regions,
-                                                                                                   exclude_locations,
-                                                                                                   additional_locations)
+        self.post_game_access_rule = (PostGameAccessRuleOptions[self.options.Post_Game_Access_Rule](
+                                        exclude_regions, exclude_locations, additional_locations))
         self.item_pool = []
 
     def create_regions(self):

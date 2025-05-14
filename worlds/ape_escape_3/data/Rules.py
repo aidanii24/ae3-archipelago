@@ -155,7 +155,9 @@ class LogicPreference:
                                         AccessRule.MAGICIAN, AccessRule.KUNGFU, AccessRule.HERO, AccessRule.MONKEY}
 
     def __init__(self):
-        pass
+        self.monkey_rules : dict[str, Rulesets] = {}
+        self.event_rules : dict[str, Rulesets] = {}
+        self.entrance_rules : dict[str, Rulesets] = {}
 
     # Get all Access Rules within the channel
     def get_channel_clear_rules(self, *regions : str) -> Rulesets:
@@ -203,7 +205,6 @@ class LogicPreference:
                         req -= 1
 
                     final_rule : list[Callable] = [has_keys(req)]
-                    final_rule.extend(self.final_level_rule)
 
                     if post_game_rules:
                         final_rule.append(*post_game_rules)
