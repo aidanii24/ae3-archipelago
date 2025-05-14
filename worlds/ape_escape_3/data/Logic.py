@@ -276,7 +276,6 @@ class ProgressionMode:
         random.shuffle(new_order)
 
         self.small_starting_channels = world.logic_preference.small_starting_channels.copy()
-        print(self.small_starting_channels)
 
         # Do not allow Bosses or problematic levels to be in the first few levels
         if (len(set(new_order[:5]).intersection(self.small_starting_channels)) > 0 or
