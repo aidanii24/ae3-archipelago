@@ -6,7 +6,6 @@ from .data.Stages import STAGES_BREAK_ROOMS, STAGES_DIRECTORY, STAGES_MASTER, EN
 from .data.Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, CameraLocation, CellphoneLocation, \
     EventMeta, MONKEYS_PASSWORDS, MonkeyLocation, MONKEYS_INDEX, EVENTS_INDEX
 from .data.Logic import Rulesets
-from .data.Rules import LogicPreference
 
 if TYPE_CHECKING:
     from . import AE3World
