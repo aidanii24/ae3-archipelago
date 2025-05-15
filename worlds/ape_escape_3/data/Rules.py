@@ -1021,7 +1021,7 @@ class Casual(Normal):
 
             # Ciscocity
             Stage.entrance_ciscocity_ab.value   : Rulesets(AccessRule.ATTACK),
-            Stage.entrance_ciscocity_ce.value   : Rulesets([AccessRule.MONKEY, AccessRule.MONKEY]),
+            Stage.entrance_ciscocity_ce.value   : Rulesets([AccessRule.MONKEY, AccessRule.ATTACK]),
 
             # Studio
             Stage.entrance_studio_d1d.value     : Rulesets(AccessRule.ATTACK, AccessRule.GLIDE),
