@@ -381,6 +381,7 @@ class Hard(LogicPreference):
             Stage.entrance_halloween_d1e.value  : Rulesets(AccessRule.MONKEY),
 
             # Western
+            Stage.entrance_western_ee1.value    : Rulesets(AccessRule.GLIDE, AccessRule.SHOOT, AccessRule.KUNGFU),
             Stage.entrance_western_ec.value     : Rulesets(AccessRule.MONKEY),
 
             # Onsen
@@ -760,6 +761,7 @@ class Normal(Hard):
             Stage.entrance_western_dd2.value    : Rulesets(AccessRule.HIT),
             Stage.entrance_western_d1d2.value   : Rulesets(AccessRule.HIT),
             Stage.entrance_western_d2d.value    : Rulesets(AccessRule.HIT),
+            Stage.entrance_western_ee1.value    : Rulesets(AccessRule.GLIDE, AccessRule.SHOOT),
             Stage.entrance_western_ed1.value    : Rulesets(AccessRule.HIT),
 
             # Onsen
