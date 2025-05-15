@@ -255,8 +255,8 @@ class ProgressionMode:
     order : list[int] = None
     level_select_entrances : list[AE3EntranceMeta] = None
 
-    boss_indices : Sequence[int] = [ 3, 8, 12, 17, 21, 24, 26, 27]
-    small_starting_channels : Sequence[int] = [6, 9, 11, 13, 15, 18, 20, 22, 23]
+    boss_indices : Sequence[int] = [ 3, 8, 12, 17, 21, 24, 26, 27 ]
+    small_starting_channels : Sequence[int] = [ 6, 9, 11, 13, 15, 18, 20, 22, 23 ]
 
     def __init__(self):
         self.progression = self.progression
