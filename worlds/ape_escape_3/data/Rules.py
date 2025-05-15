@@ -111,13 +111,13 @@ class GoalTarget:
         checks : int = 0
         for location in self.locations:
             if not state.can_reach_location(location, player):
-                return False
+                continue
 
             checks += 1
             if checks >= self.amount:
                 return True
 
-        return True
+        return False
 
     def as_access_rule(self) -> Callable[[CollectionState, int], bool]:
         return lambda state, player : self.verify(state, player)
@@ -1278,13 +1278,13 @@ class ChannelKey(PostGameAccessRule):
         checks : int = 0
         for boss in MONKEYS_BOSSES:
             if not state.can_reach_location(boss, player):
-                return False
+                continue
 
             checks += 1
             if checks >= 6:
                 return True
 
-        return True
+        return False
 
 class AfterEnd(ChannelKey):
     name = "After End"
