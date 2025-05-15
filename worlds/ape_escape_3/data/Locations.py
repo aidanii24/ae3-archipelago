@@ -182,7 +182,7 @@ MONKEYS_CISCOCITY_B : Sequence[str] = [
     Loc.ciscocity_sabu_sabu.value, Loc.ciscocity_ginjiro.value, Loc.ciscocity_kichiemon.value
 ]
 
-MONKEYS_CISCOCITY_C1 : Sequence[str] = [
+MONKEYS_CISCOCITY_C : Sequence[str] = [
     Loc.ciscocity_ukkilun.value
 ]
 
@@ -197,7 +197,7 @@ MONKEYS_CISCOCITY_E : Sequence[str] = [
 ]
 
 MONKEYS_CISCOCITY : Sequence[str] = [
-    *MONKEYS_CISCOCITY_A, *MONKEYS_CISCOCITY_B, *MONKEYS_CISCOCITY_C1, *MONKEYS_CISCOCITY_D, *MONKEYS_CISCOCITY_E,
+    *MONKEYS_CISCOCITY_A, *MONKEYS_CISCOCITY_B, *MONKEYS_CISCOCITY_C, *MONKEYS_CISCOCITY_D, *MONKEYS_CISCOCITY_E,
 ]
 
 # Studio
@@ -1029,7 +1029,7 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     # Ciscocity
     Stage.region_ciscocity_a.value      : MONKEYS_CISCOCITY_A,
     Stage.region_ciscocity_b.value      : MONKEYS_CISCOCITY_B,
-    Stage.region_ciscocity_c1.value     : MONKEYS_CISCOCITY_C1,
+    Stage.region_ciscocity_c.value      : MONKEYS_CISCOCITY_C,
     Stage.region_ciscocity_d.value      : MONKEYS_CISCOCITY_D,
     Stage.region_ciscocity_e.value      : MONKEYS_CISCOCITY_E,
 
