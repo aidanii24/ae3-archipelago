@@ -431,7 +431,7 @@ class Hard(LogicPreference):
             Stage.entrance_arabian_cc1.value    : Rulesets(event_invoked(Events.arabian_c_golden_mon.value)),
             Stage.entrance_arabian_c1c.value    : Rulesets(event_invoked(Events.arabian_c_golden_mon.value)),
             Stage.entrance_arabian_bg.value     : Rulesets(event_invoked(Events.arabian_g_exit.value)),
-            Stage.entrance_arabian_bf.value     : Rulesets(event_invoked(Events.arabian_g_exit.value)),
+            Stage.entrance_arabian_bf.value     : Rulesets(AccessRule.MONKEY),
             Stage.entrance_arabian_e1e.value    : Rulesets(AccessRule.MAGICIAN),
 
             # Asia

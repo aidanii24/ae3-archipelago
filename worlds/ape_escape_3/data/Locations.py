@@ -1151,7 +1151,7 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.region_asia_b2.value          : MONKEYS_ASIA_B2,
     Stage.region_asia_d.value           : MONKEYS_ASIA_D,
     Stage.region_asia_d2.value          : MONKEYS_ASIA_D2,
-    Stage.region_asia_e1.value          : MONKEYS_ASIA_E,
+    Stage.region_asia_e.value           : MONKEYS_ASIA_E,
     Stage.region_asia_e2.value          : MONKEYS_ASIA_E2,
     Stage.region_asia_f.value           : MONKEYS_ASIA_F,
 
