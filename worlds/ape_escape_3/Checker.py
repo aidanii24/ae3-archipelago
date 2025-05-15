@@ -92,6 +92,9 @@ async def setup_level_select(ctx : 'AE3Context'):
     if selected_channel > ctx.unlocked_channels and not is_a_level_confirmed:
         ctx.ipc.set_selected_channel(ctx.unlocked_channels)
 
+        if ctx.last_selected_channel_index > ctx.unlocked_channels:
+            ctx.last_selected_channel_index = ctx.unlocked_channels
+
     # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
     if ctx.ipc.is_on_warp_gate():
         # Set to last slot (not the id of the level randomized) for convenience and consistency
