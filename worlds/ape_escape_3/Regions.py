@@ -23,14 +23,14 @@ def establish_entrance(player : int, name : str, parent_region : Region, destina
     entrance.connect(destination)
 
 def create_regions(world : "AE3World"):
-    world.logic_preference.set_level_progression_rules(world.progression, world.options.Post_Game_Access_Rule.value,
-     [world.post_game_access_rule.as_access_rule()])
+    world.logic_preference.set_level_progression_rules(world.progression, world.options.Post_Game_Condition.value,
+                                                       [world.post_game_access_rule.as_access_rule()])
 
     add_cameras : bool = (world.options.Camerasanity or world.options.Goal_Target == 5 or
-                          world.options.Post_Game_Access_Rule == 2)
+                          world.options.Post_Game_Condition == 2)
     add_cellphones : bool = (world.options.Cellphonesanity or world.options.Goal_Target == 6 or
-                             world.options.Post_Game_Access_Rule == 3)
-    add_break_rooms : bool = world.options.Monkeysanity_BreakRooms.value or world.options.Post_Game_Access_Rule == 0
+                             world.options.Post_Game_Condition == 3)
+    add_break_rooms : bool = world.options.Monkeysanity_BreakRooms.value or world.options.Post_Game_Condition == 0
 
     # Initialize Regions
     stages : dict[str, Region] = { name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER }

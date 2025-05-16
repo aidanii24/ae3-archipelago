@@ -320,7 +320,7 @@ class AE3Options(PerGameCommonOptions):
     Progression_Mode        : ProgressionMode
     Logic_Preference        : LogicPreference
     Goal_Target             : GoalTarget
-    Post_Game_Access_Rule   : PostGameAccessRule
+    Post_Game_Condition     : PostGameAccessRule
     Shuffle_Channel         : ShuffleChannel
     Preserve_Channel        : PreserveChannel
     Monkeysanity            : Monkeysanity

@@ -134,12 +134,12 @@ class AE3World(World):
             exclude_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
 
         # Active Monkeys options should respect Monkeysanity options
-        if self.options.Post_Game_Access_Rule == 1 and not self.options.Monkeysanity_BreakRooms:
+        if self.options.Post_Game_Condition == 1 and not self.options.Monkeysanity_BreakRooms:
             exclude_regions.extend([*STAGES_BREAK_ROOMS])
 
         # If Specter is a Post Game Access Rule, and he gets shuffled to become the post game channel, change the
         # required location to the next penultimate placed boss
-        elif (self.options.Post_Game_Access_Rule >= 4 and
+        elif (self.options.Post_Game_Condition >= 4 and
               self.progression.order[-1] == self.progression.boss_indices[-2]):
             if MONKEYS_BOSSES[-2] in exclude_locations:
                 exclude_locations.remove(MONKEYS_BOSSES[-2])
@@ -151,7 +151,7 @@ class AE3World(World):
                         additional_locations.append(MONKEYS_BOSSES[self.progression.boss_indices.index(level)])
                         break
 
-        self.post_game_access_rule = (PostGameAccessRuleOptions[self.options.Post_Game_Access_Rule](
+        self.post_game_access_rule = (PostGameAccessRuleOptions[self.options.Post_Game_Condition](
                                         exclude_regions, exclude_locations, additional_locations))
         self.item_pool = []
 

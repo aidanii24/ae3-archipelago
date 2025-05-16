@@ -347,11 +347,11 @@ class ProgressionMode:
         amount: int = len(self.progression) - 1
 
         # Reduce Generated Keys for PostGameAccessRules other than "Channel Key"
-        if world.options.Post_Game_Access_Rule < 4:
+        if world.options.Post_Game_Condition < 4:
             amount -= 1
         # Reduce Generate Key for PostGameAccessRule "After End" and place it on the second to the last boss
         # (Which in Vanilla order, is always Specter 1
-        elif world.options.Post_Game_Access_Rule == 5:
+        elif world.options.Post_Game_Condition == 5:
             amount -= 1
 
             bosses_in_order : list[int] = [ level for level in self.order if level in self.boss_indices ]
@@ -451,13 +451,13 @@ class Group(ProgressionMode):
         amount: int = len(self.progression) - 1
 
         # Reduce Generated Keys for PostGameAccessRules other than "Channel Key"
-        if world.options.Post_Game_Access_Rule != 4:
+        if world.options.Post_Game_Condition != 4:
             amount -= 1
 
         bosses_in_order : list = [ self.boss_indices.index(boss) for boss in self.order if boss in self.boss_indices ]
 
         # When the PostGameAccessRule is "After End", place keys up until the penultimate boss instead
-        processed : int = -1 if world.options.Post_Game_Access_Rule == 5 else 0
+        processed : int = -1 if world.options.Post_Game_Condition == 5 else 0
         for boss in bosses_in_order[:len(bosses_in_order)]:
             # Skip if this boss is in the post-game channel
             if self.order[-1] == boss:
