@@ -62,7 +62,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
                 logger.info(f"\n         Progression: {self.ctx.progression}")
                 logger.info(f"         Channel Keys: {self.ctx.keys} / {all_keys}")
-                logger.info(f"         Available Levels: {self.ctx.unlocked_channels + 1} / 28")
+                logger.info(f"         Available Channels: {self.ctx.unlocked_channels + 1} / 28")
                 for level in range(min(self.ctx.unlocked_channels + 1, len(LEVELS_BY_ORDER))):
                     logger.info(f"         [ {level + 1} ] "
                                 f"{LEVELS_BY_ORDER[self.ctx.progression.order[min(level, len(LEVELS_BY_ORDER) - 1)]]}")
@@ -83,6 +83,19 @@ class AE3CommandProcessor(ClientCommandProcessor):
             logger.info(f"         DeathLink is " 
                         f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
 
+    def _cmd_channels(self):
+        if not isinstance(self.ctx, AE3Context):
+            return
+
+        if not self.ctx.server or not self.ctx.progression:
+            logger.info(f" [!!!] Please connect to an Archipelago Server first!")
+            return
+
+        logger.info(f" [-#-] Available Channels: {self.ctx.unlocked_channels + 1} / 28")
+        for level in range(min(self.ctx.unlocked_channels + 1, len(LEVELS_BY_ORDER))):
+            logger.info(f"         [ {level + 1} ] "
+                        f"{LEVELS_BY_ORDER[self.ctx.progression.order[min(level, len(LEVELS_BY_ORDER) - 1)]]}")
+
     def _cmd_remaining(self):
         """List remaining locations to check to Goal."""
         if not isinstance(self.ctx, AE3Context):
@@ -90,11 +103,44 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
         if not self.ctx.server or not self.ctx.goal_target:
             logger.info(f" [!!!] Please connect to an Archipelago Server first!")
+            return
         elif self.ctx.game_goaled:
             logger.info(f" [-!-] You have already Goaled! You have no more remaining checks!")
+            return
 
-        logger.info(f" [-!-] Remaining Target Locations:")
+        logger.info(f" [-^-] Goal Target Progress: "
+                    f"{str(self.ctx.goal_target.get_progress(self.ctx))} / "
+                    f"{self.ctx.goal_target.amount}")
+
+        logger.info(f" Remaining Potential Goal Target Locations:")
         remaining : list[str] = self.ctx.goal_target.get_remaining(self.ctx)
+
+        for location in remaining:
+            logger.info(f"         > " f"{location}")
+
+    def _cmd_remaining_post_game(self):
+        """List remaining locations to check to unlock Post-Game."""
+        if not isinstance(self.ctx, AE3Context):
+            return
+
+        if not self.ctx.server or not self.ctx.post_game_access_rule:
+            logger.info(f" [!!!] Please connect to an Archipelago Server first!")
+            return
+        elif self.ctx.game_goaled:
+            logger.info(f" [-!-] You have already Goaled! You have no more remaining checks!")
+            return
+
+        remaining: list[str] = self.ctx.post_game_access_rule.get_remaining(self.ctx)
+
+        if not remaining:
+            logger.info(f" [-!-] You have already unlocked Post-Game!")
+            return
+
+        logger.info(f" [->-] Post Game Condition Progress: "
+                    f"{str(self.ctx.post_game_access_rule.get_progress(self.ctx))} / "
+                    f"{self.ctx.post_game_access_rule.amount}")
+
+        logger.info(f" Remaining Potential Post Game Condition Locations:")
 
         for location in remaining:
             logger.info(f"         > " f"{location}")
@@ -248,6 +294,7 @@ class AE3Context(CommonContext):
     post_game_access_rule : PostGameAccessRule = PostGameAccessRule()
     shuffle_channel : bool = False
     dummy_morph : str = Itm.morph_monkey.value
+    check_break_rooms : bool = False
     camerasanity : int = None
     cellphonesanity : bool = None
 
@@ -302,6 +349,9 @@ class AE3Context(CommonContext):
         if cmd == APHelper.cmd_conn.value:
             data = args[APHelper.arg_sl_dt.value]
 
+            ## Reset Variables
+            self.check_break_rooms = False
+
             ## Load Local Session Save if present
             if self.check_session_save():
                 self.load_session()
@@ -332,7 +382,7 @@ class AE3Context(CommonContext):
                 self.post_game_access_rule_option = data[APHelper.post_game_access_rule.value]
 
             ## Check Break Room Monkeys and Password Monkeys options to use with Goal Target
-            add_break_rooms : bool = self.post_game_access_rule_option == 0
+            self.check_break_rooms : bool = self.check_break_rooms or self.post_game_access_rule_option == 0
 
             excluded_stages : list[str] = []
             excluded_locations : list[str] = [*MONKEYS_PASSWORDS]
@@ -340,12 +390,12 @@ class AE3Context(CommonContext):
 
             ## Monkeysanity - Break Rooms
             if APHelper.monkeysanitybr.value in data:
-                add_break_rooms = add_break_rooms or bool(data[APHelper.monkeysanitybr.value])
+                self.check_break_rooms = self.check_break_rooms or bool(data[APHelper.monkeysanitybr.value])
 
                 if data[APHelper.monkeysanitybr.value] < 2:
                     self.dummy_morph = Itm.morph_knight.value
 
-            if not add_break_rooms:
+            if not self.check_break_rooms:
                 excluded_stages = [*STAGES_BREAK_ROOMS]
 
             ## Goal Target

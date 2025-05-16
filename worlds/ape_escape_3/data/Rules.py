@@ -103,9 +103,9 @@ class GoalTarget:
         progressed : set[int] = self.location_ids.intersection(checked)
 
         name_to_id : dict[str, int] = generate_name_to_id()
-        missing : list[str] = [ l for l in self.locations if name_to_id[l] not in progressed]
+        remaining : list[str] = [ l for l in self.locations if name_to_id[l] not in progressed]
 
-        return missing
+        return remaining
 
     def verify(self, state : CollectionState, player : int) -> bool:
         checks : int = 0
@@ -1276,6 +1276,9 @@ class ChannelKey(PostGameAccessRule):
             all_keys -= 1
 
         return int(ctx.keys / all_keys)
+
+    def get_remaining(self, ctx : 'AE3Context') -> list[str]:
+        return ["Channel Key"] if self.get_progress(ctx) != 1 else []
 
     def verify(self, state : CollectionState, player : int) -> bool:
         checks : int = 0

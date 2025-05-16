@@ -6,8 +6,9 @@ from .data.Items import ACCESSORIES, ArchipelagoItem, EquipmentItem, Collectable
     EQUIPMENT
 from .data.Strings import Game, Loc, Itm, APHelper
 from .data.Addresses import NTSCU
-from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_INDEX, MONKEYS_PASSWORDS, \
-                             MONKEYS_BOSSES, MONKEYS_DIRECTORY, Cellphone_Name_to_ID
+from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_INDEX, MONKEYS_BREAK_ROOMS, \
+    MONKEYS_PASSWORDS, \
+    MONKEYS_BOSSES, MONKEYS_DIRECTORY, Cellphone_Name_to_ID
 from .data import Items
 
 if TYPE_CHECKING:
@@ -400,6 +401,9 @@ async def check_locations(ctx : 'AE3Context'):
     # Monkey Check
     for monkey in ctx.monkeys_checklist:
         if monkey in MONKEYS_PASSWORDS:
+            continue
+
+        if not ctx.check_break_rooms and monkey in MONKEYS_BREAK_ROOMS:
             continue
 
         ## Special Case for Tomoki
