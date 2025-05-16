@@ -382,8 +382,9 @@ class AE3Context(CommonContext):
 
             ## Camerasanity
             if self.camerasanity is None and APHelper.camerasanity.value in data:
-                self.camerasanity = (data[APHelper.camerasanity.value] or goal_target == 5 or
-                                     self.post_game_access_rule_option == 2)
+                self.camerasanity = (data[APHelper.camerasanity.value])
+                if self.camerasanity < 1 and (goal_target == 5 or self.post_game_access_rule_option == 2):
+                    self.camerasanity = 1
 
             ## Cellphonesanity
             if self.cellphonesanity is None and APHelper.cellphonesanity.value in data:

@@ -40,13 +40,13 @@ class GoalTarget(Choice):
     Choose what will count as winning the game.
     Default: specter
 
-    > specter - Clear Specter's Battle (End Game)
-    > specter_final - Clear Specter's Final Battle (Post Game)
+    > specter - Clear Specter's Battle (Vanilla End Game)
+    > specter_final - Clear Specter's Final Battle (Vanilla Post Game)
     > triple_threat - Clear 3 Boss stages
     > play_spike - Capture 204 Monkeys
     > play_jimmy - Capture 300 Monkeys
-    > directors_cut - Capture all 20 Monkey Films (this will enable the "Camerasanity" option)
-    > phone_check - Activate all 53 Cellphones (this will enable the "Cellphonesanity" option)
+    > directors_cut - Capture all 20 Monkey Films (This will FORCE set Camerasanity to 'enabled' if disabled)
+    > phone_check - Activate all 53 Cellphones (this will FORCE enable Cellphonesanity)
     """
     display_name : str = "Goal Target"
     default = 0
@@ -67,14 +67,15 @@ class PostGameAccessRule(Choice):
     this level.
     Default: vanilla
 
-    > vanilla - Capture all base and break room monkeys (This will set Monkeysanity - Break Rooms to 'enabled')
+    > vanilla - Capture all base and break room monkeys (This will FORCE set Monkeysanity - Break Rooms to 'enabled',
+    regardless of it the Goal ends up requiring access to Post Game or not)
     > active_monkeys - Capture all monkeys marked as locations
-    > all_cameras - Capture all Monkey Films (This will set Camerasanity to 'enabled')
-    > all_cellphones - Activate all Cellphones (This will set Cellhponesanity to `enabled`)
+    > all_cameras - Capture all Monkey Films (This will FORCE set Camerasanity to 'enabled' if disabled)
+    > all_cellphones - Activate all Cellphones (This will FORCE enable Cellhponesanity)
     > channel_key - Provide an extra channel key to unlock this level
     > after_end - The extra channel key will be placed on the penultimate boss (Specter in Vanilla Channel Order)
     """
-    display_name : str = "Post-Game Access Rule"
+    display_name : str = "Post-Game Condition"
     default = 0
 
     option_vanilla : int = 0

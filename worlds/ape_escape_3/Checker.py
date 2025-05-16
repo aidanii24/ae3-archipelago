@@ -4,10 +4,10 @@ from NetUtils import NetworkItem
 
 from .data.Items import ACCESSORIES, ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem, Capacities, AP, \
     EQUIPMENT
-from .data.Strings import Game, Itm, APHelper
+from .data.Strings import Game, Loc, Itm, APHelper
 from .data.Addresses import NTSCU
-from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_INDEX, MONKEYS_BOSSES, \
-    MONKEYS_DIRECTORY, Loc, Cellphone_Name_to_ID
+from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_INDEX, MONKEYS_PASSWORDS, \
+                             MONKEYS_BOSSES, MONKEYS_DIRECTORY, Cellphone_Name_to_ID
 from .data import Items
 
 if TYPE_CHECKING:
@@ -399,6 +399,9 @@ async def check_locations(ctx : 'AE3Context'):
 
     # Monkey Check
     for monkey in ctx.monkeys_checklist:
+        if monkey in MONKEYS_PASSWORDS:
+            continue
+
         ## Special Case for Tomoki
         if ctx.current_channel == APHelper.boss6.value:
             if ctx.ipc.is_tomoki_defeated():
