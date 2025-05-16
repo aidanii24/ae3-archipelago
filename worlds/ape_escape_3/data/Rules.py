@@ -784,6 +784,8 @@ class Normal(Hard):
             Stage.entrance_edotown_cc2.value    : Rulesets(AccessRule.HIT),
 
             # Heaven
+            Stage.entrance_heaven_a1a.value     : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_heaven_aa1.value     : Rulesets(AccessRule.GLIDE),
             Stage.entrance_heaven_bb1.value     : Rulesets(AccessRule.HIT),
 
             # Toyhouse
@@ -1072,8 +1074,8 @@ class Casual(Normal):
             Stage.entrance_edotown_cc2.value    : Rulesets(AccessRule.ATTACK),
 
             # Heaven
-            Stage.entrance_heaven_a1a.value     : Rulesets(AccessRule.GLIDE),
-            Stage.entrance_heaven_aa1.value     : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_heaven_a1a.value     : Rulesets(AccessRule.FLY),
+            Stage.entrance_heaven_aa1.value     : Rulesets(AccessRule.FLY),
             Stage.entrance_heaven_ab.value      : Rulesets(AccessRule.NINJA, AccessRule.HERO, [AccessRule.FLYER,
                                                             AccessRule.HOOP]),
             Stage.entrance_heaven_bb1.value     : Rulesets(AccessRule.ATTACK),
