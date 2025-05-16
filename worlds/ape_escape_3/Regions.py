@@ -30,7 +30,7 @@ def create_regions(world : "AE3World"):
                           world.options.Post_Game_Access_Rule == 2)
     add_cellphones : bool = (world.options.Cellphonesanity or world.options.Goal_Target == 6 or
                              world.options.Post_Game_Access_Rule == 3)
-    add_break_rooms : bool = bool(world.options.Monkeysanity_BreakRooms) or world.options.Post_Game_Access_Rule == 0
+    add_break_rooms : bool = world.options.Monkeysanity_BreakRooms.value or world.options.Post_Game_Access_Rule == 0
 
     # Initialize Regions
     stages : dict[str, Region] = { name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER }
@@ -60,7 +60,7 @@ def create_regions(world : "AE3World"):
 
         # Skip stage if Monkeysanity Break Rooms is enabled and the stage is a break room.
         # It should be safe to skip outright since there are no break rooms with Cameras or Cellphones in them.
-        if not add_break_rooms and stage in STAGES_BREAK_ROOMS:
+        if not add_break_rooms and stage.name in STAGES_BREAK_ROOMS:
             continue
 
         ## Monkeys
