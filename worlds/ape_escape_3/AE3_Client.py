@@ -17,7 +17,7 @@ from settings import get_settings
 
 from .data.Strings import Meta, APConsole
 from .data.Logic import ProgressionMode, ProgressionModeOptions
-from .data.Locations import CELLPHONES_MASTER, MONKEYS_MASTER, MONKEYS_PASSWORDS, MONKEYS_MASTER_ORDERED, \
+from .data.Locations import CELLPHONES_MASTER, MONKEYS_MASTER, MONKEYS_MASTER_ORDERED, \
     CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED
 from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER
 from .data.Rules import GoalTarget, GoalTargetOptions, PostGameAccessRule, PostGameAccessRuleOptions

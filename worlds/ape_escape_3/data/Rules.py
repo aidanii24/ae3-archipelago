@@ -350,7 +350,7 @@ class Hard(LogicPreference):
             # Ciscocity
             Stage.entrance_ciscocity_ad.value   : Rulesets(AccessRule.DASH, AccessRule.RCC),
             Stage.entrance_ciscocity_ad_2.value : Rulesets(event_invoked(Events.ciscocity_d_exit.value)),
-            Stage.entrance_ciscocity_ce         : Rulesets(AccessRule.MONKEY),
+            Stage.entrance_ciscocity_ce.value   : Rulesets(AccessRule.MONKEY),
             Stage.entrance_ciscocity_c1c.value  : Rulesets(event_invoked(Events.ciscocity_c_button.value)),
             Stage.entrance_ciscocity_cc1.value  : Rulesets(event_invoked(Events.ciscocity_c_button.value)),
 
