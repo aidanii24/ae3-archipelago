@@ -235,7 +235,7 @@ class AE3World(World):
 
         # Fill remaining locations with Collectables
         unfilled : int = len(self.multiworld.get_unfilled_locations(self.player)) - len(self.item_pool)
-        self.item_pool += generate_collectables(self.player, unfilled)
+        self.item_pool += generate_collectables(self.random, self.player, unfilled)
 
         # Add Items to ItemPool
         self.multiworld.itempool += self.item_pool

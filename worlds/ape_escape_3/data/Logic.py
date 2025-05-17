@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING, Set, Sequence, Callable
-import random
 
 from BaseClasses import CollectionState, Item
 
@@ -271,7 +270,7 @@ class ProgressionMode:
 
     def generate_new_order(self, world : 'AE3World') -> list[int]:
         new_order : list[int] = [_ for _ in range(28)]
-        random.shuffle(new_order)
+        world.random.shuffle(new_order)
 
         self.small_starting_channels = world.logic_preference.small_starting_channels.copy()
 
@@ -293,7 +292,7 @@ class ProgressionMode:
                     if not swap_indexes:
                         break
 
-                    swap_idx = random.choice(swap_indexes)
+                    swap_idx = world.random.choice(swap_indexes)
                     swap = new_order[swap_idx]
 
                 new_order[idx], new_order[swap_idx] = new_order[swap_idx], new_order[idx]

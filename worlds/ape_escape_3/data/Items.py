@@ -304,11 +304,11 @@ def generate_item_groups() -> dict[str : set[str]]:
 
     return groups
 
-def generate_collectables(player : int, amt : int) -> list[AE3Item]:
+def generate_collectables(rand : random, player : int, amt : int) -> list[AE3Item]:
     """Get a list of Items of the specified Archipelago"""
     weights : list[int] = [w.weight for w in COLLECTABLES]
 
-    result : list[CollectableItem] = random.choices([*COLLECTABLES], [*weights], k = amt)
+    result : list[CollectableItem] = rand.choices([*COLLECTABLES], [*weights], k = amt)
     items : list[AE3Item] = [c.to_item(player) for c in result]
 
     return items
