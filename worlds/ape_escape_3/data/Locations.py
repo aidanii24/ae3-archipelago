@@ -724,11 +724,11 @@ MONKEYS_HONG_A2 : Sequence[str] = [
 ]
 
 MONKEYS_HONG_B : Sequence[str] = [
-    Loc.hong_ukki_chan.value, Loc.hong_uki_uki.value, Loc.hong_muki_muki.value, Loc.hong_hi_uchi_ishi.value
+    Loc.hong_shinchi.value, Loc.hong_doh_tsuitaro.value
 ]
 
 MONKEYS_HONG_B1 : Sequence[str] = [
-    Loc.hong_shinchi.value, Loc.hong_doh_tsuitaro.value
+    Loc.hong_ukki_chan.value, Loc.hong_uki_uki.value, Loc.hong_muki_muki.value, Loc.hong_hi_uchi_ishi.value
 ]
 
 MONKEYS_HONG_C : Sequence[str] = [
