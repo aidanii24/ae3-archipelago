@@ -675,7 +675,7 @@ class Loc(BaseEnum):
     cell_000                    = "Red Cellphone \"Cellphones and Gadgets Tutorials\" - Seaside Resort"
     cell_001                    = "Red Cellphone \"Jump Tutorial\" - Hide-n-Seek Forest"
     cell_002                    = "Blue Cellphone \"Cookies Tutorial\" - Seaside Resort"
-    cell_003                    = "Red Cellphone \"\"Switches Tutorial - Seaside Resort"
+    cell_003                    = "Red Cellphone \"Switches Tutorial\" - Seaside Resort"
     cell_004ss                  = "Blue Cellphone \"Pipo Camera Tutorial\" - Seaside Resort"
     cell_004wo                  = "Blue Cellphone \"Pipo Camera Tutorial - Redux\" - Hide-n-Seek Forest"
     cell_006                    = "Red Cellphone \"Assigning Gadgets and Monkey Radar Reminder\" - Hide-n-Seek Forest"
