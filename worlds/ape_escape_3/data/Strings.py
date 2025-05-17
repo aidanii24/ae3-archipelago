@@ -1795,6 +1795,11 @@ class Game(BaseEnum):
     equip_quick_morph =     "Quick Morph Selected"
     equip_morph_target =    "Selected Morph"
 
+    # Game Strings
+    camera_mon_alerted =    "Camera Monkeys Alerted"
+    camera_mon_missing =    "Camera Monkeys Missing"
+    camera_complete =       "Camera Filming Complete"
+
     # Commands
     command =               "Command"
     area_dest =             "Area Destination"

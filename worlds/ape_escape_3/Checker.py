@@ -173,12 +173,13 @@ async def setup_level_select(ctx : 'AE3Context'):
 
 
 async def setup_area(ctx : 'AE3Context'):
-    # In case the Player uses a Morph they are not yet allowed, immediately unmorph them
+    # MORPH LOCK ENFORCEMENT
+    ## In case the Player uses a Morph they are not yet allowed, immediately unmorph them
     current_morph_id : int = ctx.ipc.get_current_morph()
     if current_morph_id:
         is_reset : bool = False
 
-        # Lock in case of false unlocks when unlocking/relocking morphs
+        ## Lock in case of false unlocks when unlocking/relocking morphs
         if ctx.dummy_morph_needed:
             if ctx.dummy_morph == Itm.morph_monkey.value:
                 if current_morph_id >= 7:
@@ -187,17 +188,18 @@ async def setup_area(ctx : 'AE3Context'):
             elif ctx.dummy_morph == Itm.morph_knight.value and current_morph_id == 1:
                 ctx.ipc.set_morph_gauge_timer()
 
-        # Lock in case of Quick Morph Glitch (Intentionally by the player, or due to the nature of this client)
+        ## Lock in case of Quick Morph Glitch (Intentionally by the player, or due to the nature of this client)
         if not is_reset and not ctx.ipc.is_equipment_unlocked(Itm.get_morphs_ordered()[current_morph_id - 1]):
             ctx.ipc.set_morph_gauge_timer()
 
-    # Check Screen Fading State in-game
+    # SCREEN FADING
+    ## Check Screen Fading State in-game
     if ctx.ipc.check_screen_fading() != 0x01 and ctx.ipc.get_player_state() != 0x03:
-        # Check Start of Screen Fade
+        ## Check Start of Screen Fade
         if ctx.ipc.get_screen_fade_count() > 0x1:
             dispatch_dummy_morph(ctx)
 
-        # Check rest of Screen Fade after Start
+        ## Check rest of Screen Fade after Start
         else:
             # Temporarily give a morph during transitions to keep Morph Gauge visible
             # and to spawn Break Room loading zones
@@ -206,7 +208,7 @@ async def setup_area(ctx : 'AE3Context'):
             ctx.current_stage = ctx.ipc.get_stage()
             ctx.command_state = 2
 
-    # Not/No Longer Screen Fading
+    ## Not/No Longer Screen Fading
     else:
         dispatch_dummy_morph(ctx)
 
@@ -215,6 +217,10 @@ async def setup_area(ctx : 'AE3Context'):
 
         if ctx.command_state == 2:
             ctx.command_state = 0
+
+    ## IN-GAME NOTIFICATION
+    # Cameras
+
 
 async def check_states(ctx : 'AE3Context'):
     if not ctx.command_state:
