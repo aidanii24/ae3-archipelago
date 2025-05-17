@@ -1723,6 +1723,7 @@ class Game(BaseEnum):
     current_morph =         "Current Morph"
     channels_unlocked =     "Channels Unlocked"
     channel_selected =      "Channel Selected"
+    channel_next_choice =   "Next Channel Choice"
     on_warp_gate =          "On Warp Gate"
     channel_confirmed =     "Channel Confirmed"
     current_channel =       "Current Channel"
