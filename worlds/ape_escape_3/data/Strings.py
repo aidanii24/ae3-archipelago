@@ -702,7 +702,7 @@ class Loc(BaseEnum):
     cell_024                    = "Blue Cellphone\"What does the Insignia mean?\" - The Emperor's Castle"
     cell_025                    = "Blue Cellphone \"Walking on Tightropes\" - The Emperor's Castle"
     cell_026                    = "Blue Cellphone \"Tiptoe Tutorial\" - The Emperor's Castle"
-    cell_028                    = "Blue Cellphone \"Sky Flyer Reminder\" - Mount Amazing"
+    cell_028                    = "Red Cellphone \"Sky Flyer Reminder\" - Mount Amazing"
     cell_029                    = "Blue Cellphone \"Block Shoving Tutorial\" - Saru-mon's Castle"
     cell_030tv                  = "Red Cellphone \"Robot Tutorial\" - Specter TV Studio"
     cell_030ty                  = "Blue Cellphone \"Robot Tutorial - Redux\" - Toytown"
@@ -781,18 +781,18 @@ class Stage(BaseEnum):
     # Channels
     zero =                      "TV Station (Stage)"
 
-    seaside =                   "Seaside Resort"
+    channel_seaside =           "Seaside Resort"
     region_seaside_a =          "Seaside Resort - Outside"
     region_seaside_b =          "Seaside Resort - Chapel"
     region_seaside_c =          "Seaside Resort - Break Room"
 
-    woods =                     "Hide-n-Seek Forest"
+    channel_woods =             "Hide-n-Seek Forest"
     region_woods_a =            "Hide-n-Seek Forest - Forest"
     region_woods_b =            "Hide-n-Seek Forest - Hills"
     region_woods_c =            "Hide-n-Seek Forest - Cabin"
     region_woods_d =            "Hide-n-Seek Forest - Break Room"
 
-    castle =                    "Saru-mon's Castle"
+    channel_castle =            "Saru-mon's Castle"
     region_castle_a1 =          "Saru-Mon's Castle - Castle Gates - Bridge"
     region_castle_a2 =          "Saru-Mon's Castle - Castle Gates - Castle Doorway"
     region_castle_a =           "Saru-Mon's Castle - Gates"
@@ -806,7 +806,7 @@ class Stage(BaseEnum):
 
     region_boss1 =              "Monkey White Battle!"
 
-    ciscocity =                 "The Big City"
+    channel_ciscocity =         "The Big City"
     region_ciscocity_a =        "The Big City - City"
     region_ciscocity_b =        "The Big City - Bank"
     region_ciscocity_c =        "The Big City - Theater"
@@ -814,7 +814,7 @@ class Stage(BaseEnum):
     region_ciscocity_d =        "The Big City - Football Stadium"
     region_ciscocity_e =        "The Big City - Break Room"
 
-    studio =                    "Specter TV Studio"
+    channel_studio =            "Specter TV Studio"
     region_studio_a =           "Specter TV Studio - Reception"
     region_studio_a1 =          "Specter TV Studio - Reception - First Floor Locked Door"
     region_studio_a2 =          "Specter TV Studio - Reception - Second Floor Locked Door"
@@ -830,7 +830,7 @@ class Stage(BaseEnum):
     region_studio_f1 =          "Specter TV Studio - Robot Set - Behind the Screen Wall"
     region_studio_g =           "Specter TV Studio - Break Room"
 
-    halloween =                 "Bootown"
+    channel_halloween =         "Bootown"
     region_halloween_a =        "Bootown - Carnival"
     region_halloween_a1 =       "Bootown - Carnival - Canal"
     region_halloween_b =        "Bootown - Carnival Tent"
@@ -844,7 +844,7 @@ class Stage(BaseEnum):
     region_halloween_e =        "Bootown - Break Room"
     region_halloween_f =        "Bootown - Park"
 
-    western =                   "Wild West Town"
+    channel_western =           "Wild West Town"
     region_western_a =          "Wild West Town - Town"
     region_western_b =          "Wild West Town - Tavern"
     region_western_b1 =         "Wild West Town - Tavern - Ceiling"
@@ -859,7 +859,7 @@ class Stage(BaseEnum):
 
     region_boss2 =              "Monkey Blue Battle!"
 
-    onsen =                     "The Hot Springs"
+    channel_onsen =             "The Hot Springs"
     region_onsen_a =            "The Hot Springs - Entrance Area"
     region_onsen_a1 =           "The Hot Springs - Entrance Area - Boy's Changing Room"
     region_onsen_a2 =           "The Hot Springs - Entrance Area - Girl's Changing Room"
@@ -870,7 +870,7 @@ class Stage(BaseEnum):
     region_onsen_d1 =           "The Hot Springs - Underground - Magma Stream"
     region_onsen_e =            "The Hot Springs - Water Park"
 
-    snowfesta =                 "Winterville"
+    channel_snowfesta =         "Winterville"
     region_snowfesta_a =        "Winterville - Village"
     region_snowfesta_b =        "Winterville - House Interior"
     region_snowfesta_c =        "Winterville - Igloo Village"
@@ -879,7 +879,7 @@ class Stage(BaseEnum):
     region_snowfesta_f =        "Winterville - Cave"
     region_snowfesta_g =        "Winterville - Break Room"
 
-    edotown =                   "The Emperor's Castle"
+    channel_edotown =           "The Emperor's Castle"
     region_edotown_a =          "The Emperor's Castle - Mountain Path"
     region_edotown_a1 =         "The Emperor's Castle - Mountain Path - Entrance Area"
     region_edotown_b =          "The Emperor's Castle - Castle Grounds"
@@ -894,7 +894,7 @@ class Stage(BaseEnum):
 
     region_boss3 =              "Monkey Yellow Battle!"
 
-    heaven =                    "Mount Amazing"
+    channel_heaven =            "Mount Amazing"
     region_heaven_a =           "Mount Amazing - Mountain Climb"
     region_heaven_a1 =          "Mount Amazing - Mountain Climb - Mountain Entrance Area"
     region_heaven_b =           "Mount Amazing - Ruins"
@@ -903,7 +903,7 @@ class Stage(BaseEnum):
     region_heaven_d =           "Mount Amazing - Planetarium"
     region_heaven_e =           "Mount Amazing - Break Room"
 
-    toyhouse =                  "Toytown"
+    channel_toyhouse =          "Toytown"
     region_toyhouse_a =         "Toytown - Town Center"
     region_toyhouse_b =         "Toytown - Bunny House"
     region_toyhouse_b1 =        "Toytown - Bunny House - Catwalk"
@@ -915,7 +915,7 @@ class Stage(BaseEnum):
     region_toyhouse_g1 =        "Toytown - Robot House - Top Platform"
     region_toyhouse_h =         "Toytown - Break Room"
     
-    iceland =                   "Arctic Wonderland"
+    channel_iceland =           "Arctic Wonderland"
     region_iceland_a =          "Arctic Wonderland - Titanic"
     region_iceland_a1 =         "Arctic Wonderland - Titanic - Starting Ground"
     region_iceland_a2 =         "Arctic Wonderland - Floating Ice"
@@ -925,7 +925,7 @@ class Stage(BaseEnum):
     region_iceland_e =          "Arctic Wonderland - Christmas Tree"
     region_iceland_f =          "Arctic Wonderland - Break Room"
 
-    arabian =                   "Mirage Town"
+    channel_arabian =           "Mirage Town"
     region_arabian_a =          "Mirage Town - Desert"
     region_arabian_b =          "Mirage Town - Desert Town"
     region_arabian_c1 =         "Mirage Town - Buried Pyramid - Escape"
@@ -937,7 +937,7 @@ class Stage(BaseEnum):
 
     region_boss4 =              "Monkey Pink Battle!"
 
-    asia =                      "Eversummer Island"
+    channel_asia =              "Eversummer Island"
     region_asia_a =             "Eversummer Island - Archipelago"
     region_asia_a1 =            "Eversummer Island - Archipelago - High Islands"
     region_asia_a2 =            "Eversummer Island - Archipelago - Cliffs"
@@ -956,7 +956,7 @@ class Stage(BaseEnum):
     region_asia_e2 =            "Eversummer Island - Ruined Temple - Higher Temple"
     region_asia_f =             "Eversummer Island - Break Room"
 
-    plane =                     "Airplane Squadron"
+    channel_plane =             "Airplane Squadron"
     region_plane_a =            "Airplane Squadron - First Squadron"
     region_plane_a1 =           "Airplane Squadron - First Squadron - Front Squadron"
     region_plane_b =            "Airplane Squadron - Engine Room"
@@ -971,7 +971,7 @@ class Stage(BaseEnum):
     region_plane_g =            "Airplane Squadron - Break Room"
     region_plane_h =            "Airplane Squadron - Bow"
 
-    hong =                      "Kung-Fu Alley"
+    channel_hong =              "Kung-Fu Alley"
     region_hong_a =             "Kung-Fu Alley - Mountains"
     region_hong_a1 =            "Kung-Fu Alley - Mountains - Training Platforms"
     region_hong_a2 =            "Kung-Fu Alley - Mountains - Mountain Trail"
@@ -990,7 +990,7 @@ class Stage(BaseEnum):
 
     region_boss5 =              "Monkey Red Battle!"
 
-    bay =                       "Midnight Bay"
+    channel_bay =               "Midnight Bay"
     region_bay_a =              "Midnight Bay - Port"
     region_bay_a1 =             "Midnight Bay - Port - Parking Entrance Area"
     region_bay_a2 =             "Midnight Bay - Port - Sewer Canal"
@@ -1009,7 +1009,7 @@ class Stage(BaseEnum):
     region_bay_e2 =             "Midnight Bay - Sewers - Lower Sewers"
     region_bay_f =              "Midnight Bay - Break Room"
 
-    tomo =                      "Tomoki City"
+    channel_tomo =              "Tomoki City"
     region_tomo_a =             "Tomoki City - City Walls"
     region_tomo_a1 =            "Tomoki City - City Walls - Entrance Start"
     region_tomo_b =             "Tomoki City - City"
@@ -1030,7 +1030,7 @@ class Stage(BaseEnum):
 
     region_boss6 =              "Dr. Tomoki Battle!"
 
-    space =                     "Space-TV Fortress"
+    channel_space =             "Space-TV Fortress"
     region_space_a =            "Space-TV Fortress - Entrance Start"
     region_space_b =            "Space-TV Fortress - Studio Zone"
     region_space_d =            "Space-TV Fortress - Studio 4 - Galaxy"
@@ -1551,15 +1551,18 @@ class Stage(BaseEnum):
     entrance_space_kh =                 "Specter-TV Fortress - Numbers Room - Exit"
 
     # Stage ID's
+    seaside =                   "seaside"
     seaside_a =                 "seaside_a"
     seaside_b =                 "seaside_b"
     seaside_c =                 "seaside_c"
 
+    woods =                     "woods"
     woods_a =                   "woods_a"
     woods_b =                   "woods_b"
     woods_c =                   "woods_c"
     woods_d =                   "woods_d"
 
+    castle =                    "castle"
     castle_a =                  "castle_a"
     castle_b =                  "castle_b"
     castle_c =                  "castle_c"
@@ -1569,12 +1572,14 @@ class Stage(BaseEnum):
 
     boss1 =                     "boss1"
 
+    ciscocity =                 "ciscocity"
     ciscocity_a =               "ciscocity_a"
     ciscocity_b =               "ciscocity_b"
     ciscocity_c =               "ciscocity_c"
     ciscocity_d =               "ciscocity_d"
     ciscocity_e =               "ciscocity_e"
 
+    studio =                    "studio"
     studio_a =                  "studio_a"
     studio_b =                  "studio_b"
     studio_c =                  "studio_c"
@@ -1583,6 +1588,7 @@ class Stage(BaseEnum):
     studio_f =                  "studio_f"
     studio_g =                  "studio_g"
 
+    halloween =                 "halloween"
     halloween_a =               "halloween_a"
     halloween_b =               "halloween_b"
     halloween_c =               "halloween_c"
@@ -1590,6 +1596,7 @@ class Stage(BaseEnum):
     halloween_e =               "halloween_e"
     halloween_f =               "halloween_f"
 
+    western =                   "western"
     western_a =                 "western_a"
     western_b =                 "western_b"
     western_c =                 "western_c"
@@ -1599,12 +1606,14 @@ class Stage(BaseEnum):
 
     boss2 =                     "boss2"
 
+    onsen =                     "onsen"
     onsen_a =                   "onsen_a"
     onsen_b =                   "onsen_b"
     onsen_c =                   "onsen_c"
     onsen_d =                   "onsen_d"
     onsen_e =                   "onsen_e"
 
+    snowfesta =                 "snowfesta"
     snowfesta_a =               "snowfesta_a"
     snowfesta_b =               "snowfesta_b"
     snowfesta_c =               "snowfesta_c"
@@ -1613,6 +1622,7 @@ class Stage(BaseEnum):
     snowfesta_f =               "snowfesta_f"
     snowfesta_g =               "snowfesta_g"
 
+    edotown =                   "edotown"
     edotown_a =                 "edotown_a"
     edotown_b =                 "edotown_b"
     edotown_c =                 "edotown_c"
@@ -1622,12 +1632,14 @@ class Stage(BaseEnum):
 
     boss3 =                     "boss3"
 
+    heaven =                    "heaven"
     heaven_a =                  "heaven_a"
     heaven_b =                  "heaven_b"
     heaven_c =                  "heaven_c"
     heaven_d =                  "heaven_d"
     heaven_e =                  "heaven_e"
 
+    toyhouse =                  "toyhouse"
     toyhouse_a =                "toyhouse_a"
     toyhouse_b =                "toyhouse_b"
     toyhouse_c =                "toyhouse_c"
@@ -1638,6 +1650,7 @@ class Stage(BaseEnum):
     toyhouse_g =                "toyhouse_g"
     toyhouse_h =                "toyhouse_h"
 
+    iceland =                   "iceland"
     iceland_a =                 "iceland_a"
     iceland_b =                 "iceland_b"
     iceland_c =                 "iceland_c"
@@ -1645,6 +1658,7 @@ class Stage(BaseEnum):
     iceland_e =                 "iceland_e"
     iceland_f =                 "iceland_f"
 
+    arabian =                   "arabian"
     arabian_a =                 "arabian_a"
     arabian_b =                 "arabian_b"
     arabian_c =                 "arabian_c"
@@ -1654,12 +1668,14 @@ class Stage(BaseEnum):
 
     boss4 =                     "boss4"
 
+    asia =                      "asia"
     asia_a =                    "asia_a"
     asia_b =                    "asia_b"
     asia_d =                    "asia_d"
     asia_e =                    "asia_e"
     asia_f =                    "asia_f"
 
+    plane =                     "plane"
     plane_a =                   "plane_a"
     plane_b =                   "plane_b"
     plane_c =                   "plane_c"
@@ -1669,6 +1685,7 @@ class Stage(BaseEnum):
     plane_g =                   "plane_g"
     plane_h =                   "plane_h"
 
+    hong =                      "hong"
     hong_a =                    "hong_a"
     hong_b =                    "hong_b"
     hong_c =                    "hong_c"
@@ -1680,6 +1697,7 @@ class Stage(BaseEnum):
 
     boss5 =                     "boss5"
 
+    bay =                       "bay"
     bay_a =                     "bay_a"
     bay_b =                     "bay_b"
     bay_c =                     "bay_c"
@@ -1687,6 +1705,7 @@ class Stage(BaseEnum):
     bay_e =                     "bay_e"
     bay_f =                     "bay_f"
 
+    tomo =                      "tomo"
     tomo_a =                    "tomo_a"
     tomo_b =                    "tomo_b"
     tomo_c =                    "tomo_c"
@@ -1699,6 +1718,7 @@ class Stage(BaseEnum):
 
     boss6 =                     "boss6"
 
+    space =                     "space"
     space_a =                   "space_a"
     space_b =                   "space_b"
     space_d =                   "space_d"
@@ -1795,11 +1815,6 @@ class Game(BaseEnum):
     equip_chassis_active =  "RC Car Chassis Selected"
     equip_quick_morph =     "Quick Morph Selected"
     equip_morph_target =    "Selected Morph"
-
-    # Game Strings
-    camera_mon_alerted =    "Camera Monkeys Alerted"
-    camera_mon_missing =    "Camera Monkeys Missing"
-    camera_complete =       "Camera Filming Complete"
 
     # Commands
     command =               "Command"
@@ -1984,8 +1999,8 @@ class APConsole:
         greet =         " Welcome to Ape Escape 3 Archipelago!"
         game_name =     " Ape Escape 3 Archipelago"
         client_name =   " Ape Escape 3 Client"
-        client_ver =    " Client v1.0.50"
-        world_ver =     " World v1.0.50"
+        client_ver =    " Client v1.1.00"
+        world_ver =     " World v1.1.00"
 
         p_check =       " [|?|] Confirming PCSX2 Status..."
         p_init =        " [...] Connecting to PCSX2..."

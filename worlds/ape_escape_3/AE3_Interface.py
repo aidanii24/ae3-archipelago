@@ -7,6 +7,7 @@ from math import ceil
 from .data.Addresses import VersionAddresses, get_version_addresses
 from .data.Items import HUD_OFFSETS
 from .data.Locations import CELLPHONES_ID_DUPLICATES, CELLPHONES_STAGE_DUPLICATES
+from .data.Stages import LEVELS_ID_BY_ORDER
 from .data.Strings import Itm, Loc, Meta, Game, APHelper, APConsole
 from .interface.pine import Pine
 
@@ -140,6 +141,27 @@ class AEPS2Interface:
 
     def get_selected_channel(self) -> int:
         return self.pine.read_int32(self.addresses.GameStates[Game.channel_selected.value])
+
+    def get_next_channel_choice(self) -> str:
+        addr: int = self.follow_pointer_chain(self.addresses.GameStates[Game.progress.value],
+                                              Game.channel_next_choice.value)
+
+        if addr == 0x0:
+            return ""
+
+        length: int = 4
+
+        # Check length of string in multiples of 4
+        for _ in range(2):
+            if self.pine.read_bytes(addr + (4 * (_ + 1)), 1) == b'\x00':
+                break
+
+            length = max(length + 4, 12)
+
+        id_as_bytes : bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_channel.value], length)
+
+        # Convert to String
+        return id_as_bytes.decode("utf-8").replace("\x00", "")
 
     def get_channel(self) -> str:
         channel_as_bytes : bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_channel.value], 4)
@@ -333,6 +355,29 @@ class AEPS2Interface:
 
     def set_selected_channel(self, index : int):
         self.pine.write_int32(self.addresses.GameStates[Game.channel_selected.value], index)
+
+    def set_next_channel_choice(self, index : int):
+        if index > len(LEVELS_ID_BY_ORDER):
+            index = 0
+
+        addr: int = self.follow_pointer_chain(self.addresses.GameStates[Game.progress.value],
+                                              Game.channel_next_choice.value)
+
+        if addr == 0x0:
+            return
+
+        # Clear out current value
+        clearing_address: int = addr
+        for _ in range(6):
+            self.pine.write_int32(clearing_address, 0x0)
+            self.pine.write_int32(clearing_address, 0x0)
+            clearing_address += 4
+
+        # Convert ID to bytes
+        id_as_bytes : bytes = LEVELS_ID_BY_ORDER[index].encode() + b'\x00'
+
+        # Write new value
+        self.pine.write_bytes(addr, id_as_bytes)
 
     def set_change_area_destination(self, area : str):
         as_bytes : bytes = area.encode() + b'\x00'

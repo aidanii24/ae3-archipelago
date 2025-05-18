@@ -21,47 +21,91 @@ class AE3EntranceMeta:
 
 ### [< --- STAGE GROUPS --- >]
 LEVELS_BY_ORDER : Sequence[str] = [
+    Stage.channel_seaside.value,
+    Stage.channel_woods.value,
+    Stage.channel_castle.value,
+
+    Stage.region_boss1.value,
+
+    Stage.channel_ciscocity.value,
+    Stage.channel_studio.value,
+    Stage.channel_halloween.value,
+    Stage.channel_western.value,
+
+    Stage.region_boss2.value,
+
+    Stage.channel_onsen.value,
+    Stage.channel_snowfesta.value,
+    Stage.channel_edotown.value,
+
+    Stage.region_boss3.value,
+
+    Stage.channel_heaven.value,
+    Stage.channel_toyhouse.value,
+    Stage.channel_iceland.value,
+    Stage.channel_arabian.value,
+
+    Stage.region_boss4.value,
+
+    Stage.channel_asia.value,
+    Stage.channel_plane.value,
+    Stage.channel_hong.value,
+
+    Stage.region_boss5.value,
+
+    Stage.channel_bay.value,
+    Stage.channel_tomo.value,
+
+    Stage.region_boss6.value,
+
+    Stage.channel_space.value,
+
+    Stage.region_specter1.value,
+    Stage.region_specter2.value,
+]
+
+LEVELS_ID_BY_ORDER : Sequence[str] = [
     Stage.seaside.value,
     Stage.woods.value,
     Stage.castle.value,
 
-    Stage.region_boss1.value,
+    Stage.boss1.value,
 
     Stage.ciscocity.value,
     Stage.studio.value,
     Stage.halloween.value,
     Stage.western.value,
 
-    Stage.region_boss2.value,
+    Stage.boss2.value,
 
     Stage.onsen.value,
     Stage.snowfesta.value,
     Stage.edotown.value,
 
-    Stage.region_boss3.value,
+    Stage.boss3.value,
 
     Stage.heaven.value,
     Stage.toyhouse.value,
     Stage.iceland.value,
     Stage.arabian.value,
 
-    Stage.region_boss4.value,
+    Stage.boss4.value,
 
     Stage.asia.value,
     Stage.plane.value,
     Stage.hong.value,
 
-    Stage.region_boss5.value,
+    Stage.boss5.value,
 
     Stage.bay.value,
     Stage.tomo.value,
 
-    Stage.region_boss6.value,
+    Stage.boss6.value,
 
     Stage.space.value,
 
-    Stage.region_specter1.value,
-    Stage.region_specter2.value,
+    Stage.specter1.value,
+    Stage.specter2.value
 ]
 
 STAGES_TITLE : Sequence[str] = [

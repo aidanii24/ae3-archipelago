@@ -38,34 +38,44 @@ class AE3CommandProcessor(ClientCommandProcessor):
             logger.info(f" [-o-] Game")
 
             if self.ctx.server:
-                logger.info(f"{
-                            "         Playing Ape Escape 3" if self.ctx.is_game_connected 
-                            else "         No Game Detected"
-                            }")
-                logger.info(f"         Goal Target is " 
+                game_status : int = self.ctx.ipc.status.value
+                print("Game Status:", game_status)
+
+                if game_status < 0:
+                    logger.info(f"{"         Connected but playing a different game"}")
+                    return
+                elif game_status == 0:
+                    logger.info(f"{"         Not Connected to PCSX2"}")
+                    return
+                else:
+                    logger.info(f"{"         Playing Ape Escape 3"}")
+
+                logger.info(f"\n         Goal Target is " 
                             f"{self.ctx.goal_target}")
-                logger.info(f"         > Progress: "
-                            f"{str(self.ctx.goal_target.get_progress(self.ctx))} / "
-                            f"{self.ctx.goal_target.amount}")
+
+                if game_status > 0:
+                    logger.info(f"         > Progress: "
+                                f"{str(self.ctx.goal_target.get_progress(self.ctx))} / "
+                                f"{self.ctx.goal_target.amount}")
 
                 if ((len(self.ctx.goal_target.locations) == 1 and Loc.boss_specter_final.value in
                         self.ctx.goal_target.locations) or self.ctx.shuffle_channel):
                     logger.info(f"\n         Post-Game Requirement is "
                                 f"{self.ctx.post_game_access_rule}")
-                    logger.info(f"         > Progress: "
-                                f"{str(self.ctx.post_game_access_rule.get_progress(self.ctx))} / "
-                                f"{self.ctx.post_game_access_rule.amount}")
 
-                all_keys : int = len(self.ctx.progression.progression) - 1
-                if self.ctx.post_game_access_rule_option < 4:
-                    all_keys -= 1
+                    if game_status > 0:
+                        logger.info(f"         > Progress: "
+                                    f"{str(self.ctx.post_game_access_rule.get_progress(self.ctx))} / "
+                                    f"{self.ctx.post_game_access_rule.amount}")
 
-                logger.info(f"\n         Progression: {self.ctx.progression}")
-                logger.info(f"         Channel Keys: {self.ctx.keys} / {all_keys}")
-                logger.info(f"         Available Channels: {self.ctx.unlocked_channels + 1} / 28")
-                for level in range(min(self.ctx.unlocked_channels + 1, len(LEVELS_BY_ORDER))):
-                    logger.info(f"         [ {level + 1} ] "
-                                f"{LEVELS_BY_ORDER[self.ctx.progression.order[min(level, len(LEVELS_BY_ORDER) - 1)]]}")
+                if game_status > 0:
+                    all_keys : int = len(self.ctx.progression.progression) - 1
+                    if self.ctx.post_game_access_rule_option < 4:
+                        all_keys -= 1
+
+                    logger.info(f"\n         Progression: {self.ctx.progression}")
+                    logger.info(f"         Channel Keys: {self.ctx.keys} / {all_keys}")
+                    logger.info(f"         Available Channels: {self.ctx.unlocked_channels + 1} / 28")
 
             else:
                 logger.info(f"         Disconnected from Server")

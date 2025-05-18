@@ -21,6 +21,11 @@ async def check_background_states(ctx : 'AE3Context'):
     new_channel = ctx.ipc.get_channel()
     ctx.current_stage = ctx.ipc.get_stage()
 
+    # Set to last selected slot (not the id of the level randomized) for convenience and consistency
+    if not ctx.current_stage and 0 <= ctx.last_selected_channel_index <= ctx.unlocked_channels:
+        ctx.ipc.set_next_channel_choice(ctx.last_selected_channel_index)
+        ctx.last_selected_channel_index = -1
+
     # Enforce Morph Duration
     if ctx.character >= 0:
         current_morph_duration : float = ctx.ipc.get_morph_duration(ctx.character)
@@ -98,12 +103,6 @@ async def setup_level_select(ctx : 'AE3Context'):
 
     # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
     if ctx.ipc.is_on_warp_gate():
-        # Set to last slot (not the id of the level randomized) for convenience and consistency
-        if 0 <= ctx.last_selected_channel_index <= ctx.unlocked_channels and not is_a_level_confirmed:
-            ctx.ipc.set_selected_channel(ctx.last_selected_channel_index)
-            ctx.last_selected_channel_index = -1
-            selected_channel = ctx.ipc.get_selected_channel()
-
         # Dr. Tomoki Battle!
         if selected_channel == 0x18:
             ctx.ipc.set_progress(APHelper.pr_boss6.value)
@@ -157,6 +156,7 @@ async def setup_level_select(ctx : 'AE3Context'):
 
         # If Channel Shuffle is enabled, force switch the game to load the randomized channel
         if ctx.shuffle_channel and not ctx.is_channel_swapped:
+            # Save last selected channel index
             if ctx.last_selected_channel_index < 0:
                 ctx.last_selected_channel_index = selected_channel
 

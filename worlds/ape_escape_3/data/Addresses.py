@@ -762,11 +762,6 @@ class NTSCU(VersionAddresses):
         Game.equip_quick_morph.value    : 0x7954b0,
         Game.equip_morph_target.value   : 0x692018,
 
-        # Game Strings
-        Game.camera_mon_alerted.value   : 0x11fe765,
-        Game.camera_mon_missing.value   : 0x11fefb0,
-        Game.camera_complete.value      : 0x11fe7d1,
-
         # Special States
         Game.in_pink_stage.value        : 0x8519e0,
 
