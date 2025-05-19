@@ -1138,7 +1138,7 @@ class Casual(Normal):
             Stage.entrance_tomo_bc.value        : Rulesets(AccessRule.GLIDE),
 
             # Space
-            Stage.entrance_space_gg1.value      : Rulesets([AccessRule.ATTACK, AccessRule.ATTACK]),
+            Stage.entrance_space_gg1.value      : Rulesets([AccessRule.SWIM, AccessRule.ATTACK]),
         })
 
 LogicPreferenceOptions : list = [
