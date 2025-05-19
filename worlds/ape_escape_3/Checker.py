@@ -83,11 +83,6 @@ async def setup_level_select(ctx : 'AE3Context'):
     if ctx.ipc.get_unlocked_channels() != max(0, min(ctx.unlocked_channels, 0x1B)):
         ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
-    # Un-mark bosses as defeated to allow their levels to remain accessible
-    for monkey in MONKEYS_BOSSES:
-        if ctx.ipc.is_monkey_captured(monkey):
-            ctx.ipc.release_monkey(monkey)
-
     progress : str = ctx.ipc.get_progress()
     selected_channel: int = ctx.ipc.get_selected_channel()
 
@@ -100,25 +95,49 @@ async def setup_level_select(ctx : 'AE3Context'):
         if ctx.last_selected_channel_index > ctx.unlocked_channels:
             ctx.last_selected_channel_index = ctx.unlocked_channels
 
-    # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
     if ctx.ipc.is_on_warp_gate():
-        # Dr. Tomoki Battle!
-        if selected_channel == 0x18:
-            ctx.ipc.set_progress(APHelper.pr_boss6.value)
-        # Specter Battle!
-        elif selected_channel == 0x1A:
-            ctx.ipc.set_progress(APHelper.pr_specter1.value)
+        button: int = ctx.ipc.get_button_pressed()
+
+        # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
+        if selected_channel == 0x18 or selected_channel == 0x1A:
+            boss : str = Loc.boss_tomoki.value if selected_channel == 0x18 else Loc.boss_specter.value
+            target_progress : str = APHelper.pr_boss6.value if selected_channel == 0x18 else APHelper.pr_specter1.value
+
+            is_checked : bool = ctx.locations_name_to_id[boss] in ctx.checked_volatile_locations
+
+            if not is_checked:
+                ctx.ipc.set_progress(target_progress)
+            else:
+                if progress != target_progress and button == 0x5:
+                    ctx.ipc.set_progress(target_progress)
+                elif progress == target_progress and button == 0xA:
+                    ctx.ipc.set_progress()
         elif progress != APHelper.pr_round2.value:
             ctx.ipc.set_progress()
+
+        # Re-capture/Re-release Bosses as needed to enter the level normally/toggle freeplay
+        bosses_indexes : list[int] = [0x03, 0x08, 0xC, 0x11, 0x15, -1, -2, 0x1B]
+        if selected_channel in bosses_indexes:
+            boss : str = MONKEYS_BOSSES[bosses_indexes.index(selected_channel)]
+            boss_captured : bool = ctx.ipc.is_monkey_captured(boss)
+
+            if boss_captured and button == 0x5:
+                ctx.ipc.release_monkey(boss)
+            elif (not boss_captured and ctx.locations_name_to_id[boss] in ctx.checked_volatile_locations and
+                  button == 0xA):
+                ctx.ipc.capture_monkey(boss)
 
         # Reset Game Mode Swap state and Set Game Mode value to an unexpected value
         # as sign that the game has not yet set it
         if ctx.swap_freeplay and not ctx.ipc.is_a_level_confirmed() and ctx.is_mode_swapped:
             ctx.is_mode_swapped = False
             ctx.ipc.set_game_mode(0xFFFF, False)
-    elif progress != APHelper.pr_round2.value:
-        ctx.ipc.set_progress()
     else:
+        ctx.post_game_access_rule.check(ctx)
+
+        if progress != APHelper.pr_round2.value:
+            ctx.ipc.set_progress()
+
         if ctx.is_channel_swapped:
             ctx.is_channel_swapped = False
 

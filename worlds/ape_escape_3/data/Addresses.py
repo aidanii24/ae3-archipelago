@@ -720,6 +720,9 @@ class NTSCU(VersionAddresses):
         Game.gui_status.value           : 0x73a054,
         Game.hud_pointer.value          : 0x691fe8,
 
+        # Controller
+        Game.pressed.value              : 0x699D40,
+
         # Stats
         Game.morph_duration.value       : 0x0152cf10,
         Game.duration_knight_b.value    : 0x0152cf10,

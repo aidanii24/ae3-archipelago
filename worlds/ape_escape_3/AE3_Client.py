@@ -39,8 +39,6 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
             if self.ctx.server:
                 game_status : int = self.ctx.ipc.status.value
-                print("Game Status:", game_status)
-
                 if game_status < 0:
                     logger.info(f"{"         Connected but playing a different game"}")
                     return

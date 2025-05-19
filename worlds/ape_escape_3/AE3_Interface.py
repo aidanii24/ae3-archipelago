@@ -133,7 +133,7 @@ class AEPS2Interface:
             return "None"
 
         value: bytes = self.pine.read_bytes(addr, 8)
-        value_decoded: str = bytes.decode(value)
+        value_decoded: str = bytes.decode(value).replace("\x00", "")
         return value_decoded
 
     def get_unlocked_channels(self) -> int:
@@ -250,6 +250,9 @@ class AEPS2Interface:
 
     def is_selecting_morph(self) -> bool:
         return self.get_player_state() == 0x03
+
+    def get_button_pressed(self) -> int:
+        return self.pine.read_int8(self.addresses.GameStates[Game.pressed.value])
 
     def check_screen_fading(self) -> int:
         return self.pine.read_int8(self.addresses.GameStates[Game.screen_fade.value])

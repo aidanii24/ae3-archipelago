@@ -1756,6 +1756,8 @@ class Game(BaseEnum):
     screen_fade =           "Screen Fade"
     screen_fade_count =     "Screen Fade Count"
 
+    pressed =               "Pressed"
+
     # HUD/GUI
     gui_status =            "GUI Status"
     hud_pointer =           "HUD Pointer"
