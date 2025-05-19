@@ -488,8 +488,9 @@ class Hard(LogicPreference):
             Stage.entrance_plane_ac.value       : Rulesets(AccessRule.RCC, AccessRule.DASH),
             Stage.entrance_plane_cc1.value      : Rulesets(AccessRule.MAGICIAN),
             Stage.entrance_plane_cg.value       : Rulesets(AccessRule.MONKEY),
-            Stage.entrance_plane_de.value       : Rulesets(AccessRule.GLIDE),
-            Stage.entrance_plane_ed.value       : Rulesets(event_invoked(Events.plane_d_clapper.value)),
+            Stage.entrance_plane_dd1.value      : Rulesets(AccessRule.GLIDE, AccessRule.KUNGFU),
+            Stage.entrance_plane_d1d.value      : Rulesets(AccessRule.GLIDE, AccessRule.KUNGFU),
+            Stage.entrance_plane_ed1.value      : Rulesets(event_invoked(Events.plane_d1_clapper.value)),
 
             # Hong
             Stage.entrance_hong_aa1.value       : Rulesets(AccessRule.KUNGFU, AccessRule.HERO),
@@ -727,7 +728,7 @@ class Normal(Hard):
             Events.asia_b2_button.value                 : Rulesets(AccessRule.HIT),
 
             # Plane
-            Events.plane_d_clapper.value                : Rulesets(AccessRule.HIT),
+            Events.plane_d1_clapper.value                : Rulesets(AccessRule.HIT),
 
             # Hong
             Events.hong_b2_button.value                 : Rulesets(AccessRule.HIT),
@@ -807,7 +808,9 @@ class Normal(Hard):
             Stage.entrance_plane_hb1.value      : Rulesets(AccessRule.RCC, AccessRule.HERO),
             Stage.entrance_plane_b1b2.value     : Rulesets(AccessRule.RCC, AccessRule.HERO),
             Stage.entrance_plane_b2b1.value     : Rulesets(AccessRule.RCC, AccessRule.HERO),
-            Stage.entrance_plane_de.value       : Rulesets([AccessRule.HIT, AccessRule.GLIDE]),
+            Stage.entrance_plane_dd1.value      : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_plane_d1d.value      : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_plane_d1e.value      : Rulesets(AccessRule.HIT),
 
             # Bay
             Stage.entrance_bay_cc1.value        : Rulesets(AccessRule.HIT),
@@ -1000,7 +1003,7 @@ class Casual(Normal):
             Events.asia_b2_button.value                 : Rulesets(AccessRule.ATTACK),
 
             # Plane
-            Events.plane_d_clapper.value                 : Rulesets(AccessRule.ATTACK),
+            Events.plane_d1_clapper.value                 : Rulesets(AccessRule.ATTACK),
 
             # Hong
             Events.hong_b2_button.value                 : Rulesets(AccessRule.ATTACK),
@@ -1114,7 +1117,9 @@ class Casual(Normal):
             Stage.entrance_asia_dd1.value       : Rulesets([AccessRule.SWIM, AccessRule.FLY]),
 
             # Plane
-            Stage.entrance_plane_de.value       : Rulesets([AccessRule.ATTACK, AccessRule.FLY]),
+            Stage.entrance_plane_dd1.value      : Rulesets(AccessRule.FLY),
+            Stage.entrance_plane_d1d.value      : Rulesets(AccessRule.FLY),
+            Stage.entrance_plane_d1e.value      : Rulesets(AccessRule.ATTACK),
 
             # Hong
             Stage.entrance_hong_aa1.value       : Rulesets(AccessRule.KUNGFU),

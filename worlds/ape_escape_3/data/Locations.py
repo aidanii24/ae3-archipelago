@@ -686,7 +686,11 @@ MONKEYS_PLANE_C1 : Sequence[str] = [
 ]
 
 MONKEYS_PLANE_D : Sequence[str] = [
-    Loc.plane_tamrai.value, Loc.plane_kemunpa.value, Loc.plane_pipotron_blue.value
+    Loc.plane_tamrai.value, Loc.plane_pipotron_blue.value
+]
+
+MONKEYS_PLANE_D1 : Sequence[str] = [
+    Loc.plane_kemunpa.value
 ]
 
 MONKEYS_PLANE_E : Sequence[str] = [
@@ -707,7 +711,8 @@ MONKEYS_PLANE_H : Sequence[str] = [
 
 MONKEYS_PLANE : Sequence[str] = [
     *MONKEYS_PLANE_A, *MONKEYS_PLANE_A1, *MONKEYS_PLANE_B, *MONKEYS_PLANE_B1, *MONKEYS_PLANE_B2, *MONKEYS_PLANE_C,
-    *MONKEYS_PLANE_C1, *MONKEYS_PLANE_D, *MONKEYS_PLANE_E, *MONKEYS_PLANE_F1, *MONKEYS_PLANE_G, *MONKEYS_PLANE_H
+    *MONKEYS_PLANE_C1, *MONKEYS_PLANE_D, *MONKEYS_PLANE_D1, *MONKEYS_PLANE_E, *MONKEYS_PLANE_F1, *MONKEYS_PLANE_G,
+    *MONKEYS_PLANE_H
 ]
 
 # Hong
@@ -1164,6 +1169,7 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.region_plane_c.value          : MONKEYS_PLANE_C,
     Stage.region_plane_c1.value         : MONKEYS_PLANE_C1,
     Stage.region_plane_d.value          : MONKEYS_PLANE_D,
+    Stage.region_plane_d1.value         : MONKEYS_PLANE_D1,
     Stage.region_plane_e.value          : MONKEYS_PLANE_E,
     Stage.region_plane_f1.value         : MONKEYS_PLANE_F1,
     Stage.region_plane_g.value          : MONKEYS_PLANE_G,
@@ -1941,8 +1947,8 @@ EVENTS_ASIA_E1 : Sequence[str] = [
     Events.asia_e1_button.value
 ]
 
-EVENTS_PLANE_D : Sequence[str] = [
-    Events.plane_d_clapper.value
+EVENTS_PLANE_D1 : Sequence[str] = [
+    Events.plane_d1_clapper.value
 ]
 
 EVENTS_HONG_B : Sequence[str] = [
@@ -2026,7 +2032,7 @@ EVENTS_INDEX : dict[str, Sequence[str]] = {
     Stage.region_asia_a2.value          : EVENTS_ASIA_A2,
     Stage.region_asia_b2.value          : EVENTS_ASIA_B2,
     Stage.region_asia_e1.value          : EVENTS_ASIA_E1,
-    Stage.region_plane_d.value          : EVENTS_PLANE_D,
+    Stage.region_plane_d1.value         : EVENTS_PLANE_D1,
     Stage.region_hong_b.value           : EVENTS_HONG_B,
     Stage.region_hong_b2.value          : EVENTS_HONG_B2,
     Stage.region_bay_a7.value           : EVENTS_BAY_A7,
