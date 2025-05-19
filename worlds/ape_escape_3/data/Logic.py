@@ -278,7 +278,7 @@ class ProgressionMode:
         if (len(set(new_order[:5]).intersection(self.small_starting_channels)) > 0 or
                len(set(new_order[:3]).intersection([*self.boss_indices, *self.small_starting_channels])) > 0):
             blacklists : list[int] = [*self.small_starting_channels, *self.boss_indices]
-            swap_indexes : list[int] = [ _ for _ in range(10, 25) if new_order[_] not in blacklists ]
+            swap_indexes : list[int] = [ _ for _ in range(7, 26) if new_order[_] not in blacklists ]
             for idx, level in enumerate(new_order):
                 if level not in blacklists:
                     continue
