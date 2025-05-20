@@ -737,7 +737,7 @@ class Normal(Hard):
             Events.bay_a7_button.value                  : Rulesets(AccessRule.HIT),
 
             # Space
-            Events.space_e_button.value                : Rulesets(AccessRule.ATTACK),
+            Events.space_e_button.value                 : Rulesets(AccessRule.ATTACK),
             Events.space_g1_button.value                : Rulesets(AccessRule.ATTACK),
             Events.space_f2_button.value                : Rulesets(AccessRule.ATTACK),
         })
@@ -1010,6 +1010,9 @@ class Casual(Normal):
 
             # Bay
             Events.bay_a7_button.value                  : Rulesets(AccessRule.ATTACK),
+
+            # Space
+            Events.space_g_button.value                 : Rulesets([AccessRule.SWIM, AccessRule.ATTACK]),
         })
 
         self.entrance_rules.update({
