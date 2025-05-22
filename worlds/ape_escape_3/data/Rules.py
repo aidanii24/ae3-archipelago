@@ -525,8 +525,8 @@ class Hard(LogicPreference):
             Stage.entrance_bay_e1e2.value       : Rulesets(AccessRule.HIT),
 
             # Tomo
-            Stage.entrance_tomo_aa1.value       : Rulesets(AccessRule.HERO, AccessRule.NINJA),
-            Stage.entrance_tomo_a1a.value       : Rulesets(AccessRule.HERO, AccessRule.NINJA),
+            Stage.entrance_tomo_aa1.value       : Rulesets(AccessRule.FLY),
+            Stage.entrance_tomo_a1a.value       : Rulesets(AccessRule.FLY),
             Stage.entrance_tomo_e1i.value       : Rulesets(AccessRule.MONKEY),
             Stage.entrance_tomo_e2e3.value      : Rulesets(AccessRule.KUNGFU),
             Stage.entrance_tomo_e3e2.value      : Rulesets(event_invoked(Events.tomo_e2_kungfu.value)),
@@ -689,7 +689,7 @@ class Normal(Hard):
             Loc.boss_monkey_yellow.value        : Rulesets(AccessRule.HIT),
             Loc.boss_monkey_pink.value          : Rulesets(AccessRule.HIT),
             Loc.boss_monkey_red.value           : Rulesets(AccessRule.HIT),
-            Loc.boss_specter.value              : Rulesets(AccessRule.HIT),
+            Loc.boss_specter.value              : Rulesets([AccessRule.HIT, AccessRule.SHOOT]),
             Loc.boss_specter_final.value        : Rulesets(AccessRule.HIT)
         })
 
@@ -816,6 +816,8 @@ class Normal(Hard):
             Stage.entrance_bay_cc1.value        : Rulesets(AccessRule.HIT),
 
             # Tomo
+            Stage.entrance_tomo_aa1.value       : Rulesets(AccessRule.HERO, AccessRule.NINJA),
+            Stage.entrance_tomo_a1a.value       : Rulesets(AccessRule.HERO, AccessRule.NINJA),
             Stage.entrance_tomo_ee1.value       : Rulesets(AccessRule.KNIGHT),
             Stage.entrance_tomo_ee2.value       : Rulesets(AccessRule.RCC),
         })
@@ -957,13 +959,13 @@ class Casual(Normal):
             Loc.space_sal_11.value              : Rulesets(AccessRule.ATTACK),
 
             # Bosses
-            Loc.boss_monkey_white.value         : Rulesets(AccessRule.ATTACK),
+            Loc.boss_monkey_white.value         : Rulesets(AccessRule.MORPH_NO_MONKEY),
             Loc.boss_monkey_blue.value          : Rulesets(AccessRule.ATTACK),
             Loc.boss_monkey_yellow.value        : Rulesets(AccessRule.NINJA),
             Loc.boss_monkey_pink.value          : Rulesets(AccessRule.MORPH_NO_MONKEY),
-            Loc.boss_monkey_red.value           : Rulesets(AccessRule.ATTACK),
-            Loc.boss_specter.value              : Rulesets(AccessRule.ATTACK),
-            Loc.boss_specter_final.value        : Rulesets(AccessRule.ATTACK, AccessRule.SWIM)
+            Loc.boss_monkey_red.value           : Rulesets(AccessRule.MORPH_NO_MONKEY),
+            Loc.boss_specter.value              : Rulesets([AccessRule.MORPH_NO_MONKEY, AccessRule.SHOOT]),
+            Loc.boss_specter_final.value        : Rulesets([AccessRule.ATTACK, AccessRule.SWIM])
         })
 
         self.event_rules.update({
