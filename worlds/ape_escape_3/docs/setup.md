@@ -24,12 +24,18 @@ To manually install an `.apworld` file, open the Archipelago install directory a
 
 Settings
 --------
+### PCSX2
 This implementation interfaces with PCSX2 via its PINE connection to apply and enforce randomization and logic rules.
 
 By default, PINE features are disabled in PCSX2. Please follow these steps to enable it:
 1. Under `Tools`, check `Show Advanced Settings`.
 2. Under `System`. open `Settings`
 3. In the `Advanced Tab`, under the `PINE Settings` section, check `Enabled` and ensure that the `slot` field is set to `28011`.
+
+### Client
+Certain client behaviour, such as Gadget Auto-Equip, persists between game sessions rather than dependent on the world's `options.yaml`. These can be configured under `host.yaml` inside the Archipelago directory.
+
+Most Important to note is that the client saves data regarding the session in a file separate from the game save. These are stored under `Archipelago/data/saves` as json files prepended with `AE3_`. Handling of these files, and their automated deletions can be configured under the same `host.yaml` file.
 
 Game
 ----
