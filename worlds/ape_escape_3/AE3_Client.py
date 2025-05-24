@@ -237,7 +237,7 @@ class AE3Context(CommonContext):
     last_message : Optional[str] = None
 
     # Server Properties and Cache
-    next_item_slot : int = 0
+    next_item_slot : int = -1
     pending_deathlinks : int = 0
     cached_locations_checked : Set[int]
     offline_locations_checked : Set[int] = set()
@@ -367,7 +367,6 @@ class AE3Context(CommonContext):
             else:
                 self.last_item_processed_index = 0
                 self.checked_volatile_locations = set()
-
             ## Progression Mode
             if not self.unlocked_channels and APHelper.progression_mode.value in data:
                 self.progression = ProgressionModeOptions[data[APHelper.progression_mode.value]]()
@@ -554,6 +553,7 @@ class AE3Context(CommonContext):
 
             # Retrieve Next Item Slot/Amount of Items Received
             self.last_item_processed_index = data.get(APHelper.last_itm_idx_prc.value, 0)
+            print("LOADED:", self.last_item_processed_index)
 
             # Retrieve Offline Checked Locations
             self.offline_locations_checked = set(data.get(APHelper.offline_checked_locations.value, set()))

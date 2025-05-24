@@ -274,9 +274,13 @@ async def check_items(ctx : 'AE3Context'):
     # Check if there are items missed from since the client was open; Refuse to take items until this index is confirmed
     if ctx.last_item_processed_index < 0:
         return
+
     # Sync with Last Processed Item Index if necessary:
     elif ctx.last_item_processed_index:
-        ctx.next_item_slot = max(min(ctx.last_item_processed_index, ctx.next_item_slot), 0)
+        if ctx.next_item_slot < 0:
+            ctx.next_item_slot = ctx.last_item_processed_index
+        else:
+            ctx.next_item_slot = max(min(ctx.last_item_processed_index, ctx.next_item_slot), 0)
 
     # Resync Next Item Slot if empty and locations have been checked
     if not ctx.next_item_slot and ctx.items_received and ctx.checked_locations:
