@@ -468,7 +468,6 @@ class Group(ProgressionMode):
             )
 
         amount -= max_process
-        print("Keys:", amount, max_process, amount + max_process)
         return Channel_Key.to_items(world.player, amount)
 
 

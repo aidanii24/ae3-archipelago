@@ -1,4 +1,4 @@
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, TextIO
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 from BaseClasses import MultiWorld, Tutorial
@@ -7,7 +7,7 @@ import settings
 from .data.Items import AE3Item, AE3ItemMeta, ITEMS_MASTER, Nothing, generate_collectables
 from .data.Locations import Cellphone_Name_to_ID, MONKEYS_BOSSES, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, \
     CELLPHONES_MASTER_ORDERED, MONKEYS_PASSWORDS
-from .data.Stages import STAGES_BREAK_ROOMS
+from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER
 from .data.Rules import GoalTarget, GoalTargetOptions, LogicPreference, LogicPreferenceOptions, PostGameAccessRule, \
     PostGameAccessRuleOptions
 from .data.Strings import Loc, Meta, APHelper, APConsole
@@ -250,6 +250,34 @@ class AE3World(World):
         slot_data[APHelper.channel_order.value] = self.progression.order
 
         return slot_data
+
+    def write_spoiler(self, spoiler_handle: TextIO) -> None:
+        if not self.options.Shuffle_Channel:
+            return
+
+        spoiler_handle.write(
+            f"\n\n[AE3] ============================================"
+            f"\n Channel Order for {self.multiworld.get_player_name(self.player)} ({self.player})\n"
+        )
+
+        set_count = 0
+        level_base = 0
+        for i, channel in enumerate(self.progression.order):
+            spoiler_handle.write(
+                f"\n [{i + 1}]\t{LEVELS_BY_ORDER[channel]}"
+            )
+
+            if i - level_base == self.progression.progression[set_count] and i < len(self.progression.order) - 1:
+                set_count += 1
+                level_base = i
+
+                if set_count < len(self.progression.progression) - 1 or self.options.Post_Game_Condition >= 4:
+                    spoiler_handle.write(f"\n- < {set_count} > ---------------------------------------")
+                else:
+                    spoiler_handle.write(f"\n- < ! > ---------------------------------------")
+
+        spoiler_handle.write("\n")
+
 
     def generate_output(self, directory : str):
         datas = {
