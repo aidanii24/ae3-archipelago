@@ -259,7 +259,7 @@ class ProgressionMode:
 
     def __init__(self):
         self.progression = self.progression
-        self.order = [ _ for _ in range(27) ]
+        self.order = [ _ for _ in range(28) ]
         self.level_select_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
 
     def __str__(self):
@@ -450,27 +450,22 @@ class Group(ProgressionMode):
         amount: int = len(self.progression) - 1
 
         # Reduce Generated Keys for PostGameAccessRules other than "Channel Key"
-        if world.options.Post_Game_Condition != 4:
+        if world.options.Post_Game_Condition < 4:
             amount -= 1
 
         bosses_in_order : list = [ self.boss_indices.index(boss) for boss in self.order if boss in self.boss_indices ]
 
         # When the PostGameAccessRule is "After End", place keys up until the penultimate boss instead
-        processed : int = -1 if world.options.Post_Game_Condition == 5 else 0
-        for boss in bosses_in_order[:len(bosses_in_order)]:
+        max_process : int = (len(bosses_in_order) - 1 if world.options.Post_Game_Condition == 5
+                             else len(bosses_in_order) - 2)
+        for boss in bosses_in_order[:max_process]:
             # Skip if this boss is in the post-game channel
             if self.order[-1] == boss:
                 continue
 
             world.get_location(MONKEYS_BOSSES[boss]).place_locked_item(Channel_Key.to_item(world.player))
 
-            # End pre-placement of keys once enough has been processed
-            if processed >= 5:
-                break
-
-            processed += 1
-
-        amount -= processed
+        amount -= max_process
 
         return Channel_Key.to_items(world.player, amount)
 
