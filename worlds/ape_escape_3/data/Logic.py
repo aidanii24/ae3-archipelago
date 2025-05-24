@@ -463,11 +463,12 @@ class Group(ProgressionMode):
                 continue
 
             world.get_location(MONKEYS_BOSSES[boss]).place_locked_item(Channel_Key.to_item(world.player))
-            processed += 1
 
             # End pre-placement of keys once enough has been processed
             if processed >= 5:
                 break
+
+            processed += 1
 
         amount -= processed
 
