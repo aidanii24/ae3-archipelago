@@ -453,20 +453,22 @@ class Group(ProgressionMode):
         if world.options.Post_Game_Condition < 4:
             amount -= 1
 
-        bosses_in_order : list = [ self.boss_indices.index(boss) for boss in self.order if boss in self.boss_indices ]
+        bosses_in_order : list = [ boss for boss in self.order if boss in self.boss_indices ]
 
         # When the PostGameAccessRule is "After End", place keys up until the penultimate boss instead
         max_process : int = (len(bosses_in_order) - 1 if world.options.Post_Game_Condition == 5
                              else len(bosses_in_order) - 2)
         for boss in bosses_in_order[:max_process]:
             # Skip if this boss is in the post-game channel
-            if self.order[-1] == boss:
+            if boss in self.order[-self.progression[-1]:]:
                 continue
 
-            world.get_location(MONKEYS_BOSSES[boss]).place_locked_item(Channel_Key.to_item(world.player))
+            world.get_location(
+                MONKEYS_BOSSES[self.boss_indices.index(boss)]).place_locked_item(Channel_Key.to_item(world.player)
+            )
 
         amount -= max_process
-
+        print("Keys:", amount, max_process, amount + max_process)
         return Channel_Key.to_items(world.player, amount)
 
 
