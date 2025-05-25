@@ -158,7 +158,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
         if isinstance(self.ctx, AE3Context):
             self.ctx.auto_equip = not self.ctx.auto_equip
 
-            logger.info(f" [-!-] Freeplay Swap is now " f"{"ENABLED" if self.ctx.swap_freeplay else "DISABLED"}")
+            logger.info(f" [-!-] Auto Equip is now " f"{"ENABLED" if self.ctx.auto_equip else "DISABLED"}")
 
 
     def _cmd_freeplay(self):
