@@ -289,13 +289,13 @@ async def check_items(ctx : 'AE3Context'):
     elif ctx.next_item_slot and not ctx.checked_locations and ctx.items_received and ctx.items_received[-1].player < 1:
         ctx.next_item_slot = 0
 
+    # Auto-equip if option is enabled or for handling the starting gadgets
+    auto_equip: bool = ctx.auto_equip or not ctx.last_item_processed_index
+
     # Get Difference to get only new items
     received : List[NetworkItem] = ctx.items_received[ctx.next_item_slot:]
     ctx.next_item_slot += len(received)
     ctx.last_item_processed_index = ctx.next_item_slot
-
-    # Auto-equip if option is enabled or for handling the starting gadgets
-    auto_equip: bool = ctx.auto_equip or not ctx.cached_received_items
 
     for server_item in received:
         item = Items.from_id(server_item.item)
