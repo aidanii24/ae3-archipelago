@@ -252,7 +252,7 @@ async def check_states(ctx : 'AE3Context'):
                 ctx.receiving_death = True
                 ctx.command_state = 1
             # Disable the receiving deathlinks flag when deathlinks run out
-            elif not ctx.pending_deathlinks and cookies > 0.0:
+            elif not ctx.pending_deathlinks and ctx.receiving_death and cookies > 0.0:
                 ctx.receiving_death = False
             # Send DeathLinks if there are no more deathlinks occuring
             elif not ctx.receiving_death:

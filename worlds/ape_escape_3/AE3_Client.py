@@ -212,7 +212,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
                 "cause": "Test Command"
             }
 
-            self.ctx.on_deathlink(death_notes)
+            self.ctx.pending_deathlinks = int(count)
 
 class AE3Context(CommonContext):
     # Archipelago Meta
