@@ -1027,8 +1027,8 @@ class Casual(Normal):
             # Castle
             Stage.entrance_castle_aa1.value     : Rulesets(AccessRule.ATTACK),
             Stage.entrance_castle_a1a.value     : Rulesets(AccessRule.ATTACK),
-            Stage.entrance_castle_dd1.value     : Rulesets(AccessRule.KNIGHT),
-            Stage.entrance_castle_d1d.value     : Rulesets(AccessRule.KNIGHT),
+            Stage.entrance_castle_dd1.value     : Rulesets(AccessRule.KNIGHT, AccessRule.SHOOT),
+            Stage.entrance_castle_d1d.value     : Rulesets(AccessRule.KNIGHT, AccessRule.SHOOT),
             Stage.entrance_castle_bb1.value     : Rulesets(AccessRule.ATTACK),
 
             # Ciscocity
