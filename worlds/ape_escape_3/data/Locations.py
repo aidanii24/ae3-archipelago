@@ -1076,8 +1076,8 @@ MONKEYS_INDEX : dict[str, Sequence] = {
 
     # Onsen
     Stage.region_onsen_a.value          : MONKEYS_ONSEN_A,
-    Stage.region_onsen_a1m.value         : MONKEYS_ONSEN_A1M,
-    Stage.region_onsen_a2m.value         : MONKEYS_ONSEN_A2M,
+    Stage.region_onsen_a1m.value        : MONKEYS_ONSEN_A1M,
+    Stage.region_onsen_a2m.value        : MONKEYS_ONSEN_A2M,
     Stage.region_onsen_b.value          : MONKEYS_ONSEN_B,
     Stage.region_onsen_c.value          : MONKEYS_ONSEN_C,
     Stage.region_onsen_d.value          : MONKEYS_ONSEN_D,

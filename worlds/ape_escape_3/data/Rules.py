@@ -1016,7 +1016,7 @@ class Casual(Normal):
             Events.asia_b2_button.value                 : Rulesets(AccessRule.ATTACK),
 
             # Plane
-            Events.plane_d1_clapper.value                 : Rulesets(AccessRule.ATTACK),
+            Events.plane_d1_clapper.value                : Rulesets(AccessRule.ATTACK),
 
             # Hong
             Events.hong_b2_button.value                 : Rulesets(AccessRule.ATTACK),
