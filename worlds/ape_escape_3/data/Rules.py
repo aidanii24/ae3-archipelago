@@ -149,6 +149,8 @@ class LogicPreference:
     event_rules : dict[str, Rulesets] = {}
     entrance_rules : dict[str, Rulesets] = {}
 
+    blacklisted_entrances : list[str] = []
+
     default_critical_rule : Set[Callable] = [AccessRule.CATCH]
     small_starting_channels : list[int]
     final_level_rule : Set[Callable] = {AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC,
@@ -158,6 +160,8 @@ class LogicPreference:
         self.monkey_rules : dict[str, Rulesets] = {}
         self.event_rules : dict[str, Rulesets] = {}
         self.entrance_rules : dict[str, Rulesets] = {}
+
+        self.blacklisted_entrances : list[str] = []
 
     # Get all Access Rules within the channel
     def get_channel_clear_rules(self, *regions : str) -> Rulesets:
@@ -387,6 +391,9 @@ class Hard(LogicPreference):
             # Onsen
             Stage.entrance_onsen_a1a.value      : Rulesets(event_invoked(Events.onsen_a_button.value)),
             Stage.entrance_onsen_a2a.value      : Rulesets(event_invoked(Events.onsen_a_button.value)),
+            Stage.entrance_onsen_a1b1.value     : Rulesets(AccessRule.DASH, AccessRule.RCC),
+            Stage.entrance_onsen_a2b1.value     : Rulesets(AccessRule.DASH, AccessRule.RCC),
+            Stage.entrance_onsen_b1b.value      : Rulesets(AccessRule.GLIDE, [AccessRule.RCC, AccessRule.SWIM]),
             Stage.entrance_onsen_be.value       : Rulesets(AccessRule.FLY),
             Stage.entrance_onsen_bd1.value      : Rulesets(AccessRule.SHOOT, [AccessRule.RCC, AccessRule.ATTACK]),
             Stage.entrance_onsen_bd.value       : Rulesets(AccessRule.FLY),
@@ -485,7 +492,7 @@ class Hard(LogicPreference):
 
             # Plane
             Stage.entrance_plane_aa1.value      : Rulesets(AccessRule.NINJA),
-            Stage.entrance_plane_ac.value       : Rulesets(AccessRule.RCC, AccessRule.DASH),
+            Stage.entrance_plane_ac.value       : Rulesets(AccessRule.RCC, AccessRule.DASH, AccessRule.KUNGFU),
             Stage.entrance_plane_cc1.value      : Rulesets(AccessRule.MAGICIAN),
             Stage.entrance_plane_cg.value       : Rulesets(AccessRule.MONKEY),
             Stage.entrance_plane_dd1.value      : Rulesets(AccessRule.GLIDE, AccessRule.KUNGFU),
@@ -770,7 +777,8 @@ class Normal(Hard):
             Stage.entrance_onsen_aa2.value      : Rulesets(AccessRule.HIT),
             Stage.entrance_onsen_a1a2.value     : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
             Stage.entrance_onsen_a2a1.value     : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
-            Stage.entrance_onsen_b1b.value      : Rulesets(AccessRule.GLIDE, [AccessRule.RCC, AccessRule.SWIM]),
+            Stage.entrance_onsen_a1a1m.value    : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
+            Stage.entrance_onsen_a2a2m.value    : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
 
             # Edotown
             Stage.entrance_edotown_a1a.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
@@ -832,6 +840,9 @@ class Casual(Normal):
         super().__init__()
 
         self.small_starting_channels = [6, 9, 11, 13, 15, 18, 20, 22, 23]
+        self.blacklisted_entrances = [
+            Stage.entrance_asia_a1a2.value
+        ]
 
         self.monkey_rules.update({
             # Woods
@@ -1061,8 +1072,10 @@ class Casual(Normal):
             # Onsen
             Stage.entrance_onsen_aa1.value      : Rulesets(AccessRule.ATTACK),
             Stage.entrance_onsen_aa2.value      : Rulesets(AccessRule.ATTACK),
-            Stage.entrance_onsen_a1a2.value     : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
-            Stage.entrance_onsen_a2a1.value     : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
+            Stage.entrance_onsen_a1a2.value     : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_onsen_a2a1.value     : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_onsen_a1a1m.value    : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_onsen_a2a2m.value    : Rulesets(AccessRule.GLIDE),
             Stage.entrance_onsen_b1b.value      : Rulesets([AccessRule.RCC, AccessRule.SWIM]),
             Stage.entrance_onsen_bd1.value      : Rulesets(AccessRule.SHOOT),
             Stage.entrance_onsen_dd1.value      : Rulesets(AccessRule.RCC),

@@ -337,11 +337,11 @@ MONKEYS_ONSEN_A : Sequence[str] = [
     Loc.onsen_chabimon.value, Loc.onsen_ukki_ichiro.value
 ]
 
-MONKEYS_ONSEN_A1 : Sequence[str] = [
+MONKEYS_ONSEN_A1M : Sequence[str] = [
     Loc.onsen_kiichiro.value, Loc.onsen_saru_sam.value
 ]
 
-MONKEYS_ONSEN_A2 : Sequence[str] = [
+MONKEYS_ONSEN_A2M : Sequence[str] = [
     Loc.onsen_michiyan.value, Loc.onsen_tome_san.value
 ]
 
@@ -366,7 +366,7 @@ MONKEYS_ONSEN_E : Sequence[str] = [
 ]
 
 MONKEYS_ONSEN : Sequence[str] = [
-    *MONKEYS_ONSEN_A, *MONKEYS_ONSEN_A1, *MONKEYS_ONSEN_A2, *MONKEYS_ONSEN_B, *MONKEYS_ONSEN_C, *MONKEYS_ONSEN_D,
+    *MONKEYS_ONSEN_A, *MONKEYS_ONSEN_A1M, *MONKEYS_ONSEN_A2M, *MONKEYS_ONSEN_B, *MONKEYS_ONSEN_C, *MONKEYS_ONSEN_D,
     *MONKEYS_ONSEN_D1, *MONKEYS_ONSEN_E
 ]
 
@@ -1076,8 +1076,8 @@ MONKEYS_INDEX : dict[str, Sequence] = {
 
     # Onsen
     Stage.region_onsen_a.value          : MONKEYS_ONSEN_A,
-    Stage.region_onsen_a1.value         : MONKEYS_ONSEN_A1,
-    Stage.region_onsen_a2.value         : MONKEYS_ONSEN_A2,
+    Stage.region_onsen_a1m.value         : MONKEYS_ONSEN_A1M,
+    Stage.region_onsen_a2m.value         : MONKEYS_ONSEN_A2M,
     Stage.region_onsen_b.value          : MONKEYS_ONSEN_B,
     Stage.region_onsen_c.value          : MONKEYS_ONSEN_C,
     Stage.region_onsen_d.value          : MONKEYS_ONSEN_D,

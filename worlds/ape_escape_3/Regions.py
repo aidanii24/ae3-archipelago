@@ -37,6 +37,9 @@ def create_regions(world : "AE3World"):
 
     # Connect Regions
     for entrance in [*ENTRANCES_MASTER, *world.progression.level_select_entrances]:
+        if entrance.name in world.logic_preference.blacklisted_entrances:
+            continue
+
         ruleset : Rulesets = Rulesets()
 
         if entrance.parent in stages:
