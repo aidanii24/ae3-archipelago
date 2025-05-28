@@ -392,6 +392,7 @@ class Hard(LogicPreference):
             Stage.entrance_onsen_a1a.value      : Rulesets(event_invoked(Events.onsen_a_button.value)),
             Stage.entrance_onsen_a2a.value      : Rulesets(event_invoked(Events.onsen_a_button.value)),
             Stage.entrance_onsen_a1b1.value     : Rulesets(AccessRule.DASH, AccessRule.RCC),
+            Stage.entrance_onsen_a2b1.value     : Rulesets(AccessRule.DASH, AccessRule.RCC),
             Stage.entrance_onsen_be.value       : Rulesets(AccessRule.FLY),
             Stage.entrance_onsen_bd1.value      : Rulesets(AccessRule.SHOOT, [AccessRule.RCC, AccessRule.ATTACK]),
             Stage.entrance_onsen_bd.value       : Rulesets(AccessRule.FLY),
