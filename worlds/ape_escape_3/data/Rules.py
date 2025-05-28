@@ -393,6 +393,7 @@ class Hard(LogicPreference):
             Stage.entrance_onsen_a2a.value      : Rulesets(event_invoked(Events.onsen_a_button.value)),
             Stage.entrance_onsen_a1b1.value     : Rulesets(AccessRule.DASH, AccessRule.RCC),
             Stage.entrance_onsen_a2b1.value     : Rulesets(AccessRule.DASH, AccessRule.RCC),
+            Stage.entrance_onsen_b1b.value      : Rulesets(AccessRule.GLIDE, [AccessRule.RCC, AccessRule.SWIM]),
             Stage.entrance_onsen_be.value       : Rulesets(AccessRule.FLY),
             Stage.entrance_onsen_bd1.value      : Rulesets(AccessRule.SHOOT, [AccessRule.RCC, AccessRule.ATTACK]),
             Stage.entrance_onsen_bd.value       : Rulesets(AccessRule.FLY),
@@ -778,7 +779,6 @@ class Normal(Hard):
             Stage.entrance_onsen_a2a1.value     : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
             Stage.entrance_onsen_a1a1m.value    : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
             Stage.entrance_onsen_a2a2m.value    : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
-            Stage.entrance_onsen_b1b.value      : Rulesets(AccessRule.GLIDE, [AccessRule.RCC, AccessRule.SWIM]),
 
             # Edotown
             Stage.entrance_edotown_a1a.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
@@ -841,7 +841,7 @@ class Casual(Normal):
 
         self.small_starting_channels = [6, 9, 11, 13, 15, 18, 20, 22, 23]
         self.blacklisted_entrances = [
-            Stage.entrance_asia_a1a2.value,
+            Stage.entrance_asia_a1a2.value
         ]
 
         self.monkey_rules.update({
@@ -1016,7 +1016,7 @@ class Casual(Normal):
             Events.asia_b2_button.value                 : Rulesets(AccessRule.ATTACK),
 
             # Plane
-            Events.plane_d1_clapper.value               : Rulesets(AccessRule.ATTACK),
+            Events.plane_d1_clapper.value                : Rulesets(AccessRule.ATTACK),
 
             # Hong
             Events.hong_b2_button.value                 : Rulesets(AccessRule.ATTACK),

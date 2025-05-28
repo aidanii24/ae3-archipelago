@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import Entrance, Location, Region
 
-from .data.Stages import STAGES_BREAK_ROOMS, STAGES_DIRECTORY, STAGES_MASTER, ENTRANCES_MASTER, AE3EntranceMeta
+from .data.Stages import STAGES_BREAK_ROOMS, STAGES_DIRECTORY, STAGES_MASTER, ENTRANCES_MASTER
 from .data.Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, CameraLocation, CellphoneLocation, \
     EventMeta, MONKEYS_PASSWORDS, MonkeyLocation, MONKEYS_INDEX, EVENTS_INDEX
 from .data.Logic import Rulesets
@@ -36,11 +36,10 @@ def create_regions(world : "AE3World"):
     stages : dict[str, Region] = { name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER }
 
     # Connect Regions
-    entrances : list[AE3EntranceMeta] = [
-        ent for ent in [*ENTRANCES_MASTER, *world.progression.level_select_entrances]
-        if ent.name not in world.logic_preference.blacklisted_entrances
-    ]
-    for entrance in entrances:
+    for entrance in [*ENTRANCES_MASTER, *world.progression.level_select_entrances]:
+        if entrance.name in world.logic_preference.blacklisted_entrances:
+            continue
+
         ruleset : Rulesets = Rulesets()
 
         if entrance.parent in stages:
