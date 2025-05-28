@@ -193,7 +193,7 @@ class AE3World(World):
             self.multiworld.push_precollected(equipment[self.options.Starting_Gadget - 1])
             del equipment[self.options.Starting_Gadget - 1]
 
-        self.multiworld.push_precollected(monkey_net)
+        #self.multiworld.push_precollected(monkey_net)
 
         # Remove any Gadgets specified in Starting Inventory
         equipment = [ gadget for gadget in equipment if gadget.name not in self.options.start_inventory]
