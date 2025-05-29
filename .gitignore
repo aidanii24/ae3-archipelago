@@ -13,6 +13,7 @@ fuzz_output/*
 fuzz.py
 _testing.py
 host.yaml
+host.yaml.tmp
 
 worlds/ape_escape_3/test/*
 _region_diagram.puml
