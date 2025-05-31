@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 
-from Options import OptionGroup, Toggle, DefaultOnToggle, Choice, PerGameCommonOptions, DeathLink, Visibility
-from worlds.ape_escape_3 import APHelper
+from Options import OptionGroup, Toggle, DefaultOnToggle, Choice, PerGameCommonOptions, DeathLink, Visibility, \
+    Range, OptionList
+from .data.Strings import APHelper
+from .data.Stages import LEVELS_BY_ORDER
 
 
 class ProgressionMode(Choice):
@@ -12,6 +14,12 @@ class ProgressionMode(Choice):
     > Singles - Each Stage will be unlocked one by one, as long as you find the Channel Key.
     > Group - Alternate between unlocking groups of stages and the bosses in between.
     > World - Progression is similar to Boss, but the bosses are unlocked along with their preceding stages.
+    > Quadruples - Each set of Levels will have 4 channels each!
+    > Open* - All levels except the final two are immediately unlocked, but a certain number amount of keys is needed
+    to access the next level. The default required is 10 Channel Keys.
+    > Randomize* - How many levels are unlocked in a set is all up to chance!
+
+    * These options can be customized with their respective options below.
     """
     display_name : str = "Progression Mode"
     default = 1
@@ -19,7 +27,76 @@ class ProgressionMode(Choice):
     option_singles : int = 0
     option_group : int = 1
     option_world : int = 2
+    option_quadruples : int = 3
+    option_open : int = 4
+    option_randomize : int = 5
 
+class OpenProgressionKeys(Range):
+    """
+    If the chosen Progression Mode is `open`, this option allows the amount of keys required to unlock the endgame
+    channels to be customized. Use the same value for both Minimum and Maximum for an absolute value,
+    or make them different to have generation randomly choose between them.
+    """
+    display_name : str = "Open Progression Mode Required Keys"
+    default = 10
+
+    range_start = 5
+    range_end = 30
+
+class RandomizeProgressionSetCount(Range):
+    """
+    If the chosen Progression mode is `randomize`, this option allows you to control the amount of channel sets
+    that will be generated, and by extension, the minimum amount of keys to reach the end (but not post) game.
+    Leave this at 0 to let generation decide for you, or specify a maximum or minimum value for more control.
+    """
+    display_name : str = "Randomize Progression Set Count"
+    default = 0
+
+    range_start = 0
+    range_end = 28
+
+class RandomizeProgressionChannelCount(OptionList):
+    """
+    If the chosen mode is `randomize`, this option allows you to control the amount of possible channels that can
+    be included in a set. Leave this at default to let generation decide for you, or specify a maximum and minimum
+    value for generation to use to randomize for each set.
+
+    If a Set Count has been specified, it will be prioritized over this option,
+    but generation will still attempt to respect this option as much as possible.
+
+    Format: [min, max]
+    Absolute Minimum : 1
+    Absolute Maximum : 28
+    """
+    display_name : str = "Randomize Progression Channel Count"
+    default = []
+
+    def __init__(self, options: OptionList) -> None:
+        super().__init__(options)
+
+        if len(self.value) == 0:
+            return
+
+        if not any(isinstance(_, int) for _ in self.value):
+            assert "AE3 > RandomizeProgressionChannelCount: One or more item(s) is not an integer."
+
+        if len(self.value) < 1:
+            assert "AE3 > RandomizeProgressionChannelCount: This option requires two integer items."
+
+        # Treat as default if both values are 0
+        if sum(self.value) == 0:
+            self.value.clear()
+            return
+
+        # Truncate if needed
+        if len(self.value) > 2:
+            self.value = self.value[:2]
+
+        self.value[0] = max(min(self.value[0], 28), 1)
+        self.value[1] = 28 if self.value[1] == 0 else max(min(self.value[1], 28), self.value[0])
+
+    def __bool__(self):
+        return bool(self.value)
 
 class LogicPreference(Choice):
     """
@@ -122,6 +199,47 @@ class PreserveChannel(Choice):
     option_specters : int = 2
     option_specter_final : int = 3
 
+class PushChannel(OptionList):
+    """
+    Specify which channels should be pushed to the End Game (Penultimate set of channels).
+
+    By default, this will replace and swap the specified channels with the channels already present in the End Game,
+    but this can be changed to add without swapping by specifying "ADDITIVE" anywhere into the list.
+
+    Format: ["item_a", "item_b", "item_c", ..., (optional)"ADDITIVE"]
+    """
+    display_name : str = "Push Channel"
+    default = []
+
+    valid_keys = [*LEVELS_BY_ORDER]
+
+class PostChannel(OptionList):
+    """
+    Specify which channels should be placed to the Post Game
+    (Ultimate set of channels locked behind Post Game Condition).
+
+    By default, this will replace and swap the specified channels with the channels already present in the Post Game,
+    but this can be changed to add without swapping by specifying "ADDITIVE" anywhere into the list.
+
+    Format: ["item_a", "item_b", "item_c", ..., (optional)"ADDITIVE"]
+    """
+    display_name : str = "Post Channel"
+    default = []
+
+    valid_keys = [*LEVELS_BY_ORDER]
+
+class BlacklistChannel(OptionList):
+    """
+    Specify which channels whose locations should be excluded from generation, and then placed at the end of the
+    channel order.
+
+    Format: ["item_a", "item_b", "item_c", ...]
+    """
+    display_name : str = "Blacklist Channel"
+    default = []
+
+    valid_keys = [*LEVELS_BY_ORDER]
+
 
 class Monkeysanity(DefaultOnToggle):
     """
@@ -197,6 +315,27 @@ class Cellphonesanity(Toggle):
     default: Disabled
     """
     display_name = "Cellphonesanity"
+
+class Shoppingsanity(Choice):
+    """
+    Choose if items from the Book Shop, Hobby Shop, and Music Shop, and the Morph Stocks from Monkey Mart
+    should count as locations.
+    Default: Disabled
+
+    > disabled - Shop Items will not count as locations
+    > enabled - Shop Items will count as locations
+    > collection - Shop Items will count as locations by the amount of that type of item that is owned
+    > progressive - Shop Items will become available as you unlock more channels
+    > restock - Shop Items will become available as you find more Shop Stocks
+    """
+    display_name = "Shoppingsanity"
+    default = 0
+
+    option_disabled : int = 0
+    option_enabled : int = 1
+    option_collection : int = 2
+    option_progressive : int = 3
+    option_restock : int = 4
 
 
 class StartingGadget(Choice):
@@ -286,6 +425,16 @@ class AddMorphExtensions(Toggle):
     """
     display_name : str = "Add Morph Extensions"
 
+class ExtraKeys(Range):
+    """
+    Determine if extra channel keys should be generated in addition to the minimum required to unlock all the channels.
+    """
+    display_name : str = "Extra Channel Keys"
+    default = 0
+
+    range_start = 0
+    range_end = 15
+
 
 class EarlyFreePlay(Toggle):
     """
@@ -296,52 +445,83 @@ class EarlyFreePlay(Toggle):
     display_name : str = "Early Free Play"
 
 
-class EnableShoppingArea(DefaultOnToggle):
+class EnableMonkeyMart(DefaultOnToggle):
     """
-    Choose if the Shopping Area should be able to sell (relevant) items.
+    Choose if Monkey Mart should be able to sell cookies, energy and pellets. Morph Stock and Lucky Ticket will
+    remain available
+
     Default: Enabled
     """
-    visibility = Visibility.none
-    display_name : str = "Enable Shopping Area"
+    display_name : str = "Enable Monkey Mart"
+
+class LuckyTicketConsolationEffects(Toggle):
+    """
+    Choose if Lucky Ticket Consolation Effects should be enabled. When you get a consolation prize, get a chance to
+    activate a special effect that can affect the Archipelago experience.
+    """
+
+class ConsolationEffectsBlacklist(OptionList):
+    """
+    When `Lucky Ticket Consolation` is enabled, this option allows you to disable certain effects from being chosen.
+
+    Highly destructive effects have override values in host.yaml that will lead to options here being ignored.
+    If you wish to enable these effects, please refer to the settings in your host.yaml, or contact your game host
+    in charge of generating the game.
+    """
+    display_name : str = "Lucky Ticket Consolation Effects Blacklist"
+    default = ["Bypass Post-Game Condition", "Instant Goal"]
 
 
 ae3_option_groups : dict[str, list] = {
-    "Randomizer Options"        : [ProgressionMode, LogicPreference, GoalTarget, PostGameAccessRule, ShuffleChannel,
-                                   PreserveChannel, Monkeysanity, MonkeysanityBreakRooms, MonkeysanityPasswords,
-                                   Camerasanity, Cellphonesanity],
+    "Randomizer Options"        : [ProgressionMode, OpenProgressionKeys, RandomizeProgressionSetCount,
+                                   RandomizeProgressionChannelCount, LogicPreference, GoalTarget, PostGameAccessRule,
+                                   ShuffleChannel, PreserveChannel, PushChannel, PostChannel, BlacklistChannel,
+                                   Monkeysanity,MonkeysanityBreakRooms, MonkeysanityPasswords, Camerasanity,
+                                   Cellphonesanity, Shoppingsanity],
     "Item Options"              : [StartingGadget, StartingMorph, BaseMorphDuration, ShuffleMonkeyNet,
-                                   ShuffleRCCarChassis, ShuffleMorphStocks, AddMorphExtensions],
-    "Preferences"               : [EarlyFreePlay, EnableShoppingArea],
+                                   ShuffleRCCarChassis, ShuffleMorphStocks, AddMorphExtensions, ExtraKeys],
+    "Preferences"               : [EarlyFreePlay, EnableMonkeyMart, LuckyTicketConsolationEffects,
+                                   ConsolationEffectsBlacklist],
     "Sync Options"              : [DeathLink]
 }
 
 @dataclass
 class AE3Options(PerGameCommonOptions):
-    Progression_Mode        : ProgressionMode
-    Logic_Preference        : LogicPreference
-    Goal_Target             : GoalTarget
-    Post_Game_Condition     : PostGameAccessRule
-    Shuffle_Channel         : ShuffleChannel
-    Preserve_Channel        : PreserveChannel
-    Monkeysanity            : Monkeysanity
-    Monkeysanity_BreakRooms : MonkeysanityBreakRooms
-    Monkeysanity_Passwords  : MonkeysanityPasswords
-    Camerasanity            : Camerasanity
-    Cellphonesanity         : Cellphonesanity
+    Progression_Mode                        : ProgressionMode
+    Open_Progression_Keys                   : OpenProgressionKeys
+    Randomize_Progression_Set_Count         : RandomizeProgressionSetCount
+    Randomize_Progression_Channel_Count     : RandomizeProgressionChannelCount
+    Logic_Preference                        : LogicPreference
+    Goal_Target                             : GoalTarget
+    Post_Game_Condition                     : PostGameAccessRule
+    Shuffle_Channel                         : ShuffleChannel
+    Preserve_Channel                        : PreserveChannel
+    Push_Channel                            : PushChannel
+    Post_Channel                            : PostChannel
+    Blacklist_Channel                       : BlacklistChannel
+    Monkeysanity                            : Monkeysanity
+    Monkeysanity_BreakRooms                 : MonkeysanityBreakRooms
+    Monkeysanity_Passwords                  : MonkeysanityPasswords
+    Camerasanity                            : Camerasanity
+    Cellphonesanity                         : Cellphonesanity
+    Shoppingsanity                          : Shoppingsanity
 
-    Starting_Gadget         : StartingGadget
-    Starting_Morph          : StartingMorph
-    Base_Morph_Duration     : BaseMorphDuration
+    Starting_Gadget                         : StartingGadget
+    Starting_Morph                          : StartingMorph
+    Base_Morph_Duration                     : BaseMorphDuration
 
-    Shuffle_Net             : ShuffleMonkeyNet
-    Shuffle_Chassis         : ShuffleRCCarChassis
-    Shuffle_Morph_Stocks    : ShuffleMorphStocks
-    Add_Morph_Extensions    : AddMorphExtensions
+    Shuffle_Net                             : ShuffleMonkeyNet
+    Shuffle_Chassis                         : ShuffleRCCarChassis
+    Shuffle_Morph_Stocks                    : ShuffleMorphStocks
+    Add_Morph_Extensions                    : AddMorphExtensions
+    Extra_Keys                              : ExtraKeys
 
-    Early_Free_Play         : EarlyFreePlay
-    Enable_Shopping_Area    : EnableShoppingArea
+    Early_Free_Play                         : EarlyFreePlay
+    Enable_Monkey_Mart                      : EnableMonkeyMart
+    Lucky_Ticket_Consolation_Effects        : LuckyTicketConsolationEffects
+    Consolation_Effects_Blacklist           : ConsolationEffectsBlacklist
 
-    death_link              : DeathLink
+    death_link                              : DeathLink
 
 def create_option_groups() -> list[OptionGroup]:
     groups : list[OptionGroup] = []
@@ -353,16 +533,23 @@ def create_option_groups() -> list[OptionGroup]:
 def slot_data_options() -> list[str]:
     return [
         APHelper.progression_mode.value,
+        APHelper.open_required.value,
+        APHelper.randomize_set_count.value,
+        APHelper.randomize_channel_count.value,
         APHelper.logic_preference.value,
         APHelper.goal_target.value,
         APHelper.post_game_access_rule.value,
         APHelper.shuffle_channel.value,
         APHelper.preserve_channel.value,
+        APHelper.push_channel.value,
+        APHelper.post_channel.value,
+        APHelper.blacklist_channel.value,
         APHelper.monkeysanity.value,
         APHelper.monkeysanitybr.value,
         APHelper.monkeysanitypw.value,
         APHelper.camerasanity.value,
         APHelper.cellphonesanity.value,
+        APHelper.shoppingsanity.value,
 
         APHelper.starting_gadget.value,
         APHelper.starting_morph.value,
@@ -372,9 +559,12 @@ def slot_data_options() -> list[str]:
         APHelper.shuffle_chassis.value,
         APHelper.shuffle_morph_stocks.value,
         APHelper.add_morph_extensions.value,
+        APHelper.extra_keys.value,
 
         APHelper.early_free_play.value,
-        APHelper.enable_shopping_area.value,
+        APHelper.enable_monkey_mart.value,
+        APHelper.ticket_consolation.value,
+        APHelper.consolation_blacklist.value,
 
         APHelper.death_link.value
     ]
