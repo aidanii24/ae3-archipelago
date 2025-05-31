@@ -183,8 +183,11 @@ class LogicPreference:
 
         return rules
 
+    # TODO Deprecated
     def set_level_progression_rules(self, progression : ProgressionMode, post_game_access_rule_option : int = 0,
                                     post_game_rules : list[Callable] = None):
+        warn("This function is deprecated. Channel Progression Rule Generation has been moved to Progression Mode.")
+
         if post_game_rules is None:
             post_game_rules = []
 

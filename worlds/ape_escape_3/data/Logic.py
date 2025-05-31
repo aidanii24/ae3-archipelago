@@ -329,17 +329,35 @@ class ProgressionMode:
 
         return new_order
 
-    def set_progression(self, progression : list[int] = None):
-        if progression is None or not progression:
-            return
+    def generate_rules(self, world : 'AE3World') -> dict[str, Rulesets]:
+        channel_rules : dict[str, Rulesets] = {}
 
-        self.progression = progression
+        for i, channel_set in enumerate(self.progression):
+            # The first set of levels should NOT have any access rules
+            # Filler sets should also be ignored
+            if i == 0 or channel_set == 0:
+                continue
 
-    def set_order(self, order : list[int] = None):
-        if order is None or not order:
-            return
+            # Get total channels up until this set's point (not counting levels in current set)
+            total_from_current : int = sum(self.progression[:i]) + 1
+            required_keys : int = i
+            special_post_game : bool = False
+            if i == len(self.progression) - 1 and world.options.Post_Game_Condition < 4:
+                special_post_game = True
+                required_keys -= 1
 
-        self.order = order
+            # Get current channel index to be processed for access rules
+            # by adding total from current and the range of the current set
+            for channel in range(channel_set):
+                channel_idx : int = total_from_current + channel
+                access_rule : Rulesets = Rulesets(has_keys(required_keys))
+
+                if special_post_game:
+                    access_rule.critical.add(world.post_game_access_rule.verify)
+
+                channel_rules.update({self.level_select_entrances[channel_idx].name : access_rule})
+
+        return channel_rules
 
     def generate_keys(self, world : 'AE3World') -> list[Item]:
         # First Set of Level(s) will not cost keys, so subtract one from total length of progression
@@ -359,6 +377,18 @@ class ProgressionMode:
             world.get_location(penultimate).place_locked_item(Channel_Key.to_item(world.player))
 
         return Channel_Key.to_items(world.player, amount)
+
+    def set_progression(self, progression : list[int] = None):
+        if progression is None or not progression:
+            return
+
+        self.progression = progression
+
+    def set_order(self, order : list[int] = None):
+        if order is None or not order:
+            return
+
+        self.order = order
 
     def get_progress(self, keys : int):
         return sum(self.progression[:keys + 1])
@@ -444,31 +474,6 @@ class Group(ProgressionMode):
         self.progression = [*new_progression]
         self.order = [*new_order]
         self.level_select_entrances = [*new_entrances]
-
-    def generate_keys(self, world : 'AE3World'):
-        # First Set of Level(s) will not cost keys, so subtract one from total length of progression
-        amount: int = len(self.progression) - 1
-
-        # Reduce Generated Keys for PostGameAccessRules other than "Channel Key"
-        if world.options.Post_Game_Condition < 4:
-            amount -= 1
-
-        bosses_in_order : list = [ boss for boss in self.order if boss in self.boss_indices ]
-
-        # When the PostGameAccessRule is "After End", place keys up until the penultimate boss instead
-        max_process : int = (len(bosses_in_order) - 1 if world.options.Post_Game_Condition == 5
-                             else len(bosses_in_order) - 2)
-        for boss in bosses_in_order[:max_process]:
-            # Skip if this boss is in the post-game channel
-            if boss in self.order[-self.progression[-1]:]:
-                continue
-
-            world.get_location(
-                MONKEYS_BOSSES[self.boss_indices.index(boss)]).place_locked_item(Channel_Key.to_item(world.player)
-            )
-
-        amount -= max_process
-        return Channel_Key.to_items(world.player, amount)
 
 
 class World(ProgressionMode):
