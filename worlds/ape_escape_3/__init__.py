@@ -106,13 +106,13 @@ class AE3World(World):
 
     def generate_early(self):
         # Get Logic Preference
-        self.logic_preference = LogicPreferenceOptions[self.options.Logic_Preference]()
+        self.logic_preference = LogicPreferenceOptions[self.options.logic_preference]()
 
         # Get ProgressionMode
-        self.progression = ProgressionModeOptions[self.options.Progression_Mode.value]()
+        self.progression = ProgressionModeOptions[self.options.progression_mode.value]()
 
         # Shuffle Channel if desired
-        if self.options.Shuffle_Channel:
+        if self.options.shuffle_channel:
             self.progression.shuffle(self)
 
         # Get Post Game Access Rule and exclude locations as necessary
@@ -123,7 +123,7 @@ class AE3World(World):
         exclude_locations.extend(MONKEYS_PASSWORDS)
 
         # Get Goal Target
-        self.goal_target = GoalTargetOptions[self.options.Goal_Target.value](exclude_regions, exclude_locations)
+        self.goal_target = GoalTargetOptions[self.options.goal_target.value](exclude_regions, exclude_locations)
 
         # When Channels are shuffled, exclude locations from the channel randomized into the post-game slot
         for x in range(self.progression.progression[-1]):
@@ -134,12 +134,12 @@ class AE3World(World):
             exclude_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
 
         # Active Monkeys options should respect Monkeysanity options
-        if self.options.Post_Game_Condition == 1 and not self.options.Monkeysanity_BreakRooms:
+        if self.options.post_game_condition == 1 and not self.options.monkeysanity_break_rooms:
             exclude_regions.extend([*STAGES_BREAK_ROOMS])
 
         # If Specter is a Post Game Access Rule, and he gets shuffled to become the post game channel, change the
         # required location to the next penultimate placed boss
-        elif (self.options.Post_Game_Condition >= 4 and
+        elif (self.options.post_game_condition >= 4 and
               self.progression.order[-1] == self.progression.boss_indices[-2]):
             if MONKEYS_BOSSES[-2] in exclude_locations:
                 exclude_locations.remove(MONKEYS_BOSSES[-2])
@@ -151,7 +151,7 @@ class AE3World(World):
                         additional_locations.append(MONKEYS_BOSSES[self.progression.boss_indices.index(level)])
                         break
 
-        self.post_game_access_rule = (PostGameAccessRuleOptions[self.options.Post_Game_Condition](
+        self.post_game_access_rule = (PostGameAccessRuleOptions[self.options.post_game_condition](
                                         exclude_regions, exclude_locations, additional_locations))
         self.item_pool = []
 
@@ -189,9 +189,9 @@ class AE3World(World):
                                   sky_flyer]
 
         # Push Starting Gadget as pre-collected
-        if self.options.Starting_Gadget > 0:
-            self.multiworld.push_precollected(equipment[self.options.Starting_Gadget - 1])
-            del equipment[self.options.Starting_Gadget - 1]
+        if self.options.starting_gadget > 0:
+            self.multiworld.push_precollected(equipment[self.options.starting_gadget - 1])
+            del equipment[self.options.starting_gadget - 1]
 
         self.multiworld.push_precollected(monkey_net)
 
@@ -204,16 +204,16 @@ class AE3World(World):
         equipment = [knight, cowboy, ninja, magician, kungfu, hero, monkey]
 
         # Push Starting Morph as precollected
-        if self.options.Starting_Morph > 0:
-            self.multiworld.push_precollected(equipment[self.options.Starting_Morph - 1])
-            del equipment[self.options.Starting_Morph - 1]
+        if self.options.starting_morph > 0:
+            self.multiworld.push_precollected(equipment[self.options.starting_morph - 1])
+            del equipment[self.options.starting_morph - 1]
 
         # Remove any Morphs specified in Starting Inventory
         equipment = [ morph for morph in equipment if morph.name not in self.options.start_inventory]
 
         self.item_pool += [*equipment]
 
-        if self.options.Shuffle_Chassis:
+        if self.options.shuffle_chassis:
             if rc_car in self.item_pool:
                 self.item_pool.remove(rc_car)
 
@@ -224,10 +224,10 @@ class AE3World(World):
             self.item_pool += [chassis_twin, chassis_pudding, chassis_black]
 
         # Add Upgradeables
-        if self.options.Shuffle_Morph_Stocks:
+        if self.options.shuffle_morph_stocks:
             self.item_pool += Items.Acc_Morph_Stock.to_items(self.player)
 
-        if self.options.Add_Morph_Extensions:
+        if self.options.add_morph_extensions:
             self.item_pool += Items.Acc_Morph_Ext.to_items(self.player)
 
         # Add Archipelago Items
@@ -252,7 +252,7 @@ class AE3World(World):
         return slot_data
 
     def write_spoiler(self, spoiler_handle: TextIO) -> None:
-        if not self.options.Shuffle_Channel:
+        if not self.options.shuffle_channel:
             return
 
         spoiler_handle.write(
@@ -271,7 +271,7 @@ class AE3World(World):
                 set_count += 1
                 level_base = i
 
-                if set_count < len(self.progression.progression) - 1 or self.options.Post_Game_Condition >= 4:
+                if set_count < len(self.progression.progression) - 1 or self.options.post_game_condition >= 4:
                     spoiler_handle.write(f"\n- < {set_count} > ---------------------------------------")
                 else:
                     spoiler_handle.write(f"\n- < ! > ---------------------------------------")

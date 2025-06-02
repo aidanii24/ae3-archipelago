@@ -487,39 +487,39 @@ ae3_option_groups : dict[str, list] = {
 
 @dataclass
 class AE3Options(PerGameCommonOptions):
-    Progression_Mode                        : ProgressionMode
-    Open_Progression_Keys                   : OpenProgressionKeys
-    Randomize_Progression_Set_Count         : RandomizeProgressionSetCount
-    Randomize_Progression_Channel_Count     : RandomizeProgressionChannelCount
-    Logic_Preference                        : LogicPreference
-    Goal_Target                             : GoalTarget
-    Post_Game_Condition                     : PostGameAccessRule
-    Shuffle_Channel                         : ShuffleChannel
-    Preserve_Channel                        : PreserveChannel
-    Push_Channel                            : PushChannel
-    Post_Channel                            : PostChannel
-    Blacklist_Channel                       : BlacklistChannel
-    Monkeysanity                            : Monkeysanity
-    Monkeysanity_BreakRooms                 : MonkeysanityBreakRooms
-    Monkeysanity_Passwords                  : MonkeysanityPasswords
-    Camerasanity                            : Camerasanity
-    Cellphonesanity                         : Cellphonesanity
-    Shoppingsanity                          : Shoppingsanity
+    progression_mode                        : ProgressionMode
+    open_progression_keys                   : OpenProgressionKeys
+    randomize_progression_set_count         : RandomizeProgressionSetCount
+    randomize_progression_channel_count     : RandomizeProgressionChannelCount
+    logic_preference                        : LogicPreference
+    goal_target                             : GoalTarget
+    post_game_condition                     : PostGameAccessRule
+    shuffle_channel                         : ShuffleChannel
+    preserve_channel                        : PreserveChannel
+    push_channel                            : PushChannel
+    post_channel                            : PostChannel
+    blacklist_channel                       : BlacklistChannel
+    monkeysanity                            : Monkeysanity
+    monkeysanity_break_rooms                : MonkeysanityBreakRooms
+    monkeysanity_passwords                  : MonkeysanityPasswords
+    camerasanity                            : Camerasanity
+    cellphonesanity                         : Cellphonesanity
+    shoppingsanity                          : Shoppingsanity
 
-    Starting_Gadget                         : StartingGadget
-    Starting_Morph                          : StartingMorph
-    Base_Morph_Duration                     : BaseMorphDuration
+    starting_gadget                         : StartingGadget
+    starting_morph                          : StartingMorph
+    base_morph_duration                     : BaseMorphDuration
 
-    Shuffle_Net                             : ShuffleMonkeyNet
-    Shuffle_Chassis                         : ShuffleRCCarChassis
-    Shuffle_Morph_Stocks                    : ShuffleMorphStocks
-    Add_Morph_Extensions                    : AddMorphExtensions
-    Extra_Keys                              : ExtraKeys
+    shuffle_net                             : ShuffleMonkeyNet
+    shuffle_chassis                         : ShuffleRCCarChassis
+    shuffle_morph_stocks                    : ShuffleMorphStocks
+    add_morph_extensions                    : AddMorphExtensions
+    extra_keys                              : ExtraKeys
 
-    Early_Free_Play                         : EarlyFreePlay
-    Enable_Monkey_Mart                      : EnableMonkeyMart
-    Lucky_Ticket_Consolation_Effects        : LuckyTicketConsolationEffects
-    Consolation_Effects_Blacklist           : ConsolationEffectsBlacklist
+    early_free_play                         : EarlyFreePlay
+    enable_monkey_mart                      : EnableMonkeyMart
+    lucky_ticket_consolation_effects        : LuckyTicketConsolationEffects
+    consolation_effects_blacklist           : ConsolationEffectsBlacklist
 
     death_link                              : DeathLink
 

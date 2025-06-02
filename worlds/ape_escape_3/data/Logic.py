@@ -302,14 +302,14 @@ class ProgressionMode:
 
                 if idx >= 5: break
         # Re-insert Channels specified to be preserved in their vanilla indices
-        if world.options.Preserve_Channel:
+        if world.options.preserve_channel:
             preserve_indices: list[int] = []
 
-            if world.options.Preserve_Channel == 1:
+            if world.options.preserve_channel == 1:
                 preserve_indices = [*self.boss_indices]
-            elif world.options.Preserve_Channel == 2:
+            elif world.options.preserve_channel == 2:
                 preserve_indices = [*self.boss_indices[-2:]]
-            elif world.options.Preserve_Channel == 3:
+            elif world.options.preserve_channel == 3:
                 preserve_indices = [self.boss_indices[-1]]
 
             if preserve_indices:
@@ -319,7 +319,7 @@ class ProgressionMode:
                     new_order.insert(index, index)
 
         # Apply the chosen Shuffle Mode
-        if world.options.Shuffle_Channel == 1:
+        if world.options.shuffle_channel == 1:
             new_boss_order: list[int] = [_ for _ in new_order if _ in self.boss_indices]
 
             new_order = [_ for _ in new_order if _ not in self.boss_indices]
@@ -342,7 +342,7 @@ class ProgressionMode:
             total_from_current : int = sum(self.progression[:i]) + 1
             required_keys : int = i
             special_post_game : bool = False
-            if i == len(self.progression) - 1 and world.options.Post_Game_Condition < 4:
+            if i == len(self.progression) - 1 and world.options.post_game_condition < 4:
                 special_post_game = True
                 required_keys -= 1
 
@@ -364,11 +364,11 @@ class ProgressionMode:
         amount: int = len(self.progression) - 1
 
         # Reduce Generated Keys for PostGameAccessRules other than "Channel Key"
-        if world.options.Post_Game_Condition < 4:
+        if world.options.post_game_condition < 4:
             amount -= 1
         # Reduce Generate Key for PostGameAccessRule "After End" and place it on the second to the last boss
         # (Which in Vanilla order, is always Specter 1
-        elif world.options.Post_Game_Condition == 5:
+        elif world.options.post_game_condition == 5:
             amount -= 1
 
             bosses_in_order : list[int] = [ level for level in self.order if level in self.boss_indices ]

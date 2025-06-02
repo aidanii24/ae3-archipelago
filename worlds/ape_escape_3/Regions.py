@@ -25,11 +25,11 @@ def establish_entrance(player : int, name : str, parent_region : Region, destina
 def create_regions(world : "AE3World"):
     world.logic_preference.entrance_rules.update(world.progression.generate_rules(world))
 
-    add_cameras : bool = (world.options.Camerasanity or world.options.Goal_Target == 5 or
-                          world.options.Post_Game_Condition == 2)
-    add_cellphones : bool = (world.options.Cellphonesanity or world.options.Goal_Target == 6 or
-                             world.options.Post_Game_Condition == 3)
-    add_break_rooms : bool = world.options.Monkeysanity_BreakRooms.value or world.options.Post_Game_Condition == 0
+    add_cameras : bool = (world.options.camerasanity or world.options.goal_target == 5 or
+                          world.options.post_game_condition == 2)
+    add_cellphones : bool = (world.options.cellphonesanity or world.options.goal_target == 6 or
+                             world.options.post_game_condition == 3)
+    add_break_rooms : bool = world.options.monkeysanity_break_rooms.value or world.options.post_game_condition == 0
 
     # Initialize Regions
     stages : dict[str, Region] = { name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER }
@@ -68,7 +68,7 @@ def create_regions(world : "AE3World"):
         ## Monkeys
         if stage.name in MONKEYS_INDEX:
             for monkeys in MONKEYS_INDEX[stage.name]:
-                if not world.options.Monkeysanity_Passwords and monkeys in MONKEYS_PASSWORDS:
+                if not world.options.monkeysanity_passwords and monkeys in MONKEYS_PASSWORDS:
                     continue
 
                 meta : MonkeyLocation = MonkeyLocation(monkeys)
@@ -94,7 +94,7 @@ def create_regions(world : "AE3World"):
             # Add Access Rule for completing the stage to ensure maximum accessibility,
             # if the player chooses to require the monkey actors for the Cameras,
             # and they did not choose to have early Freeplay
-            if world.options.Camerasanity == 1 and not world.options.Early_Free_Play:
+            if world.options.camerasanity == 1 and not world.options.early_free_play:
                 ruleset : Rulesets = Rulesets()
                 parent_channel : str = ""
                 for channel, regions in STAGES_DIRECTORY.items():
