@@ -1,7 +1,8 @@
 from dataclasses import dataclass
+from typing import Iterable, Any
 
 from Options import OptionGroup, Toggle, DefaultOnToggle, Choice, PerGameCommonOptions, DeathLink, Visibility, \
-    Range, OptionList
+    Range, OptionList, OptionSet, NamedRange
 from .data.Strings import APHelper
 from .data.Stages import LEVELS_BY_ORDER
 
@@ -34,8 +35,10 @@ class ProgressionMode(Choice):
 class OpenProgressionKeys(Range):
     """
     If the chosen Progression Mode is `open`, this option allows the amount of keys required to unlock the endgame
-    channels to be customized. Use the same value for both Minimum and Maximum for an absolute value,
-    or make them different to have generation randomly choose between them.
+    channel to be customized.
+
+    To specify custom values, add it alongside the pre-existing options, copying their format.
+    Format: value : weight
     """
     display_name : str = "Open Progression Mode Required Keys"
     default = 10
@@ -43,36 +46,48 @@ class OpenProgressionKeys(Range):
     range_start = 5
     range_end = 30
 
+
 class RandomizeProgressionSetCount(Range):
     """
     If the chosen Progression mode is `randomize`, this option allows you to control the amount of channel sets
     that will be generated, and by extension, the minimum amount of keys to reach the end (but not post) game.
-    Leave this at 0 to let generation decide for you, or specify a maximum or minimum value for more control.
+    Leave this at 0 for a more freeform Channel Randomization, or leave it to generation to decide for you.
+
+    To specify custom values, add it alongside the pre-existing options, copying their format.
+    Format: value : weight
     """
     display_name : str = "Randomize Progression Set Count"
     default = 0
 
-    range_start = 0
-    range_end = 28
+    range_start = 1
+    range_end = 27
+
+    def __init__(self, value):
+        if value == 0:
+           self.value = value
+           return
+
+        super().__init__(value)
+
 
 class RandomizeProgressionChannelCount(OptionList):
     """
     If the chosen mode is `randomize`, this option allows you to control the amount of possible channels that can
-    be included in a set. Leave this at default to let generation decide for you, or specify a maximum and minimum
-    value for generation to use to randomize for each set.
+    be included in a set. Leave this empty to let generation decide for you, or specify a maximum and minimum
+    value for generation to use to randomize for each set. A set value can also be used if only one value is specified.
 
     If a Set Count has been specified, it will be prioritized over this option,
     but generation will still attempt to respect this option as much as possible.
 
-    Format: [min, max]
+    Format: [min, max], [value]
     Absolute Minimum : 1
     Absolute Maximum : 28
     """
     display_name : str = "Randomize Progression Channel Count"
     default = []
 
-    def __init__(self, options: OptionList) -> None:
-        super().__init__(options)
+    def __init__(self, value: Iterable[Any]) -> None:
+        super().__init__(value)
 
         if len(self.value) == 0:
             return
@@ -80,23 +95,23 @@ class RandomizeProgressionChannelCount(OptionList):
         if not any(isinstance(_, int) for _ in self.value):
             assert "AE3 > RandomizeProgressionChannelCount: One or more item(s) is not an integer."
 
-        if len(self.value) < 1:
-            assert "AE3 > RandomizeProgressionChannelCount: This option requires two integer items."
-
         # Treat as default if both values are 0
         if sum(self.value) == 0:
             self.value.clear()
             return
 
         # Truncate if needed
-        if len(self.value) > 2:
+        if len(self.value) == 1:
+            self.value = value
+        elif len(self.value) > 2:
             self.value = self.value[:2]
+
+        # Swap if needed
+        if self.value[0] > self.value[1]:
+            self.value[0], self.value[1] = self.value[1], self.value[0]
 
         self.value[0] = max(min(self.value[0], 28), 1)
         self.value[1] = 28 if self.value[1] == 0 else max(min(self.value[1], 28), self.value[0])
-
-    def __bool__(self):
-        return bool(self.value)
 
 class LogicPreference(Choice):
     """
@@ -122,8 +137,10 @@ class GoalTarget(Choice):
     > triple_threat - Clear 3 Boss stages
     > play_spike - Capture 204 Monkeys
     > play_jimmy - Capture 300 Monkeys
-    > directors_cut - Capture all 20 Monkey Films (This will FORCE set Camerasanity to 'enabled' if disabled)
-    > phone_check - Activate all 53 Cellphones (this will FORCE enable Cellphonesanity)
+    > directors_cut - Capture all 20 Monkey Films (Forces Camerasanity to "enabled" if disabled)
+    > phone_check - Activate all 53 Cellphones (Forces Cellphonesanity to be set to "enabled" if disabled)
+    > bonus_collector - Buy all the bonus items in the Shopping Area! (Forces Shoppingsanity to be set to "enabled"
+    if disabled)
     """
     display_name : str = "Goal Target"
     default = 0
@@ -135,33 +152,116 @@ class GoalTarget(Choice):
     option_play_jimmy : int = 4
     option_directors_cut : int = 5
     option_phone_check : int = 6
-    # option_scavenger_hunt : int = 7
+    option_bonus_collector : int = 7
+    # option_scavenger_hunt : int = 10
 
 
-class PostGameAccessRule(Choice):
+class PostGameConditionMonkeys(NamedRange):
     """
-    Choose how the final level post-game level should be unlocked. This is only relevant if the Goal Target requires
-    this level.
+    Specify the amount of monkeys required to unlock the final set of channels (Post-Game). This will be reduced
+    as necessary depending on the channels placed in the post game.
     Default: vanilla
 
-    > vanilla - Capture all base and break room monkeys (This will FORCE set Monkeysanity - Break Rooms to 'enabled',
-    regardless of it the Goal ends up requiring access to Post Game or not)
-    > active_monkeys - Capture all monkeys marked as locations
-    > all_cameras - Capture all Monkey Films (This will FORCE set Camerasanity to 'enabled' if disabled)
-    > all_cellphones - Activate all Cellphones (This will FORCE enable Cellhponesanity)
-    > channel_key - Provide an extra channel key to unlock this level
-    > after_end - The extra channel key will be placed on the penultimate boss (Specter in Vanilla Channel Order)
+    To specify custom values, add it alongside the pre-existing options, copying their format.
+    Format: value : weight
+
+    > disabled - This category will not count towards unlocking the Post-Game Channels
+    > active - Only enabled Monkeys will count towards unlocking the Post-Game Channels
+    > vanilla - Monkeysanity Break Rooms will be forced to be set as "enabled" and all monkeys will count towards
+    unlocking the Post-Game Channels
+
+    <!> WARNING: Please make sure at least ONE Post-Game Condition Option is enabled (not 0/disabled).
+    The multiworld WILL refuse to generate otherwise.
     """
-    display_name : str = "Post-Game Condition"
+    __doc__ += "Maximum Value (No Break Room Monkeys): 354"
+
+    display_name : str = "Post-Game Condition: Pipo Monkeys"
+    default = -2
+
+    range_start = 0
+    range_end = 434
+    special_range_names = {
+        "disabled" : 0,
+        "active" : -1,
+        "vanilla" : -2
+    }
+
+class PostGameConditionCameras(Range):
+    """
+    Specify the amount of Pipo Cameras required to unlock the final set of channels (Post-Game).
+    This will be reduced as necessary depending on the channels placed in the post game. This will also force
+    Camerasanity to be set as "enabled" if it is disabled, but will respect its other options otherwise.
+    Default: 0
+
+    To specify custom values, add it alongside the pre-existing options, copying their format.
+    Format: value : weight
+
+    <!> WARNING: Please make sure at least ONE Post-Game Condition Option is enabled (not 0/disabled).
+    The multiworld WILL refuse to generate otherwise.
+    """
+    display_name : str = "Post-Game Condition: Pipo Cameras"
     default = 0
 
-    option_vanilla : int = 0
-    option_active_monkeys : int = 1
-    option_all_cameras : int = 2
-    option_all_cellphones : int = 3
-    option_channel_key : int = 4
-    option_after_end : int = 5
+    range_start = 0
+    range_end = 20
 
+
+class PostGameConditionCellphones(Range):
+    """
+    Specify the amount of Cellphones required to unlock the final set of channels (Post-Game).
+    This will be reduced as necessary depending on the channels placed in the post game. This will also force
+    Cellphonesanity to be set as "enabled"
+    Default: 0
+
+    To specify custom values, add it alongside the pre-existing options, copying their format.
+    Format: value : weight
+
+    <!> WARNING: Please make sure at least ONE Post-Game Condition Option is enabled (not 0/disabled).
+    The multiworld WILL refuse to generate otherwise.
+    """
+    display_name: str = "Post-Game Condition: Cellphones"
+    default = 0
+
+    range_start = 0
+    range_end = 53
+
+
+class PostGameConditionShopItems(Range):
+    """
+    Specify the amount of Shop Items required to unlock the final set of channels (Post-Game).
+    This will be reduced as necessary depending on the channels placed in the post game. This will also force
+    Shoppingsanity to be set as "enabled" if it is disabled, but will respect other options otherwise.
+    Default: 0
+
+    To specify custom values, add it alongside the pre-existing options, copying their format.
+    Format: value : weight
+
+    <!> WARNING: Please make sure at least ONE Post-Game Condition Option is enabled (not 0/disabled).
+    The multiworld WILL refuse to generate otherwise.
+    """
+    display_name: str = "Post-Game Condition: Shop Items"
+    default = 0
+
+    range_start = 0
+    range_end = 200
+
+
+class PostGameConditionChannelKeys(Range):
+    """
+    Specify the amount of Shop Items required to unlock the final set of channels (Post-Game).
+    Default: 0
+
+    To specify custom values, add it alongside the pre-existing options, copying their format.
+    Format: value : weight
+
+    <!> WARNING: Please make sure at least ONE Post-Game Condition Option is enabled (not 0/disabled).
+    The multiworld WILL refuse to generate otherwise.
+    """
+    display_name: str = "Post-Game Condition: Channel Keys"
+    default = 0
+
+    range_start = 0
+    range_end = 30
 
 class ShuffleChannel(Choice):
     """
@@ -181,25 +281,22 @@ class ShuffleChannel(Choice):
     option_full_shuffle : int = 2
 
 
-class PreserveChannel(Choice):
+class PreserveChannel(OptionSet):
     """
     If Channel Order is not disabled, choose which channel should preserve their number.
-    Default: none
 
-    > none - No channel will be exempted from the Channel Shuffle
-    > bosses - Bosses will not be shuffled
-    > specters - Specter and Specter Final will not be shuffled
-    > specter_final - Specter Final will not be shuffled
+    Format: ["item_a", "item_b", "item_c", ...]
+
     """
+    __doc__ += "Available Channels:\n# - "
+    __doc__ += "\n# - ".join(f"\"{channel}\"" for channel in LEVELS_BY_ORDER)
+
     display_name : str = "Channel Shuffle Preserve"
-    default = 0
+    default = []
 
-    option_none : int = 0
-    option_bosses : int = 1
-    option_specters : int = 2
-    option_specter_final : int = 3
+    valid_keys = [*LEVELS_BY_ORDER]
 
-class PushChannel(OptionList):
+class PushChannel(OptionSet):
     """
     Specify which channels should be pushed to the End Game (Penultimate set of channels).
 
@@ -208,12 +305,12 @@ class PushChannel(OptionList):
 
     Format: ["item_a", "item_b", "item_c", ..., (optional)"ADDITIVE"]
     """
-    display_name : str = "Push Channel"
+    display_name : str = "Channel Shuffle Push"
     default = []
 
-    valid_keys = [*LEVELS_BY_ORDER]
+    valid_keys = [*LEVELS_BY_ORDER, "ADDITIVE"]
 
-class PostChannel(OptionList):
+class PostChannel(OptionSet):
     """
     Specify which channels should be placed to the Post Game
     (Ultimate set of channels locked behind Post Game Condition).
@@ -223,10 +320,10 @@ class PostChannel(OptionList):
 
     Format: ["item_a", "item_b", "item_c", ..., (optional)"ADDITIVE"]
     """
-    display_name : str = "Post Channel"
+    display_name : str = "Channel Shuffle Post"
     default = []
 
-    valid_keys = [*LEVELS_BY_ORDER]
+    valid_keys = [*LEVELS_BY_ORDER, "ADDITIVE"]
 
 class BlacklistChannel(OptionList):
     """
@@ -235,7 +332,7 @@ class BlacklistChannel(OptionList):
 
     Format: ["item_a", "item_b", "item_c", ...]
     """
-    display_name : str = "Blacklist Channel"
+    display_name : str = "Channel Shuffle Blacklist"
     default = []
 
     valid_keys = [*LEVELS_BY_ORDER]
@@ -473,14 +570,39 @@ class ConsolationEffectsBlacklist(OptionList):
 
 
 ae3_option_groups : dict[str, list] = {
-    "Randomizer Options"        : [ProgressionMode, OpenProgressionKeys, RandomizeProgressionSetCount,
-                                   RandomizeProgressionChannelCount, LogicPreference, GoalTarget, PostGameAccessRule,
-                                   ShuffleChannel, PreserveChannel, PushChannel, PostChannel, BlacklistChannel,
-                                   Monkeysanity,MonkeysanityBreakRooms, MonkeysanityPasswords, Camerasanity,
-                                   Cellphonesanity, Shoppingsanity],
-    "Item Options"              : [StartingGadget, StartingMorph, BaseMorphDuration, ShuffleMonkeyNet,
-                                   ShuffleRCCarChassis, ShuffleMorphStocks, AddMorphExtensions, ExtraKeys],
-    "Preferences"               : [EarlyFreePlay, EnableMonkeyMart, LuckyTicketConsolationEffects,
+    "Randomizer Options"        : [ProgressionMode,
+                                   OpenProgressionKeys,
+                                   RandomizeProgressionSetCount,
+                                   RandomizeProgressionChannelCount,
+                                   LogicPreference,
+                                   GoalTarget,
+                                   PostGameConditionMonkeys,
+                                   PostGameConditionCameras,
+                                   PostGameConditionCellphones,
+                                   PostGameConditionShopItems,
+                                   PostGameConditionChannelKeys,
+                                   ShuffleChannel,
+                                   PreserveChannel,
+                                   PushChannel,
+                                   PostChannel,
+                                   BlacklistChannel,
+                                   Monkeysanity,
+                                   MonkeysanityBreakRooms,
+                                   MonkeysanityPasswords,
+                                   Camerasanity,
+                                   Cellphonesanity,
+                                   Shoppingsanity],
+    "Item Options"              : [StartingGadget,
+                                   StartingMorph,
+                                   BaseMorphDuration,
+                                   ShuffleMonkeyNet,
+                                   ShuffleRCCarChassis,
+                                   ShuffleMorphStocks,
+                                   AddMorphExtensions,
+                                   ExtraKeys],
+    "Preferences"               : [EarlyFreePlay,
+                                   EnableMonkeyMart,
+                                   LuckyTicketConsolationEffects,
                                    ConsolationEffectsBlacklist],
     "Sync Options"              : [DeathLink]
 }
@@ -493,7 +615,11 @@ class AE3Options(PerGameCommonOptions):
     randomize_progression_channel_count     : RandomizeProgressionChannelCount
     logic_preference                        : LogicPreference
     goal_target                             : GoalTarget
-    post_game_condition                     : PostGameAccessRule
+    post_game_condition_monkeys             : PostGameConditionMonkeys
+    post_game_condition_cameras             : PostGameConditionCameras
+    post_game_condition_cellphones          : PostGameConditionCellphones
+    post_game_condition_shop                : PostGameConditionShopItems
+    post_game_condition_keys                : PostGameConditionChannelKeys
     shuffle_channel                         : ShuffleChannel
     preserve_channel                        : PreserveChannel
     push_channel                            : PushChannel
@@ -538,7 +664,11 @@ def slot_data_options() -> list[str]:
         APHelper.randomize_channel_count.value,
         APHelper.logic_preference.value,
         APHelper.goal_target.value,
-        APHelper.post_game_access_rule.value,
+        APHelper.pgc_monkeys.value,
+        APHelper.pgc_cameras.value,
+        APHelper.pgc_cellphones.value,
+        APHelper.pgc_shop.value,
+        APHelper.pgc_keys.value,
         APHelper.shuffle_channel.value,
         APHelper.preserve_channel.value,
         APHelper.push_channel.value,
