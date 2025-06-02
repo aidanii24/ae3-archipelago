@@ -396,7 +396,8 @@ class Hard(LogicPreference):
             Stage.entrance_onsen_a2a.value      : Rulesets(event_invoked(Events.onsen_a_button.value)),
             Stage.entrance_onsen_a1b1.value     : Rulesets(AccessRule.DASH, AccessRule.RCC),
             Stage.entrance_onsen_a2b1.value     : Rulesets(AccessRule.DASH, AccessRule.RCC),
-            Stage.entrance_onsen_b1b.value      : Rulesets(AccessRule.GLIDE, [AccessRule.RCC, AccessRule.SWIM]),
+            Stage.entrance_onsen_b1b.value      : Rulesets(AccessRule.GLIDE, AccessRule.KUNGFU,
+                                                           [AccessRule.RCC, AccessRule.SWIM]),
             Stage.entrance_onsen_be.value       : Rulesets(AccessRule.FLY),
             Stage.entrance_onsen_bd1.value      : Rulesets(AccessRule.SHOOT, [AccessRule.RCC, AccessRule.ATTACK]),
             Stage.entrance_onsen_bd.value       : Rulesets(AccessRule.FLY),
@@ -562,7 +563,7 @@ class Hard(LogicPreference):
             Stage.entrance_space_g1g.value      : Rulesets(event_invoked(Events.space_g_button.value)),
             Stage.entrance_space_g1g_2.value    : Rulesets(event_invoked(Events.space_g1_button.value)),
             Stage.entrance_space_ff2.value      : Rulesets(event_invoked(Events.space_f2_button.value)),
-            Stage.entrance_space_ff1.value      : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_space_ff1.value      : Rulesets(AccessRule.GLIDE, AccessRule.KUNGFU),
             Stage.entrance_space_f1f2.value     : Rulesets(AccessRule.KUNGFU),
             Stage.entrance_space_f2f1.value     : Rulesets(event_invoked(Events.space_f1_kungfu.value)),
             Stage.entrance_space_f2f.value      : Rulesets(event_invoked(Events.space_f2_button.value)),
@@ -782,6 +783,7 @@ class Normal(Hard):
             Stage.entrance_onsen_a2a1.value     : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
             Stage.entrance_onsen_a1a1m.value    : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
             Stage.entrance_onsen_a2a2m.value    : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
+            Stage.entrance_onsen_b1b.value      : Rulesets(AccessRule.GLIDE, [AccessRule.RCC, AccessRule.SWIM]),
 
             # Edotown
             Stage.entrance_edotown_a1a.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
@@ -1159,6 +1161,7 @@ class Casual(Normal):
             Stage.entrance_tomo_bc.value        : Rulesets(AccessRule.GLIDE),
 
             # Space
+            Stage.entrance_space_ff1.value      : Rulesets(AccessRule.GLIDE),
             Stage.entrance_space_gg1.value      : Rulesets([AccessRule.SWIM, AccessRule.ATTACK]),
         })
 
