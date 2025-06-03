@@ -155,6 +155,25 @@ class GoalTarget(Choice):
     option_bonus_collector : int = 7
     # option_scavenger_hunt : int = 10
 
+class GoalTargetOverride(Range):
+    """
+    Override the amount of checks required by Goal Target. This does not affect the "specter" and "specter_final:"
+    goals.
+    Default: 0 (No Override)
+
+    Maximum Values:
+    Bosses (Triple Threat): 8
+    Pipo Monkeys (Play Spike/Play Jimmy): 434, 354 (No Break Room Monkeys)
+    Pipo Cameras (Director's Cut): 20
+    Cellphones (Phone Check): 53
+    Shop Items (Collector): #TODO Count Total Shop Items
+    """
+    display_name : str = "Goal Target Override"
+    default = 0
+
+    range_start = 1
+    range_end = 434
+
 
 class PostGameConditionMonkeys(NamedRange):
     """
@@ -182,8 +201,8 @@ class PostGameConditionMonkeys(NamedRange):
     range_end = 434
     special_range_names = {
         "disabled" : 0,
+        "vanilla": -2,
         "active" : -1,
-        "vanilla" : -2
     }
 
 class PostGameConditionCameras(Range):
@@ -576,17 +595,18 @@ ae3_option_groups : dict[str, list] = {
                                    RandomizeProgressionChannelCount,
                                    LogicPreference,
                                    GoalTarget,
+                                   GoalTargetOverride,
                                    PostGameConditionMonkeys,
                                    PostGameConditionCameras,
                                    PostGameConditionCellphones,
                                    PostGameConditionShopItems,
-                                   PostGameConditionChannelKeys,
-                                   ShuffleChannel,
+                                   PostGameConditionChannelKeys],
+    "Map Options"               : [ShuffleChannel,
                                    PreserveChannel,
                                    PushChannel,
                                    PostChannel,
-                                   BlacklistChannel,
-                                   Monkeysanity,
+                                   BlacklistChannel],
+    "Location Options"          : [Monkeysanity,
                                    MonkeysanityBreakRooms,
                                    MonkeysanityPasswords,
                                    Camerasanity,
@@ -615,6 +635,7 @@ class AE3Options(PerGameCommonOptions):
     randomize_progression_channel_count     : RandomizeProgressionChannelCount
     logic_preference                        : LogicPreference
     goal_target                             : GoalTarget
+    goal_target_override                    : GoalTargetOverride
     post_game_condition_monkeys             : PostGameConditionMonkeys
     post_game_condition_cameras             : PostGameConditionCameras
     post_game_condition_cellphones          : PostGameConditionCellphones
@@ -664,6 +685,7 @@ def slot_data_options() -> list[str]:
         APHelper.randomize_channel_count.value,
         APHelper.logic_preference.value,
         APHelper.goal_target.value,
+        APHelper.goal_target_ovr.value,
         APHelper.pgc_monkeys.value,
         APHelper.pgc_cameras.value,
         APHelper.pgc_cellphones.value,

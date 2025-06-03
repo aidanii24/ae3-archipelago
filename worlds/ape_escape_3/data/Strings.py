@@ -1948,6 +1948,7 @@ class APHelper(BaseEnum):
     randomize_channel_count =   "Randmize_Progression_Channel_Count"
     logic_preference =          "Logic_Preference"
     goal_target =               "Goal_Target"
+    goal_target_ovr =           "Goal_Target_Override"
     pgc_monkeys =               "Post_Game_Condition_Pipo_Monkeys"
     pgc_cameras =               "Post_Game_Condition_Pipo_Cameras"
     pgc_cellphones =            "Post_Game_Condition_Cellphones"
