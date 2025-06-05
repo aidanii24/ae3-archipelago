@@ -1,11 +1,13 @@
-from typing import TYPE_CHECKING, Callable, Set
+from typing import TYPE_CHECKING, Callable, Set, ClassVar
+from dataclasses import dataclass, field
 from warnings import warn
 
 from BaseClasses import CollectionState
 
 from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, Cellphone_Name_to_ID, MONKEYS_BOSSES, \
-    MONKEYS_BREAK_ROOMS, MONKEYS_INDEX, MONKEYS_MASTER, MONKEYS_PASSWORDS, generate_name_to_id
-from .Logic import Rulesets, AccessRule, ProgressionMode, has_keys, event_invoked
+    MONKEYS_BREAK_ROOMS, MONKEYS_INDEX, MONKEYS_MASTER, MONKEYS_PASSWORDS, generate_name_to_id, CELLPHONES_MASTER, \
+    LOCATIONS_INDEX, LOCATIONS_DIRECTORY
+from .Logic import Rulesets, AccessRule, ProgressionMode, has_keys, event_invoked, has_enough_keys
 from .Strings import Loc, Stage, Events
 from .Stages import STAGES_DIRECTORY, ENTRANCES_STAGE_SELECT
 
@@ -122,22 +124,81 @@ class GoalTarget:
     def as_access_rule(self) -> Callable[[CollectionState, int], bool]:
         return lambda state, player : self.verify(state, player)
 
-class PostGameAccessRule(GoalTarget):
+@dataclass
+class PostGameCondition():
     name: str = "No Post Game Access Rule"
     description: str = ""
 
-    locations: set[str] = {}
-    location_ids: set[int] = {}
+    locations : set[str] = field(default_factory=set)
+    location_ids: dict[str, set[int]] = field(default_factory=dict)
+    amounts : dict[str, int] = field(default_factory=dict)
 
-    amount: int = 0
+    location_categories : ClassVar[list[str]] = ["monkeys", "cameras", "cellphones", "shop_items"]
+
+    def __init__(self, amounts : dict[str, int], excluded_locations : list[str] = None,
+                 excluded_regions : list[str] = None):
+        # Check if at least one Post Game Condition is enabled
+        if not amounts or all(_ <= 0 for _ in [*amounts.values()]):
+            raise AssertionError("AE3 > PostGameCondition: At least one Post-Game Condition must be enabled!")
+
+        if excluded_locations is None:
+            excluded_locations = []
+
+        if excluded_regions is None:
+            excluded_regions = []
+
+        # Set amounts
+        self.amounts = amounts
+
+        # Get locations from region to exclude
+        if excluded_regions:
+            for region in excluded_regions:
+                excluded_locations.extend(LOCATIONS_INDEX.get(region, []))
+
+        # Define valid locations for checking
+        to_id : dict[str, int] = generate_name_to_id()
+        for category in self.location_categories:
+            if category in self.amounts:
+                location_list : set[str] = {*LOCATIONS_DIRECTORY.get(category, [])}
+                location_list -= set(excluded_locations)
+
+                # Lower required amount if there are enough excluded locations to make the initial value impossible
+                if self.amounts[category] > len(location_list):
+                    self.amounts[category] = len(location_list)
+
+                self.location_ids[category] = { to_id[loc] for loc in location_list }
+
+    def verify(self, state : CollectionState, player : int, min_keys : int, early_break_rooms : bool = False) -> bool:
+        if not has_enough_keys(state, player, min_keys - 1):
+            return False
+
+        if "monkeys" in self.amounts:
+            total_monkeys : int = 434 if not early_break_rooms else 354
+            rules : list[Callable] = [AccessRule.CATCH, AccessRule.FLY, AccessRule.KUNGFU]
+            if early_break_rooms and self.amounts["monkeys"] > 354:
+                rules.append(AccessRule.MONKEY)
+
+        return True
+
 
     def check(self, ctx : 'AE3Context'):
-        checked: set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
-        unlocked_sets: int = ctx.progression.get_progress(ctx.keys)
+        total_checked : set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
 
-        if (unlocked_sets >= sum(ctx.progression.progression[:-1]) and len(self.location_ids.intersection(checked)) >=
-                self.amount):
-            ctx.unlocked_channels = 0x1B
+        passed : bool = False
+
+        # Count Checked Locations needed
+        for category in self.location_categories:
+            if not category in self.amounts or not category in self.location_ids:
+                continue
+
+            passed = passed and len(total_checked.intersection((self.location_ids[category]))) >= self.amounts[category]
+
+        # Check for keys required on post
+        if "channel_keys" in self.amounts:
+            passed = passed or ctx.keys - (len(ctx.progression.progression) - 3) >= self.amounts["channel_keys"]
+
+        if passed and ctx.keys == len(ctx.progression.progression) - 3:
+            ctx.unlocked_channels = 28
 
 
 class LogicPreference:
@@ -1247,88 +1308,4 @@ class PasswordHunt(DirectorsCut):
 
 GoalTargetOptions : list[Callable] = [
     Specter, SpecterFinal, TripleThreat, PlaySpike, PlayJimmy, DirectorsCut, PhoneCheck
-]
-
-class Vanilla(PostGameAccessRule):
-    name = "Vanilla"
-    description = "Capture all Base and Break Room Monkeys"
-
-    locations = {monkey for monkey in MONKEYS_MASTER
-                 if monkey != Loc.boss_tomoki.value and monkey not in MONKEYS_PASSWORDS }
-
-    def verify(self, state : CollectionState, player : int) -> bool:
-        for rule in [AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC, AccessRule.MAGICIAN,
-                     AccessRule.KUNGFU, AccessRule.HERO]:
-            if not rule(state, player):
-                return False
-
-        return True
-
-class ActiveMonkeys(PostGameAccessRule):
-    name = "Active Monkeys"
-    description = "Capture all Active Monkeys (marked as locations)"
-
-    locations = {monkey for monkey in MONKEYS_MASTER if monkey != Loc.boss_tomoki.value }
-
-    def verify(self, state: CollectionState, player: int) -> bool:
-        minimum_equipment : list[Callable] = [AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC,
-                                              AccessRule.MAGICIAN, AccessRule.KUNGFU, AccessRule.HERO]
-
-        if any(monkey in MONKEYS_BREAK_ROOMS for monkey in self.locations):
-            minimum_equipment.append(AccessRule.MONKEY)
-
-        for rule in minimum_equipment:
-            if not rule(state, player):
-                return False
-
-        return True
-
-class AllCameras(PostGameAccessRule):
-    name = "All Cameras"
-    description = "Capture all Monkey Films"
-
-    locations = { *CAMERAS_MASTER }
-
-class AllCellphones(PostGameAccessRule):
-    name = "All Cellphones"
-    description = "Activate all Cellphones"
-
-    locations = { *Cellphone_Name_to_ID.values() }
-
-class ChannelKey(PostGameAccessRule):
-    name = "Channel Key"
-    description = "Find the extra Channel Key"
-
-    locations = { Loc.boss_specter.value }
-
-    def get_progress(self, ctx : 'AE3Context') -> int:
-        all_keys = len(ctx.progression.progression) - 1
-        if ctx.post_game_access_rule_option < 4:
-            all_keys -= 1
-
-        return int(ctx.keys / all_keys)
-
-    def get_remaining(self, ctx : 'AE3Context') -> list[str]:
-        return ["Channel Key"] if self.get_progress(ctx) != 1 else []
-
-    def verify(self, state : CollectionState, player : int) -> bool:
-        checks : int = 0
-        for boss in MONKEYS_BOSSES:
-            if not state.can_reach_location(boss, player):
-                continue
-
-            checks += 1
-            if checks >= 6:
-                return True
-
-        return False
-
-class AfterEnd(ChannelKey):
-    name = "After End"
-    description = "Defeat the Final Boss before tackling the Post Game!"
-
-    locations = { Loc.boss_specter.value }
-
-PostGameAccessRuleOptions : list[Callable] = [
-    Vanilla, ActiveMonkeys, AllCameras, AllCellphones, ChannelKey, AfterEnd
 ]

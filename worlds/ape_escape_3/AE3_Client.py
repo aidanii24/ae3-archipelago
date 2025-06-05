@@ -20,7 +20,7 @@ from .data.Logic import ProgressionMode, ProgressionModeOptions
 from .data.Locations import CELLPHONES_MASTER, MONKEYS_MASTER, MONKEYS_MASTER_ORDERED, \
     CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED
 from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER
-from .data.Rules import GoalTarget, GoalTargetOptions, PostGameAccessRule, PostGameAccessRuleOptions
+from .data.Rules import GoalTarget, GoalTargetOptions, PostGameCondition, PostGameAccessRuleOptions
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
 from . import AE3Settings
 from .Checker import *
@@ -299,7 +299,7 @@ class AE3Context(CommonContext):
     progression : ProgressionMode = ProgressionModeOptions[0]
     goal_target : GoalTarget = GoalTarget()
     post_game_access_rule_option : int = 0
-    post_game_access_rule : PostGameAccessRule = PostGameAccessRule()
+    post_game_access_rule : PostGameCondition = PostGameCondition()
     shuffle_channel : bool = False
     dummy_morph : str = Itm.morph_monkey.value
     check_break_rooms : bool = False

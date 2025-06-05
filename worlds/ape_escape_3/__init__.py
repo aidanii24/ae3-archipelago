@@ -8,7 +8,7 @@ from .data.Items import AE3Item, AE3ItemMeta, ITEMS_MASTER, Nothing, generate_co
 from .data.Locations import Cellphone_Name_to_ID, MONKEYS_BOSSES, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, \
     CELLPHONES_MASTER_ORDERED, MONKEYS_PASSWORDS
 from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER
-from .data.Rules import GoalTarget, GoalTargetOptions, LogicPreference, LogicPreferenceOptions, PostGameAccessRule, \
+from .data.Rules import GoalTarget, GoalTargetOptions, LogicPreference, LogicPreferenceOptions, PostGameCondition, \
     PostGameAccessRuleOptions
 from .data.Strings import Loc, Meta, APHelper, APConsole
 from .data.Logic import is_goal_achieved, are_goals_achieved, Rulesets, ProgressionMode, ProgressionModeOptions
@@ -95,7 +95,7 @@ class AE3World(World):
     logic_preference : LogicPreference
     goal_target : GoalTarget = GoalTarget
     progression : ProgressionMode
-    post_game_access_rule : PostGameAccessRule
+    post_game_access_rule : PostGameCondition
 
     def __init__(self, multiworld : MultiWorld, player: int):
         self.auto_equip : bool = False
@@ -271,7 +271,7 @@ class AE3World(World):
                 set_count += 1
                 level_base = i
 
-                if set_count < len(self.progression.progression) - 1 or self.options.post_game_condition >= 4:
+                if set_count < len(self.progression.progression) - 1:
                     spoiler_handle.write(f"\n- < {set_count} > ---------------------------------------")
                 else:
                     spoiler_handle.write(f"\n- < ! > ---------------------------------------")

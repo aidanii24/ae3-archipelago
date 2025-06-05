@@ -2049,6 +2049,17 @@ EVENTS_INDEX : dict[str, Sequence[str]] = {
     Stage.region_space_d.value          : EVENTS_SPACE_D,
 }
 
+LOCATIONS_INDEX : dict[str, Sequence[str]] = {
+    key : [*MONKEYS_INDEX.get(key, []), *CAMERAS_INDEX.get(key, []), *CELLPHONES_INDEX.get(key, [])]
+    for key in [*{MONKEYS_INDEX.keys(), *CAMERAS_INDEX.keys(), *CELLPHONES_INDEX.keys()}]
+}
+
+LOCATIONS_DIRECTORY : dict[str, Sequence[str]] = {
+    "monkeys" : MONKEYS_MASTER,
+    "cameras" : CAMERAS_MASTER,
+    "cellphones" : CELLPHONES_MASTER,
+}
+
 def generate_name_to_id() -> dict[str, int]:
     # Monkeys
     name_to_id : dict[str, int] = { name : MonkeyLocation(name).loc_id for name in MONKEYS_MASTER }
