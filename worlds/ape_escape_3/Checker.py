@@ -307,6 +307,7 @@ async def check_items(ctx : 'AE3Context'):
             if item.item_id == AP[APHelper.channel_key.value]:
                 ctx.keys += 1
                 ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys)
+                ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
         ## Unlock Morphs and Gadgets
         elif isinstance(item, EquipmentItem):
@@ -421,6 +422,15 @@ async def resync_important_items(ctx : 'AE3Context'):
     if knight_id not in received_id and not ctx.dummy_morph_needed and ctx.ipc.is_equipment_unlocked(
             Itm.morph_knight.value):
         ctx.ipc.lock_equipment(Itm.morph_knight.value)
+
+    # Resync Keys
+    server_keys: int = received_id.count(ctx.items_name_to_id[APHelper.channel_key.value])
+    server_unlocked: int = ctx.progression.get_progress(server_keys)
+
+    if ctx.keys < server_keys or ctx.unlocked_channels < server_unlocked:
+        ctx.keys = server_keys
+        ctx.unlocked_channels = server_unlocked
+        ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()

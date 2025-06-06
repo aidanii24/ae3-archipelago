@@ -183,7 +183,29 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
                 logger.info(f" [-!-] DeathLink is now " f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
             else:
-                logger.info(f"[...] A DeathLink toggle has already been requested. Please try again in a few seconds.")
+                logger.info(f" [...] A DeathLink toggle has already been requested. Please try again in a few seconds.")
+
+    def _cmd_resync_keys(self):
+        """Resync Channel Keys if there are discrepancies in the amount of channels unlocked"""
+        if not isinstance(self.ctx, AE3Context):
+            return
+
+        received_as_id: list[int] = [i.item for i in self.ctx.items_received]
+
+        ## Get Keys
+        server_keys : int = received_as_id.count(self.ctx.items_name_to_id[APHelper.channel_key.value])
+        server_unlocked : int = self.ctx.progression.get_progress(server_keys)
+
+        if server_keys == self.ctx.keys and server_unlocked == self.ctx.unlocked_channels:
+            logger.info(f" [-/-] There were no discrepancies detected in the amount of channels unlocked.")
+        else:
+            self.ctx.keys = server_keys
+            self.ctx.unlocked_channels = server_unlocked
+            self.ctx.ipc.set_unlocked_stages(self.ctx.unlocked_channels)
+            logger.info(f" [-!-] Channel Keys and Unlocked Stages have now been resynced!")
+
+        logger.info(f"         > Channel Keys: {self.ctx.keys}\n"
+                    f"         > Unlocked Channels: {self.ctx.unlocked_channels + 1}")
 
     # Debug commands
     def _cmd_unlock(self, unlocks : str = "28"):
@@ -553,7 +575,6 @@ class AE3Context(CommonContext):
 
             # Retrieve Next Item Slot/Amount of Items Received
             self.last_item_processed_index = data.get(APHelper.last_itm_idx_prc.value, 0)
-            print("LOADED:", self.last_item_processed_index)
 
             # Retrieve Offline Checked Locations
             self.offline_locations_checked = set(data.get(APHelper.offline_checked_locations.value, set()))
