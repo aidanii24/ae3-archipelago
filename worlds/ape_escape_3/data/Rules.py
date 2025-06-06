@@ -125,11 +125,11 @@ class GoalTarget:
         return lambda state, player : self.verify(state, player)
 
 @dataclass
-class PostGameCondition():
+class PostGameCondition:
     name: str = "No Post Game Access Rule"
     description: str = ""
 
-    locations : set[str] = field(default_factory=set)
+    locations : dict[str, set[str]] = field(default_factory=dict)
     location_ids: dict[str, set[int]] = field(default_factory=dict)
     amounts : dict[str, int] = field(default_factory=dict)
 
@@ -162,29 +162,62 @@ class PostGameCondition():
                 location_list : set[str] = {*LOCATIONS_DIRECTORY.get(category, [])}
                 location_list -= set(excluded_locations)
 
+                self.locations[category] = location_list
+
                 # Lower required amount if there are enough excluded locations to make the initial value impossible
                 if self.amounts[category] > len(location_list):
                     self.amounts[category] = len(location_list)
 
                 self.location_ids[category] = { to_id[loc] for loc in location_list }
 
-    def verify(self, state : CollectionState, player : int, min_keys : int, early_break_rooms : bool = False) -> bool:
+    def verify(self, state : CollectionState, player : int, min_keys : int, break_rooms : int = 0) -> bool:
         if not has_enough_keys(state, player, min_keys - 1):
             return False
 
+        # Check if End Game is reachable first
+        if not has_enough_keys(state, player, min_keys - 2):
+            return False
+
+        rules : set[Callable] = {AccessRule.CATCH, AccessRule.FLY, AccessRule.DASH, AccessRule.SHOOT}
+        highest_scale : float = 0.0
+
         if "monkeys" in self.amounts:
-            total_monkeys : int = 434 if not early_break_rooms else 354
-            rules : list[Callable] = [AccessRule.CATCH, AccessRule.FLY, AccessRule.KUNGFU]
-            if early_break_rooms and self.amounts["monkeys"] > 354:
-                rules.append(AccessRule.MONKEY)
+            highest_scale = max(highest_scale, (self.amounts["monkeys"] / len(self.location_ids["monkeys"])))
+            if break_rooms >= 2 and self.amounts["monkeys"] > 354:
+                rules.add(AccessRule.MONKEY)
+
+        if "cameras" in self.amounts:
+            count : int = [state.can_reach_location(camera, player)
+                           for camera in self.locations["cameras"]].count(True)
+
+            if count < self.amounts["cameras"]:
+                return False
+
+        if "cellphones" in self.amounts:
+            highest_scale = max(highest_scale, 20 / len(self.location_ids["cellphones"]))
+
+        # Check Absolute Minimum Rules
+        if not all(rule(state, player) for rule in rules):
+            return False
+
+        # Check Rules that only yields small progress, only necessitated if amount asked is near or equal to full set
+        minimum_edge : int = int(highest_scale * 100) - 5
+        if minimum_edge >= 1:
+            minimal_rules: set[Callable] = {AccessRule.SLING, AccessRule.SWIM, AccessRule.RCC, AccessRule.MAGICIAN,
+                                            AccessRule.KUNGFU}
+            checked : int = [rule(state, player) for rule in minimal_rules].count(True)
+            if (checked / len(minimal_rules)) < (minimum_edge / 5):
+                return False
 
         return True
 
+    def enact(self, min_keys : int, break_rooms : int = 0) -> Callable[[CollectionState, int], bool]:
+        return lambda state, player : self.verify(state, player, min_keys, break_rooms)
 
-    def check(self, ctx : 'AE3Context'):
+    def check(self, ctx : 'AE3Context') -> bool:
         total_checked : set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
 
-        passed : bool = False
+        passed : bool = True
 
         # Count Checked Locations needed
         for category in self.location_categories:
@@ -195,10 +228,38 @@ class PostGameCondition():
 
         # Check for keys required on post
         if "channel_keys" in self.amounts:
-            passed = passed or ctx.keys - (len(ctx.progression.progression) - 3) >= self.amounts["channel_keys"]
+            passed = passed and ctx.keys - (len(ctx.progression.progression) - 3) >= self.amounts["channel_keys"]
 
         if passed and ctx.keys == len(ctx.progression.progression) - 3:
-            ctx.unlocked_channels = 28
+            return True
+
+        return False
+
+    def get_progress(self, ctx : 'AE3Context') -> dict[str, list[int]]:
+        total_checked: set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
+
+        progress : dict[str, list[int]] = {}
+        for category in self.location_categories:
+            if category in self.amounts:
+                progress[category] = [len(total_checked.intersection((self.location_ids[category]))),
+                                      self.amounts[category]]
+
+        if "channel_keys" in self.amounts:
+            progress["channel_keys"] = [ctx.keys - len(ctx.progression.progression) - 2,
+                                        self.amounts["channel_keys"]]
+
+        return progress
+
+    def get_remaining(self, ctx : 'AE3Context') -> dict[str, list[str]]:
+        checked : set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
+
+        remaining : dict[str, list[str]] = {}
+        for category in self.location_categories:
+            if category in self.amounts:
+                remaining[category] = [location for location in self.locations[category]
+                                       if generate_name_to_id()[location] not in checked]
+
+        return remaining
 
 
 class LogicPreference:
@@ -214,8 +275,9 @@ class LogicPreference:
 
     default_critical_rule : Set[Callable] = [AccessRule.CATCH]
     small_starting_channels : list[int]
-    final_level_rule : Set[Callable] = {AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC,
-                                        AccessRule.MAGICIAN, AccessRule.KUNGFU, AccessRule.HERO, AccessRule.MONKEY}
+    minimum_requirements : set[int] = set()
+    edge_requirements : set[int] = set()
+    edge_percentage : int = 0
 
     def __init__(self):
         self.monkey_rules : dict[str, Rulesets] = {}
@@ -223,6 +285,8 @@ class LogicPreference:
         self.entrance_rules : dict[str, Rulesets] = {}
 
         self.blacklisted_entrances : list[str] = []
+        edge_requirements : set[int] = set()
+        edge_percentage : int = 0
 
     # Get all Access Rules within the channel
     def get_channel_clear_rules(self, *regions : str) -> Rulesets:
