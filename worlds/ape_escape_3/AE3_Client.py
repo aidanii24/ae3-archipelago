@@ -202,6 +202,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
             self.ctx.keys = server_keys
             self.ctx.unlocked_channels = server_unlocked
             self.ctx.ipc.set_unlocked_stages(self.ctx.unlocked_channels)
+            self.ctx.post_game_access_rule.check(self.ctx)
             logger.info(f" [-!-] Channel Keys and Unlocked Stages have now been resynced!")
 
         logger.info(f"         > Channel Keys: {self.ctx.keys}\n"

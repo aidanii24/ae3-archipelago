@@ -81,7 +81,11 @@ async def setup_level_select(ctx : 'AE3Context'):
         ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys)
 
     if ctx.ipc.get_unlocked_channels() != max(0, min(ctx.unlocked_channels, 0x1B)):
-        ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
+        received_id: list[int] = [item[0] for item in ctx.items_received]
+
+        ctx.keys = received_id.count(ctx.items_name_to_id[APHelper.channel_key.value])
+        ctx.ipc.set_unlocked_stages(ctx.progression.get_progress(ctx.keys))
+        ctx.post_game_access_rule.check(ctx)
 
     progress : str = ctx.ipc.get_progress()
     selected_channel: int = ctx.ipc.get_selected_channel()
@@ -431,6 +435,7 @@ async def resync_important_items(ctx : 'AE3Context'):
         ctx.keys = server_keys
         ctx.unlocked_channels = server_unlocked
         ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
+        ctx.post_game_access_rule.check(ctx)
 
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
