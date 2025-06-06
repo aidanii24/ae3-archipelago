@@ -487,6 +487,7 @@ async def receive_items(ctx : 'AE3Context'):
             ### Add Key Count and unlock levels accordingly
             if item.item_id == AP[APHelper.channel_key.value]:
                 ctx.keys += 1
+<<<<<<< HEAD
                 ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys, pgc_checked)
             elif item.item_id == AP[APHelper.shop_stock.value]:
                 ctx.shop_progress += ctx.shop_progression
@@ -498,6 +499,10 @@ async def receive_items(ctx : 'AE3Context'):
             # Save State if desired
             if ctx.save_state_on_item_received and not ctx.pending_auto_save:
                 ctx.pending_auto_save = True
+=======
+                ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys)
+                ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
+>>>>>>> c333676 (- Client Version Updated to 1.0.8)
 
         ## Unlock Morphs and Gadgets
         elif isinstance(item, EquipmentItem):
@@ -629,6 +634,7 @@ async def resync_important_items(ctx : 'AE3Context'):
             Itm.morph_knight.value):
         ctx.ipc.lock_equipment(Itm.morph_knight.value)
 
+<<<<<<< HEAD
     # Resync Channel Keys
     keys : int = received_id.count(ctx.items_name_to_id[APHelper.channel_key.value])
     unlocked : int = ctx.progression.get_progress(keys, pgc_checked)
@@ -657,6 +663,17 @@ async def resync_important_items(ctx : 'AE3Context'):
 
     await ctx.goal_target.check(ctx)
 
+=======
+    # Resync Keys
+    server_keys: int = received_id.count(ctx.items_name_to_id[APHelper.channel_key.value])
+    server_unlocked: int = ctx.progression.get_progress(server_keys)
+
+    if ctx.keys < server_keys or ctx.unlocked_channels < server_unlocked:
+        ctx.keys = server_keys
+        ctx.unlocked_channels = server_unlocked
+        ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
+
+>>>>>>> c333676 (- Client Version Updated to 1.0.8)
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
 

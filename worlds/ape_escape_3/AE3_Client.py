@@ -289,7 +289,29 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
                 logger.info(f" [-!-] DeathLink is now " f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
             else:
-                logger.info(f"[...] A DeathLink toggle has already been requested. Please try again in a few seconds.")
+                logger.info(f" [...] A DeathLink toggle has already been requested. Please try again in a few seconds.")
+
+    def _cmd_resync_keys(self):
+        """Resync Channel Keys if there are discrepancies in the amount of channels unlocked"""
+        if not isinstance(self.ctx, AE3Context):
+            return
+
+        received_as_id: list[int] = [i.item for i in self.ctx.items_received]
+
+        ## Get Keys
+        server_keys : int = received_as_id.count(self.ctx.items_name_to_id[APHelper.channel_key.value])
+        server_unlocked : int = self.ctx.progression.get_progress(server_keys)
+
+        if server_keys == self.ctx.keys and server_unlocked == self.ctx.unlocked_channels:
+            logger.info(f" [-/-] There were no discrepancies detected in the amount of channels unlocked.")
+        else:
+            self.ctx.keys = server_keys
+            self.ctx.unlocked_channels = server_unlocked
+            self.ctx.ipc.set_unlocked_stages(self.ctx.unlocked_channels)
+            logger.info(f" [-!-] Channel Keys and Unlocked Stages have now been resynced!")
+
+        logger.info(f"         > Channel Keys: {self.ctx.keys}\n"
+                    f"         > Unlocked Channels: {self.ctx.unlocked_channels + 1}")
 
     def _cmd_save_state(self):
         """Save State to the slot specified in the options."""
@@ -807,6 +829,136 @@ class AE3Context(CommonContext):
 
         self.pending_deathlinks += 1
 
+<<<<<<< HEAD
+=======
+    def check_session_save(self) -> bool:
+        """Check for valid save file"""
+        if not self.save_data_filename:
+            return False
+        elif not self.save_data_path:
+            return False
+
+        return (os.path.isfile(self.save_data_path + self.save_data_filename) and
+                os.access(self.save_data_path + self.save_data_filename, os.R_OK))
+
+    def load_session(self):
+        """Load existing session"""
+        if not self.check_session_save():
+            return
+
+        with io.open(self.save_data_path + self.save_data_filename, 'r') as save:
+            data : dict = json.load(save)
+
+            # Retrieve Next Item Slot/Amount of Items Received
+            self.last_item_processed_index = data.get(APHelper.last_itm_idx_prc.value, 0)
+
+            # Retrieve Offline Checked Locations
+            self.offline_locations_checked = set(data.get(APHelper.offline_checked_locations.value, set()))
+
+            # Retrieve Volatile Checked Locations
+            self.checked_volatile_locations = set(data.get(APHelper.checked_volatile_locations.value, set()))
+
+        self.ipc.logger.info(" [-!-] A Session Data save has been found and successfully loaded.")
+
+    def save_session(self):
+        """Save current session progress"""
+        if self.game_goaled:
+            return
+
+        # Prevent Spammed Messages
+        if not self.save_data_filename or not self.save_data_path:
+            logger.warning(APConsole.Err.save_no_init.value)
+            return
+
+        data = {
+            APHelper.goaled.value                       : self.game_goaled,
+            APHelper.last_save.value                    : datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+
+            APHelper.last_itm_idx_prc.value             : self.last_item_processed_index,
+            APHelper.offline_checked_locations.value    : [*self.offline_locations_checked],
+            APHelper.checked_volatile_locations.value   : [*self.checked_volatile_locations],
+        }
+        with io.open(self.save_data_path + self.save_data_filename, 'w') as save:
+            save.write(json.dumps(data))
+
+    def delete_session(self):
+        if not self.check_session_save():
+            return
+
+        if not self.settings or not self.settings.delete_goaled:
+            return
+
+        try:
+            if os.path.isfile(self.save_data_path + self.save_data_filename):
+                os.remove(self.save_data_path + self.save_data_filename)
+        except OSError:
+            pass
+
+        if not self.check_session_save():
+            self.ipc.logger.info(" [-!-] Current Session Data has successfully been erased.")
+
+    def clean_sessions(self):
+        """
+        This will attempt to delete Session Data that has already goaled or has not been saved for too long
+        depending on the set user options.
+        """
+        if not self.save_data_path or not os.path.isdir(self.save_data_path):
+            return
+
+        if not self.settings.delete_goaled and not self.settings.delete_excess and not self.settings.delete_old:
+            return
+
+        files: dict[str, int] = {}
+        discard: list[str] = []
+        for file in os.listdir(self.save_data_path):
+            # Only check the AE3 Save JSON files
+            if not file.startswith("AE3_") and not file.endswith(".json"):
+                continue
+
+            # Ensure this is actually a file
+            if not os.path.isfile(self.save_data_path + "/" + file):
+                continue
+
+            try:
+                with io.open(self.save_data_path + file, 'r') as save:
+                    data = json.load(save)
+
+                    if self.settings.delete_goaled and APHelper.goaled.value in data:
+                        if data[APHelper.goaled.value]:
+                            discard.append(file)
+                            continue
+
+                    if APHelper.last_save.value in data:
+                        delta : int = (datetime.now() - datetime.strptime(data[APHelper.last_save.value],
+                                                                             "%Y-%m-%dT%H:%M:%S.%fZ")).days
+                        # Immediately add to discard pile if last save is more than the specified amount of days
+                        if self.settings.delete_old and delta > self.settings.delete_old:
+                            discard.append(file)
+                        # Otherwise, send to be checked for excess remaining
+                        elif self.settings.delete_excess:
+                            files.setdefault(file, delta)
+            except OSError as error:
+                print(error)
+                return
+
+        # Sort by days since last saved in ascending order, and remove the oldest ones that exceed the excess amount
+        if len(files) > 10:
+            excess_amount : int = len(files) - self.settings.delete_excess - 1
+            excess : list[str] = [*dict(sorted(files.items(), key=lambda f : file[1])).keys()]
+
+            discard.extend(excess[-excess_amount:])
+
+        if discard:
+            try:
+                for file in discard:
+                    os.remove(self.save_data_path + "/" + file)
+            except OSError as error:
+                logger.info(" [!!!] An error has occurred cleaning local session saves.\n", error)
+                return
+
+            logger.info(f" [-!-] Clean Sessions has run and deleted {len(discard)} total session saves.")
+
+>>>>>>> c333676 (- Client Version Updated to 1.0.8)
     # Client Command GUI
     def run_gui(self):
         from kvui import GameManager

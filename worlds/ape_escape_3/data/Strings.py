@@ -2742,11 +2742,19 @@ class APConsole:
         sym_wait =      " [...]"
         sym_conf =      " [-/-]"
         decor =         "||==========================================||"
+<<<<<<< HEAD
         greet =         "Welcome to Ape Escape 3 Archipelago!"
         game_name =     "Ape Escape 3 Archipelago"
         client_name =   "Ape Escape 3 Client"
         client_ver =    "2.0.00-beta.3"
         world_ver =     "2.0.00-beta.3"
+=======
+        greet =         " Welcome to Ape Escape 3 Archipelago!"
+        game_name =     " Ape Escape 3 Archipelago"
+        client_name =   " Ape Escape 3 Client"
+        client_ver =    " Client v1.0.8"
+        world_ver =     " World v1.0.72"
+>>>>>>> c333676 (- Client Version Updated to 1.0.8)
 
         p_check =       " [|?|] Confirming PCSX2 Status..."
         p_init =        " [...] Connecting to PCSX2..."
