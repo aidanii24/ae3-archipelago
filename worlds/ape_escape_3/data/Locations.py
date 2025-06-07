@@ -2051,7 +2051,7 @@ EVENTS_INDEX : dict[str, Sequence[str]] = {
 
 LOCATIONS_INDEX : dict[str, Sequence[str]] = {
     key : [*MONKEYS_INDEX.get(key, []), *CAMERAS_INDEX.get(key, []), *CELLPHONES_INDEX.get(key, [])]
-    for key in [*{MONKEYS_INDEX.keys(), *CAMERAS_INDEX.keys(), *CELLPHONES_INDEX.keys()}]
+    for key in [*{*MONKEYS_INDEX.keys(), *CAMERAS_INDEX.keys(), *CELLPHONES_INDEX.keys()}]
 }
 
 LOCATIONS_DIRECTORY : dict[str, Sequence[str]] = {
