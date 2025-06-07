@@ -440,7 +440,8 @@ class Shoppingsanity(Choice):
 
     > disabled - Shop Items will not count as locations
     > enabled - Shop Items will count as locations
-    > collection - Shop Items will count as locations by the amount of that type of item that is owned
+    > collection - Shop Items will count as locations where they are counted by the amount of its category obtained
+    instead of being uniquely identified
     > progressive - Shop Items will become available as you unlock more channels
     > restock - Shop Items will become available as you find more Shop Stocks
     """

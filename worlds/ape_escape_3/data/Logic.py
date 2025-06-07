@@ -353,7 +353,7 @@ class ProgressionMode:
                 access_rule : Rulesets = Rulesets(has_keys(required_keys))
 
                 if special_post_game:
-                    access_rule.critical.add(world.post_game_access_rule.verify)
+                    access_rule.critical.add(world.post_game_condition.verify)
 
                 channel_rules.update({self.level_select_entrances[channel_idx].name : access_rule})
 

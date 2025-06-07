@@ -8,8 +8,7 @@ from .data.Items import AE3Item, AE3ItemMeta, ITEMS_MASTER, Nothing, generate_co
 from .data.Locations import Cellphone_Name_to_ID, MONKEYS_BOSSES, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, \
     CELLPHONES_MASTER_ORDERED, MONKEYS_PASSWORDS
 from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER
-from .data.Rules import GoalTarget, GoalTargetOptions, LogicPreference, LogicPreferenceOptions, PostGameCondition, \
-    PostGameAccessRuleOptions
+from .data.Rules import GoalTarget, GoalTargetOptions, LogicPreference, LogicPreferenceOptions, PostGameCondition
 from .data.Strings import Loc, Meta, APHelper, APConsole
 from .data.Logic import is_goal_achieved, are_goals_achieved, Rulesets, ProgressionMode, ProgressionModeOptions
 from .AE3_Options import AE3Options, create_option_groups, slot_data_options
@@ -95,11 +94,9 @@ class AE3World(World):
     logic_preference : LogicPreference
     goal_target : GoalTarget = GoalTarget
     progression : ProgressionMode
-    post_game_access_rule : PostGameCondition
+    post_game_condition : PostGameCondition
 
     def __init__(self, multiworld : MultiWorld, player: int):
-        self.auto_equip : bool = False
-
         self.item_pool : List[AE3Item] = []
 
         super(AE3World, self).__init__(multiworld, player)
@@ -118,14 +115,22 @@ class AE3World(World):
         # Get Post Game Access Rule and exclude locations as necessary
         exclude_regions: list[str] = []
         exclude_locations: list[str] = []
-        additional_locations : list[str] = []
 
         exclude_locations.extend(MONKEYS_PASSWORDS)
 
         # Get Goal Target
-        self.goal_target = GoalTargetOptions[self.options.goal_target.value](exclude_regions, exclude_locations)
+        goal_target_index = self.options.goal_target
+        self.goal_target = GoalTargetOptions[goal_target_index](exclude_regions, exclude_locations)
+
+        if goal_target_index == 5 and not self.options.camerasanity:
+            self.options.camerasanity.value = 1
+        elif goal_target_index == 6 and not self.options.cellphonesanity:
+            self.options.cellphonesanity.value = True
+        elif goal_target_index == 7 and not self.options.shoppingsanity:
+            self.options.shoppingsanity.value = 1
 
         # When Channels are shuffled, exclude locations from the channel randomized into the post-game slot
+        # for Post Game Condition
         for x in range(self.progression.progression[-1]):
             exclude_locations.extend(MONKEYS_MASTER_ORDERED[self.progression.order[-(x + 1)]])
             exclude_locations.append(CAMERAS_MASTER_ORDERED[self.progression.order[-(x + 1)]])
@@ -133,26 +138,45 @@ class AE3World(World):
             excluded_phones_id : list[str] = CELLPHONES_MASTER_ORDERED[self.progression.order[-(x + 1)]]
             exclude_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
 
-        # Active Monkeys options should respect Monkeysanity options
-        if self.options.post_game_condition == 1 and not self.options.monkeysanity_break_rooms:
-            exclude_regions.extend([*STAGES_BREAK_ROOMS])
+        # Record Post-Game Condition Requirements
+        post_game_conditions : dict[str, int] = {}
+        if self.options.post_game_condition_monkeys:
+            amount: int = 434 if self.options.post_game_condition_monkeys < 0 \
+                else self.options.post_game_condition_monkeys
+            post_game_conditions["monkeys"] = amount
 
-        # If Specter is a Post Game Access Rule, and he gets shuffled to become the post game channel, change the
-        # required location to the next penultimate placed boss
-        elif (self.options.post_game_condition >= 4 and
-              self.progression.order[-1] == self.progression.boss_indices[-2]):
-            if MONKEYS_BOSSES[-2] in exclude_locations:
-                exclude_locations.remove(MONKEYS_BOSSES[-2])
+            # Force Break Room Monkeys to be disabled on Vanilla Preset
+            if self.options.post_game_condition_monkeys == -2:
+                if not self.options.monkeysanity_break_rooms:
+                    self.options.monkeysanity_break_rooms.value = 1
+            # Respect Monkeysanity BreakRooms option otherwise
+            elif not self.options.monkeysanity_break_rooms:
+                exclude_regions.extend([*STAGES_BREAK_ROOMS])
 
-                for level in reversed(self.progression.order):
-                    if level == self.progression.boss_indices[-2]:
-                        continue
-                    elif level in self.progression.boss_indices:
-                        additional_locations.append(MONKEYS_BOSSES[self.progression.boss_indices.index(level)])
-                        break
+        if self.options.post_game_condition_cameras:
+            post_game_conditions["cameras"] = self.options.post_game_condition_cameras.value
 
-        self.post_game_access_rule = (PostGameAccessRuleOptions[self.options.post_game_condition](
-                                        exclude_regions, exclude_locations, additional_locations))
+            # Force Camerasanity to enabled if disabled
+            if not self.options.camerasanity.value:
+                self.options.camerasanity.value = 1
+
+        if self.options.post_game_condition_cellphones:
+            post_game_conditions["cellphones"] = self.options.post_game_condition_cellphones.value
+
+            # Force Cellphonesanity if disabled
+            if not self.options.cellphonesanity:
+                self.options.cellphonesanity.value = True
+
+        if self.options.post_game_condition_shop:
+            post_game_conditions["shop"] = self.options.post_game_condition_shop.value
+
+            if not self.options.shoppingsanity:
+                self.options.shoppingsanity.value = 1
+
+        if self.options.post_game_condition_keys:
+            post_game_conditions["keys"] = self.options.post_game_condition_keys.value
+
+        self.post_game_condition = PostGameCondition(post_game_conditions, exclude_regions, exclude_locations)
         self.item_pool = []
 
     def create_regions(self):
@@ -268,13 +292,26 @@ class AE3World(World):
             )
 
             if i - level_base == self.progression.progression[set_count] and i < len(self.progression.order) - 1:
+                # Do not show Blacklisted Channels
+                if set_count == len(self.progression.order) - 1:
+                    return
+
                 set_count += 1
                 level_base = i
 
-                if set_count < len(self.progression.progression) - 1:
+                if set_count < len(self.progression.progression) - 2:
                     spoiler_handle.write(f"\n- < {set_count} > ---------------------------------------")
                 else:
-                    spoiler_handle.write(f"\n- < ! > ---------------------------------------")
+                    tag : str = ""
+
+                    if self.options.post_game_condition_keys:
+                        tag += f"{self.options.post_game_condition_keys.value + set_count - 1}"
+                    if any([bool(self.options.post_game_condition_monkeys),
+                           bool(self.options.post_game_condition_cameras),
+                           bool(self.options.post_game_condition_cellphones)]):
+                        tag += "!"
+
+                    spoiler_handle.write(f"\n- < {tag} > ---------------------------------------")
 
         spoiler_handle.write("\n")
 

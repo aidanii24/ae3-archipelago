@@ -25,11 +25,9 @@ def establish_entrance(player : int, name : str, parent_region : Region, destina
 def create_regions(world : "AE3World"):
     world.logic_preference.entrance_rules.update(world.progression.generate_rules(world))
 
-    add_cameras : bool = (world.options.camerasanity or world.options.goal_target == 5 or
-                          world.options.post_game_condition == 2)
-    add_cellphones : bool = (world.options.cellphonesanity or world.options.goal_target == 6 or
-                             world.options.post_game_condition == 3)
-    add_break_rooms : bool = world.options.monkeysanity_break_rooms.value or world.options.post_game_condition == 0
+    add_cameras : bool = bool(world.options.camerasanity)
+    add_cellphones : bool = bool(world.options.cellphonesanity.value)
+    add_break_rooms : bool = bool(world.options.monkeysanity_break_rooms.value)
 
     # Initialize Regions
     stages : dict[str, Region] = { name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER }

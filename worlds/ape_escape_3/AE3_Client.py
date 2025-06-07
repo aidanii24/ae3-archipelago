@@ -20,7 +20,7 @@ from .data.Logic import ProgressionMode, ProgressionModeOptions
 from .data.Locations import CELLPHONES_MASTER, MONKEYS_MASTER, MONKEYS_MASTER_ORDERED, \
     CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED
 from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER
-from .data.Rules import GoalTarget, GoalTargetOptions, PostGameCondition, PostGameAccessRuleOptions
+from .data.Rules import GoalTarget, GoalTargetOptions, PostGameCondition
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
 from . import AE3Settings
 from .Checker import *
@@ -299,7 +299,7 @@ class AE3Context(CommonContext):
     progression : ProgressionMode = ProgressionModeOptions[0]
     goal_target : GoalTarget = GoalTarget()
     post_game_access_rule_option : int = 0
-    post_game_access_rule : PostGameCondition = PostGameCondition()
+    post_game_access_rule : PostGameCondition = PostGameCondition({"monkeys" : 434})
     shuffle_channel : bool = False
     dummy_morph : str = Itm.morph_monkey.value
     check_break_rooms : bool = False
@@ -393,7 +393,6 @@ class AE3Context(CommonContext):
 
             excluded_stages : list[str] = []
             excluded_locations : list[str] = [*MONKEYS_PASSWORDS]
-            additional_locations : list[str] = []
 
             ## Monkeysanity - Break Rooms
             if APHelper.monkeysanitybr.value in data:
@@ -415,23 +414,8 @@ class AE3Context(CommonContext):
             excluded_locations.extend(CELLPHONES_MASTER_ORDERED[self.progression.order[-1]])
             excluded_locations.append(CAMERAS_MASTER_ORDERED[self.progression.order[-1]])
 
-            # If Specter is a Post Game Access Rule, and he gets shuffled to become the post game channel,
-            # change the required location to the next penultimate placed boss
-            if (self.post_game_access_rule_option >= 4 and
-                self.progression.order[-1] == self.progression.boss_indices[-2]):
-                if MONKEYS_BOSSES[-2] in excluded_locations:
-                    excluded_locations.remove(MONKEYS_BOSSES[-2])
-
-                    for level in reversed(self.progression.order):
-                        if level == self.progression.boss_indices[-2]:
-                            continue
-                        elif level in self.progression.boss_indices:
-                            additional_locations.append(MONKEYS_BOSSES[self.progression.boss_indices.index(level)])
-                            break
-
             ## Post Game Access Rule Initialization
-            self.post_game_access_rule = PostGameAccessRuleOptions[self.post_game_access_rule_option](
-                    excluded_stages, excluded_locations, additional_locations)
+            self.post_game_access_rule = PostGameCondition(excluded_stages, excluded_locations)
 
             ## Shuffle Channel
             if APHelper.shuffle_channel.value in data:
