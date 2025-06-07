@@ -556,7 +556,7 @@ class Hard(LogicPreference):
             Stage.entrance_edotown_eb.value     : Rulesets(event_invoked(Events.edotown_e_scroll.value)),
 
             # Heaven
-            Stage.entrance_heaven_ab.value      : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_heaven_ab.value      : Rulesets(AccessRule.GLIDE, AccessRule.KUNGFU),
             Stage.entrance_heaven_ba.value      : Rulesets(AccessRule.GLIDE),
             Stage.entrance_heaven_b1b.value     : Rulesets(event_invoked(Events.heaven_b_clapper.value)),
             Stage.entrance_heaven_ce.value      : Rulesets(AccessRule.MONKEY),
@@ -936,6 +936,7 @@ class Normal(Hard):
             # Heaven
             Stage.entrance_heaven_a1a.value     : Rulesets(AccessRule.GLIDE),
             Stage.entrance_heaven_aa1.value     : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_heaven_ab.value      : Rulesets(AccessRule.GLIDE),
             Stage.entrance_heaven_bb1.value     : Rulesets(AccessRule.HIT),
 
             # Toyhouse
