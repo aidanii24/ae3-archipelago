@@ -121,7 +121,7 @@ class GoalTarget:
 
         return False
 
-    def as_access_rule(self) -> Callable[[CollectionState, int], bool]:
+    def enact(self) -> Callable[[CollectionState, int], bool]:
         return lambda state, player : self.verify(state, player)
 
 @dataclass
@@ -174,10 +174,6 @@ class PostGameCondition:
         if not has_enough_keys(state, player, min_keys - 1):
             return False
 
-        # Check if End Game is reachable first
-        if not has_enough_keys(state, player, min_keys - 2):
-            return False
-
         rules : set[Callable] = {AccessRule.CATCH, AccessRule.FLY, AccessRule.DASH, AccessRule.SHOOT}
         highest_scale : float = 0.0
 
@@ -196,18 +192,19 @@ class PostGameCondition:
         if "cellphones" in self.amounts:
             highest_scale = max(highest_scale, 20 / len(self.location_ids["cellphones"]))
 
-        # Check Absolute Minimum Rules
+        if "channel_keys" in self.amounts:
+            rules.add(has_enough_keys(state, player, (min_keys - 1) + self.amounts["channel_keys"]))
+
+        # Check Rules that only yields small progress if required amount is high enough
+        highest_scale *= 100
+        if highest_scale > 50:
+            rules.update({AccessRule.MAGICIAN, AccessRule.KUNGFU, AccessRule.SWIM})
+        if highest_scale > 80:
+            rules.update({AccessRule.RCC, AccessRule.SLING})
+
+        # Check Rules
         if not all(rule(state, player) for rule in rules):
             return False
-
-        # Check Rules that only yields small progress, only necessitated if amount asked is near or equal to full set
-        minimum_edge : int = int(highest_scale * 100) - 5
-        if minimum_edge >= 1:
-            minimal_rules: set[Callable] = {AccessRule.SLING, AccessRule.SWIM, AccessRule.RCC, AccessRule.MAGICIAN,
-                                            AccessRule.KUNGFU}
-            checked : int = [rule(state, player) for rule in minimal_rules].count(True)
-            if (checked / len(minimal_rules)) < (minimum_edge / 5):
-                return False
 
         return True
 
@@ -266,6 +263,16 @@ class LogicPreference:
     """
     Base Class for defined RuleTypes. RuleTypes determine the kinds of access rules locations or regions have
     based on a preferred play style
+
+    Attributes:
+        monkey_rules : Rulesets for Monkeys
+        event_rules : Rulesets for Events
+        entrance_rules : Rulesets for Entrances
+
+        blacklisted_entrances : Entrances that are excepted from generation and will never be in logic
+
+        small_starting_channels : Channels with Starting Areas too small that must be actively swapped out from being
+        an early level when Shuffle Channel is enabled.
     """
     monkey_rules : dict[str, Rulesets] = {}
     event_rules : dict[str, Rulesets] = {}
@@ -275,9 +282,6 @@ class LogicPreference:
 
     default_critical_rule : Set[Callable] = [AccessRule.CATCH]
     small_starting_channels : list[int]
-    minimum_requirements : set[int] = set()
-    edge_requirements : set[int] = set()
-    edge_percentage : int = 0
 
     def __init__(self):
         self.monkey_rules : dict[str, Rulesets] = {}
@@ -285,8 +289,9 @@ class LogicPreference:
         self.entrance_rules : dict[str, Rulesets] = {}
 
         self.blacklisted_entrances : list[str] = []
-        edge_requirements : set[int] = set()
-        edge_percentage : int = 0
+        self.minimum_requirements : set[Callable] = set()
+        self.edge_requirements : set[Callable] = set()
+        self.edge_percentage : int = 0
 
     # Get all Access Rules within the channel
     def get_channel_clear_rules(self, *regions : str) -> Rulesets:

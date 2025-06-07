@@ -241,7 +241,7 @@ class AE3World(World):
         self.multiworld.itempool += self.item_pool
 
         # Set Goal
-        self.multiworld.completion_condition[self.player] = Rulesets(self.goal_target.as_access_rule()).condense(
+        self.multiworld.completion_condition[self.player] = Rulesets(self.goal_target.enact()).condense(
              self.player)
 
     def fill_slot_data(self):
