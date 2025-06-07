@@ -5,15 +5,14 @@ from warnings import warn
 from BaseClasses import CollectionState
 
 from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, Cellphone_Name_to_ID, MONKEYS_BOSSES, \
-    MONKEYS_BREAK_ROOMS, MONKEYS_INDEX, MONKEYS_MASTER, MONKEYS_PASSWORDS, generate_name_to_id, CELLPHONES_MASTER, \
-    LOCATIONS_INDEX, LOCATIONS_DIRECTORY
+    MONKEYS_BREAK_ROOMS, MONKEYS_INDEX, MONKEYS_MASTER, MONKEYS_PASSWORDS, generate_name_to_id, LOCATIONS_INDEX, \
+    LOCATIONS_DIRECTORY
 from .Logic import Rulesets, AccessRule, ProgressionMode, has_keys, event_invoked, has_enough_keys
-from .Strings import Loc, Stage, Events
+from .Strings import Loc, Stage, Events, APHelper
 from .Stages import STAGES_DIRECTORY, ENTRANCES_STAGE_SELECT
 
 if TYPE_CHECKING:
     from ..AE3_Client import AE3Context
-
 
 class GoalTarget:
     name : str = "Empty Goal"
@@ -133,7 +132,10 @@ class PostGameCondition:
     location_ids: dict[str, set[int]] = field(default_factory=dict)
     amounts : dict[str, int] = field(default_factory=dict)
 
-    location_categories : ClassVar[list[str]] = ["monkeys", "cameras", "cellphones", "shop_items"]
+    location_categories : ClassVar[list[str]] = [APHelper.monkey.value,
+                                                 APHelper.camera.value,
+                                                 APHelper.cellphone.value,
+                                                 APHelper.shop.value]
 
     def __init__(self, amounts : dict[str, int], excluded_locations : list[str] = None,
                  excluded_regions : list[str] = None):
@@ -174,26 +176,29 @@ class PostGameCondition:
         if not has_enough_keys(state, player, min_keys - 1):
             return False
 
-        rules : set[Callable] = {AccessRule.CATCH, AccessRule.FLY, AccessRule.DASH, AccessRule.SHOOT}
+        rules : set[Callable] = set()
+        if any(category in self.amounts for category in self.location_categories[:3]):
+            rules.update({AccessRule.CATCH, AccessRule.FLY, AccessRule.DASH, AccessRule.SHOOT})
         highest_scale : float = 0.0
 
-        if "monkeys" in self.amounts:
-            highest_scale = max(highest_scale, (self.amounts["monkeys"] / len(self.location_ids["monkeys"])))
-            if break_rooms >= 2 and self.amounts["monkeys"] > 354:
+        if APHelper.monkey.value in self.amounts:
+            highest_scale = max(highest_scale, (self.amounts[APHelper.monkey.value] /
+                                                len(self.location_ids[APHelper.monkey.value])))
+            if break_rooms >= 2 and self.amounts[APHelper.monkey.value] > 354:
                 rules.add(AccessRule.MONKEY)
 
-        if "cameras" in self.amounts:
+        if APHelper.camera.value in self.amounts:
             count : int = [state.can_reach_location(camera, player)
-                           for camera in self.locations["cameras"]].count(True)
+                           for camera in self.locations[APHelper.camera.value]].count(True)
 
-            if count < self.amounts["cameras"]:
+            if count < self.amounts[APHelper.camera.value]:
                 return False
 
-        if "cellphones" in self.amounts:
-            highest_scale = max(highest_scale, 20 / len(self.location_ids["cellphones"]))
+        if APHelper.cellphone.value in self.amounts:
+            highest_scale = max(highest_scale, 20 / len(self.location_ids[APHelper.cellphone.value]))
 
-        if "channel_keys" in self.amounts:
-            rules.add(has_enough_keys(state, player, (min_keys - 1) + self.amounts["channel_keys"]))
+        if APHelper.keys.value in self.amounts:
+            rules.add(has_enough_keys(state, player, (min_keys - 1) + self.amounts[APHelper.keys.value]))
 
         # Check Rules that only yields small progress if required amount is high enough
         highest_scale *= 100
@@ -203,8 +208,9 @@ class PostGameCondition:
             rules.update({AccessRule.RCC, AccessRule.SLING})
 
         # Check Rules
-        if not all(rule(state, player) for rule in rules):
-            return False
+        if rules:
+            if not all(rule(state, player) for rule in rules):
+                return False
 
         return True
 
@@ -224,8 +230,8 @@ class PostGameCondition:
             passed = passed and len(total_checked.intersection((self.location_ids[category]))) >= self.amounts[category]
 
         # Check for keys required on post
-        if "channel_keys" in self.amounts:
-            passed = passed and ctx.keys - (len(ctx.progression.progression) - 3) >= self.amounts["channel_keys"]
+        if APHelper.keys.value in self.amounts:
+            passed = passed and ctx.keys - (len(ctx.progression.progression) - 3) >= self.amounts[APHelper.keys.value]
 
         if passed and ctx.keys == len(ctx.progression.progression) - 3:
             return True
@@ -241,9 +247,9 @@ class PostGameCondition:
                 progress[category] = [len(total_checked.intersection((self.location_ids[category]))),
                                       self.amounts[category]]
 
-        if "channel_keys" in self.amounts:
-            progress["channel_keys"] = [ctx.keys - len(ctx.progression.progression) - 2,
-                                        self.amounts["channel_keys"]]
+        if APHelper.keys.value in self.amounts:
+            progress[APHelper.keys.value] = [min(ctx.keys - len(ctx.progression.progression) - 2, 0),
+                                        self.amounts[APHelper.keys.value]]
 
         return progress
 

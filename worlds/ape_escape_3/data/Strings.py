@@ -1870,7 +1870,7 @@ class APHelper(BaseEnum):
     channel_key =           "Channel Key"
     victory =               "Victory"
 
-    # Special
+    # Custom Items
     hlp_morph_ext =         "Morph Gauge Extension"
 
     # Item Groups
@@ -1888,6 +1888,13 @@ class APHelper(BaseEnum):
     shoot =                 "Shoot"
     fly =                   "Fly"
     glide =                 "Glide"
+
+    # Post Game Categories
+    keys =                  "Channel Keys"
+    monkey =                "Pipo Monkeys"
+    camera =                "Pipo Cameras"
+    cellphone =             "Cellphones"
+    shop =                  "Shop Items"
 
     # Game Groups
     travel_station =        "o_1"

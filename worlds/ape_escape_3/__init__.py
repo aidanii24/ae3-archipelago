@@ -130,12 +130,12 @@ class AE3World(World):
             self.options.shoppingsanity.value = 1
 
         # When Channels are shuffled, exclude locations from the channel randomized into the post-game slot
-        # for Post Game Condition
-        for x in range(self.progression.progression[-1]):
-            exclude_locations.extend(MONKEYS_MASTER_ORDERED[self.progression.order[-(x + 1)]])
-            exclude_locations.append(CAMERAS_MASTER_ORDERED[self.progression.order[-(x + 1)]])
+        # and blacklisted slot for Post Game Condition
+        for channel in self.progression.order[:-sum(self.progression.progression[:-2])]:
+            exclude_locations.extend(MONKEYS_MASTER_ORDERED[channel])
+            exclude_locations.append(CAMERAS_MASTER_ORDERED[channel])
 
-            excluded_phones_id : list[str] = CELLPHONES_MASTER_ORDERED[self.progression.order[-(x + 1)]]
+            excluded_phones_id : list[str] = CELLPHONES_MASTER_ORDERED[channel]
             exclude_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
 
         # Record Post-Game Condition Requirements
@@ -143,7 +143,7 @@ class AE3World(World):
         if self.options.post_game_condition_monkeys:
             amount: int = 434 if self.options.post_game_condition_monkeys < 0 \
                 else self.options.post_game_condition_monkeys
-            post_game_conditions["monkeys"] = amount
+            post_game_conditions[APHelper.monkey.value] = amount
 
             # Force Break Room Monkeys to be disabled on Vanilla Preset
             if self.options.post_game_condition_monkeys == -2:
@@ -154,27 +154,27 @@ class AE3World(World):
                 exclude_regions.extend([*STAGES_BREAK_ROOMS])
 
         if self.options.post_game_condition_cameras:
-            post_game_conditions["cameras"] = self.options.post_game_condition_cameras.value
+            post_game_conditions[APHelper.camera.value] = self.options.post_game_condition_cameras.value
 
             # Force Camerasanity to enabled if disabled
             if not self.options.camerasanity.value:
                 self.options.camerasanity.value = 1
 
         if self.options.post_game_condition_cellphones:
-            post_game_conditions["cellphones"] = self.options.post_game_condition_cellphones.value
+            post_game_conditions[APHelper.camera.value] = self.options.post_game_condition_cellphones.value
 
             # Force Cellphonesanity if disabled
             if not self.options.cellphonesanity:
                 self.options.cellphonesanity.value = True
 
         if self.options.post_game_condition_shop:
-            post_game_conditions["shop"] = self.options.post_game_condition_shop.value
+            post_game_conditions[APHelper.shop.value] = self.options.post_game_condition_shop.value
 
             if not self.options.shoppingsanity:
                 self.options.shoppingsanity.value = 1
 
         if self.options.post_game_condition_keys:
-            post_game_conditions["keys"] = self.options.post_game_condition_keys.value
+            post_game_conditions[APHelper.keys.value] = self.options.post_game_condition_keys.value
 
         self.post_game_condition = PostGameCondition(post_game_conditions, exclude_regions, exclude_locations)
         self.item_pool = []

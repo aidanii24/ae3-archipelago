@@ -133,7 +133,7 @@ async def setup_level_select(ctx : 'AE3Context'):
             ctx.is_mode_swapped = False
             ctx.ipc.set_game_mode(0xFFFF, False)
     else:
-        ctx.post_game_access_rule.check(ctx)
+        ctx.post_game_condition.check(ctx)
 
         if progress != APHelper.pr_round2.value:
             ctx.ipc.set_progress()
@@ -492,7 +492,7 @@ async def check_locations(ctx : 'AE3Context'):
 
             await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
             await ctx.goal_target.check(ctx)
-            ctx.post_game_access_rule.check(ctx)
+            ctx.post_game_condition.check(ctx)
 
         else:
             # When offline, save checked locations to a different set

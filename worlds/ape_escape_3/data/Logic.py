@@ -247,7 +247,7 @@ class Rulesets:
     def condense(self, player) -> Callable[[CollectionState], bool]:
         return lambda state : self.check(state, player)
 
-from .Locations import MONKEYS_BOSSES
+
 class ProgressionMode:
     name : str = "Generic Progression Mode"
     progression : list[int] = None
@@ -341,10 +341,6 @@ class ProgressionMode:
             # Get total channels up until this set's point (not counting levels in current set)
             total_from_current : int = sum(self.progression[:i]) + 1
             required_keys : int = i
-            special_post_game : bool = False
-            if i == len(self.progression) - 1 and world.options.post_game_condition < 4:
-                special_post_game = True
-                required_keys -= 1
 
             # Get current channel index to be processed for access rules
             # by adding total from current and the range of the current set
@@ -352,30 +348,18 @@ class ProgressionMode:
                 channel_idx : int = total_from_current + channel
                 access_rule : Rulesets = Rulesets(has_keys(required_keys))
 
-                if special_post_game:
-                    access_rule.critical.add(world.post_game_condition.verify)
+                if i == len(self.progression) - 1:
+                    access_rule = Rulesets(world.post_game_condition.enact(required_keys - 1,
+                                           world.options.monkeysanity_break_rooms.value))
 
                 channel_rules.update({self.level_select_entrances[channel_idx].name : access_rule})
 
         return channel_rules
 
     def generate_keys(self, world : 'AE3World') -> list[Item]:
-        # First Set of Level(s) will not cost keys, so subtract one from total length of progression
-        amount: int = len(self.progression) - 1
-
-        # Reduce Generated Keys for PostGameAccessRules other than "Channel Key"
-        if world.options.post_game_condition < 4:
-            amount -= 1
-        # Reduce Generate Key for PostGameAccessRule "After End" and place it on the second to the last boss
-        # (Which in Vanilla order, is always Specter 1
-        elif world.options.post_game_condition == 5:
-            amount -= 1
-
-            bosses_in_order : list[int] = [ level for level in self.order if level in self.boss_indices ]
-            penultimate : str = MONKEYS_BOSSES[self.boss_indices.index(bosses_in_order[-2])]
-
-            world.get_location(penultimate).place_locked_item(Channel_Key.to_item(world.player))
-
+        # The first set of levels and blacklisted set of levels will not cost keys.
+        # Keys required by post game is handled by its corresponding option
+        amount: int = len(self.progression) - 3 + world.options.post_game_condition_keys + world.options.extra_keys
         return Channel_Key.to_items(world.player, amount)
 
     def set_progression(self, progression : list[int] = None):

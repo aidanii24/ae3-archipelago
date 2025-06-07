@@ -58,13 +58,25 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
                 if ((len(self.ctx.goal_target.locations) == 1 and Loc.boss_specter_final.value in
                         self.ctx.goal_target.locations) or self.ctx.shuffle_channel):
-                    logger.info(f"\n         Post-Game Requirement is "
-                                f"{self.ctx.post_game_access_rule}")
+                    post_game_conditions : str = "".join(condition.join(", ") for condition
+                    in self.ctx.post_game_condition.amounts.keys())
+                    logger.info(f"\n         Post-Game requires {post_game_conditions}")
 
                     if game_status > 0:
-                        logger.info(f"         > Progress: "
-                                    f"{str(self.ctx.post_game_access_rule.get_progress(self.ctx))} / "
-                                    f"{self.ctx.post_game_access_rule.amount}")
+                        logger.info(f"         > Progress: ")
+
+                        pgc_progress : dict[str, list[int]] = self.ctx.post_game_condition.get_progress(self.ctx)
+
+                        if all(v[0] >= v[1] for v in [*pgc_progress.values()]):
+                            logger.info(f"         Post-Game Condition(s) are Complete! ")
+
+                        if pgc_progress:
+                            for key, value in pgc_progress.items():
+                                prog : str = f"{value[0]}/{value[1]}"
+                                if value[0] > value[1]:
+                                    prog.join(f"[ COMPLETE! ]")
+
+                                logger.info(f"                > {key}: {prog}")
 
                 if game_status > 0:
                     all_keys : int = len(self.ctx.progression.progression) - 1
@@ -131,27 +143,39 @@ class AE3CommandProcessor(ClientCommandProcessor):
         if not isinstance(self.ctx, AE3Context):
             return
 
-        if not self.ctx.server or not self.ctx.post_game_access_rule:
+        if not self.ctx.server or not self.ctx.post_game_condition:
             logger.info(f" [!!!] Please connect to an Archipelago Server first!")
             return
         elif self.ctx.game_goaled:
             logger.info(f" [-!-] You have already Goaled! You have no more remaining checks!")
             return
 
-        remaining: list[str] = self.ctx.post_game_access_rule.get_remaining(self.ctx)
+        progress: dict[str, list[int]] = self.ctx.post_game_condition.get_progress(self.ctx)
+        remaining: dict[str, list[str]] = self.ctx.post_game_condition.get_remaining(self.ctx)
 
         if not remaining:
             logger.info(f" [-!-] You have already unlocked Post-Game!")
             return
 
-        logger.info(f" [->-] Post Game Condition Progress: "
-                    f"{str(self.ctx.post_game_access_rule.get_progress(self.ctx))} / "
-                    f"{self.ctx.post_game_access_rule.amount}")
+        logger.info(f" [->-] Post Game Condition Progress: ")
 
-        logger.info(f" Remaining Potential Post Game Condition Locations:")
+        if all(v[0] >= v[1] for v in [*progress.values()]):
+            logger.info(f"         Post-Game Condition(s) are Complete! ")
 
-        for location in remaining:
-            logger.info(f"         > " f"{location}")
+        if progress:
+            for key, value in progress.items():
+                prog: str = f"{value[0]}/{value[1]}"
+                if value[0] > value[1]:
+                    prog.join(f"[ COMPLETE! ]")
+
+                logger.info(f"                > {key}: {prog}")
+
+        logger.info(f"\n Remaining Potential Post Game Condition Locations:")
+
+        for category, remains in remaining:
+            logger.info(f"         > " f"[-/-] {category}")
+            for location in remains:
+                logger.info(f"                  > " f"{location}")
 
     def _cmd_auto_equip(self):
         """Toggle if Gadgets should automatically be assigned to a free face button when received."""
@@ -299,7 +323,7 @@ class AE3Context(CommonContext):
     progression : ProgressionMode = ProgressionModeOptions[0]
     goal_target : GoalTarget = GoalTarget()
     post_game_access_rule_option : int = 0
-    post_game_access_rule : PostGameCondition = PostGameCondition({"monkeys" : 434})
+    post_game_condition : PostGameCondition = PostGameCondition({})
     shuffle_channel : bool = False
     dummy_morph : str = Itm.morph_monkey.value
     check_break_rooms : bool = False
@@ -381,13 +405,6 @@ class AE3Context(CommonContext):
 
                 self.unlocked_channels = self.progression.get_progress(0)
 
-            # Define Goal Target for other options that need it
-            goal_target: int = 0
-
-            ## Post-Game Access Rule
-            if APHelper.post_game_access_rule.value in data:
-                self.post_game_access_rule_option = data[APHelper.post_game_access_rule.value]
-
             ## Check Break Room Monkeys and Password Monkeys options to use with Goal Target
             self.check_break_rooms : bool = self.check_break_rooms or self.post_game_access_rule_option == 0
 
@@ -409,13 +426,35 @@ class AE3Context(CommonContext):
                 goal_target = data[APHelper.goal_target.value]
                 self.goal_target = GoalTargetOptions[goal_target](excluded_stages, excluded_locations)
 
-            ### Exclude locations from final channel
-            excluded_locations.extend(MONKEYS_MASTER_ORDERED[self.progression.order[-1]])
-            excluded_locations.extend(CELLPHONES_MASTER_ORDERED[self.progression.order[-1]])
-            excluded_locations.append(CAMERAS_MASTER_ORDERED[self.progression.order[-1]])
+            ## Get Post Game Conditions
+            amounts : dict[str, int] = {}
+
+            if APHelper.pgc_monkeys.value in data:
+                amount : int = 434 if data[APHelper.pgc_monkeys.value] < 0 else data[APHelper.pgc_monkeys.value]
+                amounts[APHelper.monkey.value] = amount
+
+            if APHelper.pgc_cameras.value in data and data[APHelper.pgc_cameras.value]:
+                amounts[APHelper.camera.value] = data[APHelper.pgc_cameras.value]
+
+            if APHelper.pgc_cellphones.value in data and data[APHelper.pgc_cellphones.value]:
+                amounts[APHelper.cellphone.value] = data[APHelper.pgc_cellphones.value]
+
+            if APHelper.pgc_shop.value in data and data[APHelper.pgc_shop.value]:
+                amounts[APHelper.shop.value] = data[APHelper.pgc_shop.value]
+
+            if APHelper.pgc_keys.value in data and data[APHelper.pgc_keys.value]:
+                amounts[APHelper.keys.value] = data[APHelper.pgc_keys.value]
+
+            ### Exclude locations from post game and blacklisted channels for Post Game Condition
+            for region in self.progression.order[:-sum(self.progression.progression[:-2])]:
+                excluded_locations.extend(*MONKEYS_MASTER_ORDERED[region])
+                excluded_locations.append(*CAMERAS_MASTER_ORDERED[region])
+
+                excluded_phones_id: list[str] = CELLPHONES_MASTER_ORDERED[region]
+                excluded_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
 
             ## Post Game Access Rule Initialization
-            self.post_game_access_rule = PostGameCondition(excluded_stages, excluded_locations)
+            self.post_game_condition = PostGameCondition(amounts, excluded_stages, excluded_locations)
 
             ## Shuffle Channel
             if APHelper.shuffle_channel.value in data:
@@ -424,13 +463,10 @@ class AE3Context(CommonContext):
             ## Camerasanity
             if self.camerasanity is None and APHelper.camerasanity.value in data:
                 self.camerasanity = (data[APHelper.camerasanity.value])
-                if self.camerasanity < 1 and (goal_target == 5 or self.post_game_access_rule_option == 2):
-                    self.camerasanity = 1
 
             ## Cellphonesanity
             if self.cellphonesanity is None and APHelper.cellphonesanity.value in data:
-                self.cellphonesanity = (data[APHelper.cellphonesanity.value] or goal_target == 6 or
-                                        self.post_game_access_rule_option == 3)
+                self.cellphonesanity = data[APHelper.cellphonesanity.value]
 
             ## Morph Duration
             if self.morph_duration == 0 and APHelper.base_morph_duration.value in data:
