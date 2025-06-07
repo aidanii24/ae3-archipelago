@@ -155,7 +155,7 @@ class GoalTarget(Choice):
     option_bonus_collector : int = 7
     # option_scavenger_hunt : int = 10
 
-class GoalTargetOverride(Range):
+class GoalTargetOverride(NamedRange):
     """
     Override the amount of checks required by Goal Target. This does not affect the "specter" and "specter_final:"
     goals.
@@ -173,6 +173,9 @@ class GoalTargetOverride(Range):
 
     range_start = 1
     range_end = 434
+    special_range_names = {
+        "disabled" : 0
+    }
 
 
 class PostGameConditionMonkeys(NamedRange):

@@ -23,8 +23,7 @@ class GoalTarget:
 
     amount : int = 0
 
-    def __init__(self, excluded_stages : list[str] = None, excluded_locations : list[str] = None,
-                 additional_locations : list[str] = None):
+    def __init__(self, amount : int = 0, excluded_stages : list[str] = None, excluded_locations : list[str] = None):
         if not self.locations:
             return
 
@@ -34,11 +33,8 @@ class GoalTarget:
         if excluded_stages is None:
             excluded_stages = []
 
-        if additional_locations is None:
-            additional_locations = []
-
         # Add Extra Locations
-        self.locations = {*self.locations, *additional_locations}
+        self.locations = {*self.locations}
 
         # Exclude Specified Locations if any
         locations_excluded : list[str] = excluded_locations if excluded_locations else []
@@ -71,7 +67,7 @@ class GoalTarget:
         self.location_ids = {generate_name_to_id()[location] for location in self.locations}
 
         if not self.amount or self.amount is None:
-            self.amount = len(self.locations)
+            self.amount = len(self.locations) if not amount else min(amount, len(self.locations))
 
     def __bool__(self) -> bool:
         return bool(self.amount)
@@ -143,6 +139,9 @@ class PostGameCondition:
         if not amounts or all(_ <= 0 for _ in [*amounts.values()]):
             raise AssertionError("AE3 > PostGameCondition: At least one Post-Game Condition must be enabled!")
 
+        self.locations = {}
+        self.location_ids = {}
+
         if excluded_locations is None:
             excluded_locations = []
 
@@ -169,6 +168,7 @@ class PostGameCondition:
                 # Lower required amount if there are enough excluded locations to make the initial value impossible
                 if self.amounts[category] > len(location_list):
                     self.amounts[category] = len(location_list)
+
 
                 self.location_ids[category] = { to_id[loc] for loc in location_list }
 

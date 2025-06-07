@@ -2055,9 +2055,9 @@ LOCATIONS_INDEX : dict[str, Sequence[str]] = {
 }
 
 LOCATIONS_DIRECTORY : dict[str, Sequence[str]] = {
-    "monkeys" : MONKEYS_MASTER,
-    "cameras" : CAMERAS_MASTER,
-    "cellphones" : CELLPHONES_MASTER,
+    APHelper.monkey.value : MONKEYS_MASTER,
+    APHelper.camera.value : CAMERAS_MASTER,
+    APHelper.cellphone.value : CELLPHONES_MASTER,
 }
 
 def generate_name_to_id() -> dict[str, int]:

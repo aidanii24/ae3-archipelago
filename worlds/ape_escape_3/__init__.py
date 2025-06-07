@@ -120,7 +120,8 @@ class AE3World(World):
 
         # Get Goal Target
         goal_target_index = self.options.goal_target
-        self.goal_target = GoalTargetOptions[goal_target_index](exclude_regions, exclude_locations)
+        self.goal_target = GoalTargetOptions[goal_target_index](self.options.goal_target_override,
+                                                                exclude_regions, exclude_locations)
 
         if goal_target_index == 5 and not self.options.camerasanity:
             self.options.camerasanity.value = 1
