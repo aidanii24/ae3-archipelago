@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Set, Sequence, Callable
 from BaseClasses import CollectionState, Item
 
 from .Items import Channel_Key
-from .Stages import AE3EntranceMeta, ENTRANCES_STAGE_SELECT, ENTRANCES_CHANNELS
+from .Stages import AE3EntranceMeta, ENTRANCES_STAGE_SELECT, ENTRANCES_CHANNELS, LEVELS_BY_ORDER
 from .Strings import Itm, Stage, APHelper
 
 if TYPE_CHECKING:
@@ -303,14 +303,9 @@ class ProgressionMode:
                 if idx >= 5: break
         # Re-insert Channels specified to be preserved in their vanilla indices
         if world.options.preserve_channel:
-            preserve_indices: list[int] = []
-
-            if world.options.preserve_channel == 1:
-                preserve_indices = [*self.boss_indices]
-            elif world.options.preserve_channel == 2:
-                preserve_indices = [*self.boss_indices[-2:]]
-            elif world.options.preserve_channel == 3:
-                preserve_indices = [self.boss_indices[-1]]
+            preserve_indices : list[int] = [
+                LEVELS_BY_ORDER.index(channel) for channel in world.options.preserve_channel
+            ]
 
             if preserve_indices:
                 new_order = [_ for _ in new_order if _ not in preserve_indices]
@@ -328,6 +323,62 @@ class ProgressionMode:
                 new_order.insert(self.boss_indices[index], new_boss_order[index])
 
         return new_order
+
+    def reorder(self, set_interest : int, channels : list[str]):
+        if set_interest < 0:
+            set_interest = len(self.progression) - set_interest
+
+        targets : list[int] = [
+            LEVELS_BY_ORDER.index(channel) for channel in channels
+            if channel in LEVELS_BY_ORDER
+        ]
+
+        if targets:
+            additive = "ADDITIVE" in channels
+
+            interest_start_index : int = sum(self.progression[:set_interest - 1]) + 1
+            interest_last_index : int = interest_start_index + self.progression[set_interest]
+            current_interest_channels : list[int] = [
+                self.order[_] for _ in range(interest_start_index, interest_last_index)
+            ]
+
+            for channel in targets:
+                index : int = self.order.index(channel)
+                set_index : int = -1
+                # Get Set where the channel is from
+                for _ in range(len(self.progression)):
+                    # Skip checking for channels in the interested set
+                    if _ == set_interest:
+                        continue
+
+                    if sum(self.progression[:_ + 1]) >= index:
+                        set_index = _
+                        break
+
+                if set_index < 0:
+                    continue
+
+                # Swap Channels if requested and possible
+                if not additive and current_interest_channels:
+                    swap_index : int = self.order.index(current_interest_channels[0])
+                    self.order[index], self.order[swap_index] = self.order[swap_index], self.order[index]
+
+                    current_interest_channels.pop(0)
+                # Do a simple remove and add otherwise
+                else:
+                    self.order.remove(channel)
+                    self.progression[set_index] -= 1
+
+                    self.order.insert(interest_last_index, channel)
+                    self.progression[set_interest] += 1
+
+            # Clean up
+            empty_indexes : list = [self.order.index(_) for _ in self.order if _ < 0]
+            ## First set will have 1 less than actual channels in it due to index 0,
+            ## so a value of 0 in this index denotes a channel count of 1 and should not be removed
+            if 0 in empty_indexes and self.order[0] >= 0:
+                empty_indexes.remove(0)
+
 
     def generate_rules(self, world : 'AE3World') -> dict[str, Rulesets]:
         channel_rules : dict[str, Rulesets] = {}
