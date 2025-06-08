@@ -28,9 +28,9 @@ class ProgressionMode(Choice):
     option_singles : int = 0
     option_group : int = 1
     option_world : int = 2
-    option_quadruples : int = 3
-    option_open : int = 4
-    option_randomize : int = 5
+    # option_quadruples : int = 3
+    # option_open : int = 4
+    # option_randomize : int = 5
 
 class OpenProgressionKeys(Range):
     """
@@ -152,7 +152,7 @@ class GoalTarget(Choice):
     option_play_jimmy : int = 4
     option_directors_cut : int = 5
     option_phone_check : int = 6
-    option_bonus_collector : int = 7
+    #option_bonus_collector : int = 7
     # option_scavenger_hunt : int = 10
 
 class GoalTargetOverride(NamedRange):

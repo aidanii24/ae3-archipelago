@@ -47,21 +47,23 @@ class GoalTarget:
         if locations_excluded:
             actual : str = "Actual:" if self.locations else "[ No Set Locations ] |"
             for location in self.locations:
-                actual += f"> {location}"
+                actual += f"\n> {location}"
 
             self.locations.difference_update(set(locations_excluded))
             if len(self.locations) <= 0:
                 excluded : str = "Excluded:"
                 for stage in excluded_stages:
-                    excluded += f"> {stage}"
+                    excluded += f"{stage}"
 
                 for location in locations_excluded:
-                    excluded += f">{location} |"
+                    excluded += f"{location} | "
 
-                raise AssertionError(f"There are no locations to check. Please reduce the excluded locations.",
+                raise AssertionError(f"AE3 > GoalTarget: There are no goal locations available to check. "
+                                     f"They might have been explicitly excluded. Please reduce the excluded locations.",
                                      f"{actual}", f"{excluded}")
             elif len(self.locations) < self.amount:
-                warn("Number of Locations required to check for Goal has been reduced due to excluded locations.")
+                warn("AE3 > GoalTarget :"
+                     " Number of Locations required to check for Goal has been reduced due to excluded locations.")
                 self.amount = len(self.locations)
 
         self.location_ids = {generate_name_to_id()[location] for location in self.locations}

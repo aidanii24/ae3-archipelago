@@ -1950,9 +1950,9 @@ class APHelper(BaseEnum):
     # AP Options
     progression_mode =          "progression_mode"
     progression =               "progression"
-    open_required =             "open_progression_keys_required"
+    open_required =             "open_progression_keys"
     randomize_set_count =       "randomize_progression_set_count"
-    randomize_channel_count =   "randmize_progression_channel_count"
+    randomize_channel_count =   "randomize_progression_channel_count"
     logic_preference =          "logic_preference"
     goal_target =               "goal_target"
     goal_target_ovr =           "goal_target_override"
@@ -1967,7 +1967,7 @@ class APHelper(BaseEnum):
     post_channel =              "post_channel"
     blacklist_channel =         "blacklist_channel"
     monkeysanity =              "monkeysanity"
-    monkeysanitybr =            "monkeysanity_breakRooms"
+    monkeysanitybr =            "monkeysanity_break_rooms"
     monkeysanitypw =            "monkeysanity_passwords"
     camerasanity =              "camerasanity"
     cellphonesanity =           "cellphonesanity"
@@ -1986,7 +1986,7 @@ class APHelper(BaseEnum):
     early_free_play =           "early_free_play"
     enable_monkey_mart =        "enable_monkey_mart"
     ticket_consolation =        "lucky_ticket_consolation_effects"
-    consolation_blacklist =     "consolation_effects_Blacklist"
+    consolation_blacklist =     "consolation_effects_blacklist"
 
     death_link =                "death_link"
 

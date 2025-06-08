@@ -168,7 +168,7 @@ class AE3World(World):
                 exclude_regions.extend([*STAGES_BREAK_ROOMS])
 
         # Get Goal Target
-        goal_target_index = self.options.goal_target
+        goal_target_index = self.options.goal_target.value
         self.goal_target = GoalTargetOptions[goal_target_index](self.options.goal_target_override,
                                                                 [*exclude_regions], [*exclude_locations])
 
