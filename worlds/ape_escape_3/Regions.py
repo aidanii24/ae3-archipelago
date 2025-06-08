@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import Entrance, Location, Region
 
-from .data.Stages import STAGES_BREAK_ROOMS, STAGES_DIRECTORY, STAGES_MASTER, ENTRANCES_MASTER
+from .data.Stages import STAGES_BREAK_ROOMS, STAGES_DIRECTORY, STAGES_MASTER, ENTRANCES_MASTER, STAGES_DIRECTORY_LABEL
 from .data.Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, CameraLocation, CellphoneLocation, \
     EventMeta, MONKEYS_PASSWORDS, MonkeyLocation, MONKEYS_INDEX, EVENTS_INDEX
 from .data.Logic import Rulesets
@@ -55,14 +55,21 @@ def create_regions(world : "AE3World"):
         establish_entrance(world.player, entrance.name, parent, destination, ruleset)
 
     # Define Regions
+    blacklist : list[str] = [stage for channel in world.options.blacklist_channel.value
+                             for stage in STAGES_DIRECTORY_LABEL[channel]
+                             if channel in STAGES_DIRECTORY_LABEL]
+
     for stage in stages.values():
-        # Define Locations
+        # Skip Blacklisted Stages
+        if stage.name in blacklist:
+            continue
 
         # Skip stage if Monkeysanity Break Rooms is enabled and the stage is a break room.
         # It should be safe to skip outright since there are no break rooms with Cameras or Cellphones in them.
         if not add_break_rooms and stage.name in STAGES_BREAK_ROOMS:
             continue
 
+        # Define Locations
         ## Monkeys
         if stage.name in MONKEYS_INDEX:
             for monkeys in MONKEYS_INDEX[stage.name]:

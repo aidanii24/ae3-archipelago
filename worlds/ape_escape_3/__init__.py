@@ -6,7 +6,7 @@ import settings
 
 from .data.Items import AE3Item, AE3ItemMeta, ITEMS_MASTER, Nothing, generate_collectables
 from .data.Locations import Cellphone_Name_to_ID, MONKEYS_BOSSES, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, \
-    CELLPHONES_MASTER_ORDERED, MONKEYS_PASSWORDS
+    CELLPHONES_MASTER_ORDERED, MONKEYS_PASSWORDS, MONKEYS_BREAK_ROOMS
 from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER
 from .data.Rules import GoalTarget, GoalTargetOptions, LogicPreference, LogicPreferenceOptions, PostGameCondition
 from .data.Strings import Loc, Meta, APHelper, APConsole
@@ -112,7 +112,7 @@ class AE3World(World):
         additive : bool = "ADDITIVE" in self.options.push_channel.value
         self.options.push_channel.value.difference_update(self.options.blacklist_channel)
         self.options.push_channel.value.difference_update(self.options.post_channel)
-        if additive:
+        if additive and "ADDITIVE" not in self.options.push_channel.value:
             self.options.push_channel.value.add("ADDITIVE")
 
         ## Remove Post Channels that exists in Blacklist Channel Option
@@ -127,6 +127,11 @@ class AE3World(World):
         # Shuffle Channel if desired
         if self.options.shuffle_channel:
             self.progression.shuffle(self)
+        # Directly Apply Channel Rules otherwise
+        else:
+            self.progression.reorder(-1, self.options.blacklist_channel.value)
+            self.progression.reorder(-2, [*self.options.post_channel.value])
+            self.progression.reorder(-3, [*self.options.push_channel.value])
 
         # Get Post Game Access Rule and exclude locations as necessary
         exclude_regions: list[str] = []
@@ -134,29 +139,21 @@ class AE3World(World):
 
         exclude_locations.extend(MONKEYS_PASSWORDS)
 
-        # Get Goal Target
-        goal_target_index = self.options.goal_target
-        self.goal_target = GoalTargetOptions[goal_target_index](self.options.goal_target_override,
-                                                                exclude_regions, exclude_locations)
-
-        if goal_target_index == 5 and not self.options.camerasanity:
-            self.options.camerasanity.value = 1
-        elif goal_target_index == 6 and not self.options.cellphonesanity:
-            self.options.cellphonesanity.value = True
-        elif goal_target_index == 7 and not self.options.shoppingsanity:
-            self.options.shoppingsanity.value = 1
-
-        # When Channels are shuffled, exclude locations from the channel randomized into the post-game slot
-        # and blacklisted slot for Post Game Condition
-        for channel in self.progression.order[:-sum(self.progression.progression[:-2])]:
+        # Exclude Blacklisted Channels
+        # Exclude Channels in Post Game from being required for Post Game to be unlocked
+        for channel in self.progression.order[-sum(self.progression.progression[-1:]):]:
             exclude_locations.extend(MONKEYS_MASTER_ORDERED[channel])
             exclude_locations.append(CAMERAS_MASTER_ORDERED[channel])
 
-            excluded_phones_id : list[str] = CELLPHONES_MASTER_ORDERED[channel]
+            excluded_phones_id: list[str] = CELLPHONES_MASTER_ORDERED[channel]
             exclude_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
 
-        # Record Post-Game Condition Requirements
-        post_game_conditions : dict[str, int] = {}
+        # Check for Options that may override Monkeysanity Break Rooms Option
+        # and exclude if not needed
+        if not self.options.monkeysanity_break_rooms:
+            exclude_regions.extend([*STAGES_BREAK_ROOMS])
+
+        post_game_conditions: dict[str, int] = {}
         if self.options.post_game_condition_monkeys:
             amount: int = 434 if self.options.post_game_condition_monkeys < 0 \
                 else self.options.post_game_condition_monkeys
@@ -170,6 +167,28 @@ class AE3World(World):
             elif not self.options.monkeysanity_break_rooms:
                 exclude_regions.extend([*STAGES_BREAK_ROOMS])
 
+        # Get Goal Target
+        goal_target_index = self.options.goal_target
+        self.goal_target = GoalTargetOptions[goal_target_index](self.options.goal_target_override,
+                                                                [*exclude_regions], [*exclude_locations])
+
+        if goal_target_index == 5 and not self.options.camerasanity:
+            self.options.camerasanity.value = 1
+        elif goal_target_index == 6 and not self.options.cellphonesanity:
+            self.options.cellphonesanity.value = True
+        elif goal_target_index == 7 and not self.options.shoppingsanity:
+            self.options.shoppingsanity.value = 1
+
+        # Exclude Channels in Post Game from being required for Post Game to be unlocked
+        for channel in self.progression.order[-sum(self.progression.progression[-2:]):
+                       -sum(self.progression.progression[-1:])]:
+            exclude_locations.extend(MONKEYS_MASTER_ORDERED[channel])
+            exclude_locations.append(CAMERAS_MASTER_ORDERED[channel])
+
+            excluded_phones_id : list[str] = CELLPHONES_MASTER_ORDERED[channel]
+            exclude_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
+
+        # Record remaining Post Game Condition options
         if self.options.post_game_condition_cameras:
             post_game_conditions[APHelper.camera.value] = self.options.post_game_condition_cameras.value
 
@@ -178,7 +197,7 @@ class AE3World(World):
                 self.options.camerasanity.value = 1
 
         if self.options.post_game_condition_cellphones:
-            post_game_conditions[APHelper.camera.value] = self.options.post_game_condition_cellphones.value
+            post_game_conditions[APHelper.cellphone.value] = self.options.post_game_condition_cellphones.value
 
             # Force Cellphonesanity if disabled
             if not self.options.cellphonesanity:
@@ -194,6 +213,7 @@ class AE3World(World):
             post_game_conditions[APHelper.keys.value] = self.options.post_game_condition_keys.value
 
         self.post_game_condition = PostGameCondition(post_game_conditions, exclude_regions, exclude_locations)
+
         self.item_pool = []
 
     def create_regions(self):

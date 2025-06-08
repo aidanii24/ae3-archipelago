@@ -133,8 +133,8 @@ class PostGameCondition:
                                                  APHelper.cellphone.value,
                                                  APHelper.shop.value]
 
-    def __init__(self, amounts : dict[str, int], excluded_locations : list[str] = None,
-                 excluded_regions : list[str] = None):
+    def __init__(self, amounts : dict[str, int], excluded_regions : list[str] = None,
+                 excluded_locations : list[str] = None):
         # Check if at least one Post Game Condition is enabled
         if not amounts or all(_ <= 0 for _ in [*amounts.values()]):
             raise AssertionError("AE3 > PostGameCondition: At least one Post-Game Condition must be enabled!")
@@ -161,19 +161,20 @@ class PostGameCondition:
         for category in self.location_categories:
             if category in self.amounts:
                 location_list : set[str] = {*LOCATIONS_DIRECTORY.get(category, [])}
+                if category == APHelper.cellphone.value:
+                    location_list = {Cellphone_Name_to_ID[loc] for loc in location_list}
                 location_list -= set(excluded_locations)
 
-                self.locations[category] = location_list
+                self.locations[category] = {*location_list}
 
                 # Lower required amount if there are enough excluded locations to make the initial value impossible
                 if self.amounts[category] > len(location_list):
                     self.amounts[category] = len(location_list)
 
-
                 self.location_ids[category] = { to_id[loc] for loc in location_list }
 
     def verify(self, state : CollectionState, player : int, min_keys : int, break_rooms : int = 0) -> bool:
-        if not has_enough_keys(state, player, min_keys - 1):
+        if not has_enough_keys(state, player, min_keys):
             return False
 
         rules : set[Callable] = set()
@@ -188,8 +189,8 @@ class PostGameCondition:
                 rules.add(AccessRule.MONKEY)
 
         if APHelper.camera.value in self.amounts:
-            count : int = [state.can_reach_location(camera, player)
-                           for camera in self.locations[APHelper.camera.value]].count(True)
+            count : int = sum([state.can_reach_location(camera, player)
+                           for camera in self.locations[APHelper.camera.value]])
 
             if count < self.amounts[APHelper.camera.value]:
                 return False
@@ -198,7 +199,7 @@ class PostGameCondition:
             highest_scale = max(highest_scale, 20 / len(self.location_ids[APHelper.cellphone.value]))
 
         if APHelper.keys.value in self.amounts:
-            rules.add(has_enough_keys(state, player, (min_keys - 1) + self.amounts[APHelper.keys.value]))
+            rules.add(has_keys((min_keys - 1) + self.amounts[APHelper.keys.value]))
 
         # Check Rules that only yields small progress if required amount is high enough
         highest_scale *= 100

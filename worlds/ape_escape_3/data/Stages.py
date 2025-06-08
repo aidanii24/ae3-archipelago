@@ -470,6 +470,50 @@ STAGES_DIRECTORY : dict[str, Sequence[str]] = {
     APHelper.space.value                : STAGES_SPACE,
 }
 
+STAGES_DIRECTORY_LABEL : dict[str, Sequence[str]] = {
+    Stage.channel_seaside.value         : STAGES_SEASIDE,
+    Stage.channel_woods.value           : STAGES_WOODS,
+    Stage.channel_castle.value          : STAGES_CASTLE,
+
+    Stage.region_boss1.value            : [Stage.region_boss1.value],
+
+    Stage.channel_ciscocity.value       : STAGES_CISCOCITY,
+    Stage.channel_studio.value          : STAGES_STUDIO,
+    Stage.channel_halloween.value       : STAGES_HALLOWEEN,
+    Stage.channel_western.value         : STAGES_WESTERN,
+
+    Stage.region_boss2.value            : [Stage.region_boss2.value],
+
+    Stage.channel_onsen.value           : STAGES_ONSEN,
+    Stage.channel_snowfesta.value       : STAGES_SNOWFESTA,
+    Stage.channel_edotown.value         : STAGES_EDOTOWN,
+
+    Stage.region_boss3.value            : [Stage.region_boss3.value],
+
+    Stage.channel_heaven.value          : STAGES_HEAVEN,
+    Stage.channel_toyhouse.value        : STAGES_TOYHOUSE,
+    Stage.channel_iceland.value         : STAGES_ICELAND,
+    Stage.channel_arabian.value         : STAGES_ARABIAN,
+
+    Stage.region_boss4.value            : [Stage.region_boss4.value],
+
+    Stage.channel_asia.value            : STAGES_ASIA,
+    Stage.channel_plane.value           : STAGES_PLANE,
+    Stage.channel_hong.value            : STAGES_HONG,
+
+    Stage.region_boss5.value            : [Stage.region_boss5.value],
+
+    Stage.channel_bay.value             : STAGES_BAY,
+    Stage.channel_tomo.value            : STAGES_TOMO,
+
+    Stage.region_boss6.value            : [Stage.region_boss6.value],
+
+    Stage.channel_space.value           : STAGES_SPACE,
+
+    Stage.region_specter1.value         : [Stage.region_specter1.value],
+    Stage.region_specter2.value         : [Stage.region_specter2.value],
+}
+
 ### [< --- VANILLA ENTRANCES --- >]
 ENTRANCES_MAIN : list[AE3EntranceMeta] = [
     # Seaside
