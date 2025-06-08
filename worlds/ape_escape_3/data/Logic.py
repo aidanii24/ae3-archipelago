@@ -436,18 +436,95 @@ class Singles(ProgressionMode):
     def shuffle(self, world : 'AE3World'):
         new_order : list[int] = self.generate_new_order(world)
 
+        # Apply Channel Rules
+        push : list[int] = [LEVELS_BY_ORDER.index(channel) for channel in world.options.push_channel
+                            if channel in LEVELS_BY_ORDER]
+        post: list[int] = [LEVELS_BY_ORDER.index(channel) for channel in world.options.post_channel
+                           if channel in LEVELS_BY_ORDER]
+        blacklist: list[int] = [LEVELS_BY_ORDER.index(channel) for channel in world.options.blacklist_channel
+                           if channel in LEVELS_BY_ORDER]
+
+        current_post_game : list[int] = []
+
+        if post:
+            current_post_game = [_ for _ in range(len(new_order) - len(post) - 1, len(post))]
+
+            ## Ignore Channel already present in the desired set
+            for channel in current_post_game:
+                if channel in post:
+                    post.remove(channel)
+                    current_post_game.remove(channel)
+
+        if push:
+            if current_post_game:
+                current_end_game = [_ for _ in range(current_post_game[0] - len(push), current_post_game[0])]
+            else:
+                current_end_game = [_ for _ in range(len(new_order) - len(post) - 1, len(post))]
+
+                ## Ignore Channel already present in the desired set
+                for channel in current_end_game:
+                    if channel in push:
+                        push.remove(channel)
+                        current_end_game.remove(channel)
+
+            # Swap Channels if desired and possible
+            if not "ADDITIVE" in world.options.push_channel and current_end_game:
+                processed : list[int] = []
+                for _ in range(len(current_end_game)):
+                    if _ >= len(push):
+                        break
+
+                    new_order[_], new_order[push[_]] = new_order[push[_]], new_order[_]
+
+                push = [_ for _ in push if _ not in processed]
+            # Remove and Add otherwise
+            if push:
+                new_order = [_ for _ in new_order if _ not in push]
+                for channel in push:
+                    new_order.insert(-2, channel)
+
+        if post:
+            if not "ADDITIVE" in world.options.post_channel and current_post_game:
+                processed : list[int] = []
+                for _ in range(len(current_post_game)):
+                    if _ >= len(post):
+                        break
+
+                    processed.append(post[_])
+                    new_order[_], new_order[post[_]] = new_order[post[_]], new_order[_]
+
+                post = [_ for _ in post if _ not in processed]
+
+            if post:
+                new_order = [_ for _ in new_order if _ not in post]
+                new_order.extend(post)
+
+        # Put all Blacklisted Levels to the end of the order
+        if blacklist:
+            new_order = [_ for _ in new_order if _ not in blacklist]
+            new_order.extend(blacklist)
+
         base_destination_order : list[str] = [ entrance.destination for entrance in ENTRANCES_STAGE_SELECT]
         new_entrances : list[AE3EntranceMeta] = []
 
         # Update Entrance Destinations based on the Shuffle Result
+        blacklist_start_index : int = 0
         for slot, level in enumerate(new_order):
+            if level in blacklist:
+                blacklist_start_index = slot
+
             entrance : AE3EntranceMeta = AE3EntranceMeta(ENTRANCES_CHANNELS[slot], Stage.travel_station_a.value,
                                                          base_destination_order[level])
             new_entrances.append(entrance)
 
+        progression : list[int] = [0, *[1 for _ in range(1, 28)]]
+        if blacklist_start_index:
+            progression = progression[:blacklist_start_index]
+            progression.append(len(blacklist))
+
         # Update with the new orders
         self.order = [*new_order]
-        self.progression = [0, *[1 for _ in range(1, 28)]]
+        self.progression = [*progression]
         self.level_select_entrances = [*new_entrances]
 
 

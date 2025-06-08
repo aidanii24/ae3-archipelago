@@ -102,6 +102,22 @@ class AE3World(World):
         super(AE3World, self).__init__(multiworld, player)
 
     def generate_early(self):
+        # Handle duplicate entries between Channel Options
+        ## Remove Preserve Channels that exists in Push, Post and Blacklist Channel Options
+        self.options.preserve_channel.value.difference_update(self.options.blacklist_channel)
+        self.options.preserve_channel.value.difference_update(self.options.post_channel)
+        self.options.preserve_channel.value.difference_update(self.options.push_channel)
+
+        ## Remove Push Channels that exists in Post and Blacklist Channel Options
+        additive : bool = "ADDITIVE" in self.options.push_channel.value
+        self.options.push_channel.value.difference_update(self.options.blacklist_channel)
+        self.options.push_channel.value.difference_update(self.options.post_channel)
+        if additive:
+            self.options.push_channel.value.add("ADDITIVE")
+
+        ## Remove Post Channels that exists in Blacklist Channel Option
+        self.options.post_channel.value.difference_update(self.options.blacklist_channel)
+
         # Get Logic Preference
         self.logic_preference = LogicPreferenceOptions[self.options.logic_preference]()
 
