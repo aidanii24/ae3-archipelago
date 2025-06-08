@@ -333,51 +333,59 @@ class ProgressionMode:
             if channel in LEVELS_BY_ORDER
         ]
 
-        if targets:
-            additive = "ADDITIVE" in channels
+        if not targets:
+            return
 
-            interest_start_index : int = sum(self.progression[:set_interest - 1]) + 1
-            interest_last_index : int = interest_start_index + self.progression[set_interest]
-            current_interest_channels : list[int] = [
-                self.order[_] for _ in range(interest_start_index, interest_last_index)
-            ]
+        additive = "ADDITIVE" in channels
 
-            for channel in targets:
-                index : int = self.order.index(channel)
-                set_index : int = -1
-                # Get Set where the channel is from
-                for _ in range(len(self.progression)):
-                    # Skip checking for channels in the interested set
-                    if _ == set_interest:
-                        continue
+        interest_start_index : int = sum(self.progression[:set_interest - 1]) + 1
+        interest_last_index : int = interest_start_index + self.progression[set_interest]
+        current_interest_channels : list[int] = [
+            self.order[_] for _ in range(interest_start_index, interest_last_index)
+        ]
 
-                    if sum(self.progression[:_ + 1]) >= index:
-                        set_index = _
-                        break
+        for channel in targets:
+            index : int = self.order.index(channel)
+            set_index : int = -1
 
-                if set_index < 0:
+            # Get Set where the channel is from
+            for _ in range(len(self.progression)):
+                # Skip checking for channels in the interested set
+                if _ == set_interest:
                     continue
 
-                # Swap Channels if requested and possible
-                if not additive and current_interest_channels:
-                    swap_index : int = self.order.index(current_interest_channels[0])
-                    self.order[index], self.order[swap_index] = self.order[swap_index], self.order[index]
+                if sum(self.progression[:_ + 1]) >= index:
+                    set_index = _
+                    break
 
-                    current_interest_channels.pop(0)
-                # Do a simple remove and add otherwise
-                else:
-                    self.order.remove(channel)
-                    self.progression[set_index] -= 1
+            if set_index < 0:
+                continue
 
-                    self.order.insert(interest_last_index, channel)
-                    self.progression[set_interest] += 1
+            # Swap Channels if requested and possible
+            if not additive and current_interest_channels:
+                swap_index : int = self.order.index(current_interest_channels[0])
+                self.order[index], self.order[swap_index] = self.order[swap_index], self.order[index]
+
+                current_interest_channels.pop(0)
+            # Do a simple remove and add otherwise
+            else:
+                self.order.remove(channel)
+                self.progression[set_index] -= 1
+
+                self.order.insert(interest_last_index, channel)
+                self.progression[set_interest] += 1
 
             # Clean up
-            empty_indexes : list = [self.order.index(_) for _ in self.order if _ < 0]
+            empty_indexes : list = [i for i, index in enumerate(self.progression) if index <= 0]
             ## First set will have 1 less than actual channels in it due to index 0,
             ## so a value of 0 in this index denotes a channel count of 1 and should not be removed
-            if 0 in empty_indexes and self.order[0] >= 0:
-                empty_indexes.remove(0)
+            if 0 in empty_indexes:
+                if self.progression[0] < 0:
+                    self.progression[1] -= 1
+                else:
+                    empty_indexes.remove(0)
+
+            self.order = [index for i, index in enumerate(self.progression) if index not in empty_indexes]
 
 
     def generate_rules(self, world : 'AE3World') -> dict[str, Rulesets]:
@@ -512,12 +520,14 @@ class Singles(ProgressionMode):
         for slot, level in enumerate(new_order):
             if level in blacklist:
                 blacklist_start_index = slot
+                break
 
             entrance : AE3EntranceMeta = AE3EntranceMeta(ENTRANCES_CHANNELS[slot], Stage.travel_station_a.value,
                                                          base_destination_order[level])
             new_entrances.append(entrance)
 
         progression : list[int] = [0, *[1 for _ in range(1, 28)]]
+        # Modify Progression to group Blacklisted Channels together
         if blacklist_start_index:
             progression = progression[:blacklist_start_index]
             progression.append(len(blacklist))
@@ -534,6 +544,11 @@ class Group(ProgressionMode):
 
     def shuffle(self, world : 'AE3World'):
         new_order : list[int] = self.generate_new_order(world)
+
+        ## Pre-emptively remove Blacklisted Channels
+        blacklist : list[int] = [LEVELS_BY_ORDER.index(channel) for channel in world.options.blacklist_channel
+                                 if channel in LEVELS_BY_ORDER]
+        new_order : list[int] = [_ for _ in new_order if _ not in blacklist]
 
         base_destination_order : list[str] = [ entrance.destination for entrance in ENTRANCES_STAGE_SELECT]
         new_entrances : list[AE3EntranceMeta] = []
@@ -582,6 +597,14 @@ class Group(ProgressionMode):
             if not has_incremented:
                 new_progression[sets] += 1
 
+        # Apply Channel Rules
+        self.reorder(-2, *world.options.push_channel.value)
+        self.reorder(-1, *world.options.post_channel.value)
+
+        # Add Blacklisted Channels at end
+        new_progression.append(len(blacklist))
+        new_order.extend(blacklist)
+
         # Update with the new orders
         self.progression = [*new_progression]
         self.order = [*new_order]
@@ -594,6 +617,12 @@ class World(ProgressionMode):
 
     def shuffle(self, world : 'AE3World'):
         new_order : list[int] = self.generate_new_order(world)
+
+        # Pre-emptively remove Blacklisted Channels
+        blacklist : list[int] = [LEVELS_BY_ORDER.index(channel) for channel in world.options.blacklist_channel
+                                 if channel in LEVELS_BY_ORDER]
+        if blacklist:
+            new_order = [_ for _ in new_order if _ not in blacklist]
 
         base_destination_order : list[str] = [ entrance.destination for entrance in ENTRANCES_STAGE_SELECT]
         new_entrances : list[AE3EntranceMeta] = []
@@ -614,6 +643,10 @@ class World(ProgressionMode):
 
                 if len(new_progression) - sets <= 0 and level != new_order[-1]:
                     new_progression.append(0)
+
+        # Apply Channel Rules
+        self.reorder(-2, *world.options.push_channel.value)
+        self.reorder(-1, *world.options.post_channel.value)
 
         # Update with the new orders
         self.progression = [*new_progression]
