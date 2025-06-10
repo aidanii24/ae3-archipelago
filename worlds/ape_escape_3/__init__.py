@@ -129,9 +129,10 @@ class AE3World(World):
             self.progression.shuffle(self)
         # Directly Apply Channel Rules otherwise
         else:
-            self.progression.reorder(-1, self.options.blacklist_channel.value)
+            self.progression.reorder(-1, [*self.options.blacklist_channel.value])
             self.progression.reorder(-2, [*self.options.post_channel.value])
             self.progression.reorder(-3, [*self.options.push_channel.value])
+            self.progression.regenerate_level_select_entrances()
 
         # Get Post Game Access Rule and exclude locations as necessary
         exclude_regions: list[str] = []
@@ -141,12 +142,13 @@ class AE3World(World):
 
         # Exclude Blacklisted Channels
         # Exclude Channels in Post Game from being required for Post Game to be unlocked
-        for channel in self.progression.order[-sum(self.progression.progression[-1:]):]:
-            exclude_locations.extend(MONKEYS_MASTER_ORDERED[channel])
-            exclude_locations.append(CAMERAS_MASTER_ORDERED[channel])
+        if self.progression.progression[-1]:
+            for channel in self.progression.order[-self.progression.progression[-1]:]:
+                exclude_locations.extend(MONKEYS_MASTER_ORDERED[channel])
+                exclude_locations.append(CAMERAS_MASTER_ORDERED[channel])
 
-            excluded_phones_id: list[str] = CELLPHONES_MASTER_ORDERED[channel]
-            exclude_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
+                excluded_phones_id: list[str] = CELLPHONES_MASTER_ORDERED[channel]
+                exclude_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
 
         # Check for Options that may override Monkeysanity Break Rooms Option
         # and exclude if not needed
@@ -215,6 +217,10 @@ class AE3World(World):
         self.post_game_condition = PostGameCondition(post_game_conditions, exclude_regions, exclude_locations)
 
         self.item_pool = []
+
+        print(self.progression)
+        print(len(self.progression.order), self.progression.order)
+        print(len(self.progression.progression), sum(self.progression.progression), self.progression.progression)
 
     def create_regions(self):
         create_regions(self)

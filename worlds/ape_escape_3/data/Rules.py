@@ -45,15 +45,15 @@ class GoalTarget:
                 locations_excluded.extend( locations for locations in CELLPHONES_INDEX.get(stage, []) )
 
         if locations_excluded:
-            actual : str = "Actual:" if self.locations else "[ No Set Locations ] |"
+            actual : str = "Actual: " if self.locations else "[ No Set Locations ] |"
             for location in self.locations:
-                actual += f"\n> {location}"
+                actual += f"{location}, "
 
             self.locations.difference_update(set(locations_excluded))
             if len(self.locations) <= 0:
-                excluded : str = "Excluded:"
+                excluded : str = "Excluded: "
                 for stage in excluded_stages:
-                    excluded += f"{stage}"
+                    excluded += f"{stage}, "
 
                 for location in locations_excluded:
                     excluded += f"{location} | "
