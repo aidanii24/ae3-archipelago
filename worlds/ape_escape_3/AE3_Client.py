@@ -502,9 +502,12 @@ class AE3Context(CommonContext):
 
             received_as_id : list[int] = [ i.item for i in self.items_received]
 
+            # Rebuild Progress
             ## Get Keys
-            self.keys = received_as_id.count(self.items_name_to_id[APHelper.channel_key.value])
-            self.unlocked_channels = self.progression.get_progress(self.keys)
+            if self.unlocked_channels <= 0:
+                self.keys = received_as_id.count(self.items_name_to_id[APHelper.channel_key.value])
+                self.unlocked_channels = self.progression.get_progress(self.keys)
+                self.ipc.set_unlocked_stages(self.unlocked_channels)
 
             # Check if dummy morph is needed
             self.dummy_morph_monkey_needed = self.items_name_to_id[Itm.morph_monkey.value] not in received_as_id

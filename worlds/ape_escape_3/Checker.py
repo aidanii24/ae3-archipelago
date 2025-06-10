@@ -236,9 +236,6 @@ async def setup_area(ctx : 'AE3Context'):
         if ctx.command_state == 2:
             ctx.command_state = 0
 
-    ## IN-GAME NOTIFICATION
-    # Cameras
-
 
 async def check_states(ctx : 'AE3Context'):
     if not ctx.command_state:
@@ -421,6 +418,14 @@ async def resync_important_items(ctx : 'AE3Context'):
     if knight_id not in received_id and not ctx.dummy_morph_needed and ctx.ipc.is_equipment_unlocked(
             Itm.morph_knight.value):
         ctx.ipc.lock_equipment(Itm.morph_knight.value)
+
+    # Resync Channel Keys
+    keys : int = received_id.count(ctx.items_name_to_id[APHelper.channel_key.value])
+    unlocked : int = ctx.progression.get_progress(keys)
+    if ctx.keys != keys or ctx.unlocked_channels != unlocked:
+        ctx.keys = keys
+        ctx.unlocked_channels = unlocked
+        ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
