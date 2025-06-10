@@ -341,11 +341,21 @@ class PostChannel(OptionSet):
     but this can be changed to add without swapping by specifying "ADDITIVE" anywhere into the list.
 
     Format: ["item_a", "item_b", "item_c", ..., (optional)"ADDITIVE"]
+    Maximum Items: 10 (excluding "ADDITIVE")
     """
     display_name : str = "Channel Shuffle Post"
     default = []
 
     valid_keys = [*LEVELS_BY_ORDER, "ADDITIVE"]
+
+    def __init__(self, value : Iterable[Any]):
+        super().__init__(value)
+
+        additive : bool = "ADDITIVE" in self.value
+        v : set[Any] = {_ for _ in self.value if _ != "ADDITIVE"}
+        self.value = {v.copy()}
+        if additive:
+            self.value.append("ADDITIVE")
 
 class BlacklistChannel(OptionList):
     """
@@ -353,11 +363,17 @@ class BlacklistChannel(OptionList):
     channel order.
 
     Format: ["item_a", "item_b", "item_c", ...]
+    Maximum Items: 10
     """
     display_name : str = "Channel Shuffle Blacklist"
     default = []
 
     valid_keys = [*LEVELS_BY_ORDER]
+
+    def __init__(self, value : Iterable[Any]):
+        super().__init__(value)
+
+        self.value = self.value[:10].copy()
 
 
 class Monkeysanity(DefaultOnToggle):
@@ -572,6 +588,7 @@ class EnableMonkeyMart(DefaultOnToggle):
 
     Default: Enabled
     """
+    visibility = Visibility.none
     display_name : str = "Enable Monkey Mart"
 
 class LuckyTicketConsolationEffects(Toggle):
@@ -579,6 +596,8 @@ class LuckyTicketConsolationEffects(Toggle):
     Choose if Lucky Ticket Consolation Effects should be enabled. When you get a consolation prize, get a chance to
     activate a special effect that can affect the Archipelago experience.
     """
+    visibility = Visibility.none
+    display_name : str = "Lucky Ticket Consolation Effects"
 
 class ConsolationEffectsBlacklist(OptionList):
     """
@@ -588,6 +607,7 @@ class ConsolationEffectsBlacklist(OptionList):
     If you wish to enable these effects, please refer to the settings in your host.yaml, or contact your game host
     in charge of generating the game.
     """
+    visibility = Visibility.none
     display_name : str = "Lucky Ticket Consolation Effects Blacklist"
     default = ["Bypass Post-Game Condition", "Instant Goal"]
 
