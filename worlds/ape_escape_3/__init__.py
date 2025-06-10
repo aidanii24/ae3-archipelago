@@ -182,8 +182,9 @@ class AE3World(World):
             self.options.shoppingsanity.value = 1
 
         # Exclude Channels in Post Game from being required for Post Game to be unlocked
-        for channel in self.progression.order[-sum(self.progression.progression[-2:]):
-                       -sum(self.progression.progression[-1:])]:
+        post_game_start_index = sum(self.progression.progression[:-2]) + 1
+        for channel in (self.progression.order[post_game_start_index :
+        post_game_start_index + self.progression.progression[-2]]):
             exclude_locations.extend(MONKEYS_MASTER_ORDERED[channel])
             exclude_locations.append(CAMERAS_MASTER_ORDERED[channel])
 
@@ -217,10 +218,6 @@ class AE3World(World):
         self.post_game_condition = PostGameCondition(post_game_conditions, exclude_regions, exclude_locations)
 
         self.item_pool = []
-
-        print(self.progression)
-        print(len(self.progression.order), self.progression.order)
-        print(len(self.progression.progression), sum(self.progression.progression), self.progression.progression)
 
     def create_regions(self):
         create_regions(self)

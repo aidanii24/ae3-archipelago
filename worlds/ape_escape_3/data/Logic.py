@@ -337,7 +337,6 @@ class ProgressionMode:
             return
 
         additive = "ADDITIVE" in channels
-
         interest_start_index : int = sum(self.progression[:set_interest])
         interest_last_index : int = interest_start_index + self.progression[set_interest]
         current_interest_channels : list[int] = [
@@ -387,6 +386,8 @@ class ProgressionMode:
                 empty_indexes.remove(0)
 
         self.progression = [index for i, index in enumerate(self.progression) if i not in empty_indexes]
+        if sum(self.progression) >= len(self.order) and self.progression[0] > 0:
+            self.progression[0] -= 1
 
     def generate_rules(self, world : 'AE3World') -> dict[str, Rulesets]:
         channel_rules : dict[str, Rulesets] = {}
@@ -411,12 +412,10 @@ class ProgressionMode:
                 access_rule : Rulesets = Rulesets(has_keys(required_keys))
 
                 if i == len(self.progression) - 2:
-                    print("<!> POSTGAME")
                     access_rule = Rulesets(world.post_game_condition.enact(required_keys - 1,
                                            world.options.monkeysanity_break_rooms.value))
 
                 channel_rules.update({self.level_select_entrances[channel_idx].name : access_rule})
-                print(f"{i}/{len(self.progression) - 1}, {LEVELS_BY_ORDER[channel_idx]}")
 
         return channel_rules
 
@@ -436,7 +435,6 @@ class ProgressionMode:
             new_entrances.append(entrance)
 
         self.level_select_entrances = [*new_entrances]
-
 
     def set_progression(self, progression : list[int] = None):
         if progression is None or not progression:
@@ -539,8 +537,8 @@ class Group(ProgressionMode):
         self.order = [*new_order]
 
         # Apply Channel Rules
-        self.reorder(-2, [*world.options.push_channel.value])
-        self.reorder(-1, [*world.options.post_channel.value])
+        self.reorder(-2, [*world.options.post_channel.value])
+        self.reorder(-3, [*world.options.push_channel.value])
 
         self.regenerate_level_select_entrances()
 
@@ -584,8 +582,8 @@ class World(ProgressionMode):
         self.order = [*new_order]
 
         # Apply Channel Rules
-        self.reorder(-2, [*world.options.push_channel.value])
-        self.reorder(-1, [*world.options.post_channel.value])
+        self.reorder(-2, [*world.options.post_channel.value])
+        self.reorder(-3, [*world.options.push_channel.value])
 
         self.regenerate_level_select_entrances()
 
