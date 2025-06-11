@@ -506,7 +506,7 @@ class AE3Context(CommonContext):
             ## Get Keys
             if self.unlocked_channels <= 0:
                 self.keys = received_as_id.count(self.items_name_to_id[APHelper.channel_key.value])
-                self.unlocked_channels = self.progression.get_progress(self.keys)
+                self.unlocked_channels = self.progression.get_progress(self.keys, self.post_game_condition.check(self))
                 self.ipc.set_unlocked_stages(self.unlocked_channels)
 
             # Check if dummy morph is needed

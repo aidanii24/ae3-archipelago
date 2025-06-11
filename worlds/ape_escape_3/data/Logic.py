@@ -448,8 +448,13 @@ class ProgressionMode:
 
         self.order = order
 
-    def get_progress(self, keys : int):
-        return sum(self.progression[:keys + 1])
+    def get_progress(self, keys : int, post_game_status : bool = False):
+        # Do not include Blacklist set when checking for progress
+        # Only include Post Game set when checking Progress if Post Game Conditions have been met
+        limit : int = -2 if not post_game_status else -1
+        unlocked : int = sum(self.progression[limit][:keys + 1])
+
+        return unlocked
 
 
 class Singles(ProgressionMode):

@@ -123,8 +123,9 @@ class GoalTarget:
 
 @dataclass
 class PostGameCondition:
-    name: str = "No Post Game Access Rule"
-    description: str = ""
+    name : str = "No Post Game Access Rule"
+    description : str = ""
+    passed : bool = False
 
     locations : dict[str, set[str]] = field(default_factory=dict)
     location_ids: dict[str, set[int]] = field(default_factory=dict)
@@ -140,6 +141,9 @@ class PostGameCondition:
         # Check if at least one Post Game Condition is enabled
         if not amounts or all(_ <= 0 for _ in [*amounts.values()]):
             raise AssertionError("AE3 > PostGameCondition: At least one Post-Game Condition must be enabled!")
+
+        # Initialize
+        self.passed : bool = False
 
         self.locations = {}
         self.location_ids = {}
@@ -221,6 +225,10 @@ class PostGameCondition:
         return lambda state, player : self.verify(state, player, min_keys, break_rooms)
 
     def check(self, ctx : 'AE3Context') -> bool:
+        # If already passed, use the cached status instead of checking everything again
+        if self.passed:
+            return True
+
         total_checked : set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
 
         passed : bool = True
@@ -234,11 +242,13 @@ class PostGameCondition:
 
         # Check for keys required on post
         if APHelper.keys.value in self.amounts:
-            passed = passed and ctx.keys - (len(ctx.progression.progression) - 3) >= self.amounts[APHelper.keys.value]
+            passed = passed and ctx.keys - (len(ctx.progression.progression) - 2) >= self.amounts[APHelper.keys.value]
 
-        if passed and ctx.keys == len(ctx.progression.progression) - 3:
+        if passed and ctx.keys == len(ctx.progression.progression) - 2:
+            self.passed = True
             return True
 
+        self.passed = False
         return False
 
     def get_progress(self, ctx : 'AE3Context') -> dict[str, list[int]]:

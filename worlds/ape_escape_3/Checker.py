@@ -78,7 +78,7 @@ async def setup_level_select(ctx : 'AE3Context'):
     # Force Unlocked Stages to be in sync with the player's chosen option,
     # maxing out at 0x1B as supported by the game
     if ctx.unlocked_channels is None:
-        ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys)
+        ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys, ctx.post_game_condition.check(ctx))
 
     if ctx.ipc.get_unlocked_channels() != max(0, min(ctx.unlocked_channels, 0x1B)):
         ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
@@ -303,7 +303,7 @@ async def check_items(ctx : 'AE3Context'):
             ### Add Key Count and unlock levels accordingly
             if item.item_id == AP[APHelper.channel_key.value]:
                 ctx.keys += 1
-                ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys)
+                ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys, ctx.post_game_condition.check(ctx))
 
         ## Unlock Morphs and Gadgets
         elif isinstance(item, EquipmentItem):
@@ -421,7 +421,7 @@ async def resync_important_items(ctx : 'AE3Context'):
 
     # Resync Channel Keys
     keys : int = received_id.count(ctx.items_name_to_id[APHelper.channel_key.value])
-    unlocked : int = ctx.progression.get_progress(keys)
+    unlocked : int = ctx.progression.get_progress(keys, ctx.post_game_condition.check(ctx))
     if ctx.keys != keys or ctx.unlocked_channels != unlocked:
         ctx.keys = keys
         ctx.unlocked_channels = unlocked
