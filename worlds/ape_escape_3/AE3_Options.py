@@ -551,6 +551,9 @@ class AddMorphExtensions(Toggle):
 class ExtraKeys(Range):
     """
     Determine if extra channel keys should be generated in addition to the minimum required to unlock all the channels.
+
+    To specify custom values, add it alongside the pre-existing options, copying their format.
+    Format: value : weight
     """
     display_name : str = "Extra Channel Keys"
     default = 0
