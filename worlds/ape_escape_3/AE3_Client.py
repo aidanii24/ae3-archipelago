@@ -172,8 +172,8 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
         logger.info(f"\n Remaining Potential Post Game Condition Locations:")
 
-        for category, remains in remaining:
-            logger.info(f"         > " f"[-/-] {category}")
+        for category, remains in remaining.items():
+            logger.info(f"         " f"[-/-] {category}")
             for location in remains:
                 logger.info(f"                  > " f"{location}")
 
@@ -430,10 +430,14 @@ class AE3Context(CommonContext):
                     excluded_phones_id: list[str] = CELLPHONES_MASTER_ORDERED[channel]
                     excluded_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
 
+            goal_amount : int = 0
+            if APHelper.goal_target_ovr.value in data:
+                goal_amount : int = data[APHelper.goal_target_ovr.value]
+
             ## Goal Target
             if not self.goal_target.locations and APHelper.goal_target.value in data:
                 goal_target = data[APHelper.goal_target.value]
-                self.goal_target = GoalTargetOptions[goal_target](excluded_stages, excluded_locations)
+                self.goal_target = GoalTargetOptions[goal_target](goal_amount, excluded_stages, excluded_locations)
 
             ## Get Post Game Conditions
             amounts : dict[str, int] = {}

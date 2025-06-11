@@ -261,7 +261,7 @@ class PostGameCondition:
                                       self.amounts[category]]
 
         if APHelper.keys.value in self.amounts:
-            progress[APHelper.keys.value] = [min(ctx.keys - len(ctx.progression.progression) - 2, 0),
+            progress[APHelper.keys.value] = [max(ctx.keys - len(ctx.progression.progression) - 2, 0),
                                         self.amounts[APHelper.keys.value]]
 
         return progress
