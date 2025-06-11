@@ -1892,9 +1892,12 @@ class APHelper(BaseEnum):
     # Post Game Categories
     keys =                  "Channel Keys"
     monkey =                "Pipo Monkeys"
+    boses =                 "Bosses"
     camera =                "Pipo Cameras"
     cellphone =             "Cellphones"
     shop =                  "Shop Items"
+
+    amounts =               "Amounts"
 
     # Game Groups
     travel_station =        "o_1"

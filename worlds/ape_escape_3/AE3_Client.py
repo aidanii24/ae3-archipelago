@@ -323,7 +323,7 @@ class AE3Context(CommonContext):
     progression : ProgressionMode = ProgressionModeOptions[0]
     goal_target : GoalTarget = GoalTarget()
     post_game_access_rule_option : int = 0
-    post_game_condition : PostGameCondition = PostGameCondition({})
+    post_game_condition : PostGameCondition = None
     shuffle_channel : bool = False
     dummy_morph : str = Itm.morph_monkey.value
     check_break_rooms : bool = False
@@ -421,6 +421,15 @@ class AE3Context(CommonContext):
             if not self.check_break_rooms:
                 excluded_stages = [*STAGES_BREAK_ROOMS]
 
+            ### Exclude Blacklisted Channels from Goal Target and Post Game Condition
+            if self.progression.progression[-1]:
+                for channel in self.progression.order[-self.progression.progression[-1]:]:
+                    excluded_locations.extend(MONKEYS_MASTER_ORDERED[channel])
+                    excluded_locations.append(CAMERAS_MASTER_ORDERED[channel])
+
+                    excluded_phones_id: list[str] = CELLPHONES_MASTER_ORDERED[channel]
+                    excluded_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
+
             ## Goal Target
             if not self.goal_target.locations and APHelper.goal_target.value in data:
                 goal_target = data[APHelper.goal_target.value]
@@ -445,13 +454,15 @@ class AE3Context(CommonContext):
             if APHelper.pgc_keys.value in data and data[APHelper.pgc_keys.value]:
                 amounts[APHelper.keys.value] = data[APHelper.pgc_keys.value]
 
-            ### Exclude locations from post game and blacklisted channels for Post Game Condition
-            for region in self.progression.order[:-sum(self.progression.progression[:-2])]:
-                excluded_locations.extend(*MONKEYS_MASTER_ORDERED[region])
-                excluded_locations.append(*CAMERAS_MASTER_ORDERED[region])
+            # Exclude Channels in Post Game from being required for Post Game to be unlocked
+            post_game_start_index = sum(self.progression.progression[:-2]) + 1
+            for channel in (self.progression.order[post_game_start_index:
+                post_game_start_index + self.progression.progression[-2]]):
+                    excluded_locations.extend(MONKEYS_MASTER_ORDERED[channel])
+                    excluded_locations.append(CAMERAS_MASTER_ORDERED[channel])
 
-                excluded_phones_id: list[str] = CELLPHONES_MASTER_ORDERED[region]
-                excluded_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
+                    excluded_phones_id: list[str] = CELLPHONES_MASTER_ORDERED[channel]
+                    excluded_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
 
             ## Post Game Access Rule Initialization
             self.post_game_condition = PostGameCondition(amounts, excluded_stages, excluded_locations)
