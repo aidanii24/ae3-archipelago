@@ -341,21 +341,13 @@ class PostChannel(OptionSet):
     but this can be changed to add without swapping by specifying "ADDITIVE" anywhere into the list.
 
     Format: ["item_a", "item_b", "item_c", ..., (optional)"ADDITIVE"]
-    Maximum Items: 10 (excluding "ADDITIVE")
+    Maximum Items: 8 (excluding "ADDITIVE")
     """
     display_name : str = "Channel Shuffle Post"
     default = []
 
     valid_keys = [*LEVELS_BY_ORDER, "ADDITIVE"]
 
-    def __init__(self, value : Iterable[Any]):
-        super().__init__(value)
-
-        additive : bool = "ADDITIVE" in self.value
-        v : set[Any] = {_ for _ in self.value if _ != "ADDITIVE"}
-        self.value = {v.copy()}
-        if additive:
-            self.value.append("ADDITIVE")
 
 class BlacklistChannel(OptionList):
     """
@@ -363,17 +355,12 @@ class BlacklistChannel(OptionList):
     channel order.
 
     Format: ["item_a", "item_b", "item_c", ...]
-    Maximum Items: 10
+    Maximum Items: 8
     """
     display_name : str = "Channel Shuffle Blacklist"
     default = []
 
     valid_keys = [*LEVELS_BY_ORDER]
-
-    def __init__(self, value : Iterable[Any]):
-        super().__init__(value)
-
-        self.value = self.value[:10].copy()
 
 
 class Monkeysanity(DefaultOnToggle):

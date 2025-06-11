@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import ClassVar, List, Optional, TextIO
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
@@ -102,21 +103,36 @@ class AE3World(World):
         super(AE3World, self).__init__(multiworld, player)
 
     def generate_early(self):
+        # Limit Post/Blacklist Channels to 8 items
+        if len(self.options.post_channel.value) > 8:
+            additive: bool = "ADDITIVE" in self.options.post_channel
+            new_post: list[str] = [*self.options.post_channel.value][:8]
+            if additive:
+                new_post.append("ADDITIVE")
+
+            self.options.post_channel.value = {*deepcopy(new_post)}
+
+        if len(self.options.blacklist_channel.value) > 8:
+            self.options.blacklist_channel.value = self.options.blacklist_channel.value[:8]
+
         # Handle duplicate entries between Channel Options
         ## Remove Preserve Channels that exists in Push, Post and Blacklist Channel Options
-        self.options.preserve_channel.value.difference_update(self.options.blacklist_channel)
-        self.options.preserve_channel.value.difference_update(self.options.post_channel)
-        self.options.preserve_channel.value.difference_update(self.options.push_channel)
+        if self.options.preserve_channel:
+            self.options.preserve_channel.value.difference_update(self.options.blacklist_channel)
+            self.options.preserve_channel.value.difference_update(self.options.post_channel)
+            self.options.preserve_channel.value.difference_update(self.options.push_channel)
 
         ## Remove Push Channels that exists in Post and Blacklist Channel Options
-        additive : bool = "ADDITIVE" in self.options.push_channel.value
-        self.options.push_channel.value.difference_update(self.options.blacklist_channel)
-        self.options.push_channel.value.difference_update(self.options.post_channel)
-        if additive and "ADDITIVE" not in self.options.push_channel.value:
-            self.options.push_channel.value.add("ADDITIVE")
+        if self.options.push_channel:
+            additive : bool = "ADDITIVE" in self.options.push_channel.value
+            self.options.push_channel.value.difference_update(self.options.blacklist_channel)
+            self.options.push_channel.value.difference_update(self.options.post_channel)
+            if additive and "ADDITIVE" not in self.options.push_channel.value:
+                self.options.push_channel.value.add("ADDITIVE")
 
         ## Remove Post Channels that exists in Blacklist Channel Option
-        self.options.post_channel.value.difference_update(self.options.blacklist_channel)
+        if self.options.post_channel:
+            self.options.post_channel.value.difference_update(self.options.blacklist_channel)
 
         # Get Logic Preference
         self.logic_preference = LogicPreferenceOptions[self.options.logic_preference]()

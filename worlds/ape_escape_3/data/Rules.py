@@ -198,7 +198,7 @@ class PostGameCondition:
                 return False
 
         if APHelper.cellphone.value in self.amounts:
-            highest_scale = max(highest_scale, 20 / len(self.location_ids[APHelper.cellphone.value]))
+            highest_scale = max(highest_scale, len(self.location_ids[APHelper.cellphone.value]) / 20)
 
         if APHelper.keys.value in self.amounts:
             rules.add(has_keys((min_keys - 1) + self.amounts[APHelper.keys.value]))
