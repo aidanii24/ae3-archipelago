@@ -165,8 +165,8 @@ class AE3CommandProcessor(ClientCommandProcessor):
         if progress:
             for key, value in progress.items():
                 prog: str = f"{value[0]}/{value[1]}"
-                if value[0] > value[1]:
-                    prog.join(f"[ COMPLETE! ]")
+                if value[0] >= value[1]:
+                    prog += (f"    [ COMPLETE! ]")
 
                 logger.info(f"                > {key}: {prog}")
 
