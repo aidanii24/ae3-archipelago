@@ -173,7 +173,7 @@ async def setup_level_select(ctx : 'AE3Context'):
         ctx.ipc.clear_spawn()
 
         # If Channel Shuffle is enabled, force switch the game to load the randomized channel
-        if ctx.shuffle_channel and not ctx.is_channel_swapped:
+        if not ctx.is_channel_swapped:
             # Save last selected channel index
             if ctx.last_selected_channel_index < 0:
                 ctx.last_selected_channel_index = selected_channel

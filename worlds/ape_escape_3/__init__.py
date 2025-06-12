@@ -332,9 +332,6 @@ class AE3World(World):
         return slot_data
 
     def write_spoiler(self, spoiler_handle: TextIO) -> None:
-        if not self.options.shuffle_channel:
-            return
-
         spoiler_handle.write(
             f"\n\n[AE3] ============================================"
             f"\n Channel Order for {self.multiworld.get_player_name(self.player)} ({self.player})\n"
