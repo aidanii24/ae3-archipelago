@@ -422,7 +422,7 @@ class ProgressionMode:
     def generate_keys(self, world : 'AE3World') -> list[Item]:
         # The first set of levels and blacklisted set of levels will not cost keys.
         # Keys required by post game is handled by its corresponding option
-        amount: int = len(self.progression) - 2 + world.options.post_game_condition_keys + world.options.extra_keys
+        amount: int = len(self.progression) - 3 + world.options.post_game_condition_keys + world.options.extra_keys
         return Channel_Key.to_items(world.player, amount)
 
     def regenerate_level_select_entrances(self):

@@ -81,7 +81,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
                         if pgc_progress:
                             for key, value in pgc_progress.items():
                                 prog : str = f"{value[0]}/{value[1]}"
-                                if value[0] > value[1]:
+                                if value[0] >= value[1]:
                                     prog += f"    [ COMPLETE! ]"
 
                                 logger.info(f"                > {key}: {prog}")
@@ -599,7 +599,6 @@ class AE3Context(CommonContext):
 
             # Retrieve Next Item Slot/Amount of Items Received
             self.last_item_processed_index = data.get(APHelper.last_itm_idx_prc.value, 0)
-            print("LOADED:", self.last_item_processed_index)
 
             # Retrieve Offline Checked Locations
             self.offline_locations_checked = set(data.get(APHelper.offline_checked_locations.value, set()))

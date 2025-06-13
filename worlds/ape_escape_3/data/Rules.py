@@ -242,9 +242,9 @@ class PostGameCondition:
 
         # Check for keys required on post
         if APHelper.keys.value in self.amounts:
-            passed = passed and ctx.keys - (len(ctx.progression.progression) - 2) >= self.amounts[APHelper.keys.value]
+            passed = passed and ctx.keys - (len(ctx.progression.progression) - 3) >= self.amounts[APHelper.keys.value]
 
-        if passed and ctx.keys == len(ctx.progression.progression) - 2:
+        if passed and ctx.keys >= len(ctx.progression.progression) - 3:
             self.passed = True
             return True
 
