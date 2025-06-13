@@ -19,6 +19,9 @@ class ConnectionStatus(Enum):
     CONNECTED = 1
     IN_GAME = 2
 
+    def __bool__(self):
+        return self.value > 0
+
 # Workaround for now; pine.write_float() seems to be broken
 def hex_int32_to_float(value : int) -> float:
     if value == 0:

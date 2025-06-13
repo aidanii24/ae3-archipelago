@@ -722,7 +722,7 @@ class AE3Context(CommonContext):
 
 
 def update_connection_status(ctx : AE3Context, status : bool):
-    if ctx.is_game_connected == status:
+    if bool(ctx.is_game_connected) == status:
         return
 
     if status:
@@ -748,7 +748,7 @@ async def main_sync_task(ctx : AE3Context):
     while not ctx.exit_event.is_set():
         try:
             # Check connection to PCSX2 first
-            is_game_connected = ctx.ipc.get_connection_state()
+            is_game_connected : bool = ctx.ipc.get_connection_state()
             update_connection_status(ctx, is_game_connected)
 
             # Check Progress if connection is good
