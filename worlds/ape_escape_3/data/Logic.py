@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import TYPE_CHECKING, Set, Sequence, Callable
 
 from BaseClasses import CollectionState, Item
@@ -337,57 +338,42 @@ class ProgressionMode:
             return
 
         additive = "ADDITIVE" in channels
-        interest_start_index : int = sum(self.progression[:set_interest])
-        interest_last_index : int = interest_start_index + self.progression[set_interest]
-        current_interest_channels : list[int] = [
-            self.order[_] for _ in range(interest_start_index, interest_last_index)
-        ]
 
-        for channel in targets:
-            index : int = self.order.index(channel)
-            set_index : int = -1
+        # Group the Sets
+        group_set : list[list[int]] = []
+        count : int = 0
+        for i, channel_set in enumerate(self.progression):
+            offset : int = 0
+            if i == 0:
+                offset = 1
 
-            # Get Set where the channel is from
-            for _ in range(len(self.progression)):
-                if channel in self.order[:sum(self.progression[:_ + 1]) + 1]:
-                    # Skip if Channel is already in the set interest
-                    if _ == set_interest:
-                        break
+            target : int = count + channel_set + offset
+            group_set.append([_ for _ in self.order[count : target] if _ not in targets])
+            count = target
 
-                    set_index = _
-                    break
+        print([len(group) for group in group_set])
+        print(group_set)
 
-            if set_index < 0:
+        if additive:
+            group_set[set_interest].extend(targets)
+        else:
+            group_set.insert(set_interest + 1, targets)
+
+        new_order : list[int] = [channel for sets in group_set for channel in sets]
+        new_progression : list[int] = []
+        for i, sets in enumerate(group_set):
+            amount : int = len(sets)
+
+            if amount == 0 and i < len(group_set) - 1:
                 continue
 
-            # Swap Channels if requested and possible
-            if not additive and current_interest_channels:
-                swap_index : int = self.order.index(current_interest_channels[0])
-                self.order[index], self.order[swap_index] = self.order[swap_index], self.order[index]
+            if not new_progression:
+                amount -= 1
 
-                current_interest_channels.pop(0)
-            # Do a simple remove and add otherwise
-            else:
-                self.order.remove(channel)
-                self.progression[set_index] -= 1
+            new_progression.append(amount)
 
-                self.order.insert(interest_last_index, channel)
-                self.progression[set_interest] += 1
-
-        # Clean up
-        ## Exclude Blacklist set from Clean Up, as it is allowed to have 0 channels in its set
-        empty_indexes : list = [i for i, index in enumerate(self.progression[:-1]) if index <= 0]
-        ## First set will have 1 less than actual channels in it due to index 0,
-        ## so a value of 0 in this index denotes a channel count of 1 and should not be removed
-        if 0 in empty_indexes:
-            if self.progression[0] < 0:
-                self.progression[1] -= 1
-            else:
-                empty_indexes.remove(0)
-
-        self.progression = [index for i, index in enumerate(self.progression) if i not in empty_indexes]
-        if sum(self.progression) >= len(self.order) and self.progression[0] > 0:
-            self.progression[0] -= 1
+        self.order = deepcopy(new_order)
+        self.progression = deepcopy(new_progression)
 
     def generate_rules(self, world : 'AE3World') -> dict[str, Rulesets]:
         channel_rules : dict[str, Rulesets] = {}
