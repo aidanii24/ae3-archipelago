@@ -354,6 +354,8 @@ class AE3World(World):
 
                 if set_count < len(self.progression.progression) - 2:
                     spoiler_handle.write(f"\n- < {set_count} > ---------------------------------------")
+                elif set_count == len(self.progression.progression) - 1:
+                    spoiler_handle.write(f"\n- < X > ---------------------------------------")
                 else:
                     tag : str = ""
 

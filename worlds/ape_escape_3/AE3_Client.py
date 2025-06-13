@@ -56,11 +56,19 @@ class AE3CommandProcessor(ClientCommandProcessor):
                                 f"{str(self.ctx.goal_target.get_progress(self.ctx))} / "
                                 f"{self.ctx.goal_target.amount}")
 
-                if ((len(self.ctx.goal_target.locations) == 1 and Loc.boss_specter_final.value in
-                        self.ctx.goal_target.locations) or self.ctx.shuffle_channel):
-                    post_game_conditions : str = "".join(condition.join(", ") for condition
-                    in self.ctx.post_game_condition.amounts.keys())
-                    logger.info(f"\n         Post-Game requires {post_game_conditions}")
+                if self.ctx.post_game_condition.amounts:
+                    post_game_conditions : str = ""
+                    for i, category in enumerate(self.ctx.post_game_condition.amounts.keys()):
+                        post_game_conditions += (f" {category}")
+
+                        if i == len(self.ctx.post_game_condition.amounts.keys()) - 2:
+                            post_game_conditions += " and"
+                        elif i == len(self.ctx.post_game_condition.amounts.keys()) - 1:
+                            post_game_conditions += "."
+                        else:
+                            post_game_conditions += ","
+
+                    logger.info(f"\n         Post-Game requires{post_game_conditions}")
 
                     if game_status > 0:
                         logger.info(f"         > Progress: ")
@@ -74,7 +82,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
                             for key, value in pgc_progress.items():
                                 prog : str = f"{value[0]}/{value[1]}"
                                 if value[0] > value[1]:
-                                    prog.join(f"[ COMPLETE! ]")
+                                    prog += f"    [ COMPLETE! ]"
 
                                 logger.info(f"                > {key}: {prog}")
 
@@ -166,7 +174,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
             for key, value in progress.items():
                 prog: str = f"{value[0]}/{value[1]}"
                 if value[0] >= value[1]:
-                    prog += (f"    [ COMPLETE! ]")
+                    prog += f"    [ COMPLETE! ]"
 
                 logger.info(f"                > {key}: {prog}")
 
