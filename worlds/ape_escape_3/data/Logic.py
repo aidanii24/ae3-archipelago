@@ -1,5 +1,6 @@
 from copy import deepcopy
 from typing import TYPE_CHECKING, Set, Sequence, Callable
+import warnings
 
 from BaseClasses import CollectionState, Item
 
@@ -258,7 +259,7 @@ class ProgressionMode:
     boss_indices : Sequence[int] = [ 3, 8, 12, 17, 21, 24, 26, 27 ]
     small_starting_channels : Sequence[int] = [ 6, 9, 11, 13, 15, 18, 20, 22, 23 ]
 
-    def __init__(self):
+    def __init__(self, world : 'AE3World'):
         self.progression = []
         self.order = [ _ for _ in range(28) ]
         self.level_select_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
@@ -267,7 +268,17 @@ class ProgressionMode:
         return self.name
 
     def shuffle(self, world : 'AE3World'):
-        pass
+        new_order: list[int] = self.generate_new_order(world)
+
+        # Update with the new orders
+        self.order = [*new_order]
+
+        # Apply Channel Rules
+        self.reorder(-1, [*world.options.blacklist_channel.value])
+        self.reorder(-2, [*world.options.post_channel.value])
+        self.reorder(-3, [*world.options.push_channel.value])
+
+        self.regenerate_level_select_entrances()
 
     def generate_new_order(self, world : 'AE3World') -> list[int]:
         new_order : list[int] = [_ for _ in range(28)]
@@ -441,28 +452,15 @@ class ProgressionMode:
 
 
 class Singles(ProgressionMode):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, world : 'AE3World'):
+        super().__init__(world)
 
         self.name = "Singles"
         self.progression = [0, *[1 for _ in range(1, 28)], 0]
 
-    def shuffle(self, world : 'AE3World'):
-        new_order : list[int] = self.generate_new_order(world)
-
-        # Update with the new orders
-        self.order = [*new_order]
-
-        # Apply Channel Rules
-        self.reorder(-1, [*world.options.blacklist_channel.value])
-        self.reorder(-2, [*world.options.post_channel.value])
-        self.reorder(-3, [*world.options.push_channel.value])
-
-        self.regenerate_level_select_entrances()
-
 class Group(ProgressionMode):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, world : 'AE3World'):
+        super().__init__(world)
 
         self.name = "Group"
         self.progression = [2, 1, 4, 1, 3, 1, 4, 1, 3, 1, 2, 1, 1, 1, 1, 0]  # 15 Sets
@@ -476,8 +474,7 @@ class Group(ProgressionMode):
                                  if channel in LEVELS_BY_ORDER]
         new_order : list[int] = [_ for _ in new_order if _ not in blacklist]
 
-        # Update Entrance Destinations based on the Shuffle Result
-        # and track channel being processed to create the new progression.
+        # Track channel being processed to create the new progression.
         new_progression : list[int] = [-1]
         is_last_index_boss : bool = False
         sets : int = 0
@@ -528,12 +525,13 @@ class Group(ProgressionMode):
         self.reorder(-2, [*world.options.post_channel.value])
         self.reorder(-3, [*world.options.push_channel.value])
 
+        # Update new Channel Destinations
         self.regenerate_level_select_entrances()
 
 
 class World(ProgressionMode):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, world : 'AE3World'):
+        super().__init__(world)
 
         self.name = "World"
         self.progression = [ 3, 5, 4, 5, 4, 3, 1, 1, 1, 0 ]
@@ -547,8 +545,7 @@ class World(ProgressionMode):
         if blacklist:
             new_order = [_ for _ in new_order if _ not in blacklist]
 
-        # Update Entrance Destinations based on the Shuffle Result
-        # and track channel being processed to create the new progression.
+        # Track channel being processed to create the new progression.
         new_progression : list[int] = [-1]
         sets : int = 0
         for slot, level in enumerate(new_order):
@@ -573,8 +570,97 @@ class World(ProgressionMode):
         self.reorder(-2, [*world.options.post_channel.value])
         self.reorder(-3, [*world.options.push_channel.value])
 
+        # Update new Channel Destinations
         self.regenerate_level_select_entrances()
 
+
+class Quadruples(ProgressionMode):
+    def __init__(self, world : 'AE3World'):
+        super().__init__(world)
+
+        self.name = "Quadruples"
+        self.progression = [3, *[4 for _ in range(6)], 0]
+
+class Open(ProgressionMode):
+    def __init__(self, world : 'AE3World'):
+        super().__init__(world)
+
+        self.name = "Open"
+        self.progression = [25, 1, 1, 0]
+
+        # Insert filler slots to simulate r
+        required_keys : list[int] = [0 for _ in range(world.options.open_progression_keys.value - 1)]
+        self.progression[1:1] = required_keys
+
+class Randomize(ProgressionMode):
+    def __init__(self, world : 'AE3World'):
+        super().__init__(world)
+
+        self.name = "Randomize"
+        self.progression = []
+
+        set_minimum : int = 1
+        set_maximum : int = 28
+        sets : int = world.options.randomize_progression_set_count.value
+        if world.options.randomize_progression_channel_count.value:
+            set_minimum = world.options.randomize_progression_channel_count.value[0]
+            set_maximum = world.options.randomize_progression_channel_count.value[1]
+
+        if sets:
+            set_maximum = int(28 / sets)
+
+        minimum : int = set_minimum
+        maximum : int = set_maximum
+
+        attempts : int = 0
+        while sum(self.progression) < 27:
+            # Enforce Set Count
+            if sets and len(self.progression) + 1 == sets:
+                self.progression.append(27 - sum(self.progression))
+                break
+
+            sets_amount : int = (world.random.randint(minimum, maximum))
+
+            # Adjust sets amount if it will lead to progression tracking more channels than exists
+            if sum(self.progression) + sets_amount > 27:
+                sets_amount = 28 - sum(self.progression)
+
+            # Subtract by an offset of 1 if this is the first set
+            if not self.progression:
+                sets_amount -= 1
+
+            self.progression.append(sets_amount)
+
+            # Recalibrate Maximum and Minimum as necessary
+            if maximum > 27 - sum(self.progression):
+                maximum = 27 - sum(self.progression)
+
+            if minimum > maximum:
+                minimum = maximum
+
+            # Reset and try again when channel count exceeds expected when minimum gets pushed to 0
+            if minimum <= 0 and sum(self.progression) != 27:
+                minimum = set_minimum
+                maximum = set_maximum
+                self.progression.clear()
+
+                attempts += 1
+            elif sum(self.progression) == 27:
+                break
+
+            # If there are too many attempts, fall back to Quadruples
+            if attempts > 5:
+                self.progression = [3, *[4 for _ in range(6)], 0]
+                warnings.warn("AE3 > Randomize: Generation failed to generate a valid Channel Set. "
+                              "Falling back to Quadruples Progression...")
+                break
+
+        if sum(self.progression) != 27:
+            raise AssertionError("AE3 > Randomize: Generation failed to generate a valid Channel Set. ")
+
+        self.progression.append(0)
+
+
 ProgressionModeOptions : Sequence[Callable] = [
-    Singles, Group, World
+    Singles, Group, World, Quadruples, Open, Randomize
 ]

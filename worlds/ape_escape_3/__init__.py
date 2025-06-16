@@ -138,7 +138,7 @@ class AE3World(World):
         self.logic_preference = LogicPreferenceOptions[self.options.logic_preference]()
 
         # Get ProgressionMode
-        self.progression = ProgressionModeOptions[self.options.progression_mode.value]()
+        self.progression = ProgressionModeOptions[self.options.progression_mode.value](self)
 
         # Shuffle Channel if desired
         if self.options.shuffle_channel:
@@ -234,6 +234,17 @@ class AE3World(World):
         self.post_game_condition = PostGameCondition(post_game_conditions, exclude_regions, exclude_locations)
 
         self.item_pool = []
+
+        group_set: list[list[int]] = []
+        count: int = 0
+        for i, channel_set in enumerate(self.progression.progression):
+            offset: int = 0
+            if i == 0:
+                offset = 1
+
+            target: int = count + channel_set + offset
+            group_set.append([_ for _ in self.progression.order[count: target]])
+            count = target
 
     def create_regions(self):
         create_regions(self)
@@ -337,36 +348,41 @@ class AE3World(World):
             f"\n Channel Order for {self.multiworld.get_player_name(self.player)} ({self.player})\n"
         )
 
-        set_count = 0
-        level_base = 0
-        for i, channel in enumerate(self.progression.order):
-            spoiler_handle.write(
-                f"\n [{i + 1}]\t{LEVELS_BY_ORDER[channel]}"
-            )
+        group_set: list[list[int]] = []
+        count: int = 0
+        for i, channel_set in enumerate(self.progression.progression):
+            offset: int = 0
+            if i == 0:
+                offset = 1
 
-            if i - level_base == self.progression.progression[set_count] and i < len(self.progression.order) - 1:
-                # Do not show Blacklisted Channels
-                if set_count == len(self.progression.order) - 1:
-                    return
+            target: int = count + channel_set + offset
+            group_set.append([_ for _ in self.progression.order[count: target]])
+            count = target
 
-                set_count += 1
-                level_base = i
+        count: int = 0
+        for i, sets in enumerate(group_set):
+            if not sets:
+                continue
 
-                if set_count < len(self.progression.progression) - 2:
-                    spoiler_handle.write(f"\n- < {set_count} > ---------------------------------------")
-                elif set_count == len(self.progression.progression) - 1:
-                    spoiler_handle.write(f"\n- < X > ---------------------------------------")
-                else:
-                    tag : str = ""
+            if i and i < len(group_set) - 2:
+                spoiler_handle.write(f"\n- < {i} > ---------------------------------------")
+            elif i and i == len(group_set) - 1:
+                spoiler_handle.write(f"\n- < X > ---------------------------------------")
+            else:
+                tag: str = ""
 
-                    if self.options.post_game_condition_keys:
-                        tag += f"{self.options.post_game_condition_keys.value + set_count - 1}"
-                    if any([bool(self.options.post_game_condition_monkeys),
-                           bool(self.options.post_game_condition_cameras),
-                           bool(self.options.post_game_condition_cellphones)]):
-                        tag += "!"
+                if self.options.post_game_condition_keys:
+                    tag += f"{self.options.post_game_condition_keys.value + i - 1}"
+                if any([bool(self.options.post_game_condition_monkeys),
+                        bool(self.options.post_game_condition_cameras),
+                        bool(self.options.post_game_condition_cellphones)]):
+                    tag += "!"
 
-                    spoiler_handle.write(f"\n- < {tag} > ---------------------------------------")
+                spoiler_handle.write(f"\n- < {tag} > ---------------------------------------")
+
+            for channels in sets:
+                spoiler_handle.write(f"\n [{count + 1}]\t{LEVELS_BY_ORDER[channels]}")
+                count += 1
 
         spoiler_handle.write("\n")
 

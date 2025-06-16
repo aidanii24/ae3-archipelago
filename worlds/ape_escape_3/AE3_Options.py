@@ -28,9 +28,9 @@ class ProgressionMode(Choice):
     option_singles : int = 0
     option_group : int = 1
     option_world : int = 2
-    # option_quadruples : int = 3
-    # option_open : int = 4
-    # option_randomize : int = 5
+    option_quadruples : int = 3
+    option_open : int = 4
+    option_randomize : int = 5
 
 class OpenProgressionKeys(Range):
     """
@@ -60,7 +60,7 @@ class RandomizeProgressionSetCount(Range):
     default = 0
 
     range_start = 1
-    range_end = 27
+    range_end = 28
 
     def __init__(self, value):
         if value == 0:
