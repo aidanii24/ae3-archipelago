@@ -600,7 +600,7 @@ class Randomize(ProgressionMode):
         self.progression = []
 
         set_minimum : int = 1
-        set_maximum : int = 28
+        set_maximum : int = 16
         sets : int = world.options.randomize_progression_set_count.value
         if world.options.randomize_progression_channel_count.value:
             set_minimum = world.options.randomize_progression_channel_count.value[0]

@@ -59,7 +59,7 @@ class RandomizeProgressionSetCount(Range):
     display_name : str = "Randomize Progression Set Count"
     default = 0
 
-    range_start = 1
+    range_start = 3
     range_end = 28
 
     def __init__(self, value):
