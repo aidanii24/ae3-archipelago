@@ -351,9 +351,6 @@ class ProgressionMode:
             group_set.append([_ for _ in self.order[count : target] if _ not in targets])
             count = target
 
-        print([len(group) for group in group_set])
-        print(group_set)
-
         if additive:
             group_set[set_interest].extend(targets)
         else:
