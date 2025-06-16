@@ -1955,7 +1955,7 @@ class APHelper(BaseEnum):
     progression =               "progression"
     open_required =             "open_progression_keys"
     randomize_set_count =       "randomize_progression_set_count"
-    randomize_channel_count =   "randomize_progression_channel_count"
+    randomize_channel_range = "randomize_progression_channel_range"
     logic_preference =          "logic_preference"
     goal_target =               "goal_target"
     goal_target_ovr =           "goal_target_override"

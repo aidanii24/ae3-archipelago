@@ -70,7 +70,7 @@ class RandomizeProgressionSetCount(Range):
         super().__init__(value)
 
 
-class RandomizeProgressionChannelCount(OptionList):
+class RandomizeProgressionChannelRange(OptionList):
     """
     If the chosen mode is `randomize`, this option allows you to control the amount of possible channels that can
     be included in a set. Leave this empty to let generation decide for you, or specify a maximum and minimum
@@ -83,7 +83,7 @@ class RandomizeProgressionChannelCount(OptionList):
     Absolute Minimum : 1
     Absolute Maximum : 28
     """
-    display_name : str = "Randomize Progression Channel Count"
+    display_name : str = "Randomize Progression Channel Range"
     default = []
 
     def __init__(self, value: Iterable[Any]) -> None:
@@ -606,7 +606,7 @@ ae3_option_groups : dict[str, list] = {
     "Randomizer Options"        : [ProgressionMode,
                                    OpenProgressionKeys,
                                    RandomizeProgressionSetCount,
-                                   RandomizeProgressionChannelCount,
+                                   RandomizeProgressionChannelRange,
                                    LogicPreference,
                                    GoalTarget,
                                    GoalTargetOverride,
@@ -646,7 +646,7 @@ class AE3Options(PerGameCommonOptions):
     progression_mode                        : ProgressionMode
     open_progression_keys                   : OpenProgressionKeys
     randomize_progression_set_count         : RandomizeProgressionSetCount
-    randomize_progression_channel_count     : RandomizeProgressionChannelCount
+    randomize_progression_channel_range     : RandomizeProgressionChannelRange
     logic_preference                        : LogicPreference
     goal_target                             : GoalTarget
     goal_target_override                    : GoalTargetOverride
@@ -696,7 +696,7 @@ def slot_data_options() -> list[str]:
         APHelper.progression_mode.value,
         APHelper.open_required.value,
         APHelper.randomize_set_count.value,
-        APHelper.randomize_channel_count.value,
+        APHelper.randomize_channel_range.value,
         APHelper.logic_preference.value,
         APHelper.goal_target.value,
         APHelper.goal_target_ovr.value,

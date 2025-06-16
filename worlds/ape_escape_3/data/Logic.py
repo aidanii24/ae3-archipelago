@@ -602,9 +602,9 @@ class Randomize(ProgressionMode):
         set_minimum : int = 1
         set_maximum : int = 16
         sets : int = world.options.randomize_progression_set_count.value
-        if world.options.randomize_progression_channel_count.value:
-            set_minimum = world.options.randomize_progression_channel_count.value[0]
-            set_maximum = world.options.randomize_progression_channel_count.value[1]
+        if world.options.randomize_progression_channel_range.value:
+            set_minimum = world.options.randomize_progression_channel_range.value[0]
+            set_maximum = world.options.randomize_progression_channel_range.value[1]
 
         if sets:
             set_maximum = int(28 / sets)
