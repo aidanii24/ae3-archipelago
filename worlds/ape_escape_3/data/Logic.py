@@ -348,7 +348,7 @@ class ProgressionMode:
         if not targets:
             return
 
-        additive = "ADDITIVE" in channels
+        additive = APHelper.additive.value in channels
 
         # Group the Sets
         group_set : list[list[int]] = []

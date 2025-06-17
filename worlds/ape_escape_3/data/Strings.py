@@ -1993,6 +1993,8 @@ class APHelper(BaseEnum):
 
     death_link =                "death_link"
 
+    additive =                  "ADDITIVE"
+
     # AP Settings
     auto_equip =                "auto_equip"
 

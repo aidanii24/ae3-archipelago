@@ -105,10 +105,10 @@ class AE3World(World):
     def generate_early(self):
         # Limit Post/Blacklist Channels to 8 items
         if len(self.options.post_channel.value) > 8:
-            additive: bool = "ADDITIVE" in self.options.post_channel
+            additive: bool = APHelper.additive.value in self.options.post_channel
             new_post: list[str] = [*self.options.post_channel.value][:8]
             if additive:
-                new_post.append("ADDITIVE")
+                new_post.append(APHelper.additive.value)
 
             self.options.post_channel.value = {*deepcopy(new_post)}
 
@@ -124,11 +124,11 @@ class AE3World(World):
 
         ## Remove Push Channels that exists in Post and Blacklist Channel Options
         if self.options.push_channel:
-            additive : bool = "ADDITIVE" in self.options.push_channel.value
+            additive : bool = APHelper.additive.value in self.options.push_channel.value
             self.options.push_channel.value.difference_update(self.options.blacklist_channel)
             self.options.push_channel.value.difference_update(self.options.post_channel)
-            if additive and "ADDITIVE" not in self.options.push_channel.value:
-                self.options.push_channel.value.add("ADDITIVE")
+            if additive and APHelper.additive.value not in self.options.push_channel.value:
+                self.options.push_channel.value.add(APHelper.additive.value)
 
         ## Remove Post Channels that exists in Blacklist Channel Option
         if self.options.post_channel:

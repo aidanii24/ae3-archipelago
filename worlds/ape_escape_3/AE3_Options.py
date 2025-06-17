@@ -330,7 +330,7 @@ class PushChannel(OptionSet):
     display_name : str = "Channel Shuffle Push"
     default = []
 
-    valid_keys = [*LEVELS_BY_ORDER, "ADDITIVE"]
+    valid_keys = [*LEVELS_BY_ORDER, APHelper.additive.value]
 
 class PostChannel(OptionSet):
     """
@@ -346,7 +346,7 @@ class PostChannel(OptionSet):
     display_name : str = "Channel Shuffle Post"
     default = []
 
-    valid_keys = [*LEVELS_BY_ORDER, "ADDITIVE"]
+    valid_keys = [*LEVELS_BY_ORDER, APHelper.additive.value]
 
 
 class BlacklistChannel(OptionList):
