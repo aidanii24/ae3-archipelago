@@ -360,7 +360,7 @@ class AE3World(World):
                 spoiler_handle.write(f"\n- < {i} > ---------------------------------------")
             elif i and i == len(group_set) - 1:
                 spoiler_handle.write(f"\n- < X > ---------------------------------------")
-            else:
+            elif i:
                 tag: str = ""
 
                 if self.options.post_game_condition_keys:
