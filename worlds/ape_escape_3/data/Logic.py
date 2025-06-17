@@ -259,7 +259,7 @@ class ProgressionMode:
     boss_indices : Sequence[int] = [ 3, 8, 12, 17, 21, 24, 26, 27 ]
     small_starting_channels : Sequence[int] = [ 6, 9, 11, 13, 15, 18, 20, 22, 23 ]
 
-    def __init__(self, world : 'AE3World'):
+    def __init__(self, world : 'AE3World' = None):
         self.progression = []
         self.order = [ _ for _ in range(28) ]
         self.level_select_entrances : list[AE3EntranceMeta] = [ *ENTRANCES_STAGE_SELECT ]
@@ -452,14 +452,14 @@ class ProgressionMode:
 
 
 class Singles(ProgressionMode):
-    def __init__(self, world : 'AE3World'):
+    def __init__(self, world : 'AE3World' = None):
         super().__init__(world)
 
         self.name = "Singles"
         self.progression = [0, *[1 for _ in range(1, 28)], 0]
 
 class Group(ProgressionMode):
-    def __init__(self, world : 'AE3World'):
+    def __init__(self, world : 'AE3World' = None):
         super().__init__(world)
 
         self.name = "Group"
@@ -530,7 +530,7 @@ class Group(ProgressionMode):
 
 
 class World(ProgressionMode):
-    def __init__(self, world : 'AE3World'):
+    def __init__(self, world : 'AE3World' = None):
         super().__init__(world)
 
         self.name = "World"
@@ -573,31 +573,34 @@ class World(ProgressionMode):
         # Update new Channel Destinations
         self.regenerate_level_select_entrances()
 
-
 class Quadruples(ProgressionMode):
-    def __init__(self, world : 'AE3World'):
+    def __init__(self, world : 'AE3World' = None):
         super().__init__(world)
 
         self.name = "Quadruples"
         self.progression = [3, *[4 for _ in range(6)], 0]
 
 class Open(ProgressionMode):
-    def __init__(self, world : 'AE3World'):
+    def __init__(self, world : 'AE3World' = None):
         super().__init__(world)
 
         self.name = "Open"
         self.progression = [25, 1, 1, 0]
 
         # Insert filler slots to simulate r
-        required_keys : list[int] = [0 for _ in range(world.options.open_progression_keys.value - 1)]
-        self.progression[1:1] = required_keys
+        if world is not None:
+            required_keys : list[int] = [0 for _ in range(world.options.open_progression_keys.value - 1)]
+            self.progression[1:1] = required_keys
 
 class Randomize(ProgressionMode):
-    def __init__(self, world : 'AE3World'):
+    def __init__(self, world : 'AE3World' = None):
         super().__init__(world)
 
         self.name = "Randomize"
         self.progression = []
+
+        if world is None:
+            return
 
         set_minimum : int = 1
         set_maximum : int = 16
