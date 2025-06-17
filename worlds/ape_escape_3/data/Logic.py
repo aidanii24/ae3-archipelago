@@ -581,6 +581,8 @@ class Quadruples(ProgressionMode):
         self.progression = [3, *[4 for _ in range(6)], 0]
 
 class Open(ProgressionMode):
+    required_keys : int = 0
+
     def __init__(self, world : 'AE3World' = None):
         super().__init__(world)
 
@@ -589,8 +591,14 @@ class Open(ProgressionMode):
 
         # Insert filler slots to simulate r
         if world is not None:
-            required_keys : list[int] = [0 for _ in range(world.options.open_progression_keys.value - 1)]
+            self.required_keys = world.options.open_progression_keys.value
+            required_keys : list[int] = [0 for _ in range(self.required_keys)]
             self.progression[1:1] = required_keys
+
+    def reorder(self, set_interest : int, channels : list[str]):
+        super().reorder(set_interest, channels)
+        if self.progression[-3] != 0 and self.required_keys:
+            self.progression[-2:-2] = [0 for _ in range(self.required_keys)]
 
 class Randomize(ProgressionMode):
     def __init__(self, world : 'AE3World' = None):

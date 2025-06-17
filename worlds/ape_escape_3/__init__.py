@@ -103,6 +103,8 @@ class AE3World(World):
         super(AE3World, self).__init__(multiworld, player)
 
     def generate_early(self):
+        print(self.options.open_progression_keys.value)
+
         # Limit Post/Blacklist Channels to 8 items
         if len(self.options.post_channel.value) > 8:
             additive: bool = APHelper.additive.value in self.options.post_channel
@@ -237,6 +239,8 @@ class AE3World(World):
         self.post_game_condition = PostGameCondition(post_game_conditions, exclude_regions, exclude_locations)
 
         self.item_pool = []
+
+        print(self.progression.progression)
 
     def create_regions(self):
         create_regions(self)
