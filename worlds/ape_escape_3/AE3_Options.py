@@ -208,6 +208,24 @@ class PostGameConditionMonkeys(NamedRange):
         "active" : -1,
     }
 
+class PostGameConditionBosses(Range):
+    """
+    Specify  the amount of bosses required to unlock the final set of channels (Post-Game). This will be reduced
+    as necessary depending on the channels placed in the post game.
+    Default: 0
+
+    To specify custom values, add it alongside the pre-existing options, copying their format.
+    Format: value : weight
+
+    <!> WARNING: Please make sure at least ONE Post-Game Condition Option is enabled (not 0/disabled).
+    The multiworld WILL refuse to generate otherwise.
+    """
+    display_name : str = "Post-Game Condition: Bosses"
+    default = 0
+
+    range_start = 0
+    range_end = 8
+
 class PostGameConditionCameras(Range):
     """
     Specify the amount of Pipo Cameras required to unlock the final set of channels (Post-Game).
@@ -611,6 +629,7 @@ ae3_option_groups : dict[str, list] = {
                                    GoalTarget,
                                    GoalTargetOverride,
                                    PostGameConditionMonkeys,
+                                   PostGameConditionBosses,
                                    PostGameConditionCameras,
                                    PostGameConditionCellphones,
                                    PostGameConditionShopItems,
@@ -651,6 +670,7 @@ class AE3Options(PerGameCommonOptions):
     goal_target                             : GoalTarget
     goal_target_override                    : GoalTargetOverride
     post_game_condition_monkeys             : PostGameConditionMonkeys
+    post_game_condition_bosses              : PostGameConditionBosses
     post_game_condition_cameras             : PostGameConditionCameras
     post_game_condition_cellphones          : PostGameConditionCellphones
     post_game_condition_shop                : PostGameConditionShopItems
@@ -701,6 +721,7 @@ def slot_data_options() -> list[str]:
         APHelper.goal_target.value,
         APHelper.goal_target_ovr.value,
         APHelper.pgc_monkeys.value,
+        APHelper.pgc_bosses.value,
         APHelper.pgc_cameras.value,
         APHelper.pgc_cellphones.value,
         APHelper.pgc_shop.value,

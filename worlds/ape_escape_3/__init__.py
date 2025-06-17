@@ -208,6 +208,9 @@ class AE3World(World):
             exclude_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
 
         # Record remaining Post Game Condition options
+        if self.options.post_game_condition_bosses:
+            post_game_conditions[APHelper.bosses.value] = self.options.post_game_condition_bosses.value
+
         if self.options.post_game_condition_cameras:
             post_game_conditions[APHelper.camera.value] = self.options.post_game_condition_cameras.value
 
@@ -234,17 +237,6 @@ class AE3World(World):
         self.post_game_condition = PostGameCondition(post_game_conditions, exclude_regions, exclude_locations)
 
         self.item_pool = []
-
-        group_set: list[list[int]] = []
-        count: int = 0
-        for i, channel_set in enumerate(self.progression.progression):
-            offset: int = 0
-            if i == 0:
-                offset = 1
-
-            target: int = count + channel_set + offset
-            group_set.append([_ for _ in self.progression.order[count: target]])
-            count = target
 
     def create_regions(self):
         create_regions(self)

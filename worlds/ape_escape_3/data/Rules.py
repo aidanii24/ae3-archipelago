@@ -132,6 +132,7 @@ class PostGameCondition:
     amounts : dict[str, int] = field(default_factory=dict)
 
     location_categories : ClassVar[list[str]] = [APHelper.monkey.value,
+                                                 APHelper.bosses.value,
                                                  APHelper.camera.value,
                                                  APHelper.cellphone.value,
                                                  APHelper.shop.value]

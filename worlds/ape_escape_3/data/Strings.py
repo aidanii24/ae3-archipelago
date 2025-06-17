@@ -1892,7 +1892,7 @@ class APHelper(BaseEnum):
     # Post Game Categories
     keys =                  "Channel Keys"
     monkey =                "Pipo Monkeys"
-    boses =                 "Bosses"
+    bosses =                "Bosses"
     camera =                "Pipo Cameras"
     cellphone =             "Cellphones"
     shop =                  "Shop Items"
@@ -1960,6 +1960,7 @@ class APHelper(BaseEnum):
     goal_target =               "goal_target"
     goal_target_ovr =           "goal_target_override"
     pgc_monkeys =               "post_game_condition_monkeys"
+    pgc_bosses =                "post_game_condition_bosses"
     pgc_cameras =               "post_game_condition_cameras"
     pgc_cellphones =            "post_game_condition_cellphones"
     pgc_shop =                  "post_game_condition_shop"

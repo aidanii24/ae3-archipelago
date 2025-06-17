@@ -2055,6 +2055,7 @@ LOCATIONS_INDEX : dict[str, Sequence[str]] = {
 
 LOCATIONS_DIRECTORY : dict[str, Sequence[str]] = {
     APHelper.monkey.value : MONKEYS_MASTER,
+    APHelper.bosses.value : MONKEYS_BOSSES,
     APHelper.camera.value : CAMERAS_MASTER,
     APHelper.cellphone.value : CELLPHONES_MASTER,
 }
