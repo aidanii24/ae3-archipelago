@@ -35,8 +35,8 @@ class AE3CommandProcessor(ClientCommandProcessor):
         if not isinstance(self.ctx, AE3Context):
             return
 
-        resync_game(self.ctx)
-        logger.info(" [-!-] Resyncing Complete!")
+        if self.ctx.is_game_connected and self.ctx.server:
+            self.ctx.pending_resync = True
 
     def _cmd_status(self):
         if isinstance(self.ctx, AE3Context):
@@ -101,8 +101,9 @@ class AE3CommandProcessor(ClientCommandProcessor):
                                 logger.info(f"                > {key}: {prog}")
 
                 if game_status > 0:
-                    required_keys : int = (len(self.ctx.progression.progression) - 3 +
-                                      self.ctx.post_game_condition.amounts[APHelper.keys.value])
+                    required_keys : int = (len(self.ctx.progression.progression) - 3)
+                    if APHelper.keys.value in self.ctx.post_game_condition.amounts:
+                        required_keys += self.ctx.post_game_condition.amounts[APHelper.keys.value]
                     all_keys : int = required_keys + self.ctx.extra_keys
 
                     logger.info(f"\n         Progression: {self.ctx.progression}")
@@ -137,9 +138,55 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
         logger.info(f" [-#-] Available Channels: {self.ctx.unlocked_channels + 1} / "
                     f"{sum(self.ctx.progression.progression[:-1]) + 1}")
-        for level in range(min(self.ctx.unlocked_channels + 1, len(LEVELS_BY_ORDER))):
-            logger.info(f"         [ {level + 1} ] "
-                        f"{LEVELS_BY_ORDER[self.ctx.progression.order[min(level, len(LEVELS_BY_ORDER) - 1)]]}")
+
+        group_set: list[list[int]] = []
+        count: int = 0
+        for i, channel_set in enumerate(self.ctx.progression.progression):
+            offset: int = 0
+            if i == 0:
+                offset = 1
+
+            target: int = count + channel_set + offset
+            group_set.append([_ for _ in self.ctx.progression.order[count: target]])
+            count = target
+
+        count: int = 0
+        end : bool = False
+        for i, sets in enumerate(group_set):
+            if not sets:
+                continue
+
+            if i and i < len(group_set) - 2:
+                logger.info(f"         - < {i} > -----")
+            elif i and i == len(group_set) - 1:
+                logger.info(f"         - < X > -----")
+            elif i:
+                tag: str = ""
+
+                if APHelper.keys.value in self.ctx.post_game_condition.amounts:
+                    tag += f"{self.ctx.post_game_condition.amounts[APHelper.keys.value] + i - 1}"
+                not_key_condition : list[str] = [k for k in self.ctx.post_game_condition.amounts.keys()
+                                                 if k != APHelper.keys.value]
+                if not_key_condition:
+                    tag += "!"
+
+                logger.info(f"         - < {tag} > -----")
+
+            for channels in sets:
+                logger.info(f"         [{count + 1}] {LEVELS_BY_ORDER[channels]}")
+
+                if count >= self.ctx.unlocked_channels:
+                    end = True
+                    break
+
+                count += 1
+
+            if end:
+                break
+
+        # for level in range(min(self.ctx.unlocked_channels + 1, len(LEVELS_BY_ORDER))):
+        #     logger.info(f"         [ {level + 1} ] "
+        #                 f"{LEVELS_BY_ORDER[self.ctx.progression.order[min(level, len(LEVELS_BY_ORDER) - 1)]]}")
 
     def _cmd_remaining(self):
         """List remaining locations to check to Goal."""
@@ -288,6 +335,7 @@ class AE3Context(CommonContext):
     # Server Properties and Cache
     next_item_slot : int = -1
     pending_deathlinks : int = 0
+    pending_resync : bool = False
     cached_locations_checked : Set[int]
     offline_locations_checked : Set[int] = set()
     cached_received_items : Set[NetworkItem]
@@ -471,6 +519,9 @@ class AE3Context(CommonContext):
             if APHelper.pgc_monkeys.value in data and data[APHelper.pgc_monkeys.value]:
                 amount : int = 434 if data[APHelper.pgc_monkeys.value] < 0 else data[APHelper.pgc_monkeys.value]
                 amounts[APHelper.monkey.value] = amount
+
+            if APHelper.pgc_bosses.value in data and data[APHelper.pgc_bosses.value]:
+                amounts[APHelper.bosses.value] = data[APHelper.pgc_bosses.value]
 
             if APHelper.pgc_cameras.value in data and data[APHelper.pgc_cameras.value]:
                 amounts[APHelper.camera.value] = data[APHelper.pgc_cameras.value]
@@ -846,9 +897,13 @@ async def check_game(ctx : AE3Context):
         await check_locations(ctx)
 
         # Revoke has just connected (of Game) status once the first checks are done
-        if ctx.has_just_connected:
+        if ctx.has_just_connected or ctx.pending_resync:
             await resync_important_items(ctx)
             ctx.has_just_connected = False
+
+            if ctx.pending_resync:
+                logger.info(" [-!-] Resyncing Complete!")
+                ctx.pending_resync = False
 
         # Sleep functions keep the client from being unresponsive
         await asyncio.sleep(0.5)
@@ -864,10 +919,6 @@ async def check_game(ctx : AE3Context):
 async def reconnect_game(ctx : AE3Context):
     ctx.ipc.connect_game()
     await asyncio.sleep(3)
-
-def resync_game(ctx : AE3Context):
-    if ctx.is_game_connected and ctx.server:
-        resync_important_items(ctx)
 
 # Starting point of function
 def launch():

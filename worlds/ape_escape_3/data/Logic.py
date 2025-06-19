@@ -479,6 +479,10 @@ class ProgressionMode:
         self.order = order
 
     def get_progress(self, keys : int, post_game_status : bool = False):
+        # Offset key count if Channel Keys are not part of Post Game Condition
+        if post_game_status and keys <= len(self.progression) - 2:
+            keys += 1
+
         # Do not include Blacklist set when checking for progress
         # Only include Post Game set when checking Progress if Post Game Conditions have been met
         limit : int = -2 if not post_game_status else -1
