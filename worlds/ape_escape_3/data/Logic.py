@@ -337,8 +337,6 @@ class ProgressionMode:
         return new_order
 
     def reorder(self, set_interest : int, channels : list[str]):
-        print("============================")
-        print("Interest:", set_interest)
         temp_progression = deepcopy(self.progression)
         # In the presence of padding sets, remove them first
         # Any ProgressionModes that requires the padding will handle putting it back themselves
@@ -350,8 +348,6 @@ class ProgressionMode:
         if set_interest < 0:
             set_interest = len(temp_progression) + set_interest
 
-        print("Interest (+)", set_interest)
-
         targets : list[int] = [
             LEVELS_BY_ORDER.index(channel) for channel in channels
             if channel in LEVELS_BY_ORDER
@@ -360,13 +356,7 @@ class ProgressionMode:
         if not targets:
             return
 
-        print("INCOMING:")
-        print(len(self.progression), sum(self.progression), self.progression)
-
         self.progression = deepcopy(temp_progression)
-
-        print("FILTERED")
-        print(len(self.progression), sum(self.progression), self.progression)
 
         additive = APHelper.additive.value in channels
 
@@ -383,9 +373,6 @@ class ProgressionMode:
                               for _ in self.order[count : target]])
             count = target
 
-        print("REPLACEMENT")
-        print(len(group_set), group_set)
-
         if additive:
             group_set[set_interest].extend(targets)
         else:
@@ -400,10 +387,6 @@ class ProgressionMode:
             temp_progression : list[int] = [len(_) for _ in group_set[:set_interest]]
             temp_set : list[list[int]] = []
 
-            print("INITIALIZE")
-            print(temp_order)
-            print(temp_progression)
-
             # Regenerate Group Set with new order for all the interest set and all sets before it
             if temp_order:
                 count : int = 0
@@ -411,14 +394,9 @@ class ProgressionMode:
                     target : int = count + channel_set
                     temp_set.append([_ for _ in temp_order[count : target]])
                     count = target
-                print("REARRANGE:")
-                print(len(group_set), group_set)
-                print(len(temp_set), temp_set)
+
                 temp_set.extend(group_set[set_interest:])
                 group_set = deepcopy(temp_set)
-
-            print("PRE-CLEAN")
-            print(len(group_set), group_set)
 
         # Clean Up
         for i, sets in enumerate(group_set):
@@ -440,10 +418,6 @@ class ProgressionMode:
 
         self.order = deepcopy(new_order)
         self.progression = deepcopy(new_progression)
-
-        print("RESULT:")
-        print(len(self.order), self.order)
-        print(len(self.progression), sum(self.progression), self.progression)
 
     def generate_rules(self, world : 'AE3World') -> dict[str, Rulesets]:
         channel_rules : dict[str, Rulesets] = {}
@@ -653,7 +627,7 @@ class Open(ProgressionMode):
 
         # Insert filler slots to simulate r
         if world is not None:
-            self.required_keys = world.options.open_progression_keys.value
+            self.required_keys = world.options.open_progression_keys.value - 1
             required_keys : list[int] = [0 for _ in range(self.required_keys)]
             self.progression[1:1] = required_keys
 

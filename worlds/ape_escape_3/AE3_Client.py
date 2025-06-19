@@ -31,6 +31,13 @@ class AE3CommandProcessor(ClientCommandProcessor):
     def __init__(self, ctx: CommonContext):
         super().__init__(ctx)
 
+    def _cmd_resync(self):
+        if not isinstance(self.ctx, AE3Context):
+            return
+
+        resync_game(self.ctx)
+        logger.info(" [-!-] Resyncing Complete!")
+
     def _cmd_status(self):
         if isinstance(self.ctx, AE3Context):
             logger.info(f" [-^-] Client Status")
@@ -56,6 +63,15 @@ class AE3CommandProcessor(ClientCommandProcessor):
                                 f"{str(self.ctx.goal_target.get_progress(self.ctx))} / "
                                 f"{self.ctx.goal_target.amount}")
 
+                # Display required Channel Keys to unlock the End Game for Open Progression
+                if self.ctx.progression.name == "Open":
+                    logger.info(f"\n        Open Progression requires Channel Keys")
+                    open_requirements_met : bool = self.ctx.keys >= len(self.ctx.progression.progression[1:-2])
+                    logger.info(f"        > Progress: "
+                                f"{self.ctx.keys} / "
+                                f"{len(self.ctx.progression.progression[1:-2]) + 1}"
+                                f"{'    [ COMPLETED! ]' if open_requirements_met else ''}")
+
                 if self.ctx.post_game_condition.amounts:
                     post_game_conditions : str = ""
                     for i, category in enumerate(self.ctx.post_game_condition.amounts.keys()):
@@ -63,9 +79,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
                         if i == len(self.ctx.post_game_condition.amounts.keys()) - 2:
                             post_game_conditions += " and"
-                        elif i == len(self.ctx.post_game_condition.amounts.keys()) - 1:
-                            post_game_conditions += "."
-                        else:
+                        elif i != len(self.ctx.post_game_condition.amounts.keys()) - 1:
                             post_game_conditions += ","
 
                     logger.info(f"\n         Post-Game requires{post_game_conditions}")
@@ -80,20 +94,24 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
                         if pgc_progress:
                             for key, value in pgc_progress.items():
-                                prog : str = f"{value[0]}/{value[1]}"
+                                prog : str = f"{value[0]} / {value[1]}"
                                 if value[0] >= value[1]:
                                     prog += f"    [ COMPLETE! ]"
 
                                 logger.info(f"                > {key}: {prog}")
 
                 if game_status > 0:
-                    all_keys : int = len(self.ctx.progression.progression) - 1
+                    required_keys : int = (len(self.ctx.progression.progression) - 3 +
+                                      self.ctx.post_game_condition.amounts[APHelper.keys.value])
+                    all_keys : int = required_keys + self.ctx.extra_keys
                     if self.ctx.post_game_access_rule_option < 4:
                         all_keys -= 1
 
                     logger.info(f"\n         Progression: {self.ctx.progression}")
-                    logger.info(f"         Channel Keys: {self.ctx.keys} / {all_keys}")
-                    logger.info(f"         Available Channels: {self.ctx.unlocked_channels + 1} / 28")
+                    logger.info(f"         Channel Keys: {self.ctx.keys} / {required_keys} "
+                                f"{f"+ {self.ctx.extra_keys} ({all_keys})" if self.ctx.extra_keys else ""}")
+                    logger.info(f"         Available Channels: {self.ctx.unlocked_channels + 1} / "
+                                f"{sum(self.ctx.progression.progression[:-1]) + 1}")
 
             else:
                 logger.info(f"         Disconnected from Server")
@@ -119,7 +137,8 @@ class AE3CommandProcessor(ClientCommandProcessor):
             logger.info(f" [!!!] Please connect to an Archipelago Server first!")
             return
 
-        logger.info(f" [-#-] Available Channels: {self.ctx.unlocked_channels + 1} / 28")
+        logger.info(f" [-#-] Available Channels: {self.ctx.unlocked_channels + 1} / "
+                    f"{sum(self.ctx.progression.progression[:-1]) + 1}")
         for level in range(min(self.ctx.unlocked_channels + 1, len(LEVELS_BY_ORDER))):
             logger.info(f"         [ {level + 1} ] "
                         f"{LEVELS_BY_ORDER[self.ctx.progression.order[min(level, len(LEVELS_BY_ORDER) - 1)]]}")
@@ -172,7 +191,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
         if progress:
             for key, value in progress.items():
-                prog: str = f"{value[0]}/{value[1]}"
+                prog: str = f"{value[0]} / {value[1]}"
                 if value[0] >= value[1]:
                     prog += f"    [ COMPLETE! ]"
 
@@ -337,6 +356,7 @@ class AE3Context(CommonContext):
     check_break_rooms : bool = False
     camerasanity : int = None
     cellphonesanity : bool = None
+    extra_keys : int = 0
 
     morph_duration : float = 0.0
 
@@ -450,7 +470,7 @@ class AE3Context(CommonContext):
             ## Get Post Game Conditions
             amounts : dict[str, int] = {}
 
-            if APHelper.pgc_monkeys.value in data:
+            if APHelper.pgc_monkeys.value in data and data[APHelper.pgc_monkeys.value]:
                 amount : int = 434 if data[APHelper.pgc_monkeys.value] < 0 else data[APHelper.pgc_monkeys.value]
                 amounts[APHelper.monkey.value] = amount
 
@@ -494,6 +514,10 @@ class AE3Context(CommonContext):
             ## Morph Duration
             if self.morph_duration == 0 and APHelper.base_morph_duration.value in data:
                 self.morph_duration = float(data[APHelper.base_morph_duration.value])
+
+            ## Extra Keys
+            if APHelper.extra_keys.value in data:
+                self.extra_keys = data[APHelper.extra_keys.value]
 
             ## Early Free Play
             if APHelper.early_free_play.value in data:
@@ -842,6 +866,10 @@ async def check_game(ctx : AE3Context):
 async def reconnect_game(ctx : AE3Context):
     ctx.ipc.connect_game()
     await asyncio.sleep(3)
+
+def resync_game(ctx : AE3Context):
+    if ctx.is_game_connected and ctx.server:
+        resync_important_items(ctx)
 
 # Starting point of function
 def launch():
