@@ -69,7 +69,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
                     open_requirements_met : bool = self.ctx.keys >= len(self.ctx.progression.progression[1:-2])
                     logger.info(f"        > Progress: "
                                 f"{self.ctx.keys} / "
-                                f"{len(self.ctx.progression.progression[1:-2]) + 1}"
+                                f"{len(self.ctx.progression.progression[1:-2])}"
                                 f"{'    [ COMPLETED! ]' if open_requirements_met else ''}")
 
                 if self.ctx.post_game_condition.amounts:
@@ -104,8 +104,6 @@ class AE3CommandProcessor(ClientCommandProcessor):
                     required_keys : int = (len(self.ctx.progression.progression) - 3 +
                                       self.ctx.post_game_condition.amounts[APHelper.keys.value])
                     all_keys : int = required_keys + self.ctx.extra_keys
-                    if self.ctx.post_game_access_rule_option < 4:
-                        all_keys -= 1
 
                     logger.info(f"\n         Progression: {self.ctx.progression}")
                     logger.info(f"         Channel Keys: {self.ctx.keys} / {required_keys} "
