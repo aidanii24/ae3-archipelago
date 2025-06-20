@@ -139,8 +139,8 @@ class GoalTarget(Choice):
     > play_jimmy - Capture 300 Monkeys
     > directors_cut - Capture all 20 Monkey Films (Forces Camerasanity to "enabled" if disabled)
     > phone_check - Activate all 53 Cellphones (Forces Cellphonesanity to be set to "enabled" if disabled)
-    > bonus_collector - Buy all the bonus items in the Shopping Area! (Forces Shoppingsanity to be set to "enabled"
-    if disabled)
+    > bonus_collector (COMING SOON) - Buy all the bonus items in the Shopping Area!
+    (Forces Shoppingsanity to be set to "enabled" if disabled)
     """
     display_name : str = "Goal Target"
     default = 0
@@ -152,7 +152,7 @@ class GoalTarget(Choice):
     option_play_jimmy : int = 4
     option_directors_cut : int = 5
     option_phone_check : int = 6
-    #option_bonus_collector : int = 7
+    # option_bonus_collector : int = 7
     # option_scavenger_hunt : int = 10
 
 class GoalTargetOverride(NamedRange):
@@ -166,7 +166,7 @@ class GoalTargetOverride(NamedRange):
     Pipo Monkeys (Play Spike/Play Jimmy): 434, 354 (No Break Room Monkeys)
     Pipo Cameras (Director's Cut): 20
     Cellphones (Phone Check): 53
-    Shop Items (Collector): #TODO Count Total Shop Items
+    Shop Items (Collector): (COMING SOON) 268
     """
     display_name : str = "Goal Target Override"
     default = 0
@@ -289,7 +289,7 @@ class PostGameConditionShopItems(Range):
 
 class PostGameConditionChannelKeys(Range):
     """
-    Specify the amount of Shop Items required to unlock the final set of channels (Post-Game).
+    Specify the amount of Channel Keys required to unlock the final set of channels (Post-Game).
     Default: 0
 
     To specify custom values, add it alongside the pre-existing options, copying their format.
