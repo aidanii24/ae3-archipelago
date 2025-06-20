@@ -366,6 +366,7 @@ class AE3World(World):
                 if self.options.post_game_condition_keys:
                     tag += f"{self.options.post_game_condition_keys.value + i - 1}"
                 if any([bool(self.options.post_game_condition_monkeys),
+                        bool(self.options.post_game_condition_bosses),
                         bool(self.options.post_game_condition_cameras),
                         bool(self.options.post_game_condition_cellphones)]):
                     tag += "!"

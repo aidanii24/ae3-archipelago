@@ -151,7 +151,6 @@ class AE3CommandProcessor(ClientCommandProcessor):
             count = target
 
         count: int = 0
-        end : bool = False
         for i, sets in enumerate(group_set):
             if not sets:
                 continue
@@ -159,7 +158,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
             if i and i < len(group_set) - 2:
                 logger.info(f"         - < {i} > -----")
             elif i and i == len(group_set) - 1:
-                logger.info(f"         - < X > -----")
+                break
             elif i:
                 tag: str = ""
 
@@ -172,21 +171,12 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
                 logger.info(f"         - < {tag} > -----")
 
-            for channels in sets:
-                logger.info(f"         [{count + 1}] {LEVELS_BY_ORDER[channels]}")
-
-                if count >= self.ctx.unlocked_channels:
-                    end = True
-                    break
-
-                count += 1
-
-            if end:
+            if count > self.ctx.unlocked_channels:
                 break
 
-        # for level in range(min(self.ctx.unlocked_channels + 1, len(LEVELS_BY_ORDER))):
-        #     logger.info(f"         [ {level + 1} ] "
-        #                 f"{LEVELS_BY_ORDER[self.ctx.progression.order[min(level, len(LEVELS_BY_ORDER) - 1)]]}")
+            for channels in sets:
+                logger.info(f"         [{count + 1}] {LEVELS_BY_ORDER[channels]}")
+                count += 1
 
     def _cmd_remaining(self):
         """List remaining locations to check to Goal."""

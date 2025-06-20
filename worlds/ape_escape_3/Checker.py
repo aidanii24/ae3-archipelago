@@ -500,7 +500,12 @@ async def check_locations(ctx : 'AE3Context'):
 
             await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
             await ctx.goal_target.check(ctx)
-            ctx.post_game_condition.check(ctx)
+
+            if ctx.post_game_condition.check(ctx):
+                new_unlocked : int = ctx.progression.get_progress(ctx.keys, True)
+                if ctx.unlocked_channels < new_unlocked:
+                    ctx.unlocked_channels = new_unlocked
+                    ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
         else:
             # When offline, save checked locations to a different set
