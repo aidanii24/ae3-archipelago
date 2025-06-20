@@ -289,7 +289,7 @@ class PostGameConditionShopItems(Range):
 
 class PostGameConditionChannelKeys(Range):
     """
-    Specify the amount of Channel Keys required to unlock the final set of channels (Post-Game).
+    Specify the amount of additional Channel Keys required to unlock the final set of channels (Post-Game).
     Default: 0
 
     To specify custom values, add it alongside the pre-existing options, copying their format.
