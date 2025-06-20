@@ -166,7 +166,7 @@ class GoalTargetOverride(NamedRange):
     Pipo Monkeys (Play Spike/Play Jimmy): 434, 354 (No Break Room Monkeys)
     Pipo Cameras (Director's Cut): 20
     Cellphones (Phone Check): 53
-    Shop Items (Collector): #TODO Count Total Shop Items
+    Shop Items (Collector): 268
     """
     display_name : str = "Goal Target Override"
     default = 0
