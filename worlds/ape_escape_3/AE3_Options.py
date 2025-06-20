@@ -280,6 +280,7 @@ class PostGameConditionShopItems(Range):
     The multiworld WILL refuse to generate otherwise.
     """
     display_name: str = "Post-Game Condition: Shop Items"
+    visibility = Visibility.none
     default = 0
 
     range_start = 0
@@ -470,6 +471,7 @@ class Shoppingsanity(Choice):
     > restock - Shop Items will become available as you find more Shop Stocks
     """
     display_name = "Shoppingsanity"
+    visibility = Visibility.none
     default = 0
 
     option_disabled : int = 0
