@@ -68,8 +68,11 @@ class GoalTarget:
 
         self.location_ids = {generate_name_to_id()[location] for location in self.locations}
 
-        if not self.amount or self.amount is None:
-            self.amount = len(self.locations) if not amount else min(amount, len(self.locations))
+        if amount:
+            if not self.amount or self.amount is None:
+                self.amount = len(self.locations) if not amount else min(amount, len(self.locations))
+            else:
+                self.amount = max(min(len(self.locations), amount), 0)
 
     def __bool__(self) -> bool:
         return bool(self.amount)
