@@ -238,9 +238,6 @@ class AE3World(World):
 
         self.item_pool = []
 
-        print(self.goal_target)
-        print("Amount:", self.goal_target.amount)
-
     def create_regions(self):
         create_regions(self)
 
