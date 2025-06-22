@@ -14,7 +14,7 @@ class ProgressionMode(Choice):
 
     > Singles - Each Stage will be unlocked one by one, as long as you find the Channel Key.
     > Group - Alternate between unlocking groups of stages and the bosses in between.
-    > World - Progression is similar to Group, but the bosses are unlocked along with their preceding stages.
+    > World - Progression is similar to Boss, but the bosses are unlocked along with their preceding stages.
     > Quadruples - Each set of Levels will have 4 channels each!
     > Open* - All levels except the final two are immediately unlocked, but a certain number amount of keys is needed
     to access the next level. The default required is 10 Channel Keys.
@@ -139,8 +139,8 @@ class GoalTarget(Choice):
     > play_jimmy - Capture 300 Monkeys
     > directors_cut - Capture all 20 Monkey Films (Forces Camerasanity to "enabled" if disabled)
     > phone_check - Activate all 53 Cellphones (Forces Cellphonesanity to be set to "enabled" if disabled)
-    > bonus_collector - Buy all the bonus items in the Shopping Area! (Forces Shoppingsanity to be set to "enabled"
-    if disabled)
+    > bonus_collector (COMING SOON) - Buy all the bonus items in the Shopping Area!
+    (Forces Shoppingsanity to be set to "enabled" if disabled)
     """
     display_name : str = "Goal Target"
     default = 0
@@ -152,7 +152,7 @@ class GoalTarget(Choice):
     option_play_jimmy : int = 4
     option_directors_cut : int = 5
     option_phone_check : int = 6
-    #option_bonus_collector : int = 7
+    # option_bonus_collector : int = 7
     # option_scavenger_hunt : int = 10
 
 class GoalTargetOverride(NamedRange):
@@ -166,7 +166,7 @@ class GoalTargetOverride(NamedRange):
     Pipo Monkeys (Play Spike/Play Jimmy): 434, 354 (No Break Room Monkeys)
     Pipo Cameras (Director's Cut): 20
     Cellphones (Phone Check): 53
-    Shop Items (Collector): 268
+    Shop Items (Collector): (COMING SOON) 268
     """
     display_name : str = "Goal Target Override"
     default = 0
