@@ -14,7 +14,7 @@ class ProgressionMode(Choice):
 
     > Singles - Each Stage will be unlocked one by one, as long as you find the Channel Key.
     > Group - Alternate between unlocking groups of stages and the bosses in between.
-    > World - Progression is similar to Boss, but the bosses are unlocked along with their preceding stages.
+    > World - Progression is similar to Group, but the bosses are unlocked along with their preceding stages.
     > Quadruples - Each set of Levels will have 4 channels each!
     > Open* - All levels except the final two are immediately unlocked, but a certain number amount of keys is needed
     to access the next level. The default required is 10 Channel Keys.
