@@ -92,8 +92,8 @@ class RandomizeProgressionChannelRange(OptionList):
         if len(self.value) == 0:
             return
 
-        if not any(isinstance(_, int) for _ in self.value):
-            assert "AE3 > RandomizeProgressionChannelCount: One or more item(s) is not an integer."
+        if not all(isinstance(_, int) for _ in self.value):
+            raise TypeError("AE3 > RandomizeProgressionChannelCount: One or more item(s) is not an integer.")
 
         # Treat as default if both values are 0
         if sum(self.value) == 0:
