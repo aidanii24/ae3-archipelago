@@ -79,7 +79,10 @@ class RandomizeProgressionChannelRange(OptionList):
     If a Set Count has been specified, it will be prioritized over this option,
     but generation will still attempt to respect this option as much as possible.
 
-    Format: [min, max], [value]
+    <!> WARNING: This option expects *a list of one or two integers*
+    Format (Range): [min, max]
+    Format (Set): [value]
+
     Absolute Minimum : 1
     Absolute Maximum : 28
     """
