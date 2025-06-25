@@ -51,7 +51,7 @@ class CameraLocation(AE3LocationMeta):
     def __init__(self, name : str, offset : int = 0):
         self.name = name
         # Cameras will be id'd linearly, based on the starting id definied by Pipo Camera in addresses.py
-        self.loc_id = NTSCU.Locations[Loc.pipo_camera.value] + offset
+        self.loc_id = NTSCU.Locations[name]
         self.address = self.loc_id
 
     def to_location(self, player : int, parent : Region) -> Location:
@@ -2065,11 +2065,9 @@ def generate_name_to_id() -> dict[str, int]:
     name_to_id : dict[str, int] = { name : MonkeyLocation(name).loc_id for name in MONKEYS_MASTER }
 
     # Cameras
-    name_to_id.update({name : CameraLocation(name, i).loc_id for i, name in enumerate(CAMERAS_MASTER)})
+    name_to_id.update({ cam.name : cam.loc_id for cam in [CameraLocation(name) for name in CAMERAS_MASTER] })
 
     # Cellphones
-    name_to_id.update(
-        {cell.name : cell.loc_id for cell in [CellphoneLocation(name) for name in CELLPHONES_MASTER]}
-    )
+    name_to_id.update({ cell.name : cell.loc_id for cell in [CellphoneLocation(name) for name in CELLPHONES_MASTER] })
 
     return name_to_id
