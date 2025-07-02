@@ -2060,7 +2060,8 @@ EVENTS_INDEX : dict[str, Sequence[str]] = {
 }
 
 LOCATIONS_INDEX : dict[str, Sequence[str]] = {
-    key : [*MONKEYS_INDEX.get(key, []), *CAMERAS_INDEX.get(key, []), *CELLPHONES_INDEX.get(key, [])]
+    key : [loc for loc in [*MONKEYS_INDEX.get(key, []), CAMERAS_INDEX.get(key, []), *CELLPHONES_INDEX.get(key, [])]
+           if loc]
     for key in [*{*MONKEYS_INDEX.keys(), *CAMERAS_INDEX.keys(), *CELLPHONES_INDEX.keys()}]
 }
 
