@@ -6,7 +6,7 @@ from math import ceil
 
 from .data.Addresses import VersionAddresses, get_version_addresses
 from .data.Items import HUD_OFFSETS
-from .data.Locations import CELLPHONES_ID_DUPLICATES, CELLPHONES_STAGE_DUPLICATES
+from .data.Locations import MONKEYS_BOSSES, CELLPHONES_ID_DUPLICATES, CELLPHONES_STAGE_DUPLICATES, BOSSES_ALTERNATIVE
 from .data.Stages import LEVELS_ID_BY_ORDER
 from .data.Strings import Itm, Loc, Meta, Game, APHelper, APConsole
 from .interface.pine import Pine
@@ -266,9 +266,28 @@ class AEPS2Interface:
     def get_gui_status(self) -> int:
         return self.pine.read_int8(self.addresses.GameStates[Game.gui_status.value])
 
-    def is_monkey_captured(self, name : str) -> bool:
+    def is_location_checked(self, name : str) -> bool:
         address : int = self.addresses.Locations[name]
-        return self.pine.read_int8(address) == 0x01
+        alt_address : int = address
+        has_alt : bool = False
+        alt_checked : bool = False
+
+        # Check Permanent State Storage Addresses as well for locations that use it
+        has_alt = name in BOSSES_ALTERNATIVE.keys()
+        if has_alt:
+            alt_address = self.addresses.Locations[BOSSES_ALTERNATIVE[name]]
+            alt_checked = self.pine.read_int8(alt_address) == 0x01
+
+        if not alt_checked:
+            checked : bool = self.pine.read_int8(address) == 0x01
+
+            # Mark the Permanent Address as well if the original address is checked
+            if has_alt:
+                self.pine.write_int8(alt_address, 0x01)
+        else:
+            checked : bool = True
+
+        return checked
 
     def is_camera_interacted(self) -> bool:
         address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
@@ -581,11 +600,11 @@ class AEPS2Interface:
         value = float_to_hex_int32(amount)
         self.pine.write_int32(address, value)
 
-    def capture_monkey(self, name : str):
+    def mark_location(self, name : str):
         address : int = self.addresses.Locations[name]
         self.pine.write_int8(address, 0x01)
 
-    def release_monkey(self, name : str):
+    def unmark_location(self, name : str):
         address : int = self.addresses.Locations[name]
         self.pine.write_int8(address, 0x00)
 

@@ -640,6 +640,18 @@ class NTSCU(VersionAddresses):
         Loc.boss_specter.value                  : 0x649bec,
         Loc.boss_specter_final.value            : 0x649b46,
 
+        # Permanent Boss Check Addresses
+        ## These are used to store permanently store the status of these locations,
+        ## as their real addresses affect and may even hinder game use and progression
+        Loc.boss_alt_white.value                : 0x649b50,
+        Loc.boss_alt_blue.value                 : 0x649b51,
+        Loc.boss_alt_yellow.value               : 0x649b52,
+        Loc.boss_alt_pink.value                 : 0x649b53,
+        Loc.boss_alt_red.value                  : 0x649b54,
+        Loc.boss_alt_tomoki.value               : 0x649b55,
+        Loc.boss_alt_specter.value              : 0x649b56,
+        Loc.boss_alt_specter_final.value        : 0x649b57,
+
         # Pipo Camera
         Loc.pipo_camera.value                   : 0x1F4,
         Loc.seaside_cam.value                   : 0x649B9A,
