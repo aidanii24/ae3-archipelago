@@ -45,12 +45,15 @@ async def check_background_states(ctx : 'AE3Context'):
         if ctx.ipc.is_in_pink_boss():
             ctx.monkeys_checklist = MONKEYS_BOSSES
             ctx.current_channel = APHelper.boss4.value
-        # Recheck locations by each stage while loading
+        # Recheck locations by a number of location groups while loading
         elif ctx.current_stage:
-            await recheck_location_groups(ctx)
-            await check_locations(ctx)
+            await sweep_locations(ctx, [*ctx.location_groups[:ctx.group_check_index * 20]])
 
-        return
+            if ctx.group_check_index * 20 >= len(ctx.location_groups):
+                ctx.group_check_index = 0
+            else:
+                ctx.group_check_index += 1
+
     elif new_channel != ctx.current_channel:
         if new_channel in MONKEYS_DIRECTORY:
             ctx.monkeys_checklist = MONKEYS_DIRECTORY[new_channel]
@@ -61,6 +64,18 @@ async def check_background_states(ctx : 'AE3Context'):
 
     ctx.current_channel = new_channel
 
+async def build_checked_cache(ctx : 'AE3Context'):
+    # Build Checked Locations cache if needed
+    if ctx.cache_missing:
+        await sweep_locations(ctx, [*ctx.cache_missing[:20]])
+        del ctx.cache_missing[:20]
+
+        return
+
+    ctx.post_game_condition.check(ctx)
+    await ctx.goal_target.check(ctx)
+
+# TODO Deprecate and Remove
 async def recheck_location_groups(ctx : 'AE3Context'):
     if ctx.monkeys_checklist_count >= len(ctx.monkeys_index):
         ctx.monkeys_checklist_count = 0
@@ -444,12 +459,11 @@ async def check_locations(ctx : 'AE3Context'):
 
         ## Special Case for Tomoki
         if ctx.current_channel == APHelper.boss6.value:
-            if ctx.ipc.is_tomoki_defeated():
+            if not ctx.ipc.is_location_checked(Loc.boss_alt_tomoki.value) and ctx.ipc.is_tomoki_defeated():
                 cleared.add(ctx.locations_name_to_id[Loc.boss_tomoki.value])
-                volatile_cleared.add(ctx.locations_name_to_id[Loc.boss_tomoki.value])
-                continue
+                ctx.ipc.mark_location(Loc.boss_alt_tomoki.value)
 
-        if ctx.ipc.is_location_checked(monkey):
+        elif ctx.ipc.is_location_checked(monkey):
             location_id : int = ctx.locations_name_to_id[monkey]
             cleared.add(location_id)
 
@@ -497,11 +511,6 @@ async def check_locations(ctx : 'AE3Context'):
         ctx.locations_checked.update(cleared)
 
         if ctx.server:
-            # Send Locations checked offline
-            if ctx.offline_locations_checked:
-                cleared.update(ctx.offline_locations_checked)
-                ctx.offline_locations_checked.clear()
-
             await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
             await ctx.goal_target.check(ctx)
 
@@ -510,14 +519,23 @@ async def check_locations(ctx : 'AE3Context'):
                 if ctx.unlocked_channels < new_unlocked:
                     ctx.unlocked_channels = new_unlocked
                     ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
+        else:
+            ctx.offline_locations_checked.update(cleared)
 
     # Save Session when Volatile Locations have been checked
     if volatile_cleared:
         ctx.checked_volatile_locations.update(volatile_cleared)
         ctx.save_session()
 
+async def update_offline_checked(ctx : 'AE3Context'):
+    if not ctx.offline_locations_checked:
+        return
+
+    await ctx.send_msgs([{"cmd": "LocationChecks", "locations": ctx.offline_locations_checked}])
+    ctx.offline_locations_checked.clear()
+
 # Used to check the in-game status of locations as stored in their permanent addresses
-def sweep_locations(ctx : 'AE3Context', batch : list[str]):
+async def sweep_locations(ctx : 'AE3Context', batch : list[str]):
     cleared : set[int] = set()
 
     for location in batch:
@@ -525,6 +543,21 @@ def sweep_locations(ctx : 'AE3Context', batch : list[str]):
             cleared.add(ctx.locations_name_to_id[location])
 
     ctx.locations_checked.update(cleared)
+
+    # Update Server for Locations checked that it did not know is checked
+    cleared = cleared.difference(ctx.checked_locations)
+    if cleared and ctx.server:
+        await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
+        await check_progression(ctx)
+
+async def check_progression(ctx : 'AE3Context'):
+    await ctx.goal_target.check(ctx)
+
+    if ctx.post_game_condition.check(ctx):
+        new_unlocked: int = ctx.progression.get_progress(ctx.keys, True)
+        if ctx.unlocked_channels < new_unlocked:
+            ctx.unlocked_channels = new_unlocked
+            ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
 def dispatch_dummy_morph(ctx : 'AE3Context', unlock : bool = False):
     if not ctx.dummy_morph or ctx.dummy_morph is None or not ctx.dummy_morph_needed:

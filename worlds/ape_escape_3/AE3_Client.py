@@ -17,8 +17,8 @@ from settings import get_settings
 
 from .data.Strings import Meta, APConsole
 from .data.Logic import ProgressionMode, ProgressionModeOptions
-from .data.Locations import CELLPHONES_MASTER, MONKEYS_MASTER, MONKEYS_MASTER_ORDERED, \
-    CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED
+from .data.Locations import MONKEYS_MASTER, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED, \
+    LOCATIONS_INDEX
 from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER
 from .data.Rules import GoalTarget, GoalTargetOptions, PostGameCondition
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
@@ -75,7 +75,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
                 if self.ctx.post_game_condition.amounts:
                     post_game_conditions : str = ""
                     for i, category in enumerate(self.ctx.post_game_condition.amounts.keys()):
-                        post_game_conditions += (f" {category}")
+                        post_game_conditions += f" {category}"
 
                         if i == len(self.ctx.post_game_condition.amounts.keys()) - 2:
                             post_game_conditions += " and"
@@ -328,7 +328,6 @@ class AE3Context(CommonContext):
     pending_resync : bool = False
     cached_locations_checked : Set[int]
     offline_locations_checked : Set[int] = set()
-    cached_received_items : Set[NetworkItem]
     monkeys_index : list[Sequence[str]] = []
 
     should_deathlink_tag_update : bool = False
@@ -336,12 +335,13 @@ class AE3Context(CommonContext):
     # APWorld Properties
     locations_name_to_id : dict[str, int] = Locations.generate_name_to_id()
     items_name_to_id : dict[str, int] = Items.generate_name_to_id()
+    location_groups : list[list[str]] = [[*locations] for locations in LOCATIONS_INDEX.values()]
+    group_check_index : int = 0
 
+    cache_missing : list[list[str]] = location_groups.copy()
     monkeys_checklist : Sequence[str] = MONKEYS_MASTER
     monkeys_checklist_count : int = 0
     checked_monkeys_cache : set[int] = set()
-
-    cellphones_checklist : Sequence[str] = CELLPHONES_MASTER
 
     # Session Properties
     keys : int = 0
@@ -409,7 +409,6 @@ class AE3Context(CommonContext):
         self.ipc = AEPS2Interface(logger)
 
         self.cached_locations_checked = set()
-        self.cached_received_items = set()
         for lists in [*MONKEYS_DIRECTORY.values()]:
             if lists not in self.monkeys_index:
                 self.monkeys_index.append(lists)
@@ -566,6 +565,10 @@ class AE3Context(CommonContext):
             if APHelper.death_link.value in data:
                 self.death_link = bool(data[APHelper.death_link.value])
                 Utils.async_start(self.update_death_link(self.death_link))
+
+            # Initiate Checked Locations Cache Rebuilding if necessary:
+            if not self.locations_checked and not self.cache_missing:
+                self.cache_missing = self.location_groups.copy()
 
         elif cmd == APHelper.cmd_rcv.value:
             index = args["index"]
@@ -869,6 +872,14 @@ async def check_game(ctx : AE3Context):
             await asyncio.sleep(1)
             return
 
+        # If there are offline locations to send, do so
+        if ctx.offline_locations_checked:
+            await update_offline_checked(ctx)
+
+        # Build Checked Location Cache
+        if not ctx.cache_missing:
+            await build_checked_cache(ctx)
+
         # Get Character
         if ctx.character < 0:
             ctx.character = ctx.ipc.get_character()
@@ -876,7 +887,7 @@ async def check_game(ctx : AE3Context):
         # Setup Stage when needed and double check locations
         if ctx.current_channel == APHelper.travel_station.value:
             await setup_level_select(ctx)
-            await recheck_location_groups(ctx)
+            # await recheck_location_groups(ctx) TODO Deprecate and Remove
         else:
             await setup_area(ctx)
 

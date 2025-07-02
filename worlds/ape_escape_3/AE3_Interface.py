@@ -351,6 +351,12 @@ class AEPS2Interface:
         return self.pine.read_int8(self.addresses.GameStates[Game.in_pink_stage.value]) == 0x02
 
     def is_tomoki_defeated(self) -> bool:
+        # Check Permanent Address first
+        permanent_checked : bool = self.is_location_checked(Loc.boss_alt_tomoki.value)
+
+        if permanent_checked:
+            return True
+
         address : int = self.follow_pointer_chain(self.addresses.Locations[Loc.boss_tomoki.value],
                                                   Loc.boss_tomoki.value)
 
@@ -361,6 +367,10 @@ class AEPS2Interface:
         value_raw : int = self.pine.read_int32(address)
 
         value : float = hex_int32_to_float(value_raw)
+
+        # Change the State value in Dr. Tomoki's Permanent State Address
+        if value <= 0.0:
+            self.mark_location(Loc.boss_alt_tomoki.value)
 
         return value <= 0.0
 
