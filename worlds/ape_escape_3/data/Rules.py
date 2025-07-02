@@ -89,19 +89,19 @@ class GoalTarget:
         self.locations = { * self.locations, *locations }
 
     async def check(self, ctx : 'AE3Context'):
-        checked: set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
+        checked: set[int] = ctx.locations_checked
 
         if len(self.location_ids.intersection(checked)) >= self.amount and not ctx.game_goaled:
             await ctx.goal()
 
     def get_progress(self, ctx : 'AE3Context') -> int:
-        checked: set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
+        checked: set[int] = ctx.locations_checked
         progress : int = len(self.location_ids.intersection(checked))
 
         return progress
 
     def get_remaining(self, ctx : 'AE3Context') -> list[str]:
-        checked: set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
+        checked: set[int] = ctx.locations_checked
         progressed : set[int] = self.location_ids.intersection(checked)
 
         name_to_id : dict[str, int] = generate_name_to_id()
@@ -233,7 +233,7 @@ class PostGameCondition:
         if self.passed:
             return True
 
-        total_checked : set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
+        total_checked : set[int] = ctx.locations_checked.copy()
 
         passed : bool = True
 
@@ -256,7 +256,7 @@ class PostGameCondition:
         return False
 
     def get_progress(self, ctx : 'AE3Context') -> dict[str, list[int]]:
-        total_checked: set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
+        total_checked: set[int] = ctx.locations_checked.copy()
 
         progress : dict[str, list[int]] = {}
         for category in self.location_categories:
@@ -271,7 +271,7 @@ class PostGameCondition:
         return progress
 
     def get_remaining(self, ctx : 'AE3Context') -> dict[str, list[str]]:
-        checked : set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
+        checked : set[int] = ctx.locations_checked
 
         remaining : dict[str, list[str]] = {}
         for category in self.location_categories:
