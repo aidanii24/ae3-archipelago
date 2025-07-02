@@ -122,13 +122,13 @@ async def setup_level_select(ctx : 'AE3Context'):
         bosses_indexes : list[int] = [0x03, 0x08, 0xC, 0x11, 0x15, -1, -2, 0x1B]
         if selected_channel in bosses_indexes:
             boss : str = MONKEYS_BOSSES[bosses_indexes.index(selected_channel)]
-            boss_captured : bool = ctx.ipc.is_monkey_captured(boss)
+            boss_captured : bool = ctx.ipc.is_location_checked(boss)
 
             if boss_captured and button == 0x5:
-                ctx.ipc.release_monkey(boss)
+                ctx.ipc.unmark_location(boss)
             elif (not boss_captured and ctx.locations_name_to_id[boss] in ctx.checked_volatile_locations and
                   button == 0xA):
-                ctx.ipc.capture_monkey(boss)
+                ctx.ipc.mark_location(boss)
 
         # Reset Game Mode Swap state and Set Game Mode value to an unexpected value
         # as sign that the game has not yet set it
@@ -449,27 +449,29 @@ async def check_locations(ctx : 'AE3Context'):
                 volatile_cleared.add(ctx.locations_name_to_id[Loc.boss_tomoki.value])
                 continue
 
-        if ctx.ipc.is_monkey_captured(monkey):
+        if ctx.ipc.is_location_checked(monkey):
             location_id : int = ctx.locations_name_to_id[monkey]
             cleared.add(location_id)
-            ctx.checked_monkeys_cache.add(location_id)
-
-            if monkey in MONKEYS_BOSSES:
-                volatile_cleared.add(location_id)
 
     if not ctx.current_channel == APHelper.travel_station.value:
         # Camera Check
         if ctx.camerasanity and ctx.current_stage in CAMERAS_STAGE_INDEX:
-            if ctx.ipc.is_camera_interacted():
-                are_actors_ready : bool = True
-                if ctx.camerasanity == 1:
-                    for actor in ACTORS_INDEX[CAMERAS_STAGE_INDEX[ctx.current_stage]]:
-                        are_actors_ready = are_actors_ready and not ctx.ipc.is_monkey_captured(actor)
+            if ctx.ipc.is_location_checked(CAMERAS_STAGE_INDEX[ctx.current_stage]):
+                location_id: int = ctx.locations_name_to_id[CAMERAS_STAGE_INDEX[ctx.current_stage]]
+                cleared.add(location_id)
+            elif ctx.ipc.is_camera_interacted():
+                camera_name : str = CAMERAS_STAGE_INDEX[ctx.current_stage]
 
-                if are_actors_ready:
-                    location_id : int = ctx.locations_name_to_id[CAMERAS_STAGE_INDEX[ctx.current_stage]]
-                    cleared.add(location_id)
-                    volatile_cleared.add(location_id)
+                if not ctx.ipc.is_location_checked(camera_name):
+                    are_actors_ready : bool = True
+                    if ctx.camerasanity == 1:
+                        for actor in ACTORS_INDEX[camera_name]:
+                            are_actors_ready = are_actors_ready and not ctx.ipc.is_location_checked(actor)
+
+                    if are_actors_ready:
+                        location_id : int = ctx.locations_name_to_id[camera_name]
+                        cleared.add(location_id)
+                        ctx.ipc.mark_location(camera_name)
 
         # Check if there's any new checks from Monkeys/Cameras before checking cellphone
         cleared = cleared.difference(ctx.checked_locations)
@@ -479,10 +481,12 @@ async def check_locations(ctx : 'AE3Context'):
         interacting_with_phone : bool = gui_status > 1 or (gui_status and not cleared)
         if ctx.cellphonesanity and interacting_with_phone and ctx.current_stage in CELLPHONES_STAGE_INDEX:
             tele_text_id : str = ctx.ipc.get_cellphone_interacted(ctx.current_stage)
-            if tele_text_id in CELLPHONES_STAGE_INDEX[ctx.current_stage] and tele_text_id in Cellphone_Name_to_ID:
+            if (not ctx.ipc.is_location_checked(tele_text_id) and
+                    tele_text_id in CELLPHONES_STAGE_INDEX[ctx.current_stage] and
+                    tele_text_id in Cellphone_Name_to_ID):
                 location_id : int = ctx.locations_name_to_id[Cellphone_Name_to_ID[tele_text_id]]
+                ctx.ipc.mark_location(tele_text_id)
                 cleared.add(location_id)
-                volatile_cleared.add(location_id)
 
     # Get newly checked locations
     cleared = cleared.difference(ctx.checked_locations)
@@ -507,14 +511,20 @@ async def check_locations(ctx : 'AE3Context'):
                     ctx.unlocked_channels = new_unlocked
                     ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
-        else:
-            # When offline, save checked locations to a different set
-            ctx.offline_locations_checked.update(cleared)
-
     # Save Session when Volatile Locations have been checked
     if volatile_cleared:
         ctx.checked_volatile_locations.update(volatile_cleared)
         ctx.save_session()
+
+# Used to check the in-game status of locations as stored in their permanent addresses
+def sweep_locations(ctx : 'AE3Context', batch : list[str]):
+    cleared : set[int] = set()
+
+    for location in batch:
+        if ctx.ipc.is_location_checked(location):
+            cleared.add(ctx.locations_name_to_id[location])
+
+    ctx.locations_checked.update(cleared)
 
 def dispatch_dummy_morph(ctx : 'AE3Context', unlock : bool = False):
     if not ctx.dummy_morph or ctx.dummy_morph is None or not ctx.dummy_morph_needed:

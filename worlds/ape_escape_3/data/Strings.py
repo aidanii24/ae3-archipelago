@@ -593,6 +593,16 @@ class Loc(BaseEnum):
     boss_specter                = "Specter"
     boss_specter_final          = "Specter Finale"
 
+    # Permanent Boss Check Address
+    boss_alt_white              = "Monkey White - Monkey White Battle!"
+    boss_alt_blue               = "Monkey Blue - Monkey Blue Battle!"
+    boss_alt_yellow             = "Monkey Yellow - Monkey Yellow Battle!"
+    boss_alt_pink               = "Monkey Pink - Monkey Pink Battle!"
+    boss_alt_red                = "Monkey Red - Monkey Red Battle!"
+    boss_alt_tomoki             = "Dr. Tomoki - Dr. Tomoki Battle!"
+    boss_alt_specter            = "Specter - Specter Battle!"
+    boss_alt_specter_final      = "Specter Final - Specter's Final Battle!"
+
     # Pipo Cameras
     pipo_camera                 = "Pipo Camera"
     seaside_cam                 = "Pipo Camera - Seaside Resort"

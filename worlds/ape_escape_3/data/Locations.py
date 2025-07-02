@@ -1245,6 +1245,17 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.region_specter2.value         : MONKEYS_SPECTER_FINALE
 }
 
+BOSSES_ALTERNATIVE : dict[str, str] = {
+    Loc.boss_monkey_white.value         : Loc.boss_alt_white.value,
+    Loc.boss_monkey_blue.value          : Loc.boss_alt_blue.value,
+    Loc.boss_monkey_yellow.value        : Loc.boss_alt_yellow.value,
+    Loc.boss_monkey_pink.value          : Loc.boss_alt_pink.value,
+    Loc.boss_monkey_red.value           : Loc.boss_alt_red.value,
+    Loc.boss_tomoki.value               : Loc.boss_alt_tomoki.value,
+    Loc.boss_specter.value              : Loc.boss_alt_specter.value,
+    Loc.boss_specter_final.value        : Loc.boss_alt_specter_final.value,
+}
+
 MONKEYS_DIRECTORY : dict[str, Sequence[str]] = {
     APHelper.zero.value                 : MONKEYS_ZERO,
     APHelper.seaside.value              : MONKEYS_SEASIDE,
