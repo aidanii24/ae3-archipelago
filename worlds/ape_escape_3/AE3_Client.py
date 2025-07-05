@@ -873,7 +873,7 @@ async def check_game(ctx : AE3Context):
             return
 
         # Initialize important variables if not yet initialized
-        if ctx.last_item_processed_index:
+        if ctx.last_item_processed_index < 0:
             ctx.last_item_processed_index = ctx.ipc.get_last_item_index()
 
         # If there are offline locations to send, do so
