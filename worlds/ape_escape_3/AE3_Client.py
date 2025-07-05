@@ -872,6 +872,10 @@ async def check_game(ctx : AE3Context):
             await asyncio.sleep(1)
             return
 
+        # Initialize important variables if not yet initialized
+        if ctx.last_item_processed_index:
+            ctx.last_item_processed_index = ctx.ipc.get_last_item_index()
+
         # If there are offline locations to send, do so
         if ctx.offline_locations_checked:
             await update_offline_checked(ctx)
