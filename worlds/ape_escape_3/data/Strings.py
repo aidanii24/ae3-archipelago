@@ -1846,6 +1846,14 @@ class Game(BaseEnum):
     restart_stage =         "restartStage"
     kill_player =           "killPlayer"
 
+    # Persistence
+    last_cookies =          "Last Cookies"
+    last_morph_energy =     "Last Morph Energy"
+    last_morph_stock =      "Last Morph Stocks"
+
+    # Archipelago
+    last_item_index =      "Last Item Index"
+
     @classmethod
     def get_morph_duration(cls, girl : bool = False):
         if not girl:
