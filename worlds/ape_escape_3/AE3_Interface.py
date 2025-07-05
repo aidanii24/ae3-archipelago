@@ -374,6 +374,18 @@ class AEPS2Interface:
 
         return value <= 0.0
 
+    def get_last_item_index(self) -> int:
+        return self.pine.read_int32(self.addresses.GameStates[Game.last_item_index.value])
+
+    def get_persistent_cookie_value(self) -> float:
+        return self.pine.read_int32(self.addresses.GameStates[Game.last_cookies.value])
+
+    def get_persistent_morph_energy_value(self) -> float:
+        return self.pine.read_int32(self.addresses.GameStates[Game.last_morph_energy.value])
+
+    def get_persistent_morph_stock_value(self) -> float:
+        return self.pine.read_int32(self.addresses.GameStates[Game.last_morph_stock.value])
+
     # { Game Manipulation }
     def set_progress(self, progress : str = APHelper.pr_round2.value):
         addr : int = self.addresses.GameStates[Game.progress.value]
@@ -635,3 +647,18 @@ class AEPS2Interface:
     def change_area(self, destination : str):
         self.set_change_area_destination(destination)
         self.send_command(Game.change_area.value)
+
+    def set_last_item_index(self, value : int):
+        self.pine.write_int32(self.addresses.GameStates[Game.last_item_index.value], value)
+
+    def set_persistent_cookie_value(self, value : float):
+        as_bytes = float_to_hex_int32(value)
+        self.pine.write_int32(self.addresses.GameStates[Game.last_cookies.value], as_bytes)
+
+    def set_persistent_morph_energy_value(self, value : float):
+        as_bytes = float_to_hex_int32(value)
+        self.pine.write_int32(self.addresses.GameStates[Game.last_morph_energy.value], as_bytes)
+
+    def set_persistent_morph_stock_value(self, value : float):
+        as_bytes = float_to_hex_int32(value)
+        self.pine.write_int32(self.addresses.GameStates[Game.last_morph_stock.value], as_bytes)
