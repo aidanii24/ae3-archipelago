@@ -813,6 +813,14 @@ class NTSCU(VersionAddresses):
         Game.command.value              : 0x772030,
         Game.area_dest.value            : 0x772050,
         Game.spawn.value                : 0x772070,
+
+        # Persistence
+        Game.last_cookies.value         : 0x6499C8,
+        Game.last_morph_energy.value    : 0x6499CC,
+        Game.last_morph_stock.value     : 0x6499D0,
+
+        # Archipelago
+        Game.last_item_index.value      : 0x6499C4
     }
 
     ### [< --- POINTER CHAINS --- >]
