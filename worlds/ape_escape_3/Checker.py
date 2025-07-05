@@ -395,6 +395,9 @@ async def check_items(ctx : 'AE3Context'):
                 ctx.ipc.give_collectable(item.resource, i.amount, maximum)
 
     if received:
+        # Save Last Item Index Processed into Game Memory
+        ctx.ipc.set_last_item_index(ctx.last_item_processed_index)
+
         # Recheck Locations when receiving items for cases when locations are checked manually by the server/host
         await ctx.goal_target.check(ctx)
 
