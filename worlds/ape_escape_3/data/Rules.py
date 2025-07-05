@@ -73,6 +73,8 @@ class GoalTarget:
                 self.amount = len(self.locations) if not amount else min(amount, len(self.locations))
             else:
                 self.amount = max(min(len(self.locations), amount), 0)
+        elif not self.amount or self.amount is None:
+            self.amount = len(self.locations)
 
     def __bool__(self) -> bool:
         return bool(self.amount)
@@ -89,7 +91,7 @@ class GoalTarget:
         self.locations = { * self.locations, *locations }
 
     async def check(self, ctx : 'AE3Context'):
-        checked: set[int] = ctx.locations_checked
+        checked: set[int] = ctx.locations_checked.copy()
 
         if len(self.location_ids.intersection(checked)) >= self.amount and not ctx.game_goaled:
             await ctx.goal()

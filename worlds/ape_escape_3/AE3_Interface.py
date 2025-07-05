@@ -269,11 +269,10 @@ class AEPS2Interface:
     def is_location_checked(self, name : str) -> bool:
         address : int = self.addresses.Locations[name]
         alt_address : int = address
-        has_alt : bool = False
         alt_checked : bool = False
 
         # Check Permanent State Storage Addresses as well for locations that use it
-        has_alt = name in BOSSES_ALTERNATIVE.keys()
+        has_alt : bool = name in BOSSES_ALTERNATIVE.keys()
         if has_alt:
             alt_address = self.addresses.Locations[BOSSES_ALTERNATIVE[name]]
             alt_checked = self.pine.read_int8(alt_address) == 0x01
