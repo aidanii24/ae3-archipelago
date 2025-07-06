@@ -348,6 +348,7 @@ class AE3Context(CommonContext):
     unlocked_channels : int = 0
     current_channel: str = None
     current_stage : str = None
+    in_travel_station : bool = False
     last_selected_channel_index : int = -1
     character : int = -1
     player_control : bool = False
@@ -889,7 +890,7 @@ async def check_game(ctx : AE3Context):
             ctx.character = ctx.ipc.get_character()
 
         # Setup Stage when needed and double check locations
-        if ctx.current_channel == APHelper.travel_station.value:
+        if ctx.in_travel_station:
             await setup_level_select(ctx)
             # await recheck_location_groups(ctx) TODO Deprecate and Remove
         else:
@@ -899,7 +900,11 @@ async def check_game(ctx : AE3Context):
 
         # Check Progression
         await check_items(ctx)
-        await check_locations(ctx)
+
+        if not ctx.in_travel_station:
+            await check_locations(ctx)
+        else:
+            await sweep_recheck_locations(ctx)
 
         # Revoke has just connected (of Game) status once the first checks are done
         if ctx.has_just_connected or ctx.pending_resync:

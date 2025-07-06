@@ -281,7 +281,7 @@ class AEPS2Interface:
             checked : bool = self.pine.read_int8(address) == 0x01
 
             # Mark the Permanent Address as well if the original address is checked
-            if has_alt:
+            if has_alt and checked:
                 self.pine.write_int8(alt_address, 0x01)
         else:
             checked : bool = True

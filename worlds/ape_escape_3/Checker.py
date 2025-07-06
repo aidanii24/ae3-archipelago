@@ -48,15 +48,7 @@ async def check_background_states(ctx : 'AE3Context'):
             ctx.current_channel = APHelper.boss4.value
         # Recheck locations by a number of location groups while loading
         elif ctx.current_stage:
-            print("Rechecking")
-            batch : list[str] = list(itertools.chain.from_iterable(
-                [*ctx.location_groups[ctx.group_check_index * 20 :ctx.group_check_index * 20 + 20]]))
-            await sweep_locations(ctx, batch)
-
-            if ctx.group_check_index * 20 >= len(ctx.location_groups):
-                ctx.group_check_index = 0
-            else:
-                ctx.group_check_index += 1
+            await sweep_recheck_locations(ctx)
 
     elif new_channel != ctx.current_channel:
         if new_channel in MONKEYS_DIRECTORY:
@@ -67,11 +59,21 @@ async def check_background_states(ctx : 'AE3Context'):
         return
 
     ctx.current_channel = new_channel
+    ctx.in_travel_station = ctx.current_channel == APHelper.travel_station.value
+
+async def sweep_recheck_locations(ctx : 'AE3Context'):
+    batch: list[str] = list(itertools.chain.from_iterable(
+        [*ctx.location_groups[ctx.group_check_index * 20:ctx.group_check_index * 20 + 20]]))
+    await sweep_locations(ctx, batch)
+
+    if ctx.group_check_index * 20 >= len(ctx.location_groups):
+        ctx.group_check_index = 0
+    else:
+        ctx.group_check_index += 1
 
 async def build_checked_cache(ctx : 'AE3Context'):
     # Build Checked Locations cache if needed
     if ctx.cache_missing:
-        print("Building Cache")
         await sweep_locations(ctx, [*ctx.cache_missing[:20]])
         del ctx.cache_missing[:20]
 
@@ -454,7 +456,6 @@ async def resync_important_items(ctx : 'AE3Context'):
         ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
 async def check_locations(ctx : 'AE3Context'):
-    print("Checking Locations...")
     cleared : Set[int] = set()
     volatile_cleared : Set[int] = set()
 
@@ -518,7 +519,6 @@ async def check_locations(ctx : 'AE3Context'):
     # Send newly checked locations to server
     if cleared:
         ctx.locations_checked.update(cleared)
-        print("New Checked:", cleared)
 
         if ctx.server:
             await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
@@ -537,8 +537,6 @@ async def check_locations(ctx : 'AE3Context'):
         ctx.checked_volatile_locations.update(volatile_cleared)
         ctx.save_session()
 
-    print("<> End of Location Check")
-
 async def update_offline_checked(ctx : 'AE3Context'):
     if not ctx.offline_locations_checked:
         return
@@ -550,7 +548,6 @@ async def update_offline_checked(ctx : 'AE3Context'):
 async def sweep_locations(ctx : 'AE3Context', batch : list[str]):
     cleared : set[int] = set()
 
-    print(type(batch), batch)
     for location in batch:
         if ctx.ipc.is_location_checked(location):
             cleared.add(ctx.locations_name_to_id[location])
@@ -562,8 +559,6 @@ async def sweep_locations(ctx : 'AE3Context', batch : list[str]):
     if cleared and ctx.server:
         await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
         await check_progression(ctx)
-
-    print(">>>>>>>>>>>>>>>>")
 
 async def check_progression(ctx : 'AE3Context'):
     await ctx.goal_target.check(ctx)
