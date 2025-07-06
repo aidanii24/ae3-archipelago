@@ -505,9 +505,9 @@ async def check_locations(ctx : 'AE3Context'):
         interacting_with_phone : bool = gui_status > 1 or (gui_status and not cleared)
         if ctx.cellphonesanity and interacting_with_phone and ctx.current_stage in CELLPHONES_STAGE_INDEX:
             tele_text_id : str = ctx.ipc.get_cellphone_interacted(ctx.current_stage)
-            if (not ctx.ipc.is_location_checked(tele_text_id) and
-                    tele_text_id in CELLPHONES_STAGE_INDEX[ctx.current_stage] and
-                    tele_text_id in Cellphone_Name_to_ID):
+            if (tele_text_id in CELLPHONES_STAGE_INDEX[ctx.current_stage] and
+                    tele_text_id in Cellphone_Name_to_ID and
+                    not ctx.ipc.is_location_checked(tele_text_id)):
                 location_id : int = ctx.locations_name_to_id[Cellphone_Name_to_ID[tele_text_id]]
                 ctx.ipc.mark_location(tele_text_id)
                 cleared.add(location_id)
@@ -533,6 +533,7 @@ async def check_locations(ctx : 'AE3Context'):
             ctx.offline_locations_checked.update(cleared)
 
     # Save Session when Volatile Locations have been checked
+    # TODO Deprecate and Remove old Volatile Clear Code
     if volatile_cleared:
         ctx.checked_volatile_locations.update(volatile_cleared)
         ctx.save_session()
@@ -549,8 +550,9 @@ async def sweep_locations(ctx : 'AE3Context', batch : list[str]):
     cleared : set[int] = set()
 
     for location in batch:
+        name : str = location if location not in Cellphone_Name_to_ID.keys() else Cellphone_Name_to_ID[location]
         if ctx.ipc.is_location_checked(location):
-            cleared.add(ctx.locations_name_to_id[location])
+            cleared.add(ctx.locations_name_to_id[name])
 
     ctx.locations_checked.update(cleared)
 
