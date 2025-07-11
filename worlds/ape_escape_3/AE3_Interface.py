@@ -433,7 +433,6 @@ class AEPS2Interface:
 
     def set_cookies(self, amount : float):
         self.pine.write_float(self.addresses.GameStates[Game.cookies.value], amount)
-        # self.pine.write_int32(self.addresses.GameStates[Game.cookies.value], as_int)
 
     def clear_equipment(self):
         for button in self.addresses.BUTTONS_BY_INTERNAL:
@@ -527,6 +526,7 @@ class AEPS2Interface:
             value = min(current + amount, maximum)
             self.pine.write_int32(address, value)
         elif isinstance(amount, float):
+            value = int(min(current + amount, maximum))
             self.pine.write_float(address, min(current + amount, maximum))
 
         self.update_hud(address_name, value)
@@ -606,7 +606,6 @@ class AEPS2Interface:
             cookies : float = self.get_cookies()
             self.set_cookies(max(0.0, cookies - cookies_lost))
 
-        ### <!> EXPERIMENTAL
         ## self.send_command(Game.kill_player.value) has a transition delay that takes too long
         ## changeArea is more instantaneous, but introduces a buggy respawn when all cookies are depleted
         self.change_area(self.get_stage())
