@@ -920,8 +920,6 @@ async def check_game(ctx : AE3Context):
 
         await asyncio.sleep(1)
 
-    print(ctx.current_game_mode, ctx.ipc.get_current_game_mode())
-
 async def reconnect_game(ctx : AE3Context):
     ctx.ipc.connect_game()
     await asyncio.sleep(3)
