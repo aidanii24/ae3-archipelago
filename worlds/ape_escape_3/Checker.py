@@ -133,9 +133,9 @@ async def setup_level_select(ctx : 'AE3Context'):
             if not is_checked:
                 ctx.ipc.set_progress(target_progress)
             else:
-                if progress != target_progress and button == 0x5:
+                if progress != target_progress and button == 0x5:   # Cross/Circle
                     ctx.ipc.set_progress(target_progress)
-                elif progress == target_progress and button == 0xA:
+                elif progress == target_progress and button == 0xA: # SELECT
                     ctx.ipc.set_progress()
         elif progress != APHelper.pr_round2.value:
             ctx.ipc.set_progress()
@@ -196,6 +196,9 @@ async def setup_level_select(ctx : 'AE3Context'):
     # Reset the spawnpoint properly as the game leaves it blank when coming from TV Station
     if is_a_level_confirmed:
         ctx.ipc.clear_spawn()
+
+        if ctx.ipc.get_button_pressed() == 0x07:
+            toggle_freeplay(ctx)
 
         # If Channel Shuffle is enabled, force switch the game to load the randomized channel
         if not ctx.is_channel_swapped:
