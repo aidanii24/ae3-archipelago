@@ -354,7 +354,7 @@ class AE3Context(CommonContext):
     player_control : bool = False
 
     swap_freeplay : bool = False
-    is_mode_swapped : bool = True
+    is_mode_swapped : bool = False
     is_channel_swapped : bool = False
 
     ## Command State can be in either of 3 stages:
