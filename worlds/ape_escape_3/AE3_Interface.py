@@ -1,12 +1,11 @@
 from typing import Optional, Sequence
 from logging import Logger
 from enum import Enum
-import struct
 from math import ceil
 
 from .data.Addresses import VersionAddresses, get_version_addresses
 from .data.Items import HUD_OFFSETS
-from .data.Locations import MONKEYS_BOSSES, CELLPHONES_ID_DUPLICATES, CELLPHONES_STAGE_DUPLICATES, BOSSES_ALTERNATIVE
+from .data.Locations import CELLPHONES_ID_DUPLICATES, CELLPHONES_STAGE_DUPLICATES, BOSSES_ALTERNATIVE
 from .data.Stages import LEVELS_ID_BY_ORDER
 from .data.Strings import Itm, Loc, Meta, Game, APHelper, APConsole
 from .interface.pine import Pine
@@ -22,19 +21,6 @@ class ConnectionStatus(Enum):
     def __bool__(self):
         return self.value > 0
 
-# Workaround for now; pine.write_float() seems to be broken
-def hex_int32_to_float(value : int) -> float:
-    if value == 0:
-        return 0.0
-
-    ## Reinterpret read value as float
-    current_as_hex: str = f'{value:x}'
-    current_as_float: float = struct.unpack('!f', bytes.fromhex(current_as_hex))[0]
-
-    return current_as_float
-
-def float_to_hex_int32(value : float) -> int:
-    return int(hex(struct.unpack("<I", struct.pack("<f", value))[0]), 16)
 
 ### [< --- INTERFACE --- >]
 class AEPS2Interface:
@@ -207,7 +193,7 @@ class AEPS2Interface:
         return self.pine.read_int32(self.addresses.GameStates[Game.character.value])
 
     def get_cookies(self) -> float:
-        return hex_int32_to_float(self.pine.read_int32(self.addresses.GameStates[Game.cookies.value]))
+        return self.pine.read_float(self.addresses.GameStates[Game.cookies.value])
 
     def is_equipment_unlocked(self, address_name : str) -> bool:
         # Redirect address to RC Car if the unlocked equipment is an RC Car Chassis
@@ -363,9 +349,7 @@ class AEPS2Interface:
         if address <= 0x0:
             return False
 
-        value_raw : int = self.pine.read_int32(address)
-
-        value : float = hex_int32_to_float(value_raw)
+        value : float = self.pine.read_float(address)
 
         # Change the State value in Dr. Tomoki's Permanent State Address
         if value <= 0.0:
@@ -448,8 +432,8 @@ class AEPS2Interface:
             self.send_command(Game.restart_stage.value)
 
     def set_cookies(self, amount : float):
-        as_int : int = float_to_hex_int32(amount)
-        self.pine.write_int32(self.addresses.GameStates[Game.cookies.value], as_int)
+        self.pine.write_float(self.addresses.GameStates[Game.cookies.value], amount)
+        # self.pine.write_int32(self.addresses.GameStates[Game.cookies.value], as_int)
 
     def clear_equipment(self):
         for button in self.addresses.BUTTONS_BY_INTERNAL:
@@ -532,7 +516,7 @@ class AEPS2Interface:
             if dummy and idx == dummy_index:
                 duration_to_set = 0.0
 
-            self.pine.write_int32(morph, float_to_hex_int32(duration_to_set))
+            self.pine.write_float(morph, duration_to_set)
 
     def give_collectable(self, address_name : str, amount : int | float = 0x1, maximum : int | float = 0x0):
         address : int = self.addresses.GameStates[address_name]
@@ -543,15 +527,7 @@ class AEPS2Interface:
             value = min(current + amount, maximum)
             self.pine.write_int32(address, value)
         elif isinstance(amount, float):
-            # Workaround for now; pine.write_float() seems to be broken
-            ## Reinterpret read value as float
-            current_as_float : float = min(hex_int32_to_float(current) + amount, maximum)
-
-            ## Convert new value to an int that will be represented as the same hexadecimal value as the float
-            value = int(current_as_float)
-            as_int = float_to_hex_int32(current_as_float)
-
-            self.pine.write_int32(address, as_int)
+            self.pine.write_float(address, min(current + amount, maximum))
 
         self.update_hud(address_name, value)
 
@@ -579,14 +555,11 @@ class AEPS2Interface:
     def give_morph_energy(self, amount : float = 3.0):
         # Check recharge state first
         address : int = self.addresses.GameStates[Game.morph_gauge_recharge.value]
-        value : int = self.pine.read_int32(address)
+        current : float = self.pine.read_float(address)
 
-        if value != 0x0:
+        if current != 0x0:
             # Ranges from 0 to 100 for every Morph Stock, with a maximum of 1100 for all 10 Stocks filled.
-            value_as_float : float = hex_int32_to_float(value) + (amount / 30.0 * 100.0)
-            value : int = float_to_hex_int32(value_as_float)
-
-            self.pine.write_int32(address, value)
+            self.pine.write_float(address, current + (amount / 30.0 * 100.0))
             return
 
         # If recharge state is 0, we check the active gauge, following its pointer chain
@@ -596,20 +569,16 @@ class AEPS2Interface:
         if address == 0x0:
             return
 
-        value : int = self.pine.read_int32(address)
+        current = self.pine.read_float(address)
         # Ranges from 0 to 30 in vanilla game.
-        value_as_float: float = hex_int32_to_float(value) + amount
-        value = float_to_hex_int32(value_as_float)
-        self.pine.write_int32(address, value)
+        self.pine.write_float(address, current + amount)
 
     def set_morph_gauge_charge(self, amount : float = 0.0):
         # Check recharge state first
         address: int = self.addresses.GameStates[Game.morph_gauge_recharge.value]
 
         # Ranges from 0 to 100 for every Morph Stock, with a maximum of 1100 for all 10 Stocks filled.
-        value_as_int: int = float_to_hex_int32(amount)
-
-        self.pine.write_int32(address, value_as_int)
+        self.pine.write_float(address, amount)
 
     def set_morph_gauge_timer(self, amount : float = 0.0):
         address = self.follow_pointer_chain(self.addresses.GameStates[Game.morph_gauge_active.value],
@@ -618,8 +587,7 @@ class AEPS2Interface:
         if address == 0x0:
             return
 
-        value = float_to_hex_int32(amount)
-        self.pine.write_int32(address, value)
+        self.pine.write_float(address, amount)
 
     def mark_location(self, name : str):
         address : int = self.addresses.Locations[name]
@@ -651,13 +619,10 @@ class AEPS2Interface:
         self.pine.write_int32(self.addresses.GameStates[Game.last_item_index.value], value)
 
     def set_persistent_cookie_value(self, value : float):
-        as_bytes = float_to_hex_int32(value)
-        self.pine.write_int32(self.addresses.GameStates[Game.last_cookies.value], as_bytes)
+        self.pine.write_float(self.addresses.GameStates[Game.last_cookies.value], value)
 
     def set_persistent_morph_energy_value(self, value : float):
-        as_bytes = float_to_hex_int32(value)
-        self.pine.write_int32(self.addresses.GameStates[Game.last_morph_energy.value], as_bytes)
+        self.pine.write_float(self.addresses.GameStates[Game.last_morph_energy.value], value)
 
     def set_persistent_morph_stock_value(self, value : float):
-        as_bytes = float_to_hex_int32(value)
-        self.pine.write_int32(self.addresses.GameStates[Game.last_morph_stock.value], as_bytes)
+        self.pine.write_float(self.addresses.GameStates[Game.last_morph_stock.value], value)
