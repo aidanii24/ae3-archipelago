@@ -408,8 +408,9 @@ async def check_items(ctx : 'AE3Context'):
         # Recheck Locations when receiving items for cases when locations are checked manually by the server/host
         await ctx.goal_target.check(ctx)
 
+        # TODO DEPRECATED BEHAVIOR
         # Save session for everytime there are new items received
-        ctx.save_session()
+        # ctx.save_session()
 
 async def resync_important_items(ctx : 'AE3Context'):
     # Do not resync if no items have been processed at all yet
@@ -534,9 +535,9 @@ async def check_locations(ctx : 'AE3Context'):
 
     # Save Session when Volatile Locations have been checked
     # TODO Deprecate and Remove old Volatile Clear Code
-    if volatile_cleared:
-        ctx.checked_volatile_locations.update(volatile_cleared)
-        ctx.save_session()
+    # if volatile_cleared:
+    #     ctx.checked_volatile_locations.update(volatile_cleared)
+    #     ctx.save_session()
 
 async def update_offline_checked(ctx : 'AE3Context'):
     if not ctx.offline_locations_checked:

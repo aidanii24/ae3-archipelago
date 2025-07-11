@@ -448,13 +448,13 @@ class AE3Context(CommonContext):
             ## Reset Variables
             self.check_break_rooms = False
 
-            ## Load Local Session Save if present
-            if self.check_session_save():
-                self.load_session()
+            ## Load Last Item Processed Index from Game if connected
+            if self.is_game_connected:
+                self.last_item_processed_index = self.ipc.get_last_item_index()
             ## Initialize Local Session values if not
             else:
                 self.last_item_processed_index = 0
-                self.checked_volatile_locations = set()
+
             ## Progression Mode
             if not self.unlocked_channels and APHelper.progression_mode.value in data:
                 self.progression = ProgressionModeOptions[data[APHelper.progression_mode.value]]()
@@ -791,9 +791,6 @@ class AE3Context(CommonContext):
         await self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
         self.game_goaled = True
 
-        if self.settings.delete_goaled:
-            self.delete_session()
-
 
 def update_connection_status(ctx : AE3Context, status : bool):
     if bool(ctx.is_game_connected) == status:
@@ -816,7 +813,10 @@ async def main_sync_task(ctx : AE3Context):
     logger.info(APConsole.Info.decor.value)
     logger.info("\n")
     logger.info(APConsole.Info.p_init.value)
-    ctx.clean_sessions()
+
+    # TODO Deprecate Old JSON Local Save System
+    # ctx.clean_sessions()
+
     ctx.ipc.connect_game()
 
     while not ctx.exit_event.is_set():
