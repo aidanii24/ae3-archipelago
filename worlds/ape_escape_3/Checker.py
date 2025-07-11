@@ -125,18 +125,10 @@ async def setup_level_select(ctx : 'AE3Context'):
 
         # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
         if selected_channel == 0x18 or selected_channel == 0x1A:
-            boss : str = Loc.boss_tomoki.value if selected_channel == 0x18 else Loc.boss_specter.value
             target_progress : str = APHelper.pr_boss6.value if selected_channel == 0x18 else APHelper.pr_specter1.value
 
-            is_checked : bool = ctx.locations_name_to_id[boss] in ctx.checked_volatile_locations
-
-            if not is_checked:
+            if progress != target_progress:
                 ctx.ipc.set_progress(target_progress)
-            else:
-                if progress != target_progress and button == 0x5:   # Cross/Circle
-                    ctx.ipc.set_progress(target_progress)
-                elif progress == target_progress and button == 0xA: # SELECT
-                    ctx.ipc.set_progress()
         elif progress != APHelper.pr_round2.value:
             ctx.ipc.set_progress()
 
@@ -146,11 +138,8 @@ async def setup_level_select(ctx : 'AE3Context'):
             boss : str = MONKEYS_BOSSES[bosses_indexes.index(selected_channel)]
             boss_captured : bool = ctx.ipc.is_location_checked(boss)
 
-            if boss_captured and button == 0x5:
+            if boss_captured:
                 ctx.ipc.unmark_location(boss)
-            elif (not boss_captured and ctx.locations_name_to_id[boss] in ctx.checked_volatile_locations and
-                  button == 0xA):
-                ctx.ipc.mark_location(boss)
 
         # Reset Game Mode Swap state and Set Game Mode value to an unexpected value
         # as sign that the game has not yet set it
@@ -197,8 +186,8 @@ async def setup_level_select(ctx : 'AE3Context'):
     if is_a_level_confirmed:
         ctx.ipc.clear_spawn()
 
-        if ctx.ipc.get_button_pressed() == 0x07:
-            toggle_freeplay(ctx)
+        if ctx.ipc.get_button_pressed() == 0x07:    # L1/L2 Buttons
+            set_freeplay_mode(ctx)
 
         # If Channel Shuffle is enabled, force switch the game to load the randomized channel
         if not ctx.is_channel_swapped:
@@ -208,9 +197,6 @@ async def setup_level_select(ctx : 'AE3Context'):
 
             ctx.ipc.set_selected_channel(min(ctx.progression.order[selected_channel], 0x1B))
             ctx.is_channel_swapped = True
-
-        # Toggle Freeplay when allowed and needed
-        toggle_freeplay(ctx)
 
         # Lock Super Monkey Morph as Aki won't give it at this point if it's still supposed to be locked,
         # unless required to keep Break Rooms open
@@ -584,16 +570,14 @@ def dispatch_dummy_morph(ctx : 'AE3Context', unlock : bool = False):
     else:
         ctx.ipc.lock_equipment(ctx.dummy_morph)
 
-def toggle_freeplay(ctx : 'AE3Context'):
+def set_freeplay_mode(ctx : 'AE3Context'):
     if not ctx.swap_freeplay or ctx.is_mode_swapped:
         return
 
     current_mode : int = ctx.ipc.get_game_mode()
 
-    if current_mode == 0x001:
+    if current_mode != 0x100:   # Freeplay is represented as 0x001
         ctx.ipc.set_game_mode(0x100, False)
-    elif current_mode == 0x100:
-        ctx.ipc.set_game_mode(0x001, False)
     else:
         return
 
