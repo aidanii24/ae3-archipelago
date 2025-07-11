@@ -293,44 +293,28 @@ async def check_states(ctx : 'AE3Context'):
             ctx.command_state = 1
 
 async def check_items(ctx : 'AE3Context'):
-    print("NEW FRAME =============================================")
     # Check if there are items missed from since the client was open; Refuse to take items until this index is confirmed
-    print(f"<< PRE-CHECK: Client:{ctx.last_item_processed_index}, Game:{ctx.ipc.get_last_item_index()}")
     if ctx.last_item_processed_index < 0:
         ctx.last_item_processed_index = ctx.ipc.get_last_item_index()
-        print(f"PRE-CHECK RESULT: {ctx.last_item_processed_index}")
 
     # Sync with Last Processed Item Index if necessary:
     elif ctx.last_item_processed_index:
-        print(f"SERVER CHECK: Client:{ctx.last_item_processed_index}, Server:{ctx.next_item_slot}")
         if ctx.next_item_slot < 0:
             ctx.next_item_slot = ctx.last_item_processed_index
-            print("[-/-] Initialized Next Item Slot")
         else:
             ctx.next_item_slot = max(min(ctx.last_item_processed_index, ctx.next_item_slot), 0)
-            print(f"[-/-] Determining more preservative value between server and local state")
-
-    print(f"SERVER CHECK RESULT: {ctx.next_item_slot}")
 
     # Resync Next Item Slot if empty and locations have been checked
-    print(f"AUTHENTICITY CHECK")
     if not ctx.next_item_slot and ctx.items_received and ctx.checked_locations:
         ctx.next_item_slot = len(ctx.items_received)
-        print("[-!-] Resetting Index to Length of Items Received")
     # Reset Next Item Slot if not empty and no locations have been checked
     elif ctx.next_item_slot and not ctx.checked_locations and ctx.items_received and ctx.items_received[-1].player < 1:
         ctx.next_item_slot = 0
-        print("[-!] Resetting Index to 0 due to being in starting state")
-
-    print(f"SERVER CHECK RESULT: {ctx.next_item_slot}")
 
     # Get Difference to get only new items
-    print(f"RECEIVING ITEMS")
     received : List[NetworkItem] = ctx.items_received[ctx.next_item_slot:]
     ctx.next_item_slot += len(received)
     ctx.last_item_processed_index = ctx.next_item_slot
-
-    print(f"NEW ITEM INDEX: {ctx.next_item_slot}")
 
     # Auto-equip if option is enabled or for handling the starting gadgets
     auto_equip: bool = ctx.auto_equip or not ctx.last_item_processed_index
