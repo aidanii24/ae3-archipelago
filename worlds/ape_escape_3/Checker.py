@@ -8,7 +8,7 @@ from .data.Items import ACCESSORIES, ArchipelagoItem, EquipmentItem, Collectable
 from .data.Strings import Game, Loc, Itm, APHelper
 from .data.Addresses import NTSCU
 from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_INDEX, MONKEYS_BREAK_ROOMS, \
-    MONKEYS_PASSWORDS, MONKEYS_BOSSES, MONKEYS_DIRECTORY, Cellphone_Name_to_ID
+    MONKEYS_PASSWORDS, MONKEYS_BOSSES, MONKEYS_DIRECTORY, Cellphone_Name_to_ID, LOCATIONS_INDEX
 from .data import Items
 
 if TYPE_CHECKING:
@@ -188,6 +188,11 @@ async def setup_level_select(ctx : 'AE3Context'):
 
         if ctx.ipc.get_button_pressed() == 0x07:    # L1/L2 Buttons
             set_freeplay_mode(ctx)
+        else:
+            mode : int = ctx.ipc.get_activated_game_mode()
+            if mode == 0x100: ctx.current_game_mode = 0x4
+            elif mode == 0x001: ctx.current_game_mode = 0x3
+            else: ctx.current_game_mode = 0x0
 
         # If Channel Shuffle is enabled, force switch the game to load the randomized channel
         if not ctx.is_channel_swapped:
@@ -230,6 +235,14 @@ async def setup_area(ctx : 'AE3Context'):
         ## Check Start of Screen Fade
         if ctx.ipc.get_screen_fade_count() > 0x1:
             dispatch_dummy_morph(ctx)
+
+            # Check Current Game Mode
+            if ctx.ipc.check_screen_fading() == 0x01:
+                current_mode: int = ctx.ipc.get_current_game_mode()
+                if current_mode > 0:
+                    ctx.current_game_mode = current_mode
+                    if ctx.current_game_mode >= 0xFF:
+                        ctx.current_game_mode = 0x0
 
         ## Check rest of Screen Fade after Start
         else:
@@ -280,6 +293,7 @@ async def check_states(ctx : 'AE3Context'):
         if not ctx.swim_unlocked and ctx.ipc.is_on_water():
             ctx.ipc.kill_player(20.0)
             ctx.command_state = 1
+
 
 async def check_items(ctx : 'AE3Context'):
     # Check if there are items missed from since the client was open; Refuse to take items until this index is confirmed
@@ -447,25 +461,27 @@ async def resync_important_items(ctx : 'AE3Context'):
 
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
-    volatile_cleared : Set[int] = set()
+
+    is_in_normal_game_mode : bool = ctx.current_game_mode == 0x0
 
     # Monkey Check
-    for monkey in ctx.monkeys_checklist:
-        if monkey in MONKEYS_PASSWORDS:
-            continue
+    if is_in_normal_game_mode:
+        for monkey in ctx.monkeys_checklist:
+            if monkey in MONKEYS_PASSWORDS:
+                continue
 
-        if not ctx.check_break_rooms and monkey in MONKEYS_BREAK_ROOMS:
-            continue
+            if not ctx.check_break_rooms and monkey in MONKEYS_BREAK_ROOMS:
+                continue
 
-        ## Special Case for Tomoki
-        if ctx.current_channel == APHelper.boss6.value:
-            if not ctx.ipc.is_location_checked(Loc.boss_alt_tomoki.value) and ctx.ipc.is_tomoki_defeated():
-                cleared.add(ctx.locations_name_to_id[Loc.boss_tomoki.value])
-                ctx.ipc.mark_location(Loc.boss_alt_tomoki.value)
+            ## Special Case for Tomoki
+            if ctx.current_channel == APHelper.boss6.value:
+                if not ctx.ipc.is_location_checked(Loc.boss_alt_tomoki.value) and ctx.ipc.is_tomoki_defeated():
+                    cleared.add(ctx.locations_name_to_id[Loc.boss_tomoki.value])
+                    ctx.ipc.mark_location(Loc.boss_alt_tomoki.value)
 
-        elif ctx.ipc.is_location_checked(monkey):
-            location_id : int = ctx.locations_name_to_id[monkey]
-            cleared.add(location_id)
+            elif ctx.ipc.is_location_checked(monkey):
+                location_id : int = ctx.locations_name_to_id[monkey]
+                cleared.add(location_id)
 
     if not ctx.current_channel == APHelper.travel_station.value:
         # Camera Check
@@ -493,7 +509,8 @@ async def check_locations(ctx : 'AE3Context'):
         # Cellphone Check
         gui_status : int = ctx.ipc.get_gui_status()
         interacting_with_phone : bool = gui_status > 1 or (gui_status and not cleared)
-        if ctx.cellphonesanity and interacting_with_phone and ctx.current_stage in CELLPHONES_STAGE_INDEX:
+        if (is_in_normal_game_mode and ctx.cellphonesanity and interacting_with_phone and
+                ctx.current_stage in CELLPHONES_STAGE_INDEX):
             tele_text_id : str = ctx.ipc.get_cellphone_interacted(ctx.current_stage)
             if (tele_text_id in CELLPHONES_STAGE_INDEX[ctx.current_stage] and
                     tele_text_id in Cellphone_Name_to_ID and
@@ -504,7 +521,6 @@ async def check_locations(ctx : 'AE3Context'):
 
     # Get newly checked locations
     cleared = cleared.difference(ctx.checked_locations)
-    volatile_cleared = volatile_cleared.intersection(cleared)
 
     # Send newly checked locations to server
     if cleared:
@@ -541,6 +557,11 @@ async def sweep_locations(ctx : 'AE3Context', batch : list[str]):
 
     for location in batch:
         name : str = location if location not in Cellphone_Name_to_ID.keys() else Cellphone_Name_to_ID[location]
+
+        if (ctx.current_game_mode == 0x100 and ctx.current_stage in LOCATIONS_INDEX and
+                location in LOCATIONS_INDEX[ctx.current_stage]):
+            continue
+
         if ctx.ipc.is_location_checked(location):
             cleared.add(ctx.locations_name_to_id[name])
 
@@ -574,10 +595,11 @@ def set_freeplay_mode(ctx : 'AE3Context'):
     if not ctx.swap_freeplay or ctx.is_mode_swapped:
         return
 
-    current_mode : int = ctx.ipc.get_game_mode()
+    current_mode : int = ctx.ipc.get_activated_game_mode()
 
     if current_mode != 0x100:   # Freeplay is represented as 0x001
         ctx.ipc.set_game_mode(0x100, False)
+        ctx.current_game_mode = 0x4
     else:
         return
 

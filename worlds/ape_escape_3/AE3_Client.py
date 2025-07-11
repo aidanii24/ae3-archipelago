@@ -348,6 +348,7 @@ class AE3Context(CommonContext):
     unlocked_channels : int = 0
     current_channel: str = None
     current_stage : str = None
+    current_game_mode : int = 0x0
     in_travel_station : bool = False
     last_selected_channel_index : int = -1
     character : int = -1
@@ -918,6 +919,8 @@ async def check_game(ctx : AE3Context):
             ctx.last_message = message
 
         await asyncio.sleep(1)
+
+    print(ctx.current_game_mode, ctx.ipc.get_current_game_mode())
 
 async def reconnect_game(ctx : AE3Context):
     ctx.ipc.connect_game()

@@ -98,11 +98,11 @@ class AEPS2Interface:
         # Loop through remaining pointers and adding the offsets
         ptrs : Sequence = self.addresses.Pointers[pointer_chain]
         amt : int = len(ptrs) - 1
-        for offset in self.addresses.Pointers[pointer_chain]:
+        for i, offset in enumerate(self.addresses.Pointers[pointer_chain]):
             addr += offset
 
             # Do not read value for the last offset
-            if ptrs.index(offset) >= amt:
+            if i >= amt:
                 return addr
 
             addr = self.pine.read_int32(addr)
@@ -172,8 +172,15 @@ class AEPS2Interface:
         room_as_bytes : bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_room.value], length)
         return room_as_bytes.decode("utf-8").replace("\x00", "")
 
-    def get_game_mode(self) -> int:
+    def get_activated_game_mode(self) -> int:
         address = self.addresses.GameStates[Game.game_mode.value]
+
+        return self.pine.read_int32(address)
+
+    def get_current_game_mode(self) -> int:
+        address = self.follow_pointer_chain(self.addresses.GameStates[Game.status_tracker.value], Game.game_mode.value)
+        if not address:
+            return -1
 
         return self.pine.read_int32(address)
 
