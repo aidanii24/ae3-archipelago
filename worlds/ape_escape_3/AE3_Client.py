@@ -448,13 +448,6 @@ class AE3Context(CommonContext):
             ## Reset Variables
             self.check_break_rooms = False
 
-            ## Load Last Item Processed Index from Game if connected
-            if self.is_game_connected:
-                self.last_item_processed_index = self.ipc.get_last_item_index()
-            ## Initialize Local Session values if not
-            else:
-                self.last_item_processed_index = 0
-
             ## Progression Mode
             if not self.unlocked_channels and APHelper.progression_mode.value in data:
                 self.progression = ProgressionModeOptions[data[APHelper.progression_mode.value]]()
