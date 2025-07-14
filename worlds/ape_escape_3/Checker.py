@@ -143,7 +143,7 @@ async def setup_level_select(ctx : 'AE3Context'):
 
         # Reset Game Mode Swap state and Set Game Mode value to an unexpected value
         # as sign that the game has not yet set it
-        if ctx.swap_freeplay and not ctx.ipc.is_a_level_confirmed() and ctx.is_mode_swapped:
+        if ctx.alt_freeplay and not ctx.ipc.is_a_level_confirmed() and ctx.is_mode_swapped:
             ctx.is_mode_swapped = False
             ctx.ipc.set_game_mode(0xFFFF, False)
     else:
@@ -232,7 +232,7 @@ async def setup_area(ctx : 'AE3Context'):
     # SCREEN FADING
     ## Check Screen Fading State in-game
     if ctx.ipc.check_screen_fading() != 0x01 and ctx.ipc.get_player_state() != 0x03:
-        ## Check Start of Screen Fade
+        ## Check Start of Screen Fade In
         if ctx.ipc.get_screen_fade_count() > 0x1:
             dispatch_dummy_morph(ctx)
 
@@ -243,6 +243,10 @@ async def setup_area(ctx : 'AE3Context'):
                     ctx.current_game_mode = current_mode
                     if ctx.current_game_mode >= 0xFF:
                         ctx.current_game_mode = 0x0
+
+            # Save State if desired
+            if ctx.save_state_on_room_transition:
+                ctx.pending_auto_save = True
 
         ## Check rest of Screen Fade after Start
         else:
@@ -319,7 +323,7 @@ async def check_items(ctx : 'AE3Context'):
     ctx.next_item_slot += len(received)
     ctx.last_item_processed_index = ctx.next_item_slot
 
-    # Auto-equip if option is enabled or for handling the starting gadgets
+    # Auto-equip if option is enabled or for handling the starting inventory
     auto_equip: bool = ctx.auto_equip or not ctx.last_item_processed_index
 
     for server_item in received:
@@ -407,6 +411,10 @@ async def check_items(ctx : 'AE3Context'):
     if received:
         # Save Last Item Index Processed into Game Memory
         ctx.ipc.set_last_item_index(ctx.last_item_processed_index)
+
+        # Save State if desired
+        if ctx.save_state_on_item_received:
+            ctx.pending_auto_save = True
 
         # Recheck Locations when receiving items for cases when locations are checked manually by the server/host
         await ctx.goal_target.check(ctx)
@@ -526,6 +534,8 @@ async def check_locations(ctx : 'AE3Context'):
     if cleared:
         ctx.locations_checked.update(cleared)
 
+        ctx.pending_auto_save = True
+
         if ctx.server:
             await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
             await ctx.goal_target.check(ctx)
@@ -592,7 +602,7 @@ def dispatch_dummy_morph(ctx : 'AE3Context', unlock : bool = False):
         ctx.ipc.lock_equipment(ctx.dummy_morph)
 
 def set_freeplay_mode(ctx : 'AE3Context'):
-    if not ctx.swap_freeplay or ctx.is_mode_swapped:
+    if not ctx.alt_freeplay or ctx.is_mode_swapped:
         return
 
     current_mode : int = ctx.ipc.get_activated_game_mode()

@@ -26,6 +26,17 @@ components.append(
     Component(APConsole.Info.client_name.value, func = run_client, component_type = Type.CLIENT))
 
 class AE3Settings(settings.Group):
+    class SessionPreferences(settings.Bool):
+        """
+        Preferences for game session management.
+
+        > save_state_on_room_transition: Automatically create a save state when transitioning between rooms.
+        > save_state_on_item_received: Automatically create a save state when receiving a new item.
+        > save_state_on_location_check: Automatically create a save state when checking a new location.
+        > load_state_on_connect: Load a state automatically after connecting to the multiworld if the client
+        is already connected to the game and that the last save is from a save state and not a normal game save.
+        """
+
     class GamePreferences(settings.Bool):
         """
         Preferences for game/client-enforcement behavior
@@ -46,7 +57,13 @@ class AE3Settings(settings.Group):
         """
 
 
-    auto_equip: GamePreferences | bool = False
+    save_state_on_room_transition : SessionPreferences | bool = True
+    save_state_on_item_received : SessionPreferences | bool = False
+    save_state_on_location_check : SessionPreferences | bool = False
+    load_state_on_connect : SessionPreferences | bool = False
+
+
+    auto_equip : GamePreferences | bool = False
 
     delete_goaled : ClientPreferences | bool = True
     delete_excess : int = 10

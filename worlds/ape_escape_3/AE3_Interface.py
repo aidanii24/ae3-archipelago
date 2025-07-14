@@ -632,3 +632,9 @@ class AEPS2Interface:
 
     def set_persistent_morph_stock_value(self, value : float):
         self.pine.write_float(self.addresses.GameStates[Game.last_morph_stock.value], value)
+
+    def save_state(self, slot : int):
+        self.pine.save_state(slot)
+
+    def load_state(self, slot : int):
+        self.pine.load_state(slot)

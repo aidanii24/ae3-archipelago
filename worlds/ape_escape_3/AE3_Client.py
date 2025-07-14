@@ -121,7 +121,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
             if self.ctx.early_free_play:
                 logger.info(f"         Freeplay Swap is " 
-                            f"{"ENABLED" if self.ctx.swap_freeplay else "DISABLED"}")
+                            f"{"ENABLED" if self.ctx.alt_freeplay else "DISABLED"}")
             else:
                 logger.info(f"         Early Freeplay is DISABLED and Freeplay Swap cannot be toggled.")
 
@@ -256,9 +256,9 @@ class AE3CommandProcessor(ClientCommandProcessor):
                 logger.info(f" [!!!] Early Free Play was set to DISABLED. You cannot toggle Freeplay Swap.")
                 return
 
-            self.ctx.swap_freeplay = not self.ctx.swap_freeplay
+            self.ctx.alt_freeplay = not self.ctx.alt_freeplay
 
-            logger.info(f" [-!-] Freeplay Swap is now " f"{"ENABLED" if self.ctx.swap_freeplay else "DISABLED"}")
+            logger.info(f" [-!-] Freeplay Swap is now " f"{"ENABLED" if self.ctx.alt_freeplay else "DISABLED"}")
 
     def _cmd_deathlink(self):
         """Toggle if death links should be enabled. This affects both receiving and sending deaths."""
@@ -271,11 +271,33 @@ class AE3CommandProcessor(ClientCommandProcessor):
             else:
                 logger.info(f"[...] A DeathLink toggle has already been requested. Please try again in a few seconds.")
 
+    def _cmd_save_state(self):
+        """Save State to the slot specified in the options."""
+        if not isinstance(self.ctx, AE3Context):
+            return
+
+        if self.ctx.state_slot != 0 or self.ctx.state_slot < 11 or self.ctx.state_slot > 255:
+            logger.info(" [-!-] Invalid State Slot. Have you connected to the server at least once?")
+            return
+
+        self.ctx.ipc.save_state(self.ctx.state_slot)
+
+    def _cmd_load_state(self):
+        """Load State from the slot specified in the options."""
+        if not isinstance(self.ctx, AE3Context):
+            return
+
+        if self.ctx.state_slot != 0 or self.ctx.state_slot < 11 or self.ctx.state_slot > 255:
+            logger.info(" [-!-] Invalid State Slot. Have you connected to the server at least once?")
+            return
+
+        self.ctx.ipc.save_state(self.ctx.state_slot)
+
     # Debug commands
     def _cmd_unlock(self, unlocks : str = "28"):
         """<!> DEBUG | Unlock amount of levels given"""
         if not unlocks.isdigit():
-            logger.info("Please enter a number.")
+            logger.info(" [-!-] Please enter a number.")
             return
 
         if isinstance(self.ctx, AE3Context):
@@ -324,6 +346,7 @@ class AE3Context(CommonContext):
 
     # Server Properties and Cache
     next_item_slot : int = -1
+    pending_auto_save : bool = False
     pending_deathlinks : int = 0
     pending_resync : bool = False
     cached_locations_checked : Set[int]
@@ -354,7 +377,7 @@ class AE3Context(CommonContext):
     character : int = -1
     player_control : bool = False
 
-    swap_freeplay : bool = False
+    alt_freeplay : bool = False
     is_mode_swapped : bool = False
     is_channel_swapped : bool = False
 
@@ -382,6 +405,11 @@ class AE3Context(CommonContext):
     # Player Set Settings
     settings : AE3Settings
 
+    save_state_on_room_transition : bool = False
+    save_state_on_item_received : bool = False
+    save_state_on_location_check : bool = False
+    load_state_on_connect : bool = False
+
     auto_equip : bool = False
 
     # Player Set Options
@@ -400,6 +428,7 @@ class AE3Context(CommonContext):
 
     early_free_play : bool = False
 
+    state_slot : int = -1
     death_link : bool = False
 
     def __init__(self, address, password):
@@ -415,20 +444,26 @@ class AE3Context(CommonContext):
             if lists not in self.monkeys_index:
                 self.monkeys_index.append(lists)
 
+        ## TODO Deprecate Old Save System
         # Define Save Data Path
-        self.save_data_path = Utils.user_path() + "/data/saves"
-        if not os.path.isdir(self.save_data_path):
-            try:
-                os.mkdir(self.save_data_path)
-            except OSError:
-                self.save_data_path = ""
+        # self.save_data_path = Utils.user_path() + "/data/saves"
+        # if not os.path.isdir(self.save_data_path):
+        #     try:
+        #         os.mkdir(self.save_data_path)
+        #     except OSError:
+        #         self.save_data_path = ""
 
-        if self.save_data_path:
-            self.save_data_path += "/"
+        # if self.save_data_path:
+        #     self.save_data_path += "/"
 
         # Load Settings
         self.settings = get_settings().get("ape_escape_3_options", False)
         assert self.settings, " [!!!] Cannot find Ape Escape 3 Settings!"
+
+        self.save_state_on_room_transition = self.settings.save_state_on_room_transition
+        self.save_state_on_item_received = self.settings.save_state_on_item_received
+        self.save_state_on_location_check = self.settings.save_state_on_location_check
+        self.load_state_on_connect = self.settings.load_state_on_connect
 
         self.auto_equip = self.settings.auto_equip
 
@@ -555,6 +590,7 @@ class AE3Context(CommonContext):
             ## Early Free Play
             if APHelper.early_free_play.value in data:
                 self.early_free_play = data[APHelper.early_free_play.value]
+                self.alt_freeplay = self.early_free_play
 
             ## DeathLink
             if APHelper.death_link.value in data:
@@ -908,6 +944,11 @@ async def check_game(ctx : AE3Context):
             if ctx.pending_resync:
                 logger.info(" [-!-] Resyncing Complete!")
                 ctx.pending_resync = False
+
+        # Save State if desired and reset pending state
+        if ctx.pending_auto_save and ctx.state_slot >= 0:
+            ctx.ipc.save_state(ctx.state_slot)
+            ctx.pending_auto_save = False
 
         # Sleep functions keep the client from being unresponsive
         await asyncio.sleep(0.5)

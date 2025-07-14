@@ -210,6 +210,16 @@ class Pine:
         response = self._send_request(request)
         return response[9:-1].decode("ascii")
 
+    def save_state(self, slot: int) -> None:
+        request = Pine.to_bytes(6, 4) + Pine.to_bytes(Pine.IPCCommand.SAVE_STATE, 1)
+        request += slot.to_bytes(length=1, byteorder="little")
+        self._send_request(request)
+
+    def load_state(self, slot: int) -> None:
+        request = Pine.to_bytes(6, 4) + Pine.to_bytes(Pine.IPCCommand.LOAD_STATE, 1)
+        request += slot.to_bytes(length=1, byteorder="little")
+        self._send_request(request)
+
     def _send_request(self, request: bytes) -> bytes:
         if not self._sock_state:
             self._init_socket()

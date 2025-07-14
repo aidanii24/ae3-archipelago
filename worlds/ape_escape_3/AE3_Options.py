@@ -7,6 +7,29 @@ from .data.Strings import APHelper
 from .data.Stages import LEVELS_BY_ORDER
 
 
+class AutoSaveStateSlot(NamedRange):
+    """
+    Choose which slot this slot session should be saved on. Useful when playing multiple instances of this game within
+    the same multiworld. Slots 1 - 10 are used by the PCSX2 for quick use and will not be used for this purpose.
+
+    Please refer to your host.yaml file for more AutoSave/AutoLoad State settings.
+
+    <!> WARNING: It is highly recommended to not weight this option and explicitly specify a custom value.
+    To specify custom values, add it alongside the pre-existing options, copying their format.
+    Format: value : weight
+
+    Default: 0
+    """
+    display_name : str = "Auto Save State Slot"
+    default = 0
+
+    range_start = 11
+    range_end = 255
+    special_range_names = {
+        "default": 0
+    }
+
+
 class ProgressionMode(Choice):
     """
     Choose how the progression of the randomizer should be.
@@ -585,11 +608,11 @@ class ExtraKeys(Range):
     range_end = 15
 
 
-class EarlyFreePlay(Toggle):
+class EarlyFreePlay(DefaultOnToggle):
     """
     Allows Free Play mode to be available without needing to fully clear a channel. Useful when wanting Camerasanity
     enabled without needing to worry about Pipo Monkey actors.
-    default: Disabled.
+    default: Enabled.
     """
     display_name : str = "Early Free Play"
 
@@ -626,6 +649,7 @@ class ConsolationEffectsBlacklist(OptionList):
 
 
 ae3_option_groups : dict[str, list] = {
+    "Session Options"           : [AutoSaveStateSlot],
     "Randomizer Options"        : [ProgressionMode,
                                    OpenProgressionKeys,
                                    RandomizeProgressionSetCount,
@@ -667,6 +691,7 @@ ae3_option_groups : dict[str, list] = {
 
 @dataclass
 class AE3Options(PerGameCommonOptions):
+    auto_save_state_slot                    : AutoSaveStateSlot
     progression_mode                        : ProgressionMode
     open_progression_keys                   : OpenProgressionKeys
     randomize_progression_set_count         : RandomizeProgressionSetCount
@@ -718,6 +743,8 @@ def create_option_groups() -> list[OptionGroup]:
 
 def slot_data_options() -> list[str]:
     return [
+        APHelper.auto_save_slot.value,
+
         APHelper.progression_mode.value,
         APHelper.open_required.value,
         APHelper.randomize_set_count.value,
