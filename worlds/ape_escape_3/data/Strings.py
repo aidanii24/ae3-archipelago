@@ -1969,6 +1969,7 @@ class APHelper(BaseEnum):
     pr_round2 =             "round2\x00\x00"
 
     # AP Options
+    auto_save_slot =            "auto_save_state_slot"
     progression_mode =          "progression_mode"
     progression =               "progression"
     open_required =             "open_progression_keys"
