@@ -120,9 +120,9 @@ async def setup_level_select(ctx : 'AE3Context'):
         if ctx.last_selected_channel_index > ctx.unlocked_channels:
             ctx.last_selected_channel_index = ctx.unlocked_channels
 
-    if ctx.ipc.is_on_warp_gate():
-        button: int = ctx.ipc.get_button_pressed()
+    gui_status: int = ctx.ipc.get_gui_status()
 
+    if ctx.ipc.is_on_warp_gate():
         # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
         if selected_channel == 0x18 or selected_channel == 0x1A:
             target_progress : str = APHelper.pr_boss6.value if selected_channel == 0x18 else APHelper.pr_specter1.value
@@ -155,11 +155,13 @@ async def setup_level_select(ctx : 'AE3Context'):
         if ctx.is_channel_swapped:
             ctx.is_channel_swapped = False
 
+        if not ctx.load_state_on_connect and not ctx.is_last_save_normal and gui_status >= 3 and ctx.ipc.is_saving():
+            ctx.is_last_save_normal = True
+            await set_last_save_status(ctx)
+
     # If Super Monkey isn't properly unlocked yet, temporarily do so during level select to prevent Aki from
     # introducing and giving it to the player. Lock them while on the Pause Menu as well to prevent equipping them
     # from the Quick Morph Menu
-    gui_status : int = ctx.ipc.get_gui_status()
-
     if ctx.dummy_morph_monkey_needed:
         if gui_status < 3:
             ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
@@ -621,3 +623,21 @@ def set_freeplay_mode(ctx : 'AE3Context'):
         return
 
     ctx.is_mode_swapped = True
+
+async def set_last_save_status(ctx : 'AE3Context'):
+    is_last_save_normal : bool = True if ctx.is_last_save_normal is not None else ctx.is_last_save_normal
+    print(f"SETTING: {APHelper.last_save_type.value}_{ctx.team}_{ctx.slot}")
+
+    await ctx.send_msgs([{
+        "cmd": "Set",
+        "key": f"{APHelper.last_save_type.value}_{ctx.team}_{ctx.slot}",
+        "default": True,
+        "operations": [{"operation": "replace", "value": is_last_save_normal}]
+    }])
+
+async def get_last_save_status(ctx : 'AE3Context'):
+    print(f"GETTING: {APHelper.last_save_type.value}_{ctx.team}_{ctx.slot}")
+    await ctx.send_msgs([{
+        "cmd": "Get",
+        "keys": [f"{APHelper.last_save_type.value}_{ctx.team}_{ctx.slot}"]
+    }])

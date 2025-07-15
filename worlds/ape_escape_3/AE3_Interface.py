@@ -339,6 +339,16 @@ class AEPS2Interface:
         else:
             return ""
 
+    def is_saving(self) -> bool:
+        address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
+                                                  Game.save.value)
+        value : bytes = self.pine.read_bytes(address, 4)
+        decoded : str = bytes.decode(value).replace("\x00", "")
+
+        boolean : bool = decoded == Game.save.value
+        print("Is Saving?", boolean)
+        return boolean
+
     def is_in_pink_boss(self) -> bool:
         return self.pine.read_int8(self.addresses.GameStates[Game.in_pink_stage.value]) == 0x02
 

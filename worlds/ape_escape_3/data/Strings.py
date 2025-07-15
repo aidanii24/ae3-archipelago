@@ -1812,6 +1812,8 @@ class Game(BaseEnum):
 
     conte =                 "conte"
 
+    save =                  "save"
+
     # Resources
     jackets =               "Jackets"
     cookies =               "Cookies"
@@ -2044,6 +2046,8 @@ class APHelper(BaseEnum):
     arg_sl_dt =                 "slot_data"
     arg_seed =                  "seed_name"
     arg_tags =                  "tags"
+
+    last_save_type =            "AE3_Is_Last_Save_Normal"
 
 class APConsole:
     """
