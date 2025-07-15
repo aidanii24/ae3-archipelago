@@ -17,8 +17,7 @@ from settings import get_settings
 
 from .data.Strings import Meta, APConsole
 from .data.Logic import ProgressionMode, ProgressionModeOptions
-from .data.Locations import MONKEYS_MASTER, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED, \
-    LOCATIONS_INDEX
+from .data.Locations import MONKEYS_MASTER, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED
 from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER
 from .data.Rules import GoalTarget, GoalTargetOptions, PostGameCondition
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
@@ -349,7 +348,10 @@ class AE3Context(CommonContext):
     # Server Properties and Cache
     next_item_slot : int = -1
     pending_auto_save : bool = False
+    is_last_save_normal : bool = None
+    pending_last_save_status : bool = False
     has_saved_on_transition : bool = True
+    has_attempted_auto_load : bool = False
     pending_deathlinks : int = 0
     pending_resync : bool = False
     cached_locations_checked : Set[int]
@@ -608,6 +610,10 @@ class AE3Context(CommonContext):
             if not self.locations_checked and not self.cache_missing:
                 self.cache_missing = self.location_groups.copy()
 
+            # Initialize/Update Last Save Type Status on server if needed
+            if self.load_state_on_connect:
+                self.pending_last_save_status = True
+
         elif cmd == APHelper.cmd_rcv.value:
             index = args["index"]
 
@@ -618,6 +624,14 @@ class AE3Context(CommonContext):
             # Abort if there are no locations, as starting items might get duplicated
             if not self.checked_locations:
                 self.are_item_status_synced = True
+
+            # Get Latest Last Save Type Status
+            last_save_string : str = f"{APHelper.last_save_type.value}_{self.team}_{self.slot}"
+            print(f"RECEIVING: {last_save_string}")
+            print(self.stored_data)
+            if last_save_string in self.stored_data:
+                print("RECEIVED IN STORED DATA!")
+                self.is_last_save_normal = bool(self.stored_data[last_save_string])
 
             # Resync Important Item Statuses
             if self.are_item_status_synced or not self.items_received:
@@ -886,8 +900,23 @@ async def main_sync_task(ctx : AE3Context):
             continue
 
 async def check_game(ctx : AE3Context):
+    if ctx.server:
+        if ctx.pending_last_save_status:
+            await get_last_save_status(ctx)
+            ctx.pending_last_save_status = False
+
     # Check if Game State is safe for Further Checking
     if not ctx.player_control:
+        # Auto Load State if desired
+        print(ctx.state_slot, ctx.has_attempted_auto_load)
+        if ctx.state_slot >= 0 and not ctx.has_attempted_auto_load:
+            print(ctx.is_last_save_normal)
+            if ctx.is_last_save_normal:
+                ctx.ipc.load_state(ctx.state_slot)
+
+            if ctx.is_last_save_normal is not None:
+                ctx.has_attempted_auto_load = True
+
         if ctx.ipc.is_in_control():
             ctx.player_control = True
 
@@ -898,10 +927,15 @@ async def check_game(ctx : AE3Context):
         await check_background_states(ctx)
 
         await asyncio.sleep(0.5)
+        print(ctx.current_stage, ctx.current_channel)
         return
     elif not ctx.ipc.is_in_control():
         ctx.player_control = False
         return
+
+    # Do not attempt autoload when player is already in-game
+    if not ctx.has_attempted_auto_load:
+        ctx.has_attempted_auto_load = True
 
     # Check for Archipelago Connection Errors
     if ctx.server:
@@ -956,6 +990,10 @@ async def check_game(ctx : AE3Context):
         if ctx.pending_auto_save and ctx.state_slot >= 0:
             ctx.ipc.save_state(ctx.state_slot)
             ctx.pending_auto_save = False
+
+            if ctx.load_state_on_connect and (ctx.is_last_save_normal or ctx.is_last_save_normal is None):
+                ctx.is_last_save_normal = False
+                await set_last_save_status(ctx)
 
         # Sleep functions keep the client from being unresponsive
         await asyncio.sleep(0.5)

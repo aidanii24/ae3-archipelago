@@ -835,7 +835,8 @@ class NTSCU(VersionAddresses):
         Loc.boss_tomoki.value           : [0x2c, 0x1AC4],
 
         Game.interact_data.value        : [0x0],
-        Game.game_mode.value            : [0x0, 0x78, 0x20, 0x0]
+        Game.game_mode.value            : [0x0, 0x78, 0x20, 0x0],
+        Game.save.value                 : [0x77],
     }
 
 def get_version_addresses(game_id : str) -> VersionAddresses | None:
