@@ -276,7 +276,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
         if not isinstance(self.ctx, AE3Context):
             return
 
-        if self.ctx.state_slot != 0 or self.ctx.state_slot < 11 or self.ctx.state_slot > 255:
+        if (not (11 <= self.ctx.state_slot <= 255)) and self.ctx.state_slot != 0:
             logger.info(" [-!-] The server has not given the state lot for this session. "
                         "Have you connected to the server at least once?")
             return
