@@ -37,6 +37,9 @@ class AE3Settings(settings.Group):
         is already connected to the game and that the last save is from a save state and not a normal game save.
         """
 
+    class SessionsPreferences(settings.Bool):
+        """"""
+
     class GamePreferences(settings.Bool):
         """
         Preferences for game/client-enforcement behavior
@@ -58,12 +61,12 @@ class AE3Settings(settings.Group):
 
 
     save_state_on_room_transition : SessionPreferences | bool = True
-    save_state_on_item_received : SessionPreferences | bool = False
-    save_state_on_location_check : SessionPreferences | bool = False
-    load_state_on_connect : SessionPreferences | bool = False
+    save_state_on_item_received : SessionsPreferences | bool = False
+    save_state_on_location_check : SessionsPreferences | bool = False
+    load_state_on_connect : SessionsPreferences | bool = False
 
 
-    auto_equip : GamePreferences | bool = False
+    auto_equip : GamePreferences | bool = True
 
     delete_goaled : ClientPreferences | bool = True
     delete_excess : int = 10
