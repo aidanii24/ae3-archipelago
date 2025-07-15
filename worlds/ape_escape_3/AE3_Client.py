@@ -287,8 +287,9 @@ class AE3CommandProcessor(ClientCommandProcessor):
         if not isinstance(self.ctx, AE3Context):
             return
 
-        if self.ctx.state_slot != 0 or self.ctx.state_slot < 11 or self.ctx.state_slot > 255:
-            logger.info(" [-!-] Invalid State Slot. Have you connected to the server at least once?")
+        if (not (11 <= self.ctx.state_slot <= 255)) and self.ctx.state_slot != 0:
+            logger.info(" [-!-] The server has not given the state lot for this session. "
+                        "Have you connected to the server at least once?")
             return
 
         self.ctx.ipc.save_state(self.ctx.state_slot)
@@ -483,6 +484,10 @@ class AE3Context(CommonContext):
 
             ## Reset Variables
             self.check_break_rooms = False
+
+            ### Save/Load State Slot
+            if APHelper.auto_save_slot.value in data:
+                self.state_slot = data[APHelper.auto_save_slot.value]
 
             ## Progression Mode
             if not self.unlocked_channels and APHelper.progression_mode.value in data:
