@@ -277,7 +277,8 @@ class AE3CommandProcessor(ClientCommandProcessor):
             return
 
         if self.ctx.state_slot != 0 or self.ctx.state_slot < 11 or self.ctx.state_slot > 255:
-            logger.info(" [-!-] Invalid State Slot. Have you connected to the server at least once?")
+            logger.info(" [-!-] The server has not given the state lot for this session. "
+                        "Have you connected to the server at least once?")
             return
 
         self.ctx.ipc.save_state(self.ctx.state_slot)
@@ -292,7 +293,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
                         "Have you connected to the server at least once?")
             return
 
-        self.ctx.ipc.save_state(self.ctx.state_slot)
+        self.ctx.ipc.load_state(self.ctx.state_slot)
 
     # Debug commands
     def _cmd_unlock(self, unlocks : str = "28"):
