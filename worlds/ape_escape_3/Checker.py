@@ -534,7 +534,8 @@ async def check_locations(ctx : 'AE3Context'):
     if cleared:
         ctx.locations_checked.update(cleared)
 
-        ctx.pending_auto_save = True
+        if ctx.save_state_on_location_check:
+            ctx.pending_auto_save = True
 
         if ctx.server:
             await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
