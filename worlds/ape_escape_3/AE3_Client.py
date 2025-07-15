@@ -349,6 +349,7 @@ class AE3Context(CommonContext):
     # Server Properties and Cache
     next_item_slot : int = -1
     pending_auto_save : bool = False
+    has_saved_on_transition : bool = False
     pending_deathlinks : int = 0
     pending_resync : bool = False
     cached_locations_checked : Set[int]

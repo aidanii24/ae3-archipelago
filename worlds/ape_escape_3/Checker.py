@@ -245,8 +245,11 @@ async def setup_area(ctx : 'AE3Context'):
                         ctx.current_game_mode = 0x0
 
             # Save State if desired
-            if ctx.save_state_on_room_transition:
-                ctx.pending_auto_save = True
+            ## Gate function as this gets activated before and after a transition, which is undesired
+            if not ctx.has_saved_on_transition and ctx.ipc.get_screen_fade_count() <= 0x2:
+                ctx.has_saved_on_transition = True
+                if ctx.save_state_on_room_transition:
+                    ctx.pending_auto_save = True
 
         ## Check rest of Screen Fade after Start
         else:
@@ -266,6 +269,10 @@ async def setup_area(ctx : 'AE3Context'):
 
         if ctx.command_state == 2:
             ctx.command_state = 0
+
+        # Allow Save State on Screen Transition again
+        if ctx.has_saved_on_transition:
+            ctx.has_saved_on_transition = False
 
 
 async def check_states(ctx : 'AE3Context'):
