@@ -82,14 +82,6 @@ async def build_checked_cache(ctx : 'AE3Context'):
     ctx.post_game_condition.check(ctx)
     await ctx.goal_target.check(ctx)
 
-# TODO Deprecate and Remove
-async def recheck_location_groups(ctx : 'AE3Context'):
-    if ctx.monkeys_checklist_count >= len(ctx.monkeys_index):
-        ctx.monkeys_checklist_count = 0
-
-    ctx.monkeys_checklist = ctx.monkeys_index[ctx.monkeys_checklist_count]
-    ctx.monkeys_checklist_count += 1
-
 # Ensure game is always set to "round2"
 async def correct_progress(ctx : 'AE3Context'):
     ctx.ipc.set_progress()
@@ -434,10 +426,6 @@ async def receive_items(ctx : 'AE3Context'):
         # Recheck Locations when receiving items for cases when locations are checked manually by the server/host
         await ctx.goal_target.check(ctx)
 
-        # TODO DEPRECATED BEHAVIOR
-        # Save session for everytime there are new items received
-        # ctx.save_session()
-
 async def resync_important_items(ctx : 'AE3Context'):
     # Do not resync if no items have been processed at all yet
     if ctx.last_item_processed_index < 1:
@@ -563,12 +551,6 @@ async def check_locations(ctx : 'AE3Context'):
                     ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
         else:
             ctx.offline_locations_checked.update(cleared)
-
-    # Save Session when Volatile Locations have been checked
-    # TODO Deprecate and Remove old Volatile Clear Code
-    # if volatile_cleared:
-    #     ctx.checked_volatile_locations.update(volatile_cleared)
-    #     ctx.save_session()
 
 async def update_offline_checked(ctx : 'AE3Context'):
     if not ctx.offline_locations_checked:
