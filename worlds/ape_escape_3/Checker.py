@@ -626,7 +626,6 @@ def set_freeplay_mode(ctx : 'AE3Context'):
 
 async def set_last_save_status(ctx : 'AE3Context'):
     is_last_save_normal : bool = True if ctx.is_last_save_normal is not None else ctx.is_last_save_normal
-    print(f"SETTING: {APHelper.last_save_type.value}_{ctx.team}_{ctx.slot}")
 
     await ctx.send_msgs([{
         "cmd": "Set",
@@ -636,7 +635,6 @@ async def set_last_save_status(ctx : 'AE3Context'):
     }])
 
 async def get_last_save_status(ctx : 'AE3Context'):
-    print(f"GETTING: {APHelper.last_save_type.value}_{ctx.team}_{ctx.slot}")
     await ctx.send_msgs([{
         "cmd": "Get",
         "keys": [f"{APHelper.last_save_type.value}_{ctx.team}_{ctx.slot}"]
