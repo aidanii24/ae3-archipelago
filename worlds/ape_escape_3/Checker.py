@@ -160,7 +160,6 @@ async def setup_level_select(ctx : 'AE3Context'):
             ctx.pending_auto_save = True
 
         if ctx.load_state_on_connect and not ctx.is_last_save_normal and ctx.ipc.is_saving() and gui_status >= 3:
-            print("<!> LAST SAVE IS NORMAL!")
             ctx.is_last_save_normal = True
             await set_last_save_status(ctx)
 
@@ -315,7 +314,7 @@ async def check_states(ctx : 'AE3Context'):
             ctx.command_state = 1
 
 
-async def check_items(ctx : 'AE3Context'):
+async def receive_items(ctx : 'AE3Context'):
     # Check if there are items missed from since the client was open; Refuse to take items until this index is confirmed
     if ctx.last_item_processed_index < 0:
         ctx.last_item_processed_index = ctx.ipc.get_last_item_index()
