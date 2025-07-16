@@ -1042,7 +1042,7 @@ class Casual(Normal):
             # Western
             Loc.western_jay_mohn.value          : Rulesets(AccessRule.ATTACK),
             Loc.western_jaja_jamo.value         : Rulesets(AccessRule.ATTACK, AccessRule.HOOP),
-            Loc.western_chammy_mo.value         : Rulesets(AccessRule.ATTACK),
+            Loc.western_chammy_mo.value         : Rulesets(AccessRule.SHOOT, AccessRule.FLY),
             Loc.western_golozo.value            : Rulesets(AccessRule.ATTACK),
             Loc.western_golon_moe.value         : Rulesets(AccessRule.MORPH_NO_MONKEY),
 
