@@ -1,4 +1,5 @@
 from argparse import ArgumentParser, Namespace
+from multiprocessing.dummy import current_process
 from typing import Optional, Sequence
 import typing
 import multiprocessing
@@ -373,6 +374,7 @@ class AE3Context(CommonContext):
     current_game_mode : int = 0x0
     in_travel_station : bool = False
     last_selected_channel_index : int = -1
+    supress_progress_correction : bool = False
     character : int = -1
     player_control : bool = False
 
@@ -398,8 +400,6 @@ class AE3Context(CommonContext):
 
     # Local Session Save Properties
     last_item_processed_index : int = -1
-
-    checked_volatile_locations : set[int] = set()
 
     # Player Set Settings
     settings : AE3Settings
@@ -772,7 +772,8 @@ async def check_game(ctx : AE3Context):
             await asyncio.sleep(1)
 
         # Run maintenance game checks when not in player control
-        await correct_progress(ctx)
+        if not ctx.supress_progress_correction:
+            await correct_progress(ctx)
         await check_background_states(ctx)
 
         await asyncio.sleep(0.5)

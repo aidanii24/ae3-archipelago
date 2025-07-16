@@ -5,7 +5,7 @@ from NetUtils import NetworkItem
 
 from .data.Items import ACCESSORIES, ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem, Capacities, AP, \
     EQUIPMENT
-from .data.Strings import Game, Loc, Itm, APHelper
+from .data.Strings import Game, Loc, Itm, APHelper, Stage
 from .data.Addresses import NTSCU
 from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_INDEX, MONKEYS_BREAK_ROOMS, \
     MONKEYS_PASSWORDS, MONKEYS_BOSSES, MONKEYS_DIRECTORY, Cellphone_Name_to_ID, LOCATIONS_INDEX
@@ -142,6 +142,7 @@ async def setup_level_select(ctx : 'AE3Context'):
         ctx.post_game_condition.check(ctx)
 
         if progress != APHelper.pr_round2.value:
+            ctx.supress_progress_correction = False
             ctx.ipc.set_progress()
 
         if ctx.is_channel_swapped:
@@ -489,10 +490,13 @@ async def check_locations(ctx : 'AE3Context'):
                 if not ctx.ipc.is_location_checked(Loc.boss_alt_tomoki.value) and ctx.ipc.is_tomoki_defeated():
                     cleared.add(ctx.locations_name_to_id[Loc.boss_tomoki.value])
                     ctx.ipc.mark_location(Loc.boss_alt_tomoki.value)
-
             elif ctx.ipc.is_location_checked(monkey):
                 location_id : int = ctx.locations_name_to_id[monkey]
                 cleared.add(location_id)
+
+                if monkey == Loc.boss_specter_final.value and ctx.current_channel == APHelper.specter2.value:
+                    ctx.ipc.set_progress(Stage.specter1.value)
+                    ctx.supress_progress_correction = True
 
     if not ctx.current_channel == APHelper.travel_station.value:
         # Camera Check
