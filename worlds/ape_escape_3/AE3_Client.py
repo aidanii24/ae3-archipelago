@@ -672,8 +672,10 @@ class AE3Context(CommonContext):
             # Get Latest Last Save Type Status
             last_save_string: str = f"{APHelper.last_save_type.value}_{self.team}_{self.slot}"
             if last_save_string in self.stored_data:
-                self.is_last_save_normal = bool(self.stored_data[last_save_string])
-                self.is_last_save_normal = bool(self.stored_data[last_save_string])
+                if self.stored_data[last_save_string] is None:
+                    self.is_last_save_normal = True
+                else:
+                    self.is_last_save_normal = bool(self.stored_data[last_save_string])
 
         # Initialize Session on receive of RoomInfo Packet
         elif cmd == APHelper.cmd_rminfo.value:
