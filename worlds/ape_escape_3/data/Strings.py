@@ -2038,6 +2038,7 @@ class APHelper(BaseEnum):
 
     # AP Server
     cmd_conn =                  "Connected"
+    cmd_rtrv =                  "Retrieved"
     cmd_rcv =                   "ReceivedItems"
     cmd_rminfo =                "RoomInfo"
     cmd_rmupdt =                "RoomUpdate"
