@@ -132,7 +132,7 @@ async def setup_level_select(ctx : 'AE3Context'):
         elif progress != APHelper.pr_round2.value:
             ctx.ipc.set_progress()
 
-        # Re-capture/Re-release Bosses as needed to enter the level normally/toggle freeplay
+        # Release Bosses as needed to enter the level normally
         bosses_indexes : list[int] = [0x03, 0x08, 0xC, 0x11, 0x15, -1, -2, 0x1B]
         if selected_channel in bosses_indexes:
             boss : str = MONKEYS_BOSSES[bosses_indexes.index(selected_channel)]
@@ -155,7 +155,12 @@ async def setup_level_select(ctx : 'AE3Context'):
         if ctx.is_channel_swapped:
             ctx.is_channel_swapped = False
 
-        if not ctx.load_state_on_connect and not ctx.is_last_save_normal and gui_status >= 3 and ctx.ipc.is_saving():
+        if ctx.save_state_on_room_transition and not ctx.has_saved_on_transition:
+            ctx.has_saved_on_transition = True
+            ctx.pending_auto_save = True
+
+        if ctx.load_state_on_connect and not ctx.is_last_save_normal and ctx.ipc.is_saving() and gui_status >= 3:
+            print("<!> LAST SAVE IS NORMAL!")
             ctx.is_last_save_normal = True
             await set_last_save_status(ctx)
 
@@ -209,6 +214,9 @@ async def setup_level_select(ctx : 'AE3Context'):
         # unless required to keep Break Rooms open
         if ctx.dummy_morph_monkey_needed and ctx.dummy_morph != Itm.morph_monkey.value:
             ctx.ipc.lock_equipment(Itm.morph_monkey.value)
+
+        if ctx.save_state_on_room_transition and ctx.has_saved_on_transition:
+            ctx.has_saved_on_transition = False
 
 
 async def setup_area(ctx : 'AE3Context'):
@@ -625,7 +633,7 @@ def set_freeplay_mode(ctx : 'AE3Context'):
     ctx.is_mode_swapped = True
 
 async def set_last_save_status(ctx : 'AE3Context'):
-    is_last_save_normal : bool = True if ctx.is_last_save_normal is not None else ctx.is_last_save_normal
+    is_last_save_normal : bool = True if ctx.is_last_save_normal is None else ctx.is_last_save_normal
 
     await ctx.send_msgs([{
         "cmd": "Set",
