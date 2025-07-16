@@ -908,7 +908,7 @@ async def check_game(ctx : AE3Context):
     if not ctx.player_control:
         # Auto Load State if desired
         if ctx.state_slot >= 0 and not ctx.has_attempted_auto_load:
-            if ctx.is_last_save_normal:
+            if ctx.is_last_save_normal is not None and not ctx.is_last_save_normal:
                 ctx.ipc.load_state(ctx.state_slot)
 
             if ctx.is_last_save_normal is not None:

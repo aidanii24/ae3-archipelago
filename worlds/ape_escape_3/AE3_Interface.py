@@ -343,10 +343,13 @@ class AEPS2Interface:
         address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
                                                   Game.save.value)
         value : bytes = self.pine.read_bytes(address, 4)
-        decoded : str = bytes.decode(value).replace("\x00", "")
+
+        try:
+            decoded : str = bytes.decode(value).replace("\x00", "")
+        except UnicodeDecodeError:
+            return False
 
         boolean : bool = decoded == Game.save.value
-        print("Is Saving?", boolean)
         return boolean
 
     def is_in_pink_boss(self) -> bool:
