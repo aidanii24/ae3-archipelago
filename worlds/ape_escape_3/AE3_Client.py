@@ -244,17 +244,16 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
 
     def _cmd_freeplay(self):
-        """Toggle if Free Play mode and Time Attack mode should be swapped, allowing Free Play to become available
-        earlier.
+        """Toggle if Free Play mode should be accessible early by holding L1 or L2 after selecting a channel.
         """
         if isinstance(self.ctx, AE3Context):
             if not self.ctx.early_free_play:
-                logger.info(f" [!!!] Early Free Play was set to DISABLED. You cannot toggle Freeplay Swap.")
+                logger.info(f" [!!!] Early Free Play was set to DISABLED. You cannot toggle Freeplay Toggle.")
                 return
 
             self.ctx.alt_freeplay = not self.ctx.alt_freeplay
 
-            logger.info(f" [-!-] Freeplay Swap is now " f"{"ENABLED" if self.ctx.alt_freeplay else "DISABLED"}")
+            logger.info(f" [-!-] Freeplay Toggle is now " f"{"ENABLED" if self.ctx.alt_freeplay else "DISABLED"}")
 
     def _cmd_deathlink(self):
         """Toggle if death links should be enabled. This affects both receiving and sending deaths."""
