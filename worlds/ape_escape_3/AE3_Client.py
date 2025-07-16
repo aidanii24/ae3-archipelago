@@ -1,13 +1,9 @@
 from argparse import ArgumentParser, Namespace
 from typing import Optional, Sequence
-from datetime import datetime
-import io
-import os.path
 import typing
 import multiprocessing
 import traceback
 import asyncio
-import json
 import time
 
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled, \
@@ -335,8 +331,6 @@ class AE3Context(CommonContext):
     # Client Properties
     command_processor : ClientCommandProcessor = AE3CommandProcessor
     items_handling : int = 0b111
-    save_data_path : str = None
-    save_data_filename : str = None
 
     # Interface Properties
     ipc : AEPS2Interface = AEPS2Interface
@@ -448,18 +442,6 @@ class AE3Context(CommonContext):
         for lists in [*MONKEYS_DIRECTORY.values()]:
             if lists not in self.monkeys_index:
                 self.monkeys_index.append(lists)
-
-        ## TODO Deprecate Old Save System
-        # Define Save Data Path
-        # self.save_data_path = Utils.user_path() + "/data/saves"
-        # if not os.path.isdir(self.save_data_path):
-        #     try:
-        #         os.mkdir(self.save_data_path)
-        #     except OSError:
-        #         self.save_data_path = ""
-
-        # if self.save_data_path:
-        #     self.save_data_path += "/"
 
         # Load Settings
         self.settings = get_settings().get("ape_escape_3_options", False)
@@ -688,8 +670,6 @@ class AE3Context(CommonContext):
 
                 self.seed_name = seed
 
-            self.save_data_filename = Meta.game_acr + "_" + self.seed_name + ".json"
-
     def on_deathlink(self, data: typing.Dict[str, typing.Any]) -> None:
         if not self.death_link:
             return
@@ -697,133 +677,6 @@ class AE3Context(CommonContext):
         super().on_deathlink(data)
 
         self.pending_deathlinks += 1
-
-    def check_session_save(self) -> bool:
-        """Check for valid save file"""
-        if not self.save_data_filename:
-            return False
-        elif not self.save_data_path:
-            return False
-
-        return (os.path.isfile(self.save_data_path + self.save_data_filename) and
-                os.access(self.save_data_path + self.save_data_filename, os.R_OK))
-
-    def load_session(self):
-        """Load existing session"""
-        if not self.check_session_save():
-            return
-
-        with io.open(self.save_data_path + self.save_data_filename, 'r') as save:
-            data : dict = json.load(save)
-
-            # Retrieve Next Item Slot/Amount of Items Received
-            self.last_item_processed_index = data.get(APHelper.last_itm_idx_prc.value, 0)
-
-            # Retrieve Offline Checked Locations
-            self.offline_locations_checked = set(data.get(APHelper.offline_checked_locations.value, set()))
-
-            # Retrieve Volatile Checked Locations
-            self.checked_volatile_locations = set(data.get(APHelper.checked_volatile_locations.value, set()))
-
-        self.ipc.logger.info(" [-!-] A Session Data save has been found and successfully loaded.")
-
-    def save_session(self):
-        """Save current session progress"""
-        if self.game_goaled:
-            return
-
-        # Prevent Spammed Messages
-        if not self.save_data_filename or not self.save_data_path:
-            logger.warning(APConsole.Err.save_no_init.value)
-            return
-
-        data = {
-            APHelper.goaled.value                       : self.game_goaled,
-            APHelper.last_save.value                    : datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-
-            APHelper.last_itm_idx_prc.value             : self.last_item_processed_index,
-            APHelper.offline_checked_locations.value    : [*self.offline_locations_checked],
-            APHelper.checked_volatile_locations.value   : [*self.checked_volatile_locations],
-        }
-        with io.open(self.save_data_path + self.save_data_filename, 'w') as save:
-            save.write(json.dumps(data))
-
-    def delete_session(self):
-        if not self.check_session_save():
-            return
-
-        if not self.settings or not self.settings.delete_goaled:
-            return
-
-        try:
-            if os.path.isfile(self.save_data_path + self.save_data_filename):
-                os.remove(self.save_data_path + self.save_data_filename)
-        except OSError:
-            pass
-
-        if not self.check_session_save():
-            self.ipc.logger.info(" [-!-] Current Session Data has successfully been erased.")
-
-    def clean_sessions(self):
-        """
-        This will attempt to delete Session Data that has already goaled or has not been saved for too long
-        depending on the set user options.
-        """
-        if not self.save_data_path or not os.path.isdir(self.save_data_path):
-            return
-
-        if not self.settings.delete_goaled and not self.settings.delete_excess and not self.settings.delete_old:
-            return
-
-        files: dict[str, int] = {}
-        discard: list[str] = []
-        for file in os.listdir(self.save_data_path):
-            # Only check the AE3 Save JSON files
-            if not file.startswith("AE3_") and not file.endswith(".json"):
-                continue
-
-            # Ensure this is actually a file
-            if not os.path.isfile(self.save_data_path + "/" + file):
-                continue
-
-            try:
-                with io.open(self.save_data_path + file, 'r') as save:
-                    data = json.load(save)
-
-                    if self.settings.delete_goaled and APHelper.goaled.value in data:
-                        if data[APHelper.goaled.value]:
-                            discard.append(file)
-                            continue
-
-                    if APHelper.last_save.value in data:
-                        delta : int = (datetime.now() - datetime.strptime(data[APHelper.last_save.value],
-                                                                             "%Y-%m-%dT%H:%M:%S.%fZ")).days
-                        # Immediately add to discard pile if last save is more than the specified amount of days
-                        if self.settings.delete_old and delta > self.settings.delete_old:
-                            discard.append(file)
-                        # Otherwise, send to be checked for excess remaining
-                        elif self.settings.delete_excess:
-                            files.setdefault(file, delta)
-            except OSError as error:
-                print(error)
-                return
-
-        # Sort by days since last saved in ascending order, and remove the oldest ones that exceed the excess amount
-        if len(files) > 10:
-            excess_amount : int = len(files) - self.settings.delete_excess - 1
-            excess : list[str] = [*dict(sorted(files.items(), key=lambda f : file[1])).keys()]
-
-            discard.extend(excess[-excess_amount:])
-
-        if discard:
-            try:
-                for file in discard:
-                    os.remove(self.save_data_path + "/" + file)
-            except OSError as error:
-                logger.info(" [!!!] An error has occurred cleaning local session saves.\n", error)
-                return
-
-            logger.info(f" [-!-] Clean Sessions has run and deleted {len(discard)} total session saves.")
 
     # Client Command GUI
     def run_gui(self):
@@ -865,9 +718,6 @@ async def main_sync_task(ctx : AE3Context):
     logger.info(APConsole.Info.decor.value)
     logger.info("\n")
     logger.info(APConsole.Info.p_init.value)
-
-    # TODO Deprecate Old JSON Local Save System
-    # ctx.clean_sessions()
 
     ctx.ipc.connect_game()
 
@@ -961,7 +811,6 @@ async def check_game(ctx : AE3Context):
         # Setup Stage when needed and double check locations
         if ctx.in_travel_station:
             await setup_level_select(ctx)
-            # await recheck_location_groups(ctx) TODO Deprecate and Remove
         else:
             await setup_area(ctx)
 
