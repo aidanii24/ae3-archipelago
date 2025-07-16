@@ -345,6 +345,10 @@ async def receive_items(ctx : 'AE3Context'):
                 ctx.keys += 1
                 ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys, ctx.post_game_condition.check(ctx))
 
+            # Save State if desired
+            if ctx.save_state_on_item_received and not ctx.pending_auto_save:
+                ctx.pending_auto_save = True
+
         ## Unlock Morphs and Gadgets
         elif isinstance(item, EquipmentItem):
             ctx.ipc.unlock_equipment(item.name, auto_equip)
@@ -388,6 +392,10 @@ async def receive_items(ctx : 'AE3Context'):
                 dummy: str = ctx.dummy_morph if ctx.dummy_morph_needed else ""
                 ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration, dummy)
 
+            # Save State if desired
+            if ctx.save_state_on_item_received and not ctx.pending_auto_save:
+                ctx.pending_auto_save = True
+
         ## Handle Collectables
         elif isinstance(item, CollectableItem) or isinstance(item, UpgradeableItem):
             i = item
@@ -419,10 +427,6 @@ async def receive_items(ctx : 'AE3Context'):
     if received:
         # Save Last Item Index Processed into Game Memory
         ctx.ipc.set_last_item_index(ctx.last_item_processed_index)
-
-        # Save State if desired
-        if ctx.save_state_on_item_received:
-            ctx.pending_auto_save = True
 
         # Recheck Locations when receiving items for cases when locations are checked manually by the server/host
         await ctx.goal_target.check(ctx)

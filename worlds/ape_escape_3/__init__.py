@@ -31,7 +31,7 @@ class AE3Settings(settings.Group):
         Preferences for game session management.
 
         > save_state_on_room_transition: Automatically create a save state when transitioning between rooms.
-        > save_state_on_item_received: Automatically create a save state when receiving a new item.
+        > save_state_on_item_received: Automatically create a save state when receiving a new progressive item.
         > save_state_on_location_check: Automatically create a save state when checking a new location.
         > load_state_on_connect: Load a state automatically after connecting to the multiworld if the client
         is already connected to the game and that the last save is from a save state and not a normal game save.
@@ -48,29 +48,12 @@ class AE3Settings(settings.Group):
         """
 
 
-    class ClientPreferences(settings.Bool):
-        """
-        Preferences for client behavior, primarily when handling local session data saves.
-
-        > delete_goaled : Delete session data if they have already goaled. Set this to `False` to disable.
-        > delete_excess : Delete the oldest session data if the amount of saved session data exceeds a certain amount.
-        Set this to `0` to disable it.
-        > delete_old : Delete session data if they have not been saved into for a certain amount of days.
-        Set this to `0` to disable.
-        """
-
-
-    save_state_on_room_transition : SessionPreferences | bool = True
-    save_state_on_item_received : SessionsPreferences | bool = False
+    save_state_on_room_transition : SessionPreferences | bool = False
+    save_state_on_item_received : SessionsPreferences | bool = True
     save_state_on_location_check : SessionsPreferences | bool = False
     load_state_on_connect : SessionsPreferences | bool = False
 
-
     auto_equip : GamePreferences | bool = True
-
-    delete_goaled : ClientPreferences | bool = True
-    delete_excess : int = 10
-    delete_old : int = 30
 
 
 class AE3Web(WebWorld):
