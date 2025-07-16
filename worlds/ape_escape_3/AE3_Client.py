@@ -625,14 +625,6 @@ class AE3Context(CommonContext):
             if not self.checked_locations:
                 self.are_item_status_synced = True
 
-            # Get Latest Last Save Type Status
-            last_save_string : str = f"{APHelper.last_save_type.value}_{self.team}_{self.slot}"
-            print(f"RECEIVING: {last_save_string}")
-            print(self.stored_data)
-            if last_save_string in self.stored_data:
-                print("RECEIVED IN STORED DATA!")
-                self.is_last_save_normal = bool(self.stored_data[last_save_string])
-
             # Resync Important Item Statuses
             if self.are_item_status_synced or not self.items_received:
                 return
@@ -675,6 +667,13 @@ class AE3Context(CommonContext):
             self.swim_unlocked = self.items_name_to_id[Itm.gadget_swim.value] in received_as_id
 
             self.are_item_status_synced = True
+
+        elif cmd == APHelper.cmd_rtrv.value:
+            # Get Latest Last Save Type Status
+            last_save_string: str = f"{APHelper.last_save_type.value}_{self.team}_{self.slot}"
+            if last_save_string in self.stored_data:
+                self.is_last_save_normal = bool(self.stored_data[last_save_string])
+                self.is_last_save_normal = bool(self.stored_data[last_save_string])
 
         # Initialize Session on receive of RoomInfo Packet
         elif cmd == APHelper.cmd_rminfo.value:
@@ -908,9 +907,7 @@ async def check_game(ctx : AE3Context):
     # Check if Game State is safe for Further Checking
     if not ctx.player_control:
         # Auto Load State if desired
-        print(ctx.state_slot, ctx.has_attempted_auto_load)
         if ctx.state_slot >= 0 and not ctx.has_attempted_auto_load:
-            print(ctx.is_last_save_normal)
             if ctx.is_last_save_normal:
                 ctx.ipc.load_state(ctx.state_slot)
 
@@ -927,7 +924,6 @@ async def check_game(ctx : AE3Context):
         await check_background_states(ctx)
 
         await asyncio.sleep(0.5)
-        print(ctx.current_stage, ctx.current_channel)
         return
     elif not ctx.ipc.is_in_control():
         ctx.player_control = False
