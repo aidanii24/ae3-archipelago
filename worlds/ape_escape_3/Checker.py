@@ -311,7 +311,6 @@ async def receive_items(ctx : 'AE3Context'):
     # Check if there are items missed from since the client was open; Refuse to take items until this index is confirmed
     if ctx.last_item_processed_index < 0:
         ctx.last_item_processed_index = ctx.ipc.get_last_item_index()
-
     # Sync with Last Processed Item Index if necessary:
     elif ctx.last_item_processed_index:
         if ctx.next_item_slot < 0:
@@ -319,12 +318,10 @@ async def receive_items(ctx : 'AE3Context'):
         else:
             ctx.next_item_slot = max(min(ctx.last_item_processed_index, ctx.next_item_slot), 0)
 
+
     # Resync Next Item Slot if empty and locations have been checked
     if not ctx.next_item_slot and ctx.items_received and ctx.checked_locations:
         ctx.next_item_slot = len(ctx.items_received)
-    # Reset Next Item Slot if not empty and no locations have been checked
-    elif ctx.next_item_slot and not ctx.checked_locations and ctx.items_received and ctx.items_received[-1].player < 1:
-        ctx.next_item_slot = 0
 
     # Auto-equip if option is enabled or for handling the starting inventory
     auto_equip: bool = ctx.auto_equip or not ctx.last_item_processed_index
@@ -333,7 +330,6 @@ async def receive_items(ctx : 'AE3Context'):
     received : List[NetworkItem] = ctx.items_received[ctx.next_item_slot:]
     ctx.next_item_slot += len(received)
     ctx.last_item_processed_index = ctx.next_item_slot
-
     for server_item in received:
         item = Items.from_id(server_item.item)
 
@@ -430,6 +426,7 @@ async def receive_items(ctx : 'AE3Context'):
 
         # Recheck Locations when receiving items for cases when locations are checked manually by the server/host
         await ctx.goal_target.check(ctx)
+        ctx.post_game_condition.check(ctx)
 
 async def resync_important_items(ctx : 'AE3Context'):
     # Do not resync if no items have been processed at all yet
