@@ -119,10 +119,10 @@ class AE3CommandProcessor(ClientCommandProcessor):
                         f"{"ENABLED" if self.ctx.auto_equip else "DISABLED"}")
 
             if self.ctx.early_free_play:
-                logger.info(f"         Freeplay Swap is " 
+                logger.info(f"         Freeplay Toggle is " 
                             f"{"ENABLED" if self.ctx.alt_freeplay else "DISABLED"}")
             else:
-                logger.info(f"         Early Freeplay is DISABLED and Freeplay Swap cannot be toggled.")
+                logger.info(f"         Early Freeplay is DISABLED and Freeplay Toggle cannot be toggled.")
 
             logger.info(f"         DeathLink is " 
                         f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
@@ -966,7 +966,7 @@ async def check_game(ctx : AE3Context):
         await check_states(ctx)
 
         # Check Progression
-        await check_items(ctx)
+        await receive_items(ctx)
 
         if not ctx.in_travel_station:
             await check_locations(ctx)
