@@ -729,6 +729,19 @@ class NTSCU(VersionAddresses):
         Loc.tele_052.value                      : 0x649C13,
         Loc.tele_062.value                      : 0x649C14,
         Loc.tele_063.value                      : 0x649C15,
+
+        # Shopping Area
+        ## Monkey Mart
+
+
+        ## Book Shop
+
+
+        ## Hobby Shop
+
+
+        ## Music Shop
+
     }
 
     GameStates: Dict[str, int] = {
