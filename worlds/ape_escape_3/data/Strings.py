@@ -738,6 +738,7 @@ class Loc(BaseEnum):
 
     # Shopping Area
     ## Monkey Mart
+    shop_morph_stock                = "Morph Stock (Shop Item)"
     shop_morph_stock_1              = "Morph stock #1 (Shop Item)"
     shop_morph_stock_2              = "Morph stock #2 (Shop Item)"
     shop_morph_stock_3              = "Morph stock #3 (Shop Item)"
@@ -813,6 +814,7 @@ class Loc(BaseEnum):
     channel_guide_collection_19     = "Channel guide \"Channel guide CH19\""
     channel_guide_collection_20     = "Channel guide \"Channel guide CH20\""
 
+    hint_book                       = "Hint book"
     hint_book_collection_1          = "Hint book #1"
     hint_book_collection_2          = "Hint book #2"
     hint_book_collection_3          = "Hint book #3"
@@ -834,6 +836,7 @@ class Loc(BaseEnum):
     hint_book_collection_19         = "Hint book #19"
     hint_book_collection_20         = "Hint book #20"
 
+    mon_fiction                     = "Mon-fiction"
     mon_fiction_collection_1        = "Mon-fiction #1"
     mon_fiction_collection_2        = "Mon-fiction #2"
     mon_fiction_collection_3        = "Mon-fiction #3"
@@ -855,6 +858,7 @@ class Loc(BaseEnum):
     mon_fiction_collection_19       = "Mon-fiction #19"
     mon_fiction_collection_20       = "Mon-fiction #20"
 
+    channel_guide                   = "Channel guide"
     channel_guide_1                 = "Channel guide #1"
     channel_guide_2                 = "Channel guide #2"
     channel_guide_3                 = "Channel guide #3"
@@ -995,10 +999,12 @@ class Loc(BaseEnum):
     teleborg_cards_29                 = "Teleborg cards \"Splitter-borg\""
     teleborg_cards_30                 = "Teleborg cards \"Sneaky-borg Red\""
 
+    bonus_rc_cars                   = "Bonus RC Cars"
     bonus_rc_cars_collection_1      = "Bonus RC Cars #1"
     bonus_rc_cars_collection_2      = "Bonus RC Cars #2"
     bonus_rc_cars_collection_3      = "Bonus RC Cars #3"
 
+    weird_photos                    = "Weird photos"
     weird_photos_collection_1       = "Weird photos #1"
     weird_photos_collection_2       = "Weird photos #2"
     weird_photos_collection_3       = "Weird photos #3"
@@ -1020,6 +1026,7 @@ class Loc(BaseEnum):
     weird_photos_collection_19      = "Weird photos #19"
     weird_photos_collection_20      = "Weird photos #20"
 
+    secret_photos                   = "Secret photos"
     secret_photos_collection_1      = "Secret photos #1"
     secret_photos_collection_2      = "Secret photos #2"
     secret_photos_collection_3      = "Secret photos #3"
@@ -1051,6 +1058,7 @@ class Loc(BaseEnum):
     secret_photos_collection_29     = "Secret photos #29"
     secret_photos_collection_30     = "Secret photos #30"
 
+    concept_art                     = "Concept art"
     concept_art_collection_1        = "Concept art #1"
     concept_art_collection_2        = "Concept art #2"
     concept_art_collection_3        = "Concept art #3"
@@ -1082,6 +1090,7 @@ class Loc(BaseEnum):
     concept_art_collection_29       = "Concept art #29"
     concept_art_collection_30       = "Concept art #30"
 
+    teleborg_cards                  = "Teleborg cards"
     teleborg_cards_collection_1     = "Teleborg cards #1"
     teleborg_cards_collection_2     = "Teleborg cards #2"
     teleborg_cards_collection_3     = "Teleborg cards #3"
@@ -1203,6 +1212,7 @@ class Loc(BaseEnum):
     genie_dance_music_slowdance     = "Genie \u266ASlowdance"
     genie_dance_music_waltz         = "Genie \u266AWaltz"
 
+    movie_tape                      = "Movie tape"
     movie_tape_collection_1         = "Movie tape #1"
     movie_tape_collection_2         = "Movie tape #2"
     movie_tape_collection_3         = "Movie tape #3"
@@ -1233,6 +1243,7 @@ class Loc(BaseEnum):
     movie_tape_collection_28        = "Movie tape #28"
     movie_tape_collection_29        = "Movie tape #29"
 
+    music_disc                      = "Music dics"
     music_disc_collection_1         = "Music disc #1"
     music_disc_collection_2         = "Music disc #2"
     music_disc_collection_3         = "Music disc #3"
@@ -1284,6 +1295,7 @@ class Loc(BaseEnum):
     music_disc_collection_49        = "Music disc #49"
     music_disc_collection_50        = "Music disc #50"
 
+    genie_dance_music               = "Genie dance music"
     genie_dance_music_collection_1  = "Genie dance music #1"
     genie_dance_music_collection_2  = "Genie dance music #2"
     genie_dance_music_collection_3  = "Genie dance music #3"
