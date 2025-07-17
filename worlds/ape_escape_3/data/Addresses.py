@@ -732,15 +732,87 @@ class NTSCU(VersionAddresses):
 
         # Shopping Area
         ## Monkey Mart
-
+        Loc.shop_morph_stock.value              : 0x100,
 
         ## Book Shop
+        Loc.hint_book.value                     : 0x01,
+        Loc.mon_fiction.value                   : 0x15,
+        Loc.channel_guide.value                 : 0x29,
 
+        Loc.hint_book_1.value                   : 0x649c84,
+        Loc.hint_book_2.value                   : 0x649c85,
+        Loc.hint_book_3.value                   : 0x649c86,
+        Loc.hint_book_4.value                   : 0x649c87,
+        Loc.hint_book_5.value                   : 0x649c88,
+        Loc.hint_book_6.value                   : 0x649c89,
+        Loc.hint_book_7.value                   : 0x649c8A,
+        Loc.hint_book_8.value                   : 0x649c8B,
+        Loc.hint_book_9.value                   : 0x649c8C,
+        Loc.hint_book_10.value                  : 0x649c8D,
+        Loc.hint_book_11.value                  : 0x649c8E,
+        Loc.hint_book_12.value                  : 0x649c8F,
+        Loc.hint_book_13.value                  : 0x649c90,
+        Loc.hint_book_14.value                  : 0x649c91,
+        Loc.hint_book_15.value                  : 0x649c92,
+        Loc.hint_book_16.value                  : 0x649c93,
+        Loc.hint_book_17.value                  : 0x649c94,
+        Loc.hint_book_18.value                  : 0x649c95,
+        Loc.hint_book_19.value                  : 0x649c96,
+        Loc.hint_book_20.value                  : 0x649c97,
+
+        Loc.mon_fiction_1.value                 : 0x649cb2,
+        Loc.mon_fiction_2.value                 : 0x649cb3,
+        Loc.mon_fiction_3.value                 : 0x649cb4,
+        Loc.mon_fiction_4.value                 : 0x649cb5,
+        Loc.mon_fiction_5.value                 : 0x649cb6,
+        Loc.mon_fiction_6.value                 : 0x649cb7,
+        Loc.mon_fiction_7.value                 : 0x649cb8,
+        Loc.mon_fiction_8.value                 : 0x649cb9,
+        Loc.mon_fiction_9.value                 : 0x649cba,
+        Loc.mon_fiction_10.value                : 0x649cbb,
+        Loc.mon_fiction_11.value                : 0x649cbc,
+        Loc.mon_fiction_12.value                : 0x649cbd,
+        Loc.mon_fiction_13.value                : 0x649cbe,
+        Loc.mon_fiction_14.value                : 0x649cbf,
+        Loc.mon_fiction_15.value                : 0x649cc0,
+        Loc.mon_fiction_16.value                : 0x649cc1,
+        Loc.mon_fiction_17.value                : 0x649cc2,
+        Loc.mon_fiction_18.value                : 0x649cc3,
+        Loc.mon_fiction_19.value                : 0x649cc4,
+        Loc.mon_fiction_20.value                : 0x649cc5,
+
+        Loc.channel_guide_1.value               : 0x649c9e,
+        Loc.channel_guide_2.value               : 0x649c9f,
+        Loc.channel_guide_3.value               : 0x649ca0,
+        Loc.channel_guide_4.value               : 0x649ca1,
+        Loc.channel_guide_5.value               : 0x649ca2,
+        Loc.channel_guide_6.value               : 0x649ca3,
+        Loc.channel_guide_7.value               : 0x649ca4,
+        Loc.channel_guide_8.value               : 0x649ca5,
+        Loc.channel_guide_9.value               : 0x649ca6,
+        Loc.channel_guide_10.value              : 0x649ca7,
+        Loc.channel_guide_11.value              : 0x649ca8,
+        Loc.channel_guide_12.value              : 0x649ca9,
+        Loc.channel_guide_13.value              : 0x649caa,
+        Loc.channel_guide_14.value              : 0x649cab,
+        Loc.channel_guide_15.value              : 0x649cac,
+        Loc.channel_guide_16.value              : 0x649cad,
+        Loc.channel_guide_17.value              : 0x649cae,
+        Loc.channel_guide_18.value              : 0x649caf,
+        Loc.channel_guide_19.value              : 0x649cb0,
+        Loc.channel_guide_20.value              : 0x649cb1,
 
         ## Hobby Shop
-
+        Loc.bonus_rc_cars.value                 : 0x3D,
+        Loc.weird_photos.value                  : 0x40,
+        Loc.secret_photos.value                 : 0x54,
+        Loc.concept_art.value                   : 0x72,
+        Loc.teleborg_cards.value                : 0x90,
 
         ## Music Shop
+        Loc.movie_tape.value                    : 0xAE,
+        Loc.music_disc.value                    : 0xCB,
+        Loc.genie_dance_music.value             : 0xFD,
 
     }
 
