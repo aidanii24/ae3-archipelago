@@ -432,7 +432,36 @@ STAGES_BREAK_ROOMS : Sequence[str] = [
     Stage.region_space_h.value,
 ]
 
-STAGES_SHOPS : Sequence[str] = []
+STAGES_SHOP_PROGRESSION : Sequence[str] = [
+    Stage.region_shop_seaside.value,
+    Stage.region_shop_woods.value,
+    Stage.region_shop_castle.value,
+    Stage.region_shop_boss1.value,
+    Stage.region_shop_ciscocity.value,
+    Stage.region_shop_studio.value,
+    Stage.region_shop_halloween.value,
+    Stage.region_shop_western.value,
+    Stage.region_shop_boss2.value,
+    Stage.region_shop_onsen.value,
+    Stage.region_shop_snowfesta.value,
+    Stage.region_shop_edotown.value,
+    Stage.region_shop_boss3.value,
+    Stage.region_shop_heaven.value,
+    Stage.region_shop_toyhouse.value,
+    Stage.region_shop_iceland.value,
+    Stage.region_shop_arabian.value,
+    Stage.region_shop_boss4.value,
+    Stage.region_shop_asia.value,
+    Stage.region_shop_plane.value,
+    Stage.region_shop_hong.value,
+    Stage.region_shop_boss5.value,
+    Stage.region_shop_bay.value,
+    Stage.region_shop_tomo.value,
+    Stage.region_shop_boss6.value,
+    Stage.region_shop_space.value,
+    Stage.region_shop_specter1.value,
+    Stage.region_shop_round2.value,
+]
 
 STAGES_MASTER : Sequence[str] = [
     *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY, *STAGES_STUDIO,

@@ -2059,6 +2059,153 @@ EVENTS_INDEX : dict[str, Sequence[str]] = {
     Stage.region_space_d.value          : EVENTS_SPACE_D,
 }
 
+## Shopping Area
+# Progression Groupings
+SHOP_PROGRESSION_SEASIDE : Sequence[str] = [
+    Loc.channel_guide_1.value,
+
+    Loc.concept_art_1.value,
+    Loc.concept_art_8.value,
+    Loc.concept_art_15.value,
+    Loc.concept_art_16.value,
+    Loc.concept_art_27.value,
+
+    Loc.movie_tape_1.value,
+    Loc.movie_tape_2.value,
+    Loc.movie_tape_3.value,
+]
+
+SHOP_PROGRESSION_WOODS : Sequence[str] = [
+    Loc.hint_book_7.value,
+
+    Loc.channel_guide_2.value,
+
+    Loc.secret_photos_1.value,
+
+    Loc.concept_art_17.value,
+
+    Loc.teleborg_cards_1.value,
+    Loc.teleborg_cards_2.value,
+    Loc.teleborg_cards_3.value,
+    Loc.teleborg_cards_4.value,
+
+    Loc.music_disc_1.value,
+]
+
+SHOP_PROGRESSION_CASTLE : Sequence[str] = [
+    Loc.hint_book_2.value,
+
+    Loc.mon_fiction_1.value,
+
+    Loc.channel_guide_3.value,
+
+    Loc.secret_photos_2.value,
+    Loc.secret_photos_3.value,
+    Loc.secret_photos_4.value,
+
+    Loc.concept_art_18.value,
+
+    Loc.teleborg_cards_5.value,
+    Loc.teleborg_cards_6.value,
+
+    Loc.movie_tape_4.value,
+
+    Loc.music_disc_2.value,
+]
+
+SHOP_PROGRESSION_BOSS1 : Sequence[str] = [
+    Loc.hint_book_4.value,
+
+    Loc.mon_fiction_2.value,
+
+    Loc.secret_photos_5.value,
+    Loc.secret_photos_6.value,
+    Loc.secret_photos_7.value,
+
+    Loc.concept_art_2.value,
+    Loc.concept_art_9.value,
+
+    Loc.teleborg_cards_7.value,
+
+    Loc.music_disc_3.value,
+    Loc.music_disc_4.value,
+    Loc.music_disc_42.value,
+]
+
+SHOP_PROGRESSION_CISCOCITY : Sequence[str] = [
+    Loc.mon_fiction_3.value,
+
+    Loc.channel_guide_4.value,
+
+    Loc.movie_tape_5.value,
+    Loc.movie_tape_6.value,
+    Loc.movie_tape_7.value,
+]
+
+SHOP_PROGRESSION_STUDIO : Sequence[str] = [
+    Loc.hint_book_1.value,
+    Loc.hint_book_8.value,
+
+    Loc.mon_fiction_4.value,
+
+    Loc.channel_guide_5.value,
+
+    Loc.secret_photos_8.value,
+
+    Loc.teleborg_cards_8.value,
+    Loc.teleborg_cards_9.value,
+
+    Loc.music_disc_5.value,
+]
+
+SHOP_PROGRESSION_HALLOWEEN : Sequence[str] = [
+    Loc.hint_book_3.value,
+
+    Loc.mon_fiction_5.value,
+
+    Loc.channel_guide_6.value,
+
+    Loc.secret_photos_9.value,
+
+    Loc.concept_art_19.value,
+
+    Loc.teleborg_cards_10.value,
+    Loc.teleborg_cards_11.value,
+
+    Loc.music_disc_6.value,
+    Loc.music_disc_7.value,
+]
+
+SHOP_PROGRESSION_WESTERN : Sequence[str] = [
+    Loc.mon_fiction_6.value,
+
+    Loc.channel_guide_7.value,
+
+    Loc.secret_photos_10.value,
+
+    Loc.teleborg_cards_12.value,
+    Loc.teleborg_cards_13.value,
+
+    Loc.music_disc_8.value,
+    Loc.music_disc_9.value,
+]
+
+SHOP_PROGRESSION_BOSS2 : Sequence[str] = [
+    Loc.secret_photos_11.value,
+    Loc.secret_photos_12.value,
+
+    Loc.concept_art_3.value,
+    Loc.concept_art_10.value,
+
+    Loc.teleborg_cards_14.value,
+    Loc.teleborg_cards_15.value,
+    Loc.teleborg_cards_16.value,
+
+    Loc.music_disc_10.value,
+    Loc.music_disc_11.value,
+    Loc.music_disc_43.value,
+]
+
 LOCATIONS_INDEX : dict[str, Sequence[str]] = {
     key : [loc for loc in [*MONKEYS_INDEX.get(key, []), CAMERAS_INDEX.get(key, []), *CELLPHONES_INDEX.get(key, [])]
            if loc]
