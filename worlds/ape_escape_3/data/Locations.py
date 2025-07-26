@@ -48,7 +48,7 @@ class MonkeyLocation(AE3LocationMeta):
         return Location(player, self.name, self.loc_id, parent)
 
 class CameraLocation(AE3LocationMeta):
-    def __init__(self, name : str, offset : int = 0):
+    def __init__(self, name : str):
         self.name = name
         # Cameras will be id'd linearly, based on the starting id definied by Pipo Camera in addresses.py
         self.loc_id = NTSCU.Locations[name]
@@ -2557,11 +2557,307 @@ SHOP_PROGRESSION_SPECTER2_CAPTURE : Sequence[str] = [
 ]
 
 SHOP_PROGRESSION_75COMPLETION : Sequence[str] = [
-    Loc.ultim_ape_fighter.value,
+    Loc.shop_ultim_ape_fighter.value,
 ]
 
 SHOP_PROGRESSION_MGS : Sequence[str] = [
     Loc.movie_tape_28.value,
+]
+
+SHOP_HINT_BOOK : Sequence[str] = [
+    Loc.hint_book_1.value,
+    Loc.hint_book_2.value,
+    Loc.hint_book_3.value,
+    Loc.hint_book_4.value,
+    Loc.hint_book_5.value,
+    Loc.hint_book_6.value,
+    Loc.hint_book_7.value,
+    Loc.hint_book_8.value,
+    Loc.hint_book_9.value,
+    Loc.hint_book_10.value,
+    Loc.hint_book_11.value,
+    Loc.hint_book_12.value,
+    Loc.hint_book_13.value,
+    Loc.hint_book_14.value,
+    Loc.hint_book_15.value,
+    Loc.hint_book_16.value,
+    Loc.hint_book_17.value,
+    Loc.hint_book_18.value,
+    Loc.hint_book_19.value,
+    Loc.hint_book_20.value,
+]
+
+SHOP_MON_FICTION : Sequence[str] = [
+    Loc.mon_fiction_1.value,
+    Loc.mon_fiction_2.value,
+    Loc.mon_fiction_3.value,
+    Loc.mon_fiction_4.value,
+    Loc.mon_fiction_5.value,
+    Loc.mon_fiction_6.value,
+    Loc.mon_fiction_7.value,
+    Loc.mon_fiction_8.value,
+    Loc.mon_fiction_9.value,
+    Loc.mon_fiction_10.value,
+    Loc.mon_fiction_11.value,
+    Loc.mon_fiction_12.value,
+    Loc.mon_fiction_13.value,
+    Loc.mon_fiction_14.value,
+    Loc.mon_fiction_15.value,
+    Loc.mon_fiction_16.value,
+    Loc.mon_fiction_17.value,
+    Loc.mon_fiction_18.value,
+    Loc.mon_fiction_19.value,
+    Loc.mon_fiction_20.value,
+]
+
+SHOP_CHANNEL_GUIDE : Sequence[str] = [
+    Loc.channel_guide_1.value,
+    Loc.channel_guide_2.value,
+    Loc.channel_guide_3.value,
+    Loc.channel_guide_4.value,
+    Loc.channel_guide_5.value,
+    Loc.channel_guide_6.value,
+    Loc.channel_guide_7.value,
+    Loc.channel_guide_8.value,
+    Loc.channel_guide_9.value,
+    Loc.channel_guide_10.value,
+    Loc.channel_guide_11.value,
+    Loc.channel_guide_12.value,
+    Loc.channel_guide_13.value,
+    Loc.channel_guide_14.value,
+    Loc.channel_guide_15.value,
+    Loc.channel_guide_16.value,
+    Loc.channel_guide_17.value,
+    Loc.channel_guide_18.value,
+    Loc.channel_guide_19.value,
+    Loc.channel_guide_20.value,
+]
+
+SHOP_BONUS_RC_CARS : Sequence[str] = [
+    Loc.bonus_rc_cars_1.value,
+    Loc.bonus_rc_cars_2.value,
+    Loc.bonus_rc_cars_3.value,
+]
+
+SHOP_MINIGAMES : Sequence[str] = [
+    Loc.shop_super_monkey_throw_stadium.value,
+    Loc.shop_mesal_gear_solid.value,
+    Loc.shop_ultim_ape_fighter.value,
+]
+
+SHOP_WEIRD_PHOTOS : Sequence[str] = [
+    Loc.weird_photos_1.value,
+    Loc.weird_photos_2.value,
+    Loc.weird_photos_3.value,
+    Loc.weird_photos_4.value,
+    Loc.weird_photos_5.value,
+    Loc.weird_photos_6.value,
+    Loc.weird_photos_7.value,
+    Loc.weird_photos_8.value,
+    Loc.weird_photos_9.value,
+    Loc.weird_photos_10.value,
+    Loc.weird_photos_11.value,
+    Loc.weird_photos_12.value,
+    Loc.weird_photos_13.value,
+    Loc.weird_photos_14.value,
+    Loc.weird_photos_15.value,
+    Loc.weird_photos_16.value,
+    Loc.weird_photos_17.value,
+    Loc.weird_photos_18.value,
+    Loc.weird_photos_19.value,
+    Loc.weird_photos_20.value,
+
+]
+
+SHOP_SECRET_PHOTOS : Sequence[str] = [
+    Loc.secret_photos_1.value,
+    Loc.secret_photos_2.value,
+    Loc.secret_photos_3.value,
+    Loc.secret_photos_4.value,
+    Loc.secret_photos_5.value,
+    Loc.secret_photos_6.value,
+    Loc.secret_photos_7.value,
+    Loc.secret_photos_8.value,
+    Loc.secret_photos_9.value,
+    Loc.secret_photos_10.value,
+    Loc.secret_photos_11.value,
+    Loc.secret_photos_12.value,
+    Loc.secret_photos_13.value,
+    Loc.secret_photos_14.value,
+    Loc.secret_photos_15.value,
+    Loc.secret_photos_16.value,
+    Loc.secret_photos_17.value,
+    Loc.secret_photos_18.value,
+    Loc.secret_photos_19.value,
+    Loc.secret_photos_20.value,
+    Loc.secret_photos_21.value,
+    Loc.secret_photos_22.value,
+    Loc.secret_photos_23.value,
+    Loc.secret_photos_24.value,
+    Loc.secret_photos_25.value,
+    Loc.secret_photos_26.value,
+    Loc.secret_photos_27.value,
+    Loc.secret_photos_28.value,
+    Loc.secret_photos_29.value,
+    Loc.secret_photos_30.value,
+]
+
+SHOP_CONCEPT_ART : Sequence[str] = [
+    Loc.concept_art_1.value,
+    Loc.concept_art_2.value,
+    Loc.concept_art_3.value,
+    Loc.concept_art_4.value,
+    Loc.concept_art_5.value,
+    Loc.concept_art_6.value,
+    Loc.concept_art_7.value,
+    Loc.concept_art_8.value,
+    Loc.concept_art_9.value,
+    Loc.concept_art_10.value,
+    Loc.concept_art_11.value,
+    Loc.concept_art_12.value,
+    Loc.concept_art_13.value,
+    Loc.concept_art_14.value,
+    Loc.concept_art_15.value,
+    Loc.concept_art_16.value,
+    Loc.concept_art_17.value,
+    Loc.concept_art_18.value,
+    Loc.concept_art_19.value,
+    Loc.concept_art_20.value,
+    Loc.concept_art_21.value,
+    Loc.concept_art_22.value,
+    Loc.concept_art_23.value,
+    Loc.concept_art_24.value,
+    Loc.concept_art_25.value,
+    Loc.concept_art_26.value,
+    Loc.concept_art_27.value,
+    Loc.concept_art_28.value,
+    Loc.concept_art_29.value,
+    Loc.concept_art_30.value,
+
+]
+
+SHOP_TELEBORG_CARDS : Sequence[str] = [
+    Loc.teleborg_cards_1.value,
+    Loc.teleborg_cards_2.value,
+    Loc.teleborg_cards_3.value,
+    Loc.teleborg_cards_4.value,
+    Loc.teleborg_cards_5.value,
+    Loc.teleborg_cards_6.value,
+    Loc.teleborg_cards_7.value,
+    Loc.teleborg_cards_8.value,
+    Loc.teleborg_cards_9.value,
+    Loc.teleborg_cards_10.value,
+    Loc.teleborg_cards_11.value,
+    Loc.teleborg_cards_12.value,
+    Loc.teleborg_cards_13.value,
+    Loc.teleborg_cards_14.value,
+    Loc.teleborg_cards_15.value,
+    Loc.teleborg_cards_16.value,
+    Loc.teleborg_cards_17.value,
+    Loc.teleborg_cards_18.value,
+    Loc.teleborg_cards_19.value,
+    Loc.teleborg_cards_20.value,
+    Loc.teleborg_cards_21.value,
+    Loc.teleborg_cards_22.value,
+    Loc.teleborg_cards_23.value,
+    Loc.teleborg_cards_24.value,
+    Loc.teleborg_cards_25.value,
+    Loc.teleborg_cards_26.value,
+    Loc.teleborg_cards_27.value,
+    Loc.teleborg_cards_28.value,
+    Loc.teleborg_cards_29.value,
+    Loc.teleborg_cards_30.value,
+]
+
+SHOP_MOVIE_TAPE : Sequence[str] = [
+    Loc.movie_tape_1.value,
+    Loc.movie_tape_2.value,
+    Loc.movie_tape_3.value,
+    Loc.movie_tape_4.value,
+    Loc.movie_tape_5.value,
+    Loc.movie_tape_6.value,
+    Loc.movie_tape_7.value,
+    Loc.movie_tape_8.value,
+    Loc.movie_tape_9.value,
+    Loc.movie_tape_10.value,
+    Loc.movie_tape_11.value,
+    Loc.movie_tape_12.value,
+    Loc.movie_tape_13.value,
+    Loc.movie_tape_14.value,
+    Loc.movie_tape_15.value,
+    Loc.movie_tape_16.value,
+    Loc.movie_tape_17.value,
+    Loc.movie_tape_18.value,
+    Loc.movie_tape_19.value,
+    Loc.movie_tape_20.value,
+    Loc.movie_tape_21.value,
+    Loc.movie_tape_22.value,
+    Loc.movie_tape_23.value,
+    Loc.movie_tape_24.value,
+    Loc.movie_tape_25.value,
+    Loc.movie_tape_26.value,
+    Loc.movie_tape_27.value,
+    Loc.movie_tape_28.value,
+    Loc.movie_tape_29.value,
+]
+
+SHOP_MUSIC_DISC : Sequence[str] = [
+    Loc.movie_tape_1.value,
+    Loc.music_disc_2.value,
+    Loc.music_disc_3.value,
+    Loc.music_disc_4.value,
+    Loc.music_disc_5.value,
+    Loc.music_disc_6.value,
+    Loc.music_disc_7.value,
+    Loc.music_disc_8.value,
+    Loc.music_disc_9.value,
+    Loc.music_disc_10.value,
+    Loc.music_disc_11.value,
+    Loc.music_disc_12.value,
+    Loc.music_disc_13.value,
+    Loc.music_disc_14.value,
+    Loc.music_disc_15.value,
+    Loc.music_disc_16.value,
+    Loc.music_disc_17.value,
+    Loc.music_disc_18.value,
+    Loc.music_disc_19.value,
+    Loc.music_disc_20.value,
+    Loc.music_disc_21.value,
+    Loc.music_disc_22.value,
+    Loc.music_disc_23.value,
+    Loc.music_disc_24.value,
+    Loc.music_disc_25.value,
+    Loc.music_disc_26.value,
+    Loc.music_disc_27.value,
+    Loc.music_disc_28.value,
+    Loc.music_disc_29.value,
+    Loc.music_disc_30.value,
+    Loc.music_disc_31.value,
+    Loc.music_disc_32.value,
+    Loc.music_disc_33.value,
+    Loc.music_disc_34.value,
+    Loc.music_disc_35.value,
+    Loc.music_disc_36.value,
+    Loc.music_disc_37.value,
+    Loc.music_disc_38.value,
+    Loc.music_disc_39.value,
+    Loc.music_disc_40.value,
+    Loc.music_disc_41.value,
+    Loc.music_disc_42.value,
+    Loc.music_disc_43.value,
+    Loc.music_disc_44.value,
+    Loc.music_disc_45.value,
+    Loc.music_disc_46.value,
+    Loc.music_disc_47.value,
+    Loc.music_disc_48.value,
+    Loc.music_disc_49.value,
+    Loc.music_disc_50.value,
+]
+
+SHOP_GENIE_DANCE_MUSIC : Sequence[str] = [
+    Loc.genie_dance_music_blues.value,
+    Loc.genie_dance_music_slowdance.value,
+    Loc.genie_dance_music_waltz.value,
 ]
 
 SHOP_COLLECTION_HINT_BOOK : Sequence[str] = [
@@ -2855,6 +3151,12 @@ SHOP_PROGRESSION_INDEX : Sequence[Sequence[str]] = [
     SHOP_PROGRESSION_BOSS6, SHOP_PROGRESSION_SPACE, SHOP_PROGRESSION_SPECTER1, SHOP_PROGRESSION_ROUND2
 ]
 
+### Collection version of Shop Items to reference category amount obtained instead of specific shop items obtained
+SHOP_COLLECTION_INDEX : Sequence[Sequence[str]] = [
+    SHOP_COLLECTION_HINT_BOOK, SHOP_COLLECTION_MON_FICTION, SHOP_COLLECTION_CHANNEL_GUIDE, SHOP_COLLECTION_LUCKY_PHOTO,
+    SHOP_COLLECTION_MOVIE_TAPE, SHOP_COLLECTION_MUSIC_DISC
+]
+
 ### Shop Items that unlock when entering certain channels/stages
 SHOP_CHANNEL_ACCESS_DIRECTORY : dict[str, Sequence[str]] = {
     Stage.region_boss1.value    : SHOP_PROGRESSION_BOSS1_ACCESS,
@@ -2868,11 +3170,60 @@ SHOP_CHANNEL_ACCESS_DIRECTORY : dict[str, Sequence[str]] = {
     Stage.region_specter2.value : SHOP_PROGRESSION_SPECTER2_CAPTURE,
 }
 
-### Collection version of Shop Items to reference category amount obtained instead of specific shop items obtained
-SHOP_COLLECTION_INDEX : Sequence[Sequence[str]] = [
-    SHOP_COLLECTION_HINT_BOOK, SHOP_COLLECTION_MON_FICTION, SHOP_COLLECTION_CHANNEL_GUIDE, SHOP_COLLECTION_LUCKY_PHOTO,
-    SHOP_COLLECTION_MOVIE_TAPE, SHOP_COLLECTION_MUSIC_DISC
-]
+### Checking Groupings
+## Grouped per Item Group In-game
+SHOP_CATEGORIES_DIRECTORY : dict[str, Sequence[str]] = {
+    Loc.shop_morph_stock.value  : SHOP_PROGRESSION_MORPH,
+
+    Loc.hint_book.value         : SHOP_HINT_BOOK,
+    Loc.mon_fiction.value       : SHOP_MON_FICTION,
+    Loc.channel_guide.value     : SHOP_CHANNEL_GUIDE,
+
+    Loc.bonus_rc_cars.value     : SHOP_BONUS_RC_CARS,
+    Loc.minigames.value         : SHOP_MINIGAMES,
+    Loc.weird_photos.value      : SHOP_WEIRD_PHOTOS,
+    Loc.secret_photos.value     : SHOP_SECRET_PHOTOS,
+    Loc.concept_art.value       : SHOP_CONCEPT_ART,
+    Loc.teleborg_cards.value    : SHOP_TELEBORG_CARDS,
+
+    Loc.movie_tape.value        : SHOP_MOVIE_TAPE,
+    Loc.music_disc.value        : SHOP_MUSIC_DISC,
+    Loc.genie_dance_music.value : SHOP_GENIE_DANCE_MUSIC
+}
+
+SHOP_CATEGORIES_COLLECTION_DIRECTORY : dict[str, Sequence[str]] = {
+Loc.shop_morph_stock.value  : SHOP_PROGRESSION_MORPH,
+
+    Loc.hint_book.value         : [Loc.hint_book.value],
+    Loc.mon_fiction.value       : [Loc.mon_fiction.value],
+    Loc.channel_guide.value     : [Loc.channel_guide.value],
+
+    Loc.bonus_rc_cars.value     : [Loc.bonus_rc_cars.value],
+    Loc.lucky_photo.value       : [Loc.weird_photos.value,
+                                   Loc.secret_photos.value,
+                                   Loc.concept_art.value,
+                                   Loc.teleborg_cards.value,],
+    Loc.movie_tape.value        : [Loc.movie_tape.value],
+    Loc.music_disc.value        : [Loc.music_disc.value],
+    Loc.genie_dance_music.value : [Loc.genie_dance_music.value],
+}
+
+## Grouped per physical shop location in the Shopping Area in-game
+SHOP_GROUPINGS_DIRECTORY : dict[str, Sequence[str]] = {
+    Loc.monkey_mart.value       : [Loc.shop_morph_stock.value],
+    Loc.book_shop.value         : [Loc.hint_book.value,
+                                   Loc.mon_fiction.value,
+                                   Loc.channel_guide.value,],
+    Loc.hobby_shop.value        : [Loc.bonus_rc_cars.value,
+                                   Loc.minigames.value,
+                                   Loc.weird_photos.value,
+                                   Loc.secret_photos.value,
+                                   Loc.concept_art.value,
+                                   Loc.teleborg_cards.value],
+    Loc.music_shop.value        : [Loc.movie_tape.value,
+                                   Loc.music_shop.value,
+                                   Loc.genie_dance_music.value]
+}
 
 
 LOCATIONS_INDEX : dict[str, Sequence[str]] = {
