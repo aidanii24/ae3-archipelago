@@ -539,15 +539,18 @@ class AEPS2Interface:
 
     def give_collectable(self, address_name : str, amount : int | float = 0x1, maximum : int | float = 0x0):
         address : int = self.addresses.GameStates[address_name]
-        current : int = self.pine.read_int32(address)
+        current : int | float = self.pine.read_int32(address) if type(amount) == int else self.pine.read_float(address)
         value : int = 0
-
+        print(f"Item: {address_name}")
+        print(f"Current: {type(current)} {current}")
         if isinstance(amount, int):
             value = min(current + amount, maximum)
             self.pine.write_int32(address, value)
         elif isinstance(amount, float):
             value = int(min(current + amount, maximum))
             self.pine.write_float(address, min(current + amount, maximum))
+            print(f"Judgement: New: {current + amount} / Maximum: {maximum}")
+            print(f"Chosen: New: {min(current + amount, maximum)}")
 
         self.update_hud(address_name, value)
 
