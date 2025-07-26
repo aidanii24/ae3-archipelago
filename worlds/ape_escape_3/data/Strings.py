@@ -737,6 +737,12 @@ class Loc(BaseEnum):
     cell_063                    = "Blue Cellphone \"Red Pants Monkeys Tutorial\" - The Hot Springs"
 
     # Shopping Area
+    ## Shops
+    monkey_mart                 = "Monkey Mart"
+    book_shop                   = "Book Shop"
+    hobby_shop                  = "Hobby Shop"
+    music_shop                  = "Music Shop"
+
     ## Monkey Mart
     shop_morph_stock                = "Morph Stock (Shop Item)"
     shop_morph_stock_1              = "Morph stock #1 (Shop Item)"
@@ -1004,6 +1010,7 @@ class Loc(BaseEnum):
     bonus_rc_cars_collection_2      = "Bonus RC Cars #2"
     bonus_rc_cars_collection_3      = "Bonus RC Cars #3"
 
+    lucky_photo                     = "Lucky Photo"
     lucky_photo_collection_1        = "Lucky photo #1 "
     lucky_photo_collection_2        = "Lucky photo #2 "
     lucky_photo_collection_3        = "Lucky photo #3 "
@@ -1115,13 +1122,14 @@ class Loc(BaseEnum):
     lucky_photo_collection_109      = "Lucky photo #109"
     lucky_photo_collection_110      = "Lucky photo #110"
 
+    minigames                       = "Minigames"
     weird_photos                    = "Weird photos"
     secret_photos                   = "Secret photos"
     concept_art                     = "Concept art"
     teleborg_cards                  = "Teleborg cards"
 
     shop_super_monkey_throw_stadium = "Super Monkey Throw Stadium (Shop Item)"
-    ultim_ape_fighter               = "Ultim-ape Fighter!"
+    shop_ultim_ape_fighter          = "Ultim-ape Fighter!"
     shop_mesal_gear_solid           = "Mesal Gear Solid (Shop Item)"
 
     ## Music Shop
