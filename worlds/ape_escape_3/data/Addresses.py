@@ -810,6 +810,10 @@ class NTSCU(VersionAddresses):
         Loc.bonus_rc_cars_2.value               : 0x649c99,
         Loc.bonus_rc_cars_3.value               : 0x649c9a,
 
+        Loc.shop_super_monkey_throw_stadium.value   : 0x649c9b,
+        Loc.shop_ultim_ape_fighter.value            : 0x649c9c,
+        Loc.shop_mesal_gear_solid.value             : 0x649c9d,
+
         Loc.weird_photos_1.value                : 0x649c52,
         Loc.weird_photos_2.value                : 0x649c53,
         Loc.weird_photos_3.value                : 0x649c54,
