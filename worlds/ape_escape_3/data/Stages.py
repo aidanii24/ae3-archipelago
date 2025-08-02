@@ -467,14 +467,14 @@ STAGES_MASTER : Sequence[str] = [
     *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY, *STAGES_STUDIO,
     *STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_ONSEN, *STAGES_SNOWFESTA, *STAGES_EDOTOWN, *STAGES_HEAVEN,
     *STAGES_TOYHOUSE, *STAGES_ICELAND, *STAGES_ARABIAN, *STAGES_ASIA, *STAGES_PLANE, *STAGES_HONG,
-    *STAGES_BAY, *STAGES_TOMO, *STAGES_SPACE, *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB
+    *STAGES_BAY, *STAGES_TOMO, *STAGES_SPACE, *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB, *STAGES_SHOP_PROGRESSION
 ]
 
 STAGES_INDEX : Sequence[Sequence[str]] = [
     STAGES_ZERO, STAGES_SEASIDE, STAGES_WOODS, STAGES_CASTLE, STAGES_CISCOCITY, STAGES_STUDIO,
     STAGES_HALLOWEEN, STAGES_WESTERN, STAGES_ONSEN, STAGES_SNOWFESTA, STAGES_EDOTOWN, STAGES_HEAVEN,
     STAGES_TOYHOUSE, STAGES_ICELAND, STAGES_ARABIAN, STAGES_ASIA, STAGES_PLANE, STAGES_HONG, STAGES_BAY,
-    STAGES_TOMO, STAGES_BOSSES, STAGES_SPACE, STAGES_TITLE, STAGES_HUB
+    STAGES_TOMO, STAGES_BOSSES, STAGES_SPACE, STAGES_TITLE, STAGES_HUB, STAGES_SHOP_PROGRESSION
 ]
 
 STAGES_DIRECTORY : dict[str, Sequence[str]] = {
@@ -1108,6 +1108,38 @@ ENTRANCES_SUBREGIONS : list[AE3EntranceMeta] = [
     AE3EntranceMeta(Stage.entrance_space_j1j.value, Stage.region_space_j1.value, Stage.region_space_j.value),
 ]
 
+ENTRANCES_SHOP_PSEUDOREGIONS : Sequence[AE3EntranceMeta] = [
+    AE3EntranceMeta(Stage.entrance_shop_seaside.value, Stage.travel_station_b.value, Stage.region_shop_seaside.value),
+    AE3EntranceMeta(Stage.entrance_shop_woods.value, Stage.travel_station_b.value, Stage.region_shop_woods.value),
+    AE3EntranceMeta(Stage.entrance_shop_castle.value, Stage.travel_station_b.value, Stage.region_shop_castle.value),
+    AE3EntranceMeta(Stage.entrance_shop_boss1.value, Stage.travel_station_b.value, Stage.region_shop_boss1.value),
+    AE3EntranceMeta(Stage.entrance_shop_ciscocity.value, Stage.travel_station_b.value,
+                    Stage.region_shop_ciscocity.value),
+    AE3EntranceMeta(Stage.entrance_shop_studio.value, Stage.travel_station_b.value, Stage.region_shop_studio.value),
+    AE3EntranceMeta(Stage.entrance_shop_halloween.value, Stage.travel_station_b.value, Stage.region_shop_halloween.value),
+    AE3EntranceMeta(Stage.entrance_shop_western.value, Stage.travel_station_b.value, Stage.region_shop_western.value),
+    AE3EntranceMeta(Stage.entrance_shop_boss2.value, Stage.travel_station_b.value, Stage.region_shop_boss2.value),
+    AE3EntranceMeta(Stage.entrance_shop_onsen.value, Stage.travel_station_b.value, Stage.region_shop_onsen.value),
+    AE3EntranceMeta(Stage.entrance_shop_snowfesta.value, Stage.travel_station_b.value, Stage.region_shop_snowfesta.value),
+    AE3EntranceMeta(Stage.entrance_shop_edotown.value, Stage.travel_station_b.value, Stage.region_shop_edotown.value),
+    AE3EntranceMeta(Stage.entrance_shop_boss3.value, Stage.travel_station_b.value, Stage.region_shop_boss3.value),
+    AE3EntranceMeta(Stage.entrance_shop_heaven.value, Stage.travel_station_b.value, Stage.region_shop_heaven.value),
+    AE3EntranceMeta(Stage.entrance_shop_toyhouse.value, Stage.travel_station_b.value, Stage.region_shop_toyhouse.value),
+    AE3EntranceMeta(Stage.entrance_shop_iceland.value, Stage.travel_station_b.value, Stage.region_shop_iceland.value),
+    AE3EntranceMeta(Stage.entrance_shop_arabian.value, Stage.travel_station_b.value, Stage.region_shop_arabian.value),
+    AE3EntranceMeta(Stage.entrance_shop_boss4.value, Stage.travel_station_b.value, Stage.region_shop_boss4.value),
+    AE3EntranceMeta(Stage.entrance_shop_asia.value, Stage.travel_station_b.value, Stage.region_shop_asia.value),
+    AE3EntranceMeta(Stage.entrance_shop_plane.value, Stage.travel_station_b.value, Stage.region_shop_plane.value),
+    AE3EntranceMeta(Stage.entrance_shop_hong.value, Stage.travel_station_b.value, Stage.region_shop_hong.value),
+    AE3EntranceMeta(Stage.entrance_shop_boss5.value, Stage.travel_station_b.value, Stage.region_shop_boss5.value),
+    AE3EntranceMeta(Stage.entrance_shop_bay.value, Stage.travel_station_b.value, Stage.region_shop_bay.value),
+    AE3EntranceMeta(Stage.entrance_shop_tomo.value, Stage.travel_station_b.value, Stage.region_shop_tomo.value),
+    AE3EntranceMeta(Stage.entrance_shop_boss6.value, Stage.travel_station_b.value, Stage.region_shop_boss6.value),
+    AE3EntranceMeta(Stage.entrance_shop_space.value, Stage.travel_station_b.value, Stage.region_shop_space.value),
+    AE3EntranceMeta(Stage.entrance_shop_specter1.value, Stage.travel_station_b.value, Stage.region_shop_specter1.value),
+    AE3EntranceMeta(Stage.entrance_shop_round2.value, Stage.travel_station_b.value, Stage.region_shop_round2.value),
+]
+
 ## Entrances for selecting a stage
 ENTRANCES_STAGE_SELECT : Sequence[AE3EntranceMeta] = [
     AE3EntranceMeta(Stage.entrance_level_1.value, Stage.travel_station_a.value, Stage.region_seaside_a.value),
@@ -1156,7 +1188,7 @@ ENTRANCES_STAGE_SELECT : Sequence[AE3EntranceMeta] = [
 ]
 
 ENTRANCES_MASTER : list[AE3EntranceMeta] = [
-    *ENTRANCES_MAIN, *ENTRANCES_SUBREGIONS
+    *ENTRANCES_MAIN, *ENTRANCES_SUBREGIONS, *ENTRANCES_SHOP_PSEUDOREGIONS
 ]
 
 ### [< --- VANILLA ENTRANCES GROUPS --- >]

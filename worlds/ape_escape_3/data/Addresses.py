@@ -804,10 +804,7 @@ class NTSCU(VersionAddresses):
 
         ## Hobby Shop
         Loc.bonus_rc_cars.value                 : 0x3D,
-        Loc.weird_photos.value                  : 0x40,
-        Loc.secret_photos.value                 : 0x54,
-        Loc.concept_art.value                   : 0x72,
-        Loc.teleborg_cards.value                : 0x90,
+        Loc.lucky_photo.value                   : 0x40,
 
         Loc.bonus_rc_cars_1.value               : 0x649c98,
         Loc.bonus_rc_cars_2.value               : 0x649c99,
