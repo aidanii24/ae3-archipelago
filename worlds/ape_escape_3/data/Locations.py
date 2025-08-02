@@ -1,6 +1,7 @@
 from typing import Sequence
 from dataclasses import dataclass
 from abc import ABC
+from enum import Enum
 
 from BaseClasses import Location, Region, ItemClassification
 
@@ -9,6 +10,8 @@ from .Addresses import NTSCU
 
 
 ### [< --- HELPERS --- >]
+
+
 class AE3Location(Location):
     """
     Defines a Location in Ape Escape 3. This refers to points of interest for the randomizer, such as Monkeys,
@@ -65,6 +68,41 @@ class CellphoneLocation(AE3LocationMeta):
         self.address = self.loc_id
 
     def to_location(self, player : int, parent : Region) -> Location:
+        return Location(player, self.name, self.loc_id, parent)
+
+class ShopItemLocation(AE3LocationMeta):
+    def __init__(self, name : str, category : int = -1, offset : int = -1):
+        self.name = name
+        if name in NTSCU.Locations:
+            self.loc_id = NTSCU.Locations[name]
+            self.address = self.loc_id
+        elif name in SHOP_COLLECTION_MASTER:
+            manual_search : bool = True
+            self.loc_id = 0
+
+            if category > -1 and offset > -1:
+                category_name = SHOP_CATEGORIES_INDEX[category]
+                if name in SHOP_COLLECTION_INDEX[category]:
+                    self.loc_id = NTSCU.Locations[category_name] + offset
+                    manual_search = False
+
+            if manual_search:
+                for index, category_name in enumerate(SHOP_CATEGORIES_INDEX):
+                    if name in SHOP_COLLECTION_INDEX[index]:
+                        self.loc_id = NTSCU.Locations[category_name] + SHOP_COLLECTION_INDEX[index].index(name)
+                        break
+
+
+                if not self.loc_id:
+                    raise AssertionError(f"AE3 > Location Generation Error: No valid ID has been found for {name}")
+
+            self.address = 0
+        else:
+            self.loc_id = 0xFFFF
+            self.address = 0
+            raise AssertionError(f"AE3 > Location Generation Error: No valid ID has been found for {name}")
+
+    def to_location(self, player: int, parent: Region) -> Location:
         return Location(player, self.name, self.loc_id, parent)
 
 class EventMeta(AE3LocationMeta):
@@ -2935,6 +2973,10 @@ SHOP_COLLECTION_BONUS_RC_CARS : Sequence[str] = [
     Loc.bonus_rc_cars_collection_3.value,
 ]
 
+SHOP_COLLECTION_MINIGAMES : Sequence[str] = [
+    Loc.minigames.value
+]
+
 SHOP_COLLECTION_LUCKY_PHOTO : Sequence[str] = [
     Loc.lucky_photo_collection_1.value,
     Loc.lucky_photo_collection_2.value,
@@ -3139,6 +3181,12 @@ SHOP_COLLECTION_GENIE_DANCE_MUSIC : Sequence[str] = [
     Loc.genie_dance_music_collection_3.value,
 ]
 
+SHOP_CATEGORIES_INDEX: Sequence[str] = [
+    Loc.shop_morph_stock.value, Loc.hint_book.value, Loc.mon_fiction.value, Loc.channel_guide.value,
+    Loc.bonus_rc_cars.value, Loc.minigames.value, Loc.lucky_photo.value, Loc.movie_tape.value, Loc.music_disc.value,
+    Loc.genie_dance_music.value
+]
+
 ### Shop Items that unlock when reaching certain game progress.
 ### This will be driven by either Channel Keys or Shop Stocks if not allowed to all be available at once
 SHOP_PROGRESSION_INDEX : Sequence[Sequence[str]] = [
@@ -3151,11 +3199,59 @@ SHOP_PROGRESSION_INDEX : Sequence[Sequence[str]] = [
     SHOP_PROGRESSION_BOSS6, SHOP_PROGRESSION_SPACE, SHOP_PROGRESSION_SPECTER1, SHOP_PROGRESSION_ROUND2
 ]
 
+SHOP_PROGRESSION_MASTER : Sequence[str] = [
+    *SHOP_PROGRESSION_SEASIDE, *SHOP_PROGRESSION_WOODS, *SHOP_PROGRESSION_CASTLE, *SHOP_PROGRESSION_BOSS1,
+    *SHOP_PROGRESSION_CISCOCITY, *SHOP_PROGRESSION_STUDIO, *SHOP_PROGRESSION_HALLOWEEN, *SHOP_PROGRESSION_WESTERN,
+    *SHOP_PROGRESSION_BOSS2, *SHOP_PROGRESSION_ONSEN, *SHOP_PROGRESSION_SNOWFESTA, *SHOP_PROGRESSION_EDOTOWN,
+    *SHOP_PROGRESSION_BOSS3, *SHOP_PROGRESSION_HEAVEN, *SHOP_PROGRESSION_TOYHOUSE, *SHOP_PROGRESSION_ICELAND,
+    *SHOP_PROGRESSION_ARABIAN, *SHOP_PROGRESSION_BOSS4, *SHOP_PROGRESSION_ASIA, *SHOP_PROGRESSION_PLANE,
+    *SHOP_PROGRESSION_HONG, *SHOP_PROGRESSION_BOSS5, *SHOP_PROGRESSION_BAY, *SHOP_PROGRESSION_TOMO,
+    *SHOP_PROGRESSION_BOSS6, *SHOP_PROGRESSION_SPACE, *SHOP_PROGRESSION_SPECTER1, *SHOP_PROGRESSION_ROUND2
+]
+
 ### Collection version of Shop Items to reference category amount obtained instead of specific shop items obtained
 SHOP_COLLECTION_INDEX : Sequence[Sequence[str]] = [
-    SHOP_COLLECTION_HINT_BOOK, SHOP_COLLECTION_MON_FICTION, SHOP_COLLECTION_CHANNEL_GUIDE, SHOP_COLLECTION_LUCKY_PHOTO,
-    SHOP_COLLECTION_MOVIE_TAPE, SHOP_COLLECTION_MUSIC_DISC
+    SHOP_PROGRESSION_MORPH, SHOP_COLLECTION_HINT_BOOK, SHOP_COLLECTION_MON_FICTION, SHOP_COLLECTION_CHANNEL_GUIDE,
+    SHOP_COLLECTION_BONUS_RC_CARS, SHOP_COLLECTION_MINIGAMES, SHOP_COLLECTION_LUCKY_PHOTO, SHOP_COLLECTION_MOVIE_TAPE,
+    SHOP_COLLECTION_MUSIC_DISC, SHOP_COLLECTION_GENIE_DANCE_MUSIC
 ]
+
+SHOP_COLLECTION_MASTER : Sequence[str] = [
+    *SHOP_PROGRESSION_MORPH, *SHOP_COLLECTION_HINT_BOOK, *SHOP_COLLECTION_MON_FICTION, *SHOP_COLLECTION_CHANNEL_GUIDE,
+    *SHOP_COLLECTION_BONUS_RC_CARS, *SHOP_COLLECTION_MINIGAMES, *SHOP_COLLECTION_LUCKY_PHOTO, *SHOP_COLLECTION_MOVIE_TAPE,
+    *SHOP_COLLECTION_MUSIC_DISC, *SHOP_COLLECTION_GENIE_DANCE_MUSIC
+]
+
+SHOP_PROGRESSION_DIRECTORY : dict[str, Sequence[str]] = {
+    Stage.region_shop_seaside.value     :   SHOP_PROGRESSION_SEASIDE,
+    Stage.region_shop_woods.value       :   SHOP_PROGRESSION_WOODS,
+    Stage.region_shop_castle.value      :   SHOP_PROGRESSION_CASTLE,
+    Stage.region_shop_boss1.value       :   SHOP_PROGRESSION_BOSS1,
+    Stage.region_shop_ciscocity.value   :   SHOP_PROGRESSION_CISCOCITY,
+    Stage.region_shop_studio.value      :   SHOP_PROGRESSION_STUDIO,
+    Stage.region_shop_halloween.value   :   SHOP_PROGRESSION_HALLOWEEN,
+    Stage.region_shop_western.value     :   SHOP_PROGRESSION_WESTERN,
+    Stage.region_shop_boss2.value       :   SHOP_PROGRESSION_BOSS2,
+    Stage.region_shop_onsen.value       :   SHOP_PROGRESSION_ONSEN,
+    Stage.region_shop_snowfesta.value   :   SHOP_PROGRESSION_SNOWFESTA,
+    Stage.region_shop_edotown.value     :   SHOP_PROGRESSION_EDOTOWN,
+    Stage.region_shop_boss3.value       :   SHOP_PROGRESSION_BOSS3,
+    Stage.region_shop_heaven.value      :   SHOP_PROGRESSION_HEAVEN,
+    Stage.region_shop_toyhouse.value    :   SHOP_PROGRESSION_TOYHOUSE,
+    Stage.region_shop_iceland.value     :   SHOP_PROGRESSION_ICELAND,
+    Stage.region_shop_arabian.value     :   SHOP_PROGRESSION_ARABIAN,
+    Stage.region_shop_boss4.value       :   SHOP_PROGRESSION_BOSS4,
+    Stage.region_shop_asia.value        :   SHOP_PROGRESSION_ASIA,
+    Stage.region_shop_plane.value       :   SHOP_PROGRESSION_PLANE,
+    Stage.region_shop_hong.value        :   SHOP_PROGRESSION_HONG,
+    Stage.region_shop_boss5.value       :   SHOP_PROGRESSION_BOSS5,
+    Stage.region_shop_bay.value         :   SHOP_PROGRESSION_BAY,
+    Stage.region_shop_tomo.value        :   SHOP_PROGRESSION_TOMO,
+    Stage.region_shop_boss6.value       :   SHOP_PROGRESSION_BOSS6,
+    Stage.region_shop_space.value       :   SHOP_PROGRESSION_SPACE,
+    Stage.region_shop_specter1.value    :   SHOP_PROGRESSION_SPECTER1,
+    Stage.region_shop_round2.value      :   SHOP_PROGRESSION_ROUND2,
+}
 
 ### Shop Items that unlock when entering certain channels/stages
 SHOP_CHANNEL_ACCESS_DIRECTORY : dict[str, Sequence[str]] = {
@@ -3192,7 +3288,7 @@ SHOP_CATEGORIES_DIRECTORY : dict[str, Sequence[str]] = {
 }
 
 SHOP_CATEGORIES_COLLECTION_DIRECTORY : dict[str, Sequence[str]] = {
-Loc.shop_morph_stock.value  : SHOP_PROGRESSION_MORPH,
+    Loc.shop_morph_stock.value  : [Loc.shop_morph_stock.value],
 
     Loc.hint_book.value         : [Loc.hint_book.value],
     Loc.mon_fiction.value       : [Loc.mon_fiction.value],
@@ -3216,10 +3312,7 @@ SHOP_GROUPINGS_DIRECTORY : dict[str, Sequence[str]] = {
                                    Loc.channel_guide.value,],
     Loc.hobby_shop.value        : [Loc.bonus_rc_cars.value,
                                    Loc.minigames.value,
-                                   Loc.weird_photos.value,
-                                   Loc.secret_photos.value,
-                                   Loc.concept_art.value,
-                                   Loc.teleborg_cards.value],
+                                   Loc.lucky_photo.value],
     Loc.music_shop.value        : [Loc.movie_tape.value,
                                    Loc.music_shop.value,
                                    Loc.genie_dance_music.value]
