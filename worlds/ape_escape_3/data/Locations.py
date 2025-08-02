@@ -1,7 +1,6 @@
 from typing import Sequence
 from dataclasses import dataclass
 from abc import ABC
-from enum import Enum
 
 from BaseClasses import Location, Region, ItemClassification
 
@@ -2178,6 +2177,8 @@ SHOP_PROGRESSION_CISCOCITY : Sequence[str] = [
     Loc.movie_tape_5.value,
     Loc.movie_tape_6.value,
     Loc.movie_tape_7.value,
+
+    Loc.music_disc_35.value,
 ]
 
 SHOP_PROGRESSION_STUDIO : Sequence[str] = [
@@ -2316,6 +2317,8 @@ SHOP_PROGRESSION_TOYHOUSE : Sequence[str] = [
 
     Loc.secret_photos_17.value,
 
+    Loc.concept_art_21.value,
+
     Loc.teleborg_cards_19.value,
     Loc.teleborg_cards_20.value,
     Loc.teleborg_cards_21.value,
@@ -2356,6 +2359,7 @@ SHOP_PROGRESSION_BOSS4 : Sequence[str] = [
 
     Loc.concept_art_5.value,
     Loc.concept_art_12.value,
+    Loc.concept_art_22.value,
 
     Loc.teleborg_cards_23.value,
 
@@ -2471,7 +2475,7 @@ SHOP_PROGRESSION_SPACE : Sequence[str] = [
     Loc.movie_tape_19.value,
     Loc.movie_tape_20.value,
 
-    Loc.music_disc_33.value,
+    Loc.music_disc_39.value,
 ]
 
 SHOP_PROGRESSION_SPECTER1 : Sequence[str] = [
@@ -2535,7 +2539,7 @@ SHOP_PROGRESSION_ROUND2 : Sequence[str] = [
     Loc.movie_tape_23.value,
     Loc.movie_tape_24.value,
     Loc.movie_tape_25.value,
-    Loc.movie_tape_26.value,
+    Loc.movie_tape_29.value,
 
     Loc.music_disc_40.value,
     Loc.music_disc_48.value,
@@ -2577,6 +2581,10 @@ SHOP_PROGRESSION_BOSS4_ACCESS : Sequence[str] = [
 
 SHOP_PROGRESSION_BOSS5_ACCESS : Sequence[str] = [
     Loc.hint_book_18.value,
+]
+
+SHOP_PROGRESSION_TOMO_ACCESS : Sequence[str] = [
+    Loc.movie_tape_17.value
 ]
 
 SHOP_PROGRESSION_BOSS6_ACCESS : Sequence[str] = [
@@ -2840,7 +2848,7 @@ SHOP_MOVIE_TAPE : Sequence[str] = [
 ]
 
 SHOP_MUSIC_DISC : Sequence[str] = [
-    Loc.movie_tape_1.value,
+    Loc.music_disc_1.value,
     Loc.music_disc_2.value,
     Loc.music_disc_3.value,
     Loc.music_disc_4.value,
@@ -2974,7 +2982,9 @@ SHOP_COLLECTION_BONUS_RC_CARS : Sequence[str] = [
 ]
 
 SHOP_COLLECTION_MINIGAMES : Sequence[str] = [
-    Loc.minigames.value
+    Loc.shop_super_monkey_throw_stadium.value,
+    Loc.shop_mesal_gear_solid.value,
+    Loc.shop_ultim_ape_fighter.value
 ]
 
 SHOP_COLLECTION_LUCKY_PHOTO : Sequence[str] = [
@@ -3123,7 +3133,7 @@ SHOP_COLLECTION_MOVIE_TAPE : Sequence[str] = [
 ]
 
 SHOP_COLLECTION_MUSIC_DISC : Sequence[str] = [
-    Loc.movie_tape_collection_1.value,
+    Loc.music_disc_collection_1.value,
     Loc.music_disc_collection_2.value,
     Loc.music_disc_collection_3.value,
     Loc.music_disc_collection_4.value,
@@ -3206,7 +3216,7 @@ SHOP_PROGRESSION_MASTER : Sequence[str] = [
     *SHOP_PROGRESSION_BOSS3, *SHOP_PROGRESSION_HEAVEN, *SHOP_PROGRESSION_TOYHOUSE, *SHOP_PROGRESSION_ICELAND,
     *SHOP_PROGRESSION_ARABIAN, *SHOP_PROGRESSION_BOSS4, *SHOP_PROGRESSION_ASIA, *SHOP_PROGRESSION_PLANE,
     *SHOP_PROGRESSION_HONG, *SHOP_PROGRESSION_BOSS5, *SHOP_PROGRESSION_BAY, *SHOP_PROGRESSION_TOMO,
-    *SHOP_PROGRESSION_BOSS6, *SHOP_PROGRESSION_SPACE, *SHOP_PROGRESSION_SPECTER1, *SHOP_PROGRESSION_ROUND2
+    *SHOP_PROGRESSION_BOSS6, *SHOP_PROGRESSION_SPACE, *SHOP_PROGRESSION_SPECTER1, *SHOP_PROGRESSION_ROUND2,
 ]
 
 ### Collection version of Shop Items to reference category amount obtained instead of specific shop items obtained
@@ -3218,8 +3228,15 @@ SHOP_COLLECTION_INDEX : Sequence[Sequence[str]] = [
 
 SHOP_COLLECTION_MASTER : Sequence[str] = [
     *SHOP_PROGRESSION_MORPH, *SHOP_COLLECTION_HINT_BOOK, *SHOP_COLLECTION_MON_FICTION, *SHOP_COLLECTION_CHANNEL_GUIDE,
-    *SHOP_COLLECTION_BONUS_RC_CARS, *SHOP_COLLECTION_MINIGAMES, *SHOP_COLLECTION_LUCKY_PHOTO, *SHOP_COLLECTION_MOVIE_TAPE,
+    *SHOP_COLLECTION_BONUS_RC_CARS, *SHOP_COLLECTION_LUCKY_PHOTO, *SHOP_COLLECTION_MOVIE_TAPE,
     *SHOP_COLLECTION_MUSIC_DISC, *SHOP_COLLECTION_GENIE_DANCE_MUSIC
+]
+
+SHOP_EVENT_ACCESS_MASTER : Sequence[str] = [
+    *SHOP_PROGRESSION_BOSS1_ACCESS, *SHOP_PROGRESSION_BOSS2_ACCESS, *SHOP_PROGRESSION_BOSS3_ACCESS,
+    *SHOP_PROGRESSION_HEAVEN_ACCESS, *SHOP_PROGRESSION_BOSS4_ACCESS, *SHOP_PROGRESSION_BOSS5_ACCESS,
+    *SHOP_PROGRESSION_TOMO_ACCESS, *SHOP_PROGRESSION_BOSS6_ACCESS, *SHOP_PROGRESSION_SPECTER1_ACCESS,
+    *SHOP_PROGRESSION_SPECTER2_CAPTURE, *SHOP_PROGRESSION_75COMPLETION
 ]
 
 SHOP_PROGRESSION_DIRECTORY : dict[str, Sequence[str]] = {
@@ -3261,6 +3278,7 @@ SHOP_CHANNEL_ACCESS_DIRECTORY : dict[str, Sequence[str]] = {
     Stage.region_heaven_a.value : SHOP_PROGRESSION_HEAVEN_ACCESS,
     Stage.region_boss4.value    : SHOP_PROGRESSION_BOSS4_ACCESS,
     Stage.region_boss5.value    : SHOP_PROGRESSION_BOSS5_ACCESS,
+    Stage.region_tomo_a.value   : SHOP_PROGRESSION_TOMO_ACCESS,
     Stage.region_boss6.value    : SHOP_PROGRESSION_BOSS6_ACCESS,
     Stage.region_specter1.value : SHOP_PROGRESSION_SPECTER1_ACCESS,
     Stage.region_specter2.value : SHOP_PROGRESSION_SPECTER2_CAPTURE,
@@ -3302,6 +3320,22 @@ SHOP_CATEGORIES_COLLECTION_DIRECTORY : dict[str, Sequence[str]] = {
     Loc.movie_tape.value        : [Loc.movie_tape.value],
     Loc.music_disc.value        : [Loc.music_disc.value],
     Loc.genie_dance_music.value : [Loc.genie_dance_music.value],
+}
+
+SHOP_COLLECTION_DIRECTORY : dict[str, Sequence[str]] = {
+    Loc.shop_morph_stock.value  : SHOP_PROGRESSION_MORPH,
+
+    Loc.hint_book.value         : SHOP_COLLECTION_HINT_BOOK,
+    Loc.mon_fiction.value       : SHOP_COLLECTION_MON_FICTION,
+    Loc.channel_guide.value     : SHOP_COLLECTION_CHANNEL_GUIDE,
+
+    Loc.bonus_rc_cars.value     : SHOP_COLLECTION_BONUS_RC_CARS,
+    Loc.minigames.value         : SHOP_MINIGAMES,
+    Loc.lucky_photo.value       : SHOP_COLLECTION_LUCKY_PHOTO,
+    Loc.movie_tape.value        : SHOP_COLLECTION_MOVIE_TAPE,
+    Loc.music_disc.value        : SHOP_COLLECTION_MUSIC_DISC,
+    Loc.genie_dance_music.value : SHOP_COLLECTION_GENIE_DANCE_MUSIC,
+
 }
 
 ## Grouped per physical shop location in the Shopping Area in-game
