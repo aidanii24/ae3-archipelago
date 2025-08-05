@@ -2,11 +2,13 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import Entrance, Location, Region
 
-from .data.Stages import STAGES_BREAK_ROOMS, STAGES_DIRECTORY, STAGES_MASTER, ENTRANCES_MASTER, STAGES_DIRECTORY_LABEL, \
-    ENTRANCES_SHOP_PSEUDOREGIONS
+from .data.Stages import STAGES_BREAK_ROOMS, STAGES_DIRECTORY, STAGES_MASTER, ENTRANCES_MASTER, STAGES_DIRECTORY_LABEL,\
+    STAGES_SHOP_PROGRESSION
 from .data.Locations import CAMERAS_INDEX, CELLPHONES_INDEX, MONKEYS_PASSWORDS, MONKEYS_INDEX, EVENTS_INDEX, \
     SHOP_PROGRESSION_MASTER, SHOP_PROGRESSION_MORPH, SHOP_COLLECTION_INDEX, CameraLocation, CellphoneLocation, \
-    EventMeta, MonkeyLocation, ShopItemLocation, SHOP_PROGRESSION_DIRECTORY, SHOP_EVENT_ACCESS_MASTER
+    EventMeta, MonkeyLocation, ShopItemLocation, SHOP_PROGRESSION_DIRECTORY, SHOP_EVENT_ACCESS_MASTER, \
+    SHOP_EVENT_ACCESS_DIRECTORY, SHOP_CATEGORIES_DIRECTORY, SHOP_CATEGORIES_COLLECTION_DIRECTORY, \
+    SHOP_COLLECTION_DIRECTORY
 from .data.Logic import Rulesets
 from .data.Strings import Stage
 
@@ -142,24 +144,34 @@ def create_regions(world : "AE3World"):
     # Handle Shop Regions
     shopping_area: Region = stages[Stage.travel_station_b.value]
 
-    ## Handle Morph Stocks
-    if world.options.shoppingsanity != 0 and world.options.shoppingsanity != 2:
-        for i, item in enumerate(SHOP_PROGRESSION_MORPH):
-            meta : ShopItemLocation = ShopItemLocation(item, 1, i)
-            loc : Location = meta.to_location(world.player, shopping_area)
+    if world.options.shoppingsanity != 0:
+        ## Handle Shop Items that require specific events
+        for item in SHOP_EVENT_ACCESS_MASTER:
+            meta: ShopItemLocation = ShopItemLocation(item)
+            loc: Location = meta.to_location(world.player, shopping_area)
 
             if item in world.logic_preference.event_rules:
                 loc.access_rule = world.logic_preference.event_rules[item].condense(world.player)
 
             shopping_area.locations.append(loc)
 
+        ## Handle Morph Stocks
+        if world.options.shoppingsanity != 2:
+            for i, item in enumerate(SHOP_PROGRESSION_MORPH):
+                meta : ShopItemLocation = ShopItemLocation(item, 1, i)
+                loc : Location = meta.to_location(world.player, shopping_area)
+
+                if item in world.logic_preference.event_rules:
+                    loc.access_rule = world.logic_preference.event_rules[item].condense(world.player)
+
+                shopping_area.locations.append(loc)
 
     ## Handle Shoppingsanity options Enabled/Collection
     if 0 < world.options.shoppingsanity.value < 3:
         shop_locations_meta : list[ShopItemLocation] = []
 
         if world.options.shoppingsanity.value == 1:
-            for item in [*SHOP_PROGRESSION_MASTER, *SHOP_EVENT_ACCESS_MASTER]:
+            for item in [*SHOP_PROGRESSION_MASTER]:
 
                 meta : ShopItemLocation = ShopItemLocation(item)
                 shop_locations_meta.append(meta)
@@ -177,9 +189,10 @@ def create_regions(world : "AE3World"):
                     loc.access_rule = world.logic_preference.event_rules[item.name].condense(world.player)
 
                 shopping_area.locations.append(loc)
+    ## Handle Shoppingsanity Options Progressive/Restock
     elif 2 < world.options.shoppingsanity.value < 5:
-        shop_progression_regions : list[Region] = [region for name, region in stages
-                                                   if name in ENTRANCES_SHOP_PSEUDOREGIONS]
+        shop_progression_regions : list[Region] = [region for name, region in stages.items()
+                                                   if name in STAGES_SHOP_PROGRESSION]
 
         for region in shop_progression_regions:
             for location in SHOP_PROGRESSION_DIRECTORY[region.name]:
@@ -190,8 +203,6 @@ def create_regions(world : "AE3World"):
                     loc.access_rule = world.logic_preference.event_rules[location].condense(world.player)
 
                 region.locations.append(loc)
-
-
 
     # Send Regions to Archipelago
     world.multiworld.regions.extend(list(stages.values()))
