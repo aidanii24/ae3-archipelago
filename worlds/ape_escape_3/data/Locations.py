@@ -3229,6 +3229,12 @@ SHOP_PROGRESSION_MASTER : Sequence[str] = [
     *SHOP_PROGRESSION_BOSS6, *SHOP_PROGRESSION_SPACE, *SHOP_PROGRESSION_SPECTER1, *SHOP_PROGRESSION_ROUND2,
 ]
 
+SHOP_UNIQUE_MASTER : Sequence[str] = [
+    *SHOP_HINT_BOOK, *SHOP_MON_FICTION, *SHOP_CHANNEL_GUIDE, *SHOP_BONUS_RC_CARS, *SHOP_MINIGAMES, *SHOP_WEIRD_PHOTOS,
+    *SHOP_SECRET_PHOTOS, *SHOP_CONCEPT_ART, *SHOP_TELEBORG_CARDS, *SHOP_MOVIE_TAPE, *SHOP_MUSIC_DISC,
+    *SHOP_GENIE_DANCE_MUSIC
+]
+
 ### Collection version of Shop Items to reference category amount obtained instead of specific shop items obtained
 SHOP_COLLECTION_INDEX : Sequence[Sequence[str]] = [
     SHOP_PROGRESSION_MORPH, SHOP_COLLECTION_HINT_BOOK, SHOP_COLLECTION_MON_FICTION, SHOP_COLLECTION_CHANNEL_GUIDE,
@@ -3341,7 +3347,6 @@ SHOP_COLLECTION_DIRECTORY : dict[str, Sequence[str]] = {
     Loc.channel_guide.value     : SHOP_COLLECTION_CHANNEL_GUIDE,
 
     Loc.bonus_rc_cars.value     : SHOP_COLLECTION_BONUS_RC_CARS,
-    Loc.minigames.value         : SHOP_MINIGAMES,
     Loc.lucky_photo.value       : SHOP_COLLECTION_LUCKY_PHOTO,
     Loc.movie_tape.value        : SHOP_COLLECTION_MOVIE_TAPE,
     Loc.music_disc.value        : SHOP_COLLECTION_MUSIC_DISC,
@@ -3385,5 +3390,15 @@ def generate_name_to_id() -> dict[str, int]:
 
     # Cellphones
     name_to_id.update({ cell.name : cell.loc_id for cell in [CellphoneLocation(name) for name in CELLPHONES_MASTER] })
+
+    # Shop Items
+    ## Unique Type
+    name_to_id.update({ item.name : item.loc_id for item in [ShopItemLocation(name) for name in SHOP_UNIQUE_MASTER] })
+
+    ## Collection Type
+    for category_index, category in enumerate(SHOP_COLLECTION_INDEX):
+        for offset, item in enumerate(category):
+            meta: ShopItemLocation = ShopItemLocation(item, category_index, offset)
+            name_to_id[item] = meta.loc_id
 
     return name_to_id
