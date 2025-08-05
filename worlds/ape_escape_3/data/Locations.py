@@ -2919,14 +2919,16 @@ SHOP_COLLECTION_HINT_BOOK : Sequence[str] = [
     Loc.hint_book_collection_10.value,
     Loc.hint_book_collection_11.value,
     Loc.hint_book_collection_12.value,
-    Loc.hint_book_collection_13.value,
-    Loc.hint_book_collection_14.value,
-    Loc.hint_book_collection_15.value,
-    Loc.hint_book_collection_16.value,
-    Loc.hint_book_collection_17.value,
-    Loc.hint_book_collection_18.value,
-    Loc.hint_book_collection_19.value,
-    Loc.hint_book_collection_20.value,
+
+    ## 6 hint books require a certain condition/event, and will not be genericized
+    # Loc.hint_book_collection_13.value,
+    # Loc.hint_book_collection_14.value,
+    # Loc.hint_book_collection_15.value,
+    # Loc.hint_book_collection_16.value,
+    # Loc.hint_book_collection_17.value,
+    # Loc.hint_book_collection_18.value,
+    # Loc.hint_book_collection_19.value,
+    # Loc.hint_book_collection_20.value,
 ]
 
 SHOP_COLLECTION_MON_FICTION : Sequence[str] = [
@@ -2984,7 +2986,9 @@ SHOP_COLLECTION_BONUS_RC_CARS : Sequence[str] = [
 SHOP_COLLECTION_MINIGAMES : Sequence[str] = [
     Loc.shop_super_monkey_throw_stadium.value,
     Loc.shop_mesal_gear_solid.value,
-    Loc.shop_ultim_ape_fighter.value
+
+    ## 1 Minigame requires a certain condition/event, and will not be genericized
+    # Loc.shop_ultim_ape_fighter.value
 ]
 
 SHOP_COLLECTION_LUCKY_PHOTO : Sequence[str] = [
@@ -3126,10 +3130,14 @@ SHOP_COLLECTION_MOVIE_TAPE : Sequence[str] = [
     Loc.movie_tape_collection_23.value,
     Loc.movie_tape_collection_24.value,
     Loc.movie_tape_collection_25.value,
-    Loc.movie_tape_collection_26.value,
-    Loc.movie_tape_collection_27.value,
-    Loc.movie_tape_collection_28.value,
-    Loc.movie_tape_collection_29.value,
+
+    ## 3 Movie Tapes require a certain condition/event, and will not be genericized
+    # Loc.movie_tape_collection_26.value,
+    # Loc.movie_tape_collection_27.value,
+    # Loc.movie_tape_collection_28.value,
+
+    ## Mesal Gear Solid will be exempted for the time being
+    # Loc.movie_tape_collection_29.value,
 ]
 
 SHOP_COLLECTION_MUSIC_DISC : Sequence[str] = [
@@ -3182,7 +3190,9 @@ SHOP_COLLECTION_MUSIC_DISC : Sequence[str] = [
     Loc.music_disc_collection_47.value,
     Loc.music_disc_collection_48.value,
     Loc.music_disc_collection_49.value,
-    Loc.music_disc_collection_50.value,
+
+    ## 1 Music Disc requires a certain condition/event, and will not be genericized
+    # Loc.music_disc_collection_50.value,
 ]
 
 SHOP_COLLECTION_GENIE_DANCE_MUSIC : Sequence[str] = [
@@ -3271,7 +3281,7 @@ SHOP_PROGRESSION_DIRECTORY : dict[str, Sequence[str]] = {
 }
 
 ### Shop Items that unlock when entering certain channels/stages
-SHOP_CHANNEL_ACCESS_DIRECTORY : dict[str, Sequence[str]] = {
+SHOP_EVENT_ACCESS_DIRECTORY : dict[str, Sequence[str]] = {
     Stage.region_boss1.value    : SHOP_PROGRESSION_BOSS1_ACCESS,
     Stage.region_boss2.value    : SHOP_PROGRESSION_BOSS2_ACCESS,
     Stage.region_boss3.value    : SHOP_PROGRESSION_BOSS3_ACCESS,
@@ -3306,20 +3316,21 @@ SHOP_CATEGORIES_DIRECTORY : dict[str, Sequence[str]] = {
 }
 
 SHOP_CATEGORIES_COLLECTION_DIRECTORY : dict[str, Sequence[str]] = {
-    Loc.shop_morph_stock.value  : [Loc.shop_morph_stock.value],
+    Loc.shop_morph_stock.value  : SHOP_PROGRESSION_MORPH,
 
-    Loc.hint_book.value         : [Loc.hint_book.value],
-    Loc.mon_fiction.value       : [Loc.mon_fiction.value],
-    Loc.channel_guide.value     : [Loc.channel_guide.value],
+    Loc.hint_book.value         : SHOP_HINT_BOOK,
+    Loc.mon_fiction.value       : SHOP_MON_FICTION,
+    Loc.channel_guide.value     : SHOP_CHANNEL_GUIDE,
 
-    Loc.bonus_rc_cars.value     : [Loc.bonus_rc_cars.value],
-    Loc.lucky_photo.value       : [Loc.weird_photos.value,
-                                   Loc.secret_photos.value,
-                                   Loc.concept_art.value,
-                                   Loc.teleborg_cards.value,],
-    Loc.movie_tape.value        : [Loc.movie_tape.value],
-    Loc.music_disc.value        : [Loc.music_disc.value],
-    Loc.genie_dance_music.value : [Loc.genie_dance_music.value],
+    Loc.bonus_rc_cars.value     : SHOP_BONUS_RC_CARS,
+    Loc.minigames.value         : SHOP_MINIGAMES,
+    Loc.lucky_photo.value       : [*SHOP_WEIRD_PHOTOS,
+                                   *SHOP_SECRET_PHOTOS,
+                                   *SHOP_CONCEPT_ART,
+                                   *SHOP_TELEBORG_CARDS,],
+    Loc.movie_tape.value        : SHOP_MOVIE_TAPE,
+    Loc.music_disc.value        : SHOP_MUSIC_DISC,
+    Loc.genie_dance_music.value : SHOP_GENIE_DANCE_MUSIC,
 }
 
 SHOP_COLLECTION_DIRECTORY : dict[str, Sequence[str]] = {
@@ -3335,7 +3346,6 @@ SHOP_COLLECTION_DIRECTORY : dict[str, Sequence[str]] = {
     Loc.movie_tape.value        : SHOP_COLLECTION_MOVIE_TAPE,
     Loc.music_disc.value        : SHOP_COLLECTION_MUSIC_DISC,
     Loc.genie_dance_music.value : SHOP_COLLECTION_GENIE_DANCE_MUSIC,
-
 }
 
 ## Grouped per physical shop location in the Shopping Area in-game

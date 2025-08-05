@@ -1129,7 +1129,7 @@ class Loc(BaseEnum):
     teleborg_cards                  = "Teleborg cards"
 
     shop_super_monkey_throw_stadium = "Super Monkey Throw Stadium (Shop Item)"
-    shop_ultim_ape_fighter          = "Ultim-ape Fighter!"
+    shop_ultim_ape_fighter          = "Ultim-ape Fighter! (Shop Item)"
     shop_mesal_gear_solid           = "Mesal Gear Solid (Shop Item)"
 
     ## Music Shop
