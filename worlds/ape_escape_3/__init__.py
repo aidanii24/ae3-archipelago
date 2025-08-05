@@ -7,8 +7,9 @@ import settings
 
 from .data.Items import AE3Item, AE3ItemMeta, ITEMS_MASTER, Nothing, generate_collectables
 from .data.Locations import Cellphone_Name_to_ID, MONKEYS_BOSSES, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, \
-    CELLPHONES_MASTER_ORDERED, MONKEYS_PASSWORDS, MONKEYS_BREAK_ROOMS
-from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER
+    CELLPHONES_MASTER_ORDERED, MONKEYS_PASSWORDS, MONKEYS_BREAK_ROOMS, SHOP_PROGRESSION_75COMPLETION, \
+    SHOP_EVENT_ACCESS_DIRECTORY
+from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER, STAGES_DIRECTORY_LABEL
 from .data.Rules import GoalTarget, GoalTargetOptions, LogicPreference, LogicPreferenceOptions, PostGameCondition
 from .data.Strings import Loc, Meta, APHelper, APConsole
 from .data.Logic import is_goal_achieved, are_goals_achieved, Rulesets, ProgressionMode, ProgressionModeOptions
@@ -169,6 +170,17 @@ class AE3World(World):
                 excluded_phones_id: list[str] = CELLPHONES_MASTER_ORDERED[channel]
                 exclude_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
 
+        # Exclude Shop Items based on Shoppingsanity Type and Blacklisted Channels
+        if self.options.blacklist_channel.value and self.options.shoppingsanity.value > 0:
+            ## Always exclude Ultim-ape Fighter Minigame if anything is blacklisted
+            exclude_locations.extend(SHOP_PROGRESSION_75COMPLETION)
+
+            ## Exclude Event/Condition-sensitive Items based on excluded levels
+            for region, item in SHOP_EVENT_ACCESS_DIRECTORY.items():
+                if region in self.options.blacklist_channel.value:
+                    exclude_locations.extend(item)
+
+
         # Check for Options that may override Monkeysanity Break Rooms Option
         # and exclude if not needed
         if not self.options.monkeysanity_break_rooms:
@@ -209,6 +221,13 @@ class AE3World(World):
 
             excluded_phones_id : list[str] = CELLPHONES_MASTER_ORDERED[channel]
             exclude_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
+
+            for region, item in SHOP_EVENT_ACCESS_DIRECTORY.items():
+                if region in [*STAGES_DIRECTORY_LABEL.values()][channel]:
+                    exclude_locations.extend(item)
+
+        # Exclude Ultim-ape Fighter from being a PGC requirement, as it requires as many monkeys as possible
+        exclude_locations.extend(SHOP_PROGRESSION_75COMPLETION)
 
         # Record remaining Post Game Condition options
         if self.options.post_game_condition_bosses:

@@ -6,12 +6,14 @@ from .data.Stages import STAGES_BREAK_ROOMS, STAGES_DIRECTORY, STAGES_MASTER, EN
     STAGES_SHOP_PROGRESSION
 from .data.Locations import CAMERAS_INDEX, CELLPHONES_INDEX, MONKEYS_PASSWORDS, MONKEYS_INDEX, EVENTS_INDEX, \
     SHOP_PROGRESSION_MASTER, SHOP_PROGRESSION_MORPH, SHOP_COLLECTION_INDEX, CameraLocation, CellphoneLocation, \
-    EventMeta, MonkeyLocation, ShopItemLocation, SHOP_PROGRESSION_DIRECTORY, SHOP_EVENT_ACCESS_MASTER
+    EventMeta, MonkeyLocation, ShopItemLocation, SHOP_PROGRESSION_DIRECTORY, SHOP_EVENT_ACCESS_DIRECTORY, \
+    SHOP_CATEGORIES_COLLECTION_DIRECTORY, SHOP_PROGRESSION_75COMPLETION
 from .data.Logic import Rulesets
 from .data.Strings import Stage
 
 if TYPE_CHECKING:
     from . import AE3World
+
 
 ### [< --- HELPERS --- >]
 def establish_entrance(player : int, name : str, parent_region : Region, destination : Region,
@@ -144,12 +146,25 @@ def create_regions(world : "AE3World"):
 
     if world.options.shoppingsanity != 0:
         ## Handle Shop Items that require specific events
-        for item in SHOP_EVENT_ACCESS_MASTER:
-            meta: ShopItemLocation = ShopItemLocation(item)
+        for region, items in SHOP_EVENT_ACCESS_DIRECTORY.items():
+            if region in blacklist:
+                continue
+
+            for item in items:
+                meta: ShopItemLocation = ShopItemLocation(item)
+                loc: Location = meta.to_location(world.player, shopping_area)
+
+                if item in world.logic_preference.event_rules:
+                    loc.access_rule = world.logic_preference.event_rules[item].condense(world.player)
+
+                shopping_area.locations.append(loc)
+
+        if not world.options.blacklist_channel.value:
+            meta: ShopItemLocation = ShopItemLocation(SHOP_PROGRESSION_75COMPLETION[0])
             loc: Location = meta.to_location(world.player, shopping_area)
 
-            if item in world.logic_preference.event_rules:
-                loc.access_rule = world.logic_preference.event_rules[item].condense(world.player)
+            if loc.name in world.logic_preference.event_rules:
+                loc.access_rule = world.logic_preference.event_rules[loc.name].condense(world.player)
 
             shopping_area.locations.append(loc)
 
@@ -204,6 +219,15 @@ def create_regions(world : "AE3World"):
 
     # Send Regions to Archipelago
     world.multiworld.regions.extend(list(stages.values()))
+
+    shop_locs = [x.name for y in STAGES_SHOP_PROGRESSION for x in stages[y].locations]
+    shop_locs.extend(_.name for _ in shopping_area.locations)
+
+    print("==================================")
+    for k, v in SHOP_CATEGORIES_COLLECTION_DIRECTORY.items():
+        print(f"{k}: {len(set(v).intersection(shop_locs))} \t | {set(v).intersection(shop_locs)}")
+
+    print(len(shop_locs), "\n")
 
     # # <!> DEBUG
     # # Connection Diagrams
