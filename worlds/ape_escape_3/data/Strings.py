@@ -1661,6 +1661,8 @@ class Stage(BaseEnum):
     region_shop_space =         "Shopping Area (Space-TV Fortress)"
     region_shop_specter1 =      "Shopping Area (Specter Battle!)"
     region_shop_round2 =        "Shopping Area (Post Game)"
+    region_shop_morph =         "Shopping Area (Morph Stocks)"
+    region_shop_expensive =     "Shopping Area (Expensive)"
 
     # Entrances
     entrance_ng =                       "New Game Confirmed"
@@ -2191,11 +2193,13 @@ class Stage(BaseEnum):
     entrance_shop_hong =                "Shopping Area Progression (Kung-Fu Alley)"
     entrance_shop_boss5 =               "Shopping Area Progression (Monkey Red Battle!)"
     entrance_shop_bay =                 "Shopping Area Progression (Midnight Bay)"
-    entrance_shop_tomo =                "Shopping Area (Tomoki City)"
-    entrance_shop_boss6 =               "Shopping Area (Dr. Tomoki Battle!)"
-    entrance_shop_space =               "Shopping Area (Space-TV Fortress)"
-    entrance_shop_specter1 =            "Shopping Area (Specter Battle!)"
-    entrance_shop_round2 =              "Shopping Area (Post Game)"
+    entrance_shop_tomo =                "Shopping Area Progression (Tomoki City)"
+    entrance_shop_boss6 =               "Shopping Area Progression (Dr. Tomoki Battle!)"
+    entrance_shop_space =               "Shopping Area Progression (Space-TV Fortress)"
+    entrance_shop_specter1 =            "Shopping Area Progression (Specter Battle!)"
+    entrance_shop_round2 =              "Shopping Area Progression (Post Game)"
+    entrance_shop_morph =               "Shopping Area Received (Morph)"
+    entrance_shop_expensive =           "Shopping Area Farm (Expensive)"
 
     # Stage ID's
     seaside =                   "seaside"
@@ -2516,6 +2520,7 @@ class APHelper(BaseEnum):
 
     # Progression
     channel_key =           "Channel Key"
+    shop_stock =            "Shop Stock"
     victory =               "Victory"
 
     # Custom Items

@@ -1,13 +1,16 @@
 from typing import TYPE_CHECKING
 
+from param import Callable
+
 from BaseClasses import Entrance, Location, Region
+from .data.Rules import ShopItemRules
 
 from .data.Stages import STAGES_BREAK_ROOMS, STAGES_DIRECTORY, STAGES_MASTER, ENTRANCES_MASTER, STAGES_DIRECTORY_LABEL,\
     STAGES_SHOP_PROGRESSION
 from .data.Locations import CAMERAS_INDEX, CELLPHONES_INDEX, MONKEYS_PASSWORDS, MONKEYS_INDEX, EVENTS_INDEX, \
     SHOP_PROGRESSION_MASTER, SHOP_PROGRESSION_MORPH, SHOP_COLLECTION_INDEX, CameraLocation, CellphoneLocation, \
     EventMeta, MonkeyLocation, ShopItemLocation, SHOP_PROGRESSION_DIRECTORY, SHOP_EVENT_ACCESS_DIRECTORY, \
-    SHOP_CATEGORIES_COLLECTION_DIRECTORY, SHOP_PROGRESSION_75COMPLETION
+    SHOP_PROGRESSION_75COMPLETION
 from .data.Logic import Rulesets
 from .data.Strings import Stage
 
@@ -28,6 +31,11 @@ def establish_entrance(player : int, name : str, parent_region : Region, destina
     entrance.connect(destination)
 
 def create_regions(world : "AE3World"):
+    shop_rules : ShopItemRules = ShopItemRules(world)
+
+    entrance_rules : dict[str, Rulesets] = {**world.logic_preference.entrance_rules,
+                                            **world.progression.generate_rules(world),
+                                            **shop_rules.shop_entrance_rules}
     world.logic_preference.entrance_rules.update(world.progression.generate_rules(world))
 
     add_cameras : bool = bool(world.options.camerasanity)
@@ -143,6 +151,7 @@ def create_regions(world : "AE3World"):
 
     # Handle Shop Regions
     shopping_area: Region = stages[Stage.travel_station_b.value]
+    expensive_area : Region = stages[Stage.region_shop_expensive.value]
 
     if world.options.shoppingsanity != 0:
         ## Handle Shop Items that require specific events
@@ -170,6 +179,8 @@ def create_regions(world : "AE3World"):
 
         ## Handle Morph Stocks
         if world.options.shoppingsanity != 2:
+            stocks_region : Region = stages[Stage.region_shop_morph.value]
+
             for i, item in enumerate(SHOP_PROGRESSION_MORPH):
                 meta : ShopItemLocation = ShopItemLocation(item, 1, i)
                 loc : Location = meta.to_location(world.player, shopping_area)
@@ -177,7 +188,7 @@ def create_regions(world : "AE3World"):
                 if item in world.logic_preference.event_rules:
                     loc.access_rule = world.logic_preference.event_rules[item].condense(world.player)
 
-                shopping_area.locations.append(loc)
+                stocks_region.locations.append(loc)
 
     ## Handle Shoppingsanity options Enabled/Collection
     if 0 < world.options.shoppingsanity.value < 3:
@@ -201,7 +212,11 @@ def create_regions(world : "AE3World"):
                 if item.name in world.logic_preference.event_rules:
                     loc.access_rule = world.logic_preference.event_rules[item.name].condense(world.player)
 
-                shopping_area.locations.append(loc)
+                if item in shop_rules.cheap_early_items:
+                    shopping_area.locations.append(loc)
+                else:
+                    expensive_area.locations.append(loc)
+
     ## Handle Shoppingsanity Options Progressive/Restock
     elif 2 < world.options.shoppingsanity.value < 5:
         shop_progression_regions : list[Region] = [region for name, region in stages.items()
@@ -220,16 +235,16 @@ def create_regions(world : "AE3World"):
     # Send Regions to Archipelago
     world.multiworld.regions.extend(list(stages.values()))
 
-    shop_locs = [x.name for y in STAGES_SHOP_PROGRESSION for x in stages[y].locations]
-    shop_locs.extend(_.name for _ in shopping_area.locations)
-
-    print("==================================")
-    for k, v in SHOP_CATEGORIES_COLLECTION_DIRECTORY.items():
-        print(f"{k}: {len(set(v).intersection(shop_locs))} \t | {set(v).intersection(shop_locs)}")
-
-    print(len(shop_locs), "\n")
+    # shop_locs = [x.name for y in STAGES_SHOP_PROGRESSION for x in stages[y].locations]
+    # shop_locs.extend(_.name for _ in shopping_area.locations)
+    #
+    # print("==================================")
+    # for k, v in SHOP_CATEGORIES_COLLECTION_DIRECTORY.items():
+    #     print(f"{k}: {len(set(v).intersection(shop_locs))} \t | {set(v).intersection(shop_locs)}")
+    #
+    # print(len(shop_locs), "\n")
 
     # # <!> DEBUG
     # # Connection Diagrams
-    # from Utils import visualize_regions
-    # visualize_regions(world.multiworld.get_region("Menu", world.player), "_region_diagram.puml")
+    from Utils import visualize_regions
+    visualize_regions(world.multiworld.get_region("Menu", world.player), "_region_diagram.puml")
