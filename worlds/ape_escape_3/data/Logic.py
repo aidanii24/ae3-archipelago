@@ -5,7 +5,8 @@ import warnings
 from BaseClasses import CollectionState, Item
 
 from .Items import Channel_Key
-from .Stages import AE3EntranceMeta, ENTRANCES_STAGE_SELECT, ENTRANCES_CHANNELS, LEVELS_BY_ORDER
+from .Stages import AE3EntranceMeta, ENTRANCES_STAGE_SELECT, ENTRANCES_CHANNELS, LEVELS_BY_ORDER, STAGES_FARMABLE, \
+    STAGES_FARMABLE_SNEAKY_BORG
 from .Strings import Itm, Stage, APHelper
 
 if TYPE_CHECKING:
@@ -103,13 +104,32 @@ def can_fly(state : CollectionState, player : int):
 def can_glide(state : CollectionState, player : int):
     return state.has_group(APHelper.glide.value, player)
 
-# Event Checks
+# Access Checks
+def can_reach_region(state : CollectionState, player : int, region : str):
+    return state.can_reach_region(region, player)
+
+def can_access_region(region : str):
+    return lambda state, player : can_reach_region(state, player, region)
+
+def can_farm_boxes():
+    return lambda state, player : any(can_reach_region(state, player, region) for region in STAGES_FARMABLE)
+
+def can_farm_sneaky_borgs():
+    return lambda state, player : any(can_reach_region(state, player, region) for region in STAGES_FARMABLE_SNEAKY_BORG)
+
 def has_enough_keys(state : CollectionState, player : int, keys : int):
     return state.has(APHelper.channel_key.value, player, keys)
 
 def has_keys(keys : int):
     return lambda state, player : has_enough_keys(state, player, keys=keys)
 
+def has_enough_shop_stock(state : CollectionState, player : int, stock : int):
+    return state.has(APHelper.shop_stock.value, player, stock)
+
+def has_shop_stock(stock : int):
+    return lambda state, player : has_enough_shop_stock(state, player, stock)
+
+# Event Checks
 def is_event_invoked(state : CollectionState, player : int, event_name : str):
     return state.has(event_name, player)
 
@@ -118,9 +138,6 @@ def is_event_not_invoked(state : CollectionState, player : int, event_name : str
 
 def event_invoked(event_name : str):
     return lambda state, player : is_event_invoked(state, player, event_name)
-
-def event_not_invoked(event_name : str):
-    return lambda state, player : is_event_not_invoked(state, player, event_name)
 
 def is_goal_achieved(state : CollectionState, player : int, count : int = 1):
     return state.has(APHelper.victory.value, player, count)
@@ -165,6 +182,10 @@ class AccessRule:
     KUNGFU = can_kungfu
     HERO = can_hero
     MONKEY = can_monkey
+
+    # Access
+    FARM = can_farm_boxes()
+    FARM_DUPE = can_farm_sneaky_borgs()
 
     # NULL
     NULL = (lambda state, player : False)
