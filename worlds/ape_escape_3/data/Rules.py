@@ -7,13 +7,12 @@ from BaseClasses import CollectionState
 
 from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, Cellphone_Name_to_ID, MONKEYS_BOSSES, \
     MONKEYS_BREAK_ROOMS, MONKEYS_INDEX, MONKEYS_MASTER, MONKEYS_PASSWORDS, generate_name_to_id, LOCATIONS_INDEX, \
-    LOCATIONS_DIRECTORY, SHOP_CHEAP_COLLECTION_INDEX, SHOP_PROGRESSION_INDEX, SHOP_CHEAP_MASTER, \
-    SHOP_PROGRESSION_DIRECTORY
-from .Logic import Rulesets, AccessRule, ProgressionMode, has_keys, event_invoked, has_enough_keys, can_access_region, \
+    LOCATIONS_DIRECTORY, SHOP_CHEAP_COLLECTION_INDEX, SHOP_CHEAP_MASTER, SHOP_PROGRESSION_DIRECTORY
+from .Logic import Rulesets, AccessRule, has_keys, event_invoked, has_enough_keys, can_access_region, \
     has_shop_stock
 from .Strings import Loc, Stage, Events, APHelper
-from .Stages import STAGES_DIRECTORY, ENTRANCES_STAGE_SELECT, ENTRANCES_SHOP_PSEUDOREGIONS, ENTRANCES_SHOP_PROGRESSION, \
-    AE3EntranceMeta
+from .Stages import STAGES_DIRECTORY, ENTRANCES_SHOP_PSEUDOREGIONS, AE3EntranceMeta, ENTRANCES_SHOP_PROGRESSION, \
+    STAGES_SHOP_PROGRESSION
 
 if TYPE_CHECKING:
     from ..AE3_Client import AE3Context
@@ -342,44 +341,6 @@ class LogicPreference:
                         rules.rules.extend(self.monkey_rules[monkey].rules)
 
         return rules
-
-    # TODO Deprecated
-    def set_level_progression_rules(self, progression : ProgressionMode, post_game_access_rule_option : int = 0,
-                                    post_game_rules : list[Callable] = None):
-        warn("This function is deprecated. Channel Progression Rule Generation has been moved to Progression Mode.")
-
-        if post_game_rules is None:
-            post_game_rules = []
-
-        levels_count : int = 0
-        for sets, levels in enumerate(progression.progression):
-            extra : int = 0
-            if sets < 1:
-                extra = 1
-
-            for _ in range(levels + extra):
-                rule : Rulesets = Rulesets()
-                req : int = sets
-
-                if sets <= 0:
-                    levels_count += 1
-                    continue
-                elif sets > 0:
-                    rule = Rulesets(has_keys(req))
-
-                if sets == len(progression.progression) - 1:
-                    if post_game_access_rule_option < 4:
-                        req -= 1
-
-                    final_rule : list[Callable] = [has_keys(req)]
-
-                    if post_game_rules:
-                        final_rule.append(*post_game_rules)
-
-                    rule = Rulesets(final_rule)
-
-                self.entrance_rules[ENTRANCES_STAGE_SELECT[levels_count].name] = rule
-                levels_count += 1
 
 # [<--- LOGIC PREFERENCES --->]
 class Hard(LogicPreference):
@@ -1335,36 +1296,48 @@ LogicPreferenceOptions : list = [
 # [<--- SHOP ITEMS RULES HANDLING --->]
 @dataclass
 class ShopItemRules:
-    shop_item_rules : dict[str, Rulesets]
-    shop_entrances : list[AE3EntranceMeta]
-    shop_entrance_rules : dict[str, Rulesets]
+    item_rules : dict[str, Rulesets]
+    entrances : list[AE3EntranceMeta]
+    entrance_rules : dict[str, Rulesets]
+    blacklisted_entrances : list[str]
+    blacklisted_stages : list[str]
     cheap_early_items : list[str]
 
     sets : int = 0
 
     def __init__(self, world : "AE3World"):
+        self.item_rules = {}
+        self.entrances = []
+        self.entrance_rules = {}
+        self.blacklisted_entrances = [*ENTRANCES_SHOP_PROGRESSION]
+        self.blacklisted_stages = [*STAGES_SHOP_PROGRESSION]
+        self.cheap_early_items = []
+
+        if not world.options.shoppingsanity:
+            return
+
         # Post Game Properties
         required_keys : int = len(world.progression.progression) - 3
         post_game_condition_rule : Callable[[CollectionState, int], bool] = world.post_game_condition.enact(
             required_keys - 1, world.options.monkeysanity_break_rooms.value)
         farm_logic : list[Rulesets] = [AccessRule.FARM]
 
-        self.shop_item_rules = {
+        self.item_rules = {
             Loc.shop_ultim_ape_fighter.value: Rulesets(post_game_condition_rule),
 
-            Loc.hint_book_9.value: Rulesets(can_access_region(Stage.heaven_a.value)),
-            Loc.hint_book_14.value: Rulesets(can_access_region(Stage.boss1.value)),
-            Loc.hint_book_15.value: Rulesets(can_access_region(Stage.boss2.value)),
-            Loc.hint_book_16.value: Rulesets(can_access_region(Stage.boss3.value)),
-            Loc.hint_book_17.value: Rulesets(can_access_region(Stage.boss4.value)),
-            Loc.hint_book_18.value: Rulesets(can_access_region(Stage.boss5.value)),
-            Loc.hint_book_19.value: Rulesets(can_access_region(Stage.boss6.value)),
-            Loc.hint_book_20.value: Rulesets(can_access_region(Stage.specter1.value)),
+            Loc.hint_book_9.value: Rulesets(can_access_region(Stage.region_heaven_a.value)),
+            Loc.hint_book_14.value: Rulesets(can_access_region(Stage.region_boss1.value)),
+            Loc.hint_book_15.value: Rulesets(can_access_region(Stage.region_boss2.value)),
+            Loc.hint_book_16.value: Rulesets(can_access_region(Stage.region_boss3.value)),
+            Loc.hint_book_17.value: Rulesets(can_access_region(Stage.region_boss4.value)),
+            Loc.hint_book_18.value: Rulesets(can_access_region(Stage.region_boss5.value)),
+            Loc.hint_book_19.value: Rulesets(can_access_region(Stage.region_boss6.value)),
+            Loc.hint_book_20.value: Rulesets(can_access_region(Stage.region_specter1.value)),
 
-            Loc.movie_tape_17.value: Rulesets(can_access_region(Stage.tomo_a.value)),
+            Loc.movie_tape_17.value: Rulesets(can_access_region(Stage.region_tomo_a.value)),
         }
 
-        self.shop_entrance_rules = {
+        self.entrance_rules = {
             Stage.entrance_shop_expensive.value     : Rulesets(*farm_logic),
             Stage.entrance_shop_morph.value         : Rulesets(AccessRule.MORPH),
         }
@@ -1372,25 +1345,33 @@ class ShopItemRules:
         cheap_items_minimum_requirement: int = 0
         cheap_items_early_amount: int = 0 if cheap_items_minimum_requirement > 0 else 3
 
-        if world.options.shoppingsanity.value == 2:
+        if world.options.shoppingsanity.value <= 1:
+            return
+        elif world.options.shoppingsanity.value == 2:
             for category in SHOP_CHEAP_COLLECTION_INDEX:
                 self.cheap_early_items.extend(category[cheap_items_early_amount])
 
+            return
         # Progression Splitting Properties
-        if world.options.shoppingsanity.value == 3:
-            self.sets = math.ceil(28 / required_keys + 1)
+        elif world.options.shoppingsanity.value == 3:
+            self.sets = math.ceil(28 / (required_keys + 1))
             reached_shop_progress = lambda amount : has_keys(amount)
+
+            self.blacklisted_entrances.clear()
+            self.blacklisted_stages.clear()
         else:
             self.sets : int = math.ceil(28 / 28)
             reached_shop_progress = lambda amount: has_shop_stock(amount)
 
+            self.blacklisted_entrances.clear()
+            self.blacklisted_stages.clear()
+
         enough_cheap_items : bool = False
         for i, entrance in enumerate(ENTRANCES_SHOP_PSEUDOREGIONS):
             if math.floor(i / self.sets) > 0:
-                self.shop_entrance_rules[entrance.name] = reached_shop_progress(math.floor(i / self.sets))
+                self.entrance_rules[entrance.name] = Rulesets(reached_shop_progress(math.floor(i / self.sets)))
 
-            if (enough_cheap_items and cheap_items_early_amount
-                and len(self.cheap_early_items) < cheap_items_early_amount):
+            if not enough_cheap_items and cheap_items_early_amount:
                 cheap : list[str] = [item for item in SHOP_PROGRESSION_DIRECTORY[entrance.destination]
                                           if item not in SHOP_CHEAP_MASTER]
                 expensive : list[str] = [item for item in SHOP_PROGRESSION_DIRECTORY[entrance.destination]
@@ -1399,17 +1380,17 @@ class ShopItemRules:
                 if len(self.cheap_early_items) + len(cheap) <= cheap_items_early_amount:
                     self.cheap_early_items.extend(cheap)
                     for item in expensive:
-                        self.shop_item_rules[item] = Rulesets(*farm_logic)
+                        self.item_rules[item] = Rulesets(*farm_logic)
 
-                    self.shop_entrances.append(AE3EntranceMeta(entrance.name, Stage.travel_station_b.value,
-                                                               entrance.destination))
+                    self.entrances.append(AE3EntranceMeta(entrance.name, Stage.travel_station_b.value,
+                                                          entrance.destination))
                 else:
                     enough_cheap_items = True
-                    self.shop_entrances.append(AE3EntranceMeta(entrance.name, Stage.region_shop_expensive.value,
-                                                               entrance.destination))
+                    self.entrances.append(AE3EntranceMeta(entrance.name, Stage.region_shop_expensive.value,
+                                                          entrance.destination))
             else:
-                self.shop_entrances.append(AE3EntranceMeta(entrance.name, Stage.region_shop_expensive.value,
-                                                           entrance.destination))
+                self.entrances.append(AE3EntranceMeta(entrance.name, Stage.region_shop_expensive.value,
+                                                      entrance.destination))
 
 # [<--- GOAL TARGETS --->]
 class Specter(GoalTarget):
