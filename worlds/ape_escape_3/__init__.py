@@ -338,6 +338,11 @@ class AE3World(World):
         # Add Archipelago Items
         self.item_pool += self.progression.generate_keys(self)
 
+        if self.options.shoppingsanity.value == 4:
+            self.item_pool.extend([self.create_item(APHelper.shop_stock.value)
+                                   for _ in range(self.options.restock_progression.value +
+                                                  self.options.extra_shop_stocks.value)])
+
         # Fill remaining locations with Collectables
         unfilled : int = len(self.multiworld.get_unfilled_locations(self.player)) - len(self.item_pool)
         self.item_pool += generate_collectables(self.random, self.player, unfilled)

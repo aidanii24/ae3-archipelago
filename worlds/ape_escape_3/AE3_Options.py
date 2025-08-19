@@ -505,6 +505,67 @@ class Shoppingsanity(Choice):
     option_progressive : int = 3
     option_restock : int = 4
 
+class RestockProgression(Range):
+    """
+    If the chosen Shoppingsanity option is "Restock", this option determines the amount of Shop Stocks
+    that will be available. The amount of Shop Items that becomes available from collecting one Shop Stock
+    increases the less Shop Stocks exists.
+
+    To specify custom values, add it alongside the pre-existing options, copying their format.
+    Format: value : weight
+    """
+    display_name: str = "Restock Progression"
+    default = 28
+
+    range_start = 4
+    range_end = 28
+
+class CheapItemsMinimumRequirement(NamedRange):
+    """
+    If the chosen Shoppingsanity option is "Collection", "Progressive", or "Restock", this option will define
+    the minimum Channel progression required before any cheap items become in-logic, assuming no farmable area
+    becomes accessible beforehand.
+
+    To specify custom values, add it alongside the pre-existing options, copying their format.
+    Format: value : weight
+
+    Special Values:
+    > disabled (0) - Cheap Items will only become in-logic if a farmable area becomes accessible
+    > post-game (100) - Cheap Items will become in-logic at the latest when meeting the Post-Game Condition.
+    Regardless of this option, all Shopping Items will become in-logic if a farmable area becomes accessible.
+    """
+    display_name: str = "Cheap Shop Items Minimum Requirement"
+    default = 0
+
+    range_start = 0
+    range_end = 100
+    special_range_names = {
+        "disabled": 0,
+        "post-game": 100
+    }
+
+class CheapItemsEarlyAmount(Range):
+    """
+    If the chosen Shoppingsanity option is "Collection", "Progressive", or "Restock", this option will define
+    a minimum amount of Cheap Shop Items per Shop Item Category that will become in-logic from the very beginning.
+
+    If the option "Cheap Items Minimum Requirement" option is not disabled, this option is completely ignored.
+
+    To specify custom values, add it alongside the pre-existing options, copying their format.
+    Format: value : weight
+    """
+    display_name: str = "Cheap Shop Items Early Amount"
+    default = 3
+
+    range_start = 0
+    range_end = 20
+
+class FarmLogicSneakyBorgs(Toggle):
+    """
+    Determines if access to areas with Sneaky-borgs should count as access to reasonably farmable gotcha coins.
+    """
+    display_name = "Farm Logic Sneaky Borgs"
+
 
 class StartingGadget(Choice):
     """
@@ -595,7 +656,7 @@ class AddMorphExtensions(Toggle):
 
 class ExtraKeys(Range):
     """
-    Determine if extra channel keys should be generated in addition to the minimum required to unlock all the channels.
+    Determine if extra Channel Keys should be generated in addition to the minimum required to unlock all the channels.
 
     To specify custom values, add it alongside the pre-existing options, copying their format.
     Format: value : weight
@@ -606,6 +667,19 @@ class ExtraKeys(Range):
     range_start = 0
     range_end = 15
 
+class ExtraShopStocks(Range):
+    """
+    If the chosen Shoppingsanity option is "Restock", this option determines if extra Shop Stocks should be generated
+    in addition to the minimum required to unlock all the Shop Items. This option will not have any effect otherwise.
+
+    To specify custom values, add it alongside the pre-existing options, copying their format.
+    Format: value : weight
+    """
+    display_name : str = "Extra Shop Stocks"
+    default = 0
+
+    range_start = 0
+    range_end = 10
 
 class EarlyFreePlay(DefaultOnToggle):
     """
@@ -672,7 +746,11 @@ ae3_option_groups : dict[str, list] = {
                                    MonkeysanityPasswords,
                                    Camerasanity,
                                    Cellphonesanity,
-                                   Shoppingsanity],
+                                   Shoppingsanity,
+                                   RestockProgression,
+                                   CheapItemsMinimumRequirement,
+                                   CheapItemsEarlyAmount,
+                                   FarmLogicSneakyBorgs],
     "Item Options"              : [StartingGadget,
                                    StartingMorph,
                                    BaseMorphDuration,
@@ -680,7 +758,8 @@ ae3_option_groups : dict[str, list] = {
                                    ShuffleRCCarChassis,
                                    ShuffleMorphStocks,
                                    AddMorphExtensions,
-                                   ExtraKeys],
+                                   ExtraKeys,
+                                   ExtraShopStocks],
     "Preferences"               : [EarlyFreePlay,
                                    EnableMonkeyMart,
                                    LuckyTicketConsolationEffects,
@@ -715,6 +794,10 @@ class AE3Options(PerGameCommonOptions):
     camerasanity                            : Camerasanity
     cellphonesanity                         : Cellphonesanity
     shoppingsanity                          : Shoppingsanity
+    restock_progression                     : RestockProgression
+    cheap_items_minimum_requirement         : CheapItemsMinimumRequirement
+    cheap_items_early_amount                : CheapItemsEarlyAmount
+    farm_logic_sneaky_borgs                 : FarmLogicSneakyBorgs
 
     starting_gadget                         : StartingGadget
     starting_morph                          : StartingMorph
@@ -725,6 +808,7 @@ class AE3Options(PerGameCommonOptions):
     shuffle_morph_stocks                    : ShuffleMorphStocks
     add_morph_extensions                    : AddMorphExtensions
     extra_keys                              : ExtraKeys
+    extra_shop_stocks                       : ExtraShopStocks
 
     early_free_play                         : EarlyFreePlay
     enable_monkey_mart                      : EnableMonkeyMart
@@ -757,17 +841,23 @@ def slot_data_options() -> list[str]:
         APHelper.pgc_cellphones.value,
         APHelper.pgc_shop.value,
         APHelper.pgc_keys.value,
+
         APHelper.shuffle_channel.value,
         APHelper.preserve_channel.value,
         APHelper.push_channel.value,
         APHelper.post_channel.value,
         APHelper.blacklist_channel.value,
+
         APHelper.monkeysanity.value,
         APHelper.monkeysanitybr.value,
         APHelper.monkeysanitypw.value,
         APHelper.camerasanity.value,
         APHelper.cellphonesanity.value,
         APHelper.shoppingsanity.value,
+        APHelper.restock_progression.value,
+        APHelper.cheap_items_min.value,
+        APHelper.cheap_items_early_amount.value,
+        APHelper.farm_logic_sneaky_borgs.value,
 
         APHelper.starting_gadget.value,
         APHelper.starting_morph.value,
@@ -778,6 +868,7 @@ def slot_data_options() -> list[str]:
         APHelper.shuffle_morph_stocks.value,
         APHelper.add_morph_extensions.value,
         APHelper.extra_keys.value,
+        APHelper.extra_shop_stocks.value,
 
         APHelper.early_free_play.value,
         APHelper.enable_monkey_mart.value,

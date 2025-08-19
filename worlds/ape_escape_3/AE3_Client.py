@@ -420,7 +420,10 @@ class AE3Context(CommonContext):
     check_break_rooms : bool = False
     camerasanity : int = None
     cellphonesanity : bool = None
+    shoppingsanity : int = 0
+    shop_progression : int = 27
     extra_keys : int = 0
+    extra_shop_stocks : int = 0
 
     morph_duration : float = 0.0
 

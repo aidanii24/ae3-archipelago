@@ -2597,6 +2597,7 @@ class APHelper(BaseEnum):
 
     # Game Progress
     channel_order =         "Channel_Order"
+    shop_progress =         "Shop Progress"
 
     pr_boss6 =              "boss6"
     pr_specter1 =           "specter1"
@@ -2610,7 +2611,7 @@ class APHelper(BaseEnum):
     progression =               "progression"
     open_required =             "open_progression_keys"
     randomize_set_count =       "randomize_progression_set_count"
-    randomize_channel_range = "randomize_progression_channel_range"
+    randomize_channel_range =   "randomize_progression_channel_range"
     logic_preference =          "logic_preference"
     goal_target =               "goal_target"
     goal_target_ovr =           "goal_target_override"
@@ -2631,6 +2632,10 @@ class APHelper(BaseEnum):
     camerasanity =              "camerasanity"
     cellphonesanity =           "cellphonesanity"
     shoppingsanity =            "shoppingsanity"
+    restock_progression =       "restock_progression"
+    cheap_items_min =           "cheap_items_minimum_requirement"
+    cheap_items_early_amount =  "cheap_items_early_amount"
+    farm_logic_sneaky_borgs =   "farm_logic_sneaky_borgs "
 
     starting_gadget =           "starting_gadget"
     starting_morph =            "starting_morph"
@@ -2641,6 +2646,7 @@ class APHelper(BaseEnum):
     shuffle_morph_stocks =      "shuffle_morph_stocks"
     add_morph_extensions =      "add_morph_extensions"
     extra_keys =                "extra_keys"
+    extra_shop_stocks =         "extra_shop_stocks"
 
     early_free_play =           "early_free_play"
     enable_monkey_mart =        "enable_monkey_mart"
