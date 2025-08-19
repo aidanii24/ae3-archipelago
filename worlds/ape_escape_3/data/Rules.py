@@ -7,7 +7,8 @@ from BaseClasses import CollectionState
 
 from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, Cellphone_Name_to_ID, MONKEYS_BOSSES, \
     MONKEYS_BREAK_ROOMS, MONKEYS_INDEX, MONKEYS_MASTER, MONKEYS_PASSWORDS, generate_name_to_id, LOCATIONS_INDEX, \
-    LOCATIONS_DIRECTORY, SHOP_CHEAP_COLLECTION_INDEX, SHOP_CHEAP_MASTER, SHOP_PROGRESSION_DIRECTORY
+    LOCATIONS_DIRECTORY, SHOP_CHEAP_COLLECTION_INDEX, SHOP_CHEAP_MASTER, SHOP_PROGRESSION_DIRECTORY, SHOP_UNIQUE_MASTER, \
+    SHOP_COLLECTION_MASTER, SHOP_PERSISTENT_MASTER
 from .Logic import Rulesets, AccessRule, has_keys, event_invoked, has_enough_keys, can_access_region, \
     has_shop_stock
 from .Strings import Loc, Stage, Events, APHelper
@@ -27,7 +28,8 @@ class GoalTarget:
 
     amount : int = 0
 
-    def __init__(self, amount : int = 0, excluded_stages : list[str] = None, excluded_locations : list[str] = None):
+    def __init__(self, amount : int = 0, excluded_stages : list[str] = None, excluded_locations : list[str] = None,
+                 shop_mode : int = 1):
         if not self.locations:
             return
 
@@ -47,6 +49,12 @@ class GoalTarget:
                 locations_excluded.extend( locations for locations in MONKEYS_INDEX.get(stage, []) )
                 locations_excluded.extend( locations for locations in CAMERAS_INDEX.get(stage, []) )
                 locations_excluded.extend( locations for locations in CELLPHONES_INDEX.get(stage, []) )
+
+        # Exclude Shop Item Locations that are not used
+        if shop_mode == 2:
+            locations_excluded.extend(set(SHOP_UNIQUE_MASTER).difference(SHOP_PERSISTENT_MASTER))
+        else:
+            locations_excluded.extend(set(SHOP_COLLECTION_MASTER).difference(SHOP_PERSISTENT_MASTER))
 
         if locations_excluded:
             actual : str = "Actual: " if self.locations else "[ No Set Locations ] |"
@@ -147,7 +155,7 @@ class PostGameCondition:
                                                  APHelper.shop.value]
 
     def __init__(self, amounts : dict[str, int], excluded_regions : list[str] = None,
-                 excluded_locations : list[str] = None):
+                 excluded_locations : list[str] = None, shop_mode : int = 1):
         # Check if at least one Post Game Condition is enabled
         if not amounts or all(_ <= 0 for _ in [*amounts.values()]):
             raise AssertionError("AE3 > PostGameCondition: At least one Post-Game Condition must be enabled!")
@@ -172,6 +180,12 @@ class PostGameCondition:
             for region in excluded_regions:
                 excluded_locations.extend(LOCATIONS_INDEX.get(region, []))
 
+        # Exclude Shop Item Locations that are not used
+        if shop_mode == 2:
+            excluded_locations.extend(set(SHOP_UNIQUE_MASTER).difference(SHOP_PERSISTENT_MASTER))
+        else:
+            excluded_locations.extend(set(SHOP_COLLECTION_MASTER).difference(SHOP_PERSISTENT_MASTER))
+
         # Define valid locations for checking
         to_id : dict[str, int] = generate_name_to_id()
         for category in self.location_categories:
@@ -185,7 +199,10 @@ class PostGameCondition:
 
                 # Lower required amount if there are enough excluded locations to make the initial value impossible
                 if self.amounts[category] > len(location_list):
-                    self.amounts[category] = len(location_list)
+                    if category == APHelper.shop.value:
+                        self.amounts[category] = min(len(location_list), len(SHOP_UNIQUE_MASTER))
+                    else:
+                        self.amounts[category] = len(location_list)
 
                 self.location_ids[category] = { to_id[loc] for loc in location_list }
 
@@ -1472,6 +1489,13 @@ class PhoneCheck(DirectorsCut):
 
     locations = {*Cellphone_Name_to_ID.values()}
 
+class ShopCollector(GoalTarget):
+    name = "Shop Collector"
+    description = "Buy all of the Shop Items in the Shopping Area!"
+
+    locations = {*LOCATIONS_DIRECTORY[APHelper.shop.value]}
+    amount = len(SHOP_UNIQUE_MASTER)
+
 
 class PasswordHunt(DirectorsCut):
     name = "Password Hunt"
@@ -1480,5 +1504,5 @@ class PasswordHunt(DirectorsCut):
 
 
 GoalTargetOptions : list[Callable] = [
-    Specter, SpecterFinal, TripleThreat, PlaySpike, PlayJimmy, DirectorsCut, PhoneCheck
+    Specter, SpecterFinal, TripleThreat, PlaySpike, PlayJimmy, DirectorsCut, PhoneCheck, ShopCollector
 ]
