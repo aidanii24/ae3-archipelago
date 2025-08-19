@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING
 from BaseClasses import Entrance, Location, Region
 from .data.Rules import ShopItemRules
 
-from .data.Stages import STAGES_BREAK_ROOMS, STAGES_DIRECTORY, STAGES_MASTER, ENTRANCES_MASTER, STAGES_DIRECTORY_LABEL,\
-    STAGES_SHOP_PROGRESSION, STAGES_FARMABLE, AE3EntranceMeta
+from .data.Stages import STAGES_BREAK_ROOMS, STAGES_DIRECTORY, STAGES_MASTER, ENTRANCES_MASTER, STAGES_DIRECTORY_LABEL, \
+    STAGES_SHOP_PROGRESSION, STAGES_FARMABLE, AE3EntranceMeta, STAGES_FARMABLE_SNEAKY_BORG
 from .data.Locations import CAMERAS_INDEX, CELLPHONES_INDEX, MONKEYS_PASSWORDS, MONKEYS_INDEX, EVENTS_INDEX, \
     SHOP_PROGRESSION_MASTER, SHOP_PROGRESSION_MORPH, SHOP_COLLECTION_INDEX, CameraLocation, CellphoneLocation, \
     EventMeta, MonkeyLocation, ShopItemLocation, SHOP_PROGRESSION_DIRECTORY, SHOP_EVENT_ACCESS_DIRECTORY, \
@@ -73,11 +73,15 @@ def create_regions(world : "AE3World"):
 
     # Register Indirect Connections
     if world.options.shoppingsanity.value > 1:
+        farmable_stages : list[str] = [*STAGES_FARMABLE]
+        if world.options.farm_logic_sneaky_borgs.value:
+            farmable_stages.extend(*STAGES_FARMABLE_SNEAKY_BORG)
+
         # Register Shop Expensive Entrance as requiring an indirect condition
         for entrance in stages[Stage.region_shop_expensive.value].entrances:
             if entrance.name == Stage.entrance_shop_expensive.value:
 
-                for region in [region for name, region in stages.items() if name in STAGES_FARMABLE]:
+                for region in [region for name, region in stages.items() if name in farmable_stages]:
                     world.multiworld.register_indirect_condition(region, entrance)
 
             break

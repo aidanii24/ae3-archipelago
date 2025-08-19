@@ -1320,7 +1320,10 @@ class ShopItemRules:
         required_keys : int = len(world.progression.progression) - 3
         post_game_condition_rule : Callable[[CollectionState, int], bool] = world.post_game_condition.enact(
             required_keys - 1, world.options.monkeysanity_break_rooms.value)
-        farm_logic : list[Rulesets] = [AccessRule.FARM]
+        can_farm : list[Rulesets] = [AccessRule.FARM]
+
+        if world.options.farm_logic_sneaky_borgs.value:
+            can_farm.append(AccessRule.FARM_DUPE)
 
         self.item_rules = {
             Loc.shop_ultim_ape_fighter.value: Rulesets(post_game_condition_rule),
@@ -1338,12 +1341,22 @@ class ShopItemRules:
         }
 
         self.entrance_rules = {
-            Stage.entrance_shop_expensive.value     : Rulesets(*farm_logic),
+            Stage.entrance_shop_expensive.value     : Rulesets(*can_farm),
             Stage.entrance_shop_morph.value         : Rulesets(AccessRule.MORPH),
         }
 
-        cheap_items_minimum_requirement: int = 0
-        cheap_items_early_amount: int = 0 if cheap_items_minimum_requirement > 0 else 3
+        cheap_items_early_amount: int = world.options.cheap_items_early_amount.value
+
+        if world.options.cheap_items_minimum_requirement:
+            cheap_items_early_amount = 0
+
+            if world.options.cheap_items_minimum_requirement.value >= 100:
+                cheap_items_rule = post_game_condition_rule
+            else:
+                cheap_items_rule = has_keys(math.ceil(
+                    required_keys * world.options.cheap_items_minimum_requirement.value))
+
+            self.entrance_rules[Stage.entrance_travel_ab.value] = Rulesets(cheap_items_rule, *can_farm)
 
         if world.options.shoppingsanity.value <= 1:
             return
@@ -1380,7 +1393,7 @@ class ShopItemRules:
                 if len(self.cheap_early_items) + len(cheap) <= cheap_items_early_amount:
                     self.cheap_early_items.extend(cheap)
                     for item in expensive:
-                        self.item_rules[item] = Rulesets(*farm_logic)
+                        self.item_rules[item] = Rulesets(*can_farm)
 
                     self.entrances.append(AE3EntranceMeta(entrance.name, Stage.travel_station_b.value,
                                                           entrance.destination))
