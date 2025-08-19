@@ -29,10 +29,8 @@ def establish_entrance(player : int, name : str, parent_region : Region, destina
     entrance.connect(destination)
 
 def create_regions(world : "AE3World"):
-    shop_rules : ShopItemRules = ShopItemRules(world)
-
     entrance_rules : dict[str, Rulesets] = {**world.logic_preference.entrance_rules,
-                                            **shop_rules.entrance_rules,
+                                            **world.shop_rules.entrance_rules,
                                             **world.progression.generate_rules(world),}
     # world.logic_preference.entrance_rules.update(world.progression.generate_rules(world))
 
@@ -42,12 +40,12 @@ def create_regions(world : "AE3World"):
 
     # Initialize Regions
     stages : dict[str, Region] = {name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER
-                                  if name not in shop_rules.blacklisted_stages}
+                                  if name not in world.shop_rules.blacklisted_stages}
     entrances : list[AE3EntranceMeta] = [*ENTRANCES_MASTER,
-                                  *shop_rules.entrances,
+                                  *world.shop_rules.entrances,
                                   *world.progression.level_select_entrances]
     blacklisted_entrances : list[Entrance] = [*world.logic_preference.blacklisted_entrances,
-                                              *shop_rules.blacklisted_entrances]
+                                              *world.shop_rules.blacklisted_entrances]
 
     # Connect Regions
     for entrance in entrances:
@@ -75,7 +73,7 @@ def create_regions(world : "AE3World"):
     if world.options.shoppingsanity.value > 1:
         farmable_stages : list[str] = [*STAGES_FARMABLE]
         if world.options.farm_logic_sneaky_borgs.value:
-            farmable_stages.extend(*STAGES_FARMABLE_SNEAKY_BORG)
+            farmable_stages.extend(STAGES_FARMABLE_SNEAKY_BORG)
 
         # Register Shop Expensive Entrance as requiring an indirect condition
         for entrance in stages[Stage.region_shop_expensive.value].entrances:
@@ -182,8 +180,8 @@ def create_regions(world : "AE3World"):
                 meta: ShopItemLocation = ShopItemLocation(item)
                 loc: Location = meta.to_location(world.player, shopping_area)
 
-                if item in shop_rules.item_rules:
-                    loc.access_rule = shop_rules.item_rules[item].condense(world.player)
+                if item in world.shop_rules.item_rules:
+                    loc.access_rule = world.shop_rules.item_rules[item].condense(world.player)
 
                 shopping_area.locations.append(loc)
 
@@ -191,8 +189,8 @@ def create_regions(world : "AE3World"):
             meta: ShopItemLocation = ShopItemLocation(SHOP_PROGRESSION_75COMPLETION[0])
             loc: Location = meta.to_location(world.player, shopping_area)
 
-            if loc.name in shop_rules.item_rules:
-                loc.access_rule = shop_rules.item_rules[loc.name].condense(world.player)
+            if loc.name in world.shop_rules.item_rules:
+                loc.access_rule = world.shop_rules.item_rules[loc.name].condense(world.player)
 
             shopping_area.locations.append(loc)
 
@@ -204,8 +202,8 @@ def create_regions(world : "AE3World"):
                 meta : ShopItemLocation = ShopItemLocation(item, 1, i)
                 loc : Location = meta.to_location(world.player, shopping_area)
 
-                if item in shop_rules.item_rules:
-                    loc.access_rule = shop_rules.item_rules[item].condense(world.player)
+                if item in world.shop_rules.item_rules:
+                    loc.access_rule = world.shop_rules.item_rules[item].condense(world.player)
 
                 stocks_region.locations.append(loc)
 
@@ -228,10 +226,10 @@ def create_regions(world : "AE3World"):
             for item in shop_locations_meta:
                 loc : Location = item.to_location(world.player, shopping_area)
 
-                if item.name in shop_rules.item_rules:
-                    loc.access_rule = shop_rules.item_rules[item.name].condense(world.player)
+                if item.name in world.shop_rules.item_rules:
+                    loc.access_rule = world.shop_rules.item_rules[item.name].condense(world.player)
 
-                if item in shop_rules.cheap_early_items:
+                if item in world.shop_rules.cheap_early_items:
                     shopping_area.locations.append(loc)
                 else:
                     expensive_area.locations.append(loc)
@@ -246,8 +244,8 @@ def create_regions(world : "AE3World"):
                 meta : ShopItemLocation = ShopItemLocation(location)
                 loc : Location = meta.to_location(world.player, region)
 
-                if location in shop_rules.item_rules:
-                    loc.access_rule = shop_rules.item_rules[location].condense(world.player)
+                if location in world.shop_rules.item_rules:
+                    loc.access_rule = world.shop_rules.item_rules[location].condense(world.player)
 
                 region.locations.append(loc)
 

@@ -2843,7 +2843,7 @@ SHOP_MOVIE_TAPE : Sequence[str] = [
     Loc.movie_tape_25.value,
     Loc.movie_tape_26.value,
     Loc.movie_tape_27.value,
-    Loc.movie_tape_28.value,
+    # Loc.movie_tape_28.value,
     Loc.movie_tape_29.value,
 ]
 
@@ -3270,6 +3270,22 @@ SHOP_CHEAP_COLLECTION_MASTER : Sequence[str] = [
     *SHOP_COLLECTION_LUCKY_PHOTO
 ]
 
+# Shop Items that are always present regardless of Shoppingsanity Option
+SHOP_PERSISTENT_MASTER : Sequence[str] = [
+    *SHOP_PROGRESSION_MORPH,
+    *SHOP_MINIGAMES,
+    *SHOP_PROGRESSION_BOSS1_ACCESS,
+    *SHOP_PROGRESSION_BOSS2_ACCESS,
+    *SHOP_PROGRESSION_BOSS3_ACCESS,
+    *SHOP_PROGRESSION_HEAVEN_ACCESS,
+    *SHOP_PROGRESSION_BOSS4_ACCESS,
+    *SHOP_PROGRESSION_BOSS5_ACCESS,
+    *SHOP_PROGRESSION_TOMO_ACCESS,
+    *SHOP_PROGRESSION_BOSS6_ACCESS,
+    *SHOP_PROGRESSION_SPECTER1_ACCESS,
+    *SHOP_PROGRESSION_SPECTER2_CAPTURE,
+]
+
 SHOP_PROGRESSION_DIRECTORY : dict[str, Sequence[str]] = {
     Stage.region_shop_seaside.value     :   SHOP_PROGRESSION_SEASIDE,
     Stage.region_shop_woods.value       :   SHOP_PROGRESSION_WOODS,
@@ -3394,6 +3410,7 @@ LOCATIONS_DIRECTORY : dict[str, Sequence[str]] = {
     APHelper.bosses.value : MONKEYS_BOSSES,
     APHelper.camera.value : CAMERAS_MASTER,
     APHelper.cellphone.value : CELLPHONES_MASTER,
+    APHelper.shop.value : [*SHOP_UNIQUE_MASTER, *SHOP_COLLECTION_MASTER]
 }
 
 def generate_name_to_id() -> dict[str, int]:

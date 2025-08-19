@@ -2635,7 +2635,7 @@ class APHelper(BaseEnum):
     restock_progression =       "restock_progression"
     cheap_items_min =           "cheap_items_minimum_requirement"
     cheap_items_early_amount =  "cheap_items_early_amount"
-    farm_logic_sneaky_borgs =   "farm_logic_sneaky_borgs "
+    farm_logic_sneaky_borgs =   "farm_logic_sneaky_borgs"
 
     starting_gadget =           "starting_gadget"
     starting_morph =            "starting_morph"

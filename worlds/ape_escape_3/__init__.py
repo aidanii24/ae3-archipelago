@@ -10,7 +10,8 @@ from .data.Locations import Cellphone_Name_to_ID, MONKEYS_BOSSES, MONKEYS_MASTER
     CELLPHONES_MASTER_ORDERED, MONKEYS_PASSWORDS, MONKEYS_BREAK_ROOMS, SHOP_PROGRESSION_75COMPLETION, \
     SHOP_EVENT_ACCESS_DIRECTORY
 from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER, STAGES_DIRECTORY_LABEL
-from .data.Rules import GoalTarget, GoalTargetOptions, LogicPreference, LogicPreferenceOptions, PostGameCondition
+from .data.Rules import GoalTarget, GoalTargetOptions, LogicPreference, LogicPreferenceOptions, PostGameCondition, \
+    ShopItemRules
 from .data.Strings import Loc, Meta, APHelper, APConsole
 from .data.Logic import is_goal_achieved, are_goals_achieved, Rulesets, ProgressionMode, ProgressionModeOptions
 from .AE3_Options import AE3Options, create_option_groups, slot_data_options
@@ -100,6 +101,7 @@ class AE3World(World):
     goal_target : GoalTarget = GoalTarget
     progression : ProgressionMode
     post_game_condition : PostGameCondition
+    shop_rules : ShopItemRules
 
     def __init__(self, multiworld : MultiWorld, player: int):
         self.item_pool : List[AE3Item] = []
@@ -180,7 +182,6 @@ class AE3World(World):
                 if region in self.options.blacklist_channel.value:
                     exclude_locations.extend(item)
 
-
         # Check for Options that may override Monkeysanity Break Rooms Option
         # and exclude if not needed
         if not self.options.monkeysanity_break_rooms:
@@ -203,7 +204,8 @@ class AE3World(World):
         # Get Goal Target
         goal_target_index = self.options.goal_target.value
         self.goal_target = GoalTargetOptions[goal_target_index](self.options.goal_target_override,
-                                                                [*exclude_regions], [*exclude_locations])
+                                                                [*exclude_regions], [*exclude_locations],
+                                                                self.options.shoppingsanity.value)
 
         if goal_target_index == 5 and not self.options.camerasanity:
             self.options.camerasanity.value = 1
@@ -257,6 +259,8 @@ class AE3World(World):
             post_game_conditions[APHelper.keys.value] = self.options.post_game_condition_keys.value
 
         self.post_game_condition = PostGameCondition(post_game_conditions, exclude_regions, exclude_locations)
+
+        self.shop_rules: ShopItemRules = ShopItemRules(self)
 
         self.item_pool = []
 
@@ -358,6 +362,7 @@ class AE3World(World):
         slot_data : dict = self.options.as_dict(*slot_data_options())
         slot_data[APHelper.progression.value] = self.progression.progression
         slot_data[APHelper.channel_order.value] = self.progression.order
+        slot_data[APHelper.shop_progress.value] = self.shop_rules.sets
 
         return slot_data
 
