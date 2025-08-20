@@ -496,7 +496,6 @@ class Shoppingsanity(Choice):
     > restock - Shop Items will become available as you find more Shop Stocks
     """
     display_name = "Shoppingsanity"
-    visibility = Visibility.none
     default = 0
 
     option_disabled : int = 0
