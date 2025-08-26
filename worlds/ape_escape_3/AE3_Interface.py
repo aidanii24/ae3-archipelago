@@ -202,6 +202,12 @@ class AEPS2Interface:
     def get_cookies(self) -> float:
         return self.pine.read_float(self.addresses.GameStates[Game.cookies.value])
 
+    def get_morph_gauge_recharge_value(self) -> float:
+        return self.pine.read_float(self.addresses.GameStates[Game.morph_gauge_recharge.value])
+
+    def get_morph_stock(self):
+        return int(self.pine.read_float(self.addresses.GameStates[Game.morph_stocks.value]) / 100)
+
     def is_equipment_unlocked(self, address_name : str) -> bool:
         # Redirect address to RC Car if the unlocked equipment is an RC Car Chassis
         if "Chassis" in address_name:
@@ -380,14 +386,17 @@ class AEPS2Interface:
     def get_last_item_index(self) -> int:
         return self.pine.read_int32(self.addresses.GameStates[Game.last_item_index.value])
 
-    def get_persistent_cookie_value(self) -> float:
-        return self.pine.read_int32(self.addresses.GameStates[Game.last_cookies.value])
+    def get_persistent_cookie_value(self) -> int:
+        return self.pine.read_int8(self.addresses.GameStates[Game.last_cookies.value])
 
-    def get_persistent_morph_energy_value(self) -> float:
-        return self.pine.read_int32(self.addresses.GameStates[Game.last_morph_energy.value])
+    def get_persistent_morph_energy_value(self) -> int:
+        return self.pine.read_int8(self.addresses.GameStates[Game.last_morph_energy.value])
 
-    def get_persistent_morph_stock_value(self) -> float:
-        return self.pine.read_int32(self.addresses.GameStates[Game.last_morph_stock.value])
+    def get_persistent_morph_stock_value(self) -> int:
+        return self.pine.read_int8(self.addresses.GameStates[Game.last_morph_stock.value])
+
+    def get_shop_morph_stock_checked(self) -> int:
+        return self.pine.read_int8(self.addresses.GameStates[Game.shop_morph_stock.value])
 
     # { Game Manipulation }
     def set_progress(self, progress : str = APHelper.pr_round2.value):
@@ -453,6 +462,9 @@ class AEPS2Interface:
 
     def set_cookies(self, amount : float):
         self.pine.write_float(self.addresses.GameStates[Game.cookies.value], amount)
+
+    def set_morph_gauge_recharge(self, amount : float):
+        self.pine.write_float(self.addresses.GameStates[Game.morph_gauge_recharge.value], amount)
 
     def clear_equipment(self):
         for button in self.addresses.BUTTONS_BY_INTERNAL:
@@ -537,10 +549,18 @@ class AEPS2Interface:
 
             self.pine.write_float(morph, duration_to_set)
 
-    def give_collectable(self, address_name : str, amount : int | float = 0x1, maximum : int | float = 0x0):
+    def set_morph_stock(self, stocks : int):
+        self.pine.write_float(self.addresses.GameStates[Game.morph_stocks.value],stocks * 100)
+
+    def give_collectable(self, address_name : str, amount : int | float = 0x1, maximum : int | float = 0x0,
+                         is_in_shop : bool = False):
         address : int = self.addresses.GameStates[address_name]
         current : int | float = self.pine.read_int32(address) if type(amount) == int else self.pine.read_float(address)
         value : int = 0
+
+        if address_name == Itm.acc_morph_stock.value and is_in_shop:
+            current_stocks : int = self.get_persistent_morph_stock_value()
+            self.set_persistent_morph_stock_value(current_stocks + 1)
 
         if isinstance(amount, int):
             value = min(current + amount, maximum)
@@ -637,14 +657,17 @@ class AEPS2Interface:
     def set_last_item_index(self, value : int):
         self.pine.write_int32(self.addresses.GameStates[Game.last_item_index.value], value)
 
-    def set_persistent_cookie_value(self, value : float):
-        self.pine.write_float(self.addresses.GameStates[Game.last_cookies.value], value)
+    def set_persistent_cookie_value(self, value : int):
+        self.pine.write_int8(self.addresses.GameStates[Game.last_cookies.value], value)
 
-    def set_persistent_morph_energy_value(self, value : float):
-        self.pine.write_float(self.addresses.GameStates[Game.last_morph_energy.value], value)
+    def set_persistent_morph_energy_value(self, value : int):
+        self.pine.write_int8(self.addresses.GameStates[Game.last_morph_energy.value], value)
 
-    def set_persistent_morph_stock_value(self, value : float):
-        self.pine.write_float(self.addresses.GameStates[Game.last_morph_stock.value], value)
+    def set_persistent_morph_stock_value(self, value : int):
+        self.pine.write_int8(self.addresses.GameStates[Game.last_morph_stock.value], value)
+
+    def set_shop_morph_stock_checked(self, value : int):
+        self.pine.write_int8(self.addresses.GameStates[Game.shop_morph_stock.value], value)
 
     def save_state(self, slot : int):
         self.pine.save_state(slot)

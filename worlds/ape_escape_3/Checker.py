@@ -10,7 +10,7 @@ from .data.Strings import Game, Loc, Itm, APHelper, Stage
 from .data.Addresses import NTSCU
 from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_INDEX, MONKEYS_BREAK_ROOMS, \
     MONKEYS_PASSWORDS, MONKEYS_BOSSES, MONKEYS_DIRECTORY, Cellphone_Name_to_ID, LOCATIONS_INDEX, \
-    SHOP_CATEGORIES_COLLECTION_DIRECTORY, SHOP_COLLECTION_DIRECTORY, SHOP_PERSISTENT_MASTER
+    SHOP_CATEGORIES_COLLECTION_DIRECTORY, SHOP_COLLECTION_DIRECTORY, SHOP_PERSISTENT_MASTER, SHOP_PROGRESSION_MORPH
 from .data import Items
 
 if TYPE_CHECKING:
@@ -114,6 +114,10 @@ async def setup_level_select(ctx : 'AE3Context'):
         if ctx.last_selected_channel_index > ctx.unlocked_channels:
             ctx.last_selected_channel_index = ctx.unlocked_channels
 
+    ## Reapply Persistent Values when coming from the Shopping Area
+    if ctx.ipc.get_persistent_cookie_value():
+        await reapply_persistent_values(ctx)
+
     gui_status: int = ctx.ipc.get_gui_status()
 
     if ctx.ipc.is_on_warp_gate():
@@ -144,8 +148,10 @@ async def setup_level_select(ctx : 'AE3Context'):
         ctx.post_game_condition.check(ctx)
 
         if progress != APHelper.pr_round2.value:
-            ctx.supress_progress_correction = False
             ctx.ipc.set_progress()
+
+            if ctx.suppress_progress_correction:
+                ctx.suppress_progress_correction = False
 
         if ctx.is_channel_swapped:
             ctx.is_channel_swapped = False
@@ -214,7 +220,36 @@ async def setup_level_select(ctx : 'AE3Context'):
 
 async def set_shopping_area_progress(ctx : 'AE3Context'):
     if ctx.current_stage == Stage.travel_station_b.value:
+        ctx.suppress_progress_correction = True
         ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(ctx.shop_progression, 27)])
+
+        await set_persistent_values(ctx)
+
+async def set_persistent_values(ctx : 'AE3Context'):
+    cookies : int = int(ctx.ipc.get_cookies())
+    energy : int = int(ctx.ipc.get_morph_gauge_recharge_value())
+    stocks : int = ctx.ipc.get_morph_stock()
+    stock_shop_item : int = ctx.ipc.get_shop_morph_stock_checked()
+
+    ctx.ipc.set_persistent_cookie_value(cookies)
+    ctx.ipc.set_persistent_morph_energy_value(energy)
+    ctx.ipc.set_persistent_morph_stock_value(stocks)
+    # Swap out the current Morph Stocks the player has for the amount of Morph Stocks checked as a Shop Item Location
+    ctx.ipc.set_morph_stock(stock_shop_item)
+
+async def reapply_persistent_values(ctx : 'AE3Context'):
+    cookies: float = ctx.ipc.get_persistent_cookie_value()
+    energy: float = ctx.ipc.get_persistent_morph_energy_value()
+    stocks: int = ctx.ipc.get_persistent_morph_stock_value()
+    stock_shop_item: int = int(ctx.ipc.get_morph_stock())
+
+    ctx.ipc.set_cookies(cookies)
+    ctx.ipc.set_morph_gauge_recharge(energy)
+    ctx.ipc.set_morph_stock(stocks)
+    ctx.ipc.set_shop_morph_stock_checked(stock_shop_item)
+
+    ctx.ipc.set_persistent_cookie_value(0)
+    ctx.ipc.set_persistent_morph_energy_value(0)
 
 async def setup_area(ctx : 'AE3Context'):
     # MORPH LOCK ENFORCEMENT
@@ -334,6 +369,9 @@ async def receive_items(ctx : 'AE3Context'):
     # Auto-equip if option is enabled or for handling the starting inventory
     auto_equip: bool = ctx.auto_equip or not ctx.last_item_processed_index
 
+    # Handle certain items differently if the player is currently in the shopping area
+    in_shopping_area : bool = ctx.current_stage == Stage.travel_station_b.value
+
     # Get Difference to get only new items
     received : List[NetworkItem] = ctx.items_received[ctx.next_item_slot:]
     ctx.next_item_slot += len(received)
@@ -430,7 +468,7 @@ async def receive_items(ctx : 'AE3Context'):
 
             ### Handle Generic Items
             else:
-                ctx.ipc.give_collectable(item.resource, i.amount, maximum)
+                ctx.ipc.give_collectable(item.resource, i.amount, maximum, in_shopping_area)
 
     if received:
         # Save Last Item Index Processed into Game Memory
@@ -517,7 +555,7 @@ async def check_locations(ctx : 'AE3Context'):
 
                 if monkey == Loc.boss_specter_final.value and ctx.current_channel == APHelper.specter2.value:
                     ctx.ipc.set_progress(Stage.specter1.value)
-                    ctx.supress_progress_correction = True
+                    ctx.suppress_progress_correction = True
 
     if not ctx.current_channel == APHelper.travel_station.value:
         # Camera Check
@@ -557,7 +595,12 @@ async def check_locations(ctx : 'AE3Context'):
 
     # Shop Items Check
     if ctx.current_channel == Stage.travel_station_b.value and ctx.shoppingsanity:
-        for category in SHOP_CATEGORIES_COLLECTION_DIRECTORY.keys():
+        stocks_checked : list[str] = [*SHOP_PROGRESSION_MORPH[ctx.ipc.get_morph_stock()]]
+
+        ctx.ipc.set_shop_morph_stock_checked(len(stocks_checked))
+        cleared.update(ctx.locations_name_to_id[stock] for stock in stocks_checked)
+
+        for category in SHOP_CATEGORIES_COLLECTION_DIRECTORY.keys()[1:]:
             category_count: int = 0
             for item in SHOP_CATEGORIES_COLLECTION_DIRECTORY[category]:
                 if ctx.ipc.is_location_checked(item):
@@ -603,7 +646,13 @@ async def update_offline_checked(ctx : 'AE3Context'):
 async def sweep_locations(ctx : 'AE3Context', batch : list[str]):
     cleared : set[int] = set()
 
+    if any(stock_shop_item in cleared for stock_shop_item in SHOP_PROGRESSION_MORPH):
+        cleared.update(*SHOP_PROGRESSION_MORPH[ctx.ipc.get_shop_morph_stock_checked()])
+
     for location in batch:
+        if location in SHOP_PROGRESSION_MORPH:
+            continue
+
         name : str = location if location not in Cellphone_Name_to_ID.keys() else Cellphone_Name_to_ID[location]
 
         if (ctx.current_game_mode == 0x100 and ctx.current_stage in LOCATIONS_INDEX and
