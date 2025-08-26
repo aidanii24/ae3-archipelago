@@ -2597,7 +2597,7 @@ class APHelper(BaseEnum):
 
     # Game Progress
     channel_order =         "Channel_Order"
-    shop_progress =         "Shop Progress"
+    shop_progression =      "Shop Progression"
 
     pr_boss6 =              "boss6"
     pr_specter1 =           "specter1"

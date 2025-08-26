@@ -5,10 +5,12 @@ from NetUtils import NetworkItem
 
 from .data.Items import ACCESSORIES, ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem, Capacities, AP, \
     EQUIPMENT
+from .data.Stages import PROGRESS_ID_BY_ORDER
 from .data.Strings import Game, Loc, Itm, APHelper, Stage
 from .data.Addresses import NTSCU
 from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_INDEX, MONKEYS_BREAK_ROOMS, \
-    MONKEYS_PASSWORDS, MONKEYS_BOSSES, MONKEYS_DIRECTORY, Cellphone_Name_to_ID, LOCATIONS_INDEX
+    MONKEYS_PASSWORDS, MONKEYS_BOSSES, MONKEYS_DIRECTORY, Cellphone_Name_to_ID, LOCATIONS_INDEX, \
+    SHOP_CATEGORIES_COLLECTION_DIRECTORY, SHOP_COLLECTION_DIRECTORY, SHOP_PERSISTENT_MASTER
 from .data import Items
 
 if TYPE_CHECKING:
@@ -210,6 +212,9 @@ async def setup_level_select(ctx : 'AE3Context'):
         if ctx.save_state_on_room_transition and ctx.has_saved_on_transition:
             ctx.has_saved_on_transition = False
 
+async def set_shopping_area_progress(ctx : 'AE3Context'):
+    if ctx.current_stage == Stage.travel_station_b.value:
+        ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(ctx.shop_progression, 27)])
 
 async def setup_area(ctx : 'AE3Context'):
     # MORPH LOCK ENFORCEMENT
@@ -256,6 +261,9 @@ async def setup_area(ctx : 'AE3Context'):
             # Temporarily give a morph during transitions to keep Morph Gauge visible
             # and to spawn Break Room loading zones
             dispatch_dummy_morph(ctx, True)
+
+            # Set Shopping Area Progress if in Shopping Area
+            await set_shopping_area_progress(ctx)
 
             ctx.current_stage = ctx.ipc.get_stage()
             ctx.command_state = 2
@@ -340,6 +348,10 @@ async def receive_items(ctx : 'AE3Context'):
             if item.item_id == AP[APHelper.channel_key.value]:
                 ctx.keys += 1
                 ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys, ctx.post_game_condition.check(ctx))
+            elif item.item_id == AP[APHelper.shop_stock.value]:
+                ctx.shop_progression += ctx.shop_progress
+
+                await set_shopping_area_progress(ctx)
 
             # Save State if desired
             if ctx.save_state_on_item_received and not ctx.pending_auto_save:
@@ -472,6 +484,14 @@ async def resync_important_items(ctx : 'AE3Context'):
         ctx.unlocked_channels = unlocked
         ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
+    # Resync Shop Stock
+    if ctx.shoppingsanity >= 3:
+        shop_stocks : int = received_id.count(ctx.items_name_to_id[APHelper.shop_stock.value])
+        if ctx.shop_progress != shop_stocks * ctx.shop_progression:
+            ctx.shop_progress = shop_stocks * ctx.shop_progression
+
+            await set_shopping_area_progress(ctx)
+
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
 
@@ -535,6 +555,21 @@ async def check_locations(ctx : 'AE3Context'):
                 ctx.ipc.mark_location(tele_text_id)
                 cleared.add(location_id)
 
+    # Shop Items Check
+    if ctx.current_channel == Stage.travel_station_b.value and ctx.shoppingsanity:
+        for category in SHOP_CATEGORIES_COLLECTION_DIRECTORY.keys():
+            category_count: int = 0
+            for item in SHOP_CATEGORIES_COLLECTION_DIRECTORY[category]:
+                if ctx.ipc.is_location_checked(item):
+                    category_count += 1
+
+                    if 0 < ctx.shoppingsanity != 2:
+                        cleared.add(ctx.locations_name_to_id[item])
+
+                # Count Collection Type
+                if ctx.shoppingsanity == 2 and category_count and category in SHOP_COLLECTION_DIRECTORY:
+                    cleared.update(*SHOP_COLLECTION_DIRECTORY[category][:category_count - 1])
+
     # Get newly checked locations
     cleared = cleared.difference(ctx.checked_locations)
 
@@ -585,6 +620,35 @@ async def sweep_locations(ctx : 'AE3Context', batch : list[str]):
     if cleared and ctx.server:
         await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
         await check_progression(ctx)
+
+# Handle Re-checking of Shop Items in Collection Type
+async def handle_collection_shop_item_recheck(ctx: 'AE3Context'):
+    if ctx.shoppingsanity != 2: return
+
+    cleared : set[int] = set()
+    for category in SHOP_COLLECTION_DIRECTORY.keys():
+        category_item_ids: set[int] = set(ctx.locations_name_to_id[item]
+                                          for item in SHOP_CATEGORIES_COLLECTION_DIRECTORY[category]
+                                          if item not in SHOP_PERSISTENT_MASTER)
+
+        amount_checked: int = len(category_item_ids.intersection(ctx.locations_checked))
+
+        if amount_checked:
+            cleared.update(ctx.locations_name_to_id[item]
+                           for item in SHOP_COLLECTION_DIRECTORY[category][:amount_checked - 1])
+            ctx.locations_checked.difference_update(category_item_ids)
+
+    ctx.locations_checked.update(cleared)
+
+    if cleared and ctx.server:
+        await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
+        await check_progression(ctx)
+
+        ctx.post_game_condition.check(ctx)
+        await ctx.goal_target.check(ctx)
+
+    if not ctx.is_cache_built:
+        ctx.is_cache_built = True
 
 async def check_progression(ctx : 'AE3Context'):
     await ctx.goal_target.check(ctx)

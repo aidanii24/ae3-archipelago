@@ -108,6 +108,50 @@ LEVELS_ID_BY_ORDER : Sequence[str] = [
     Stage.specter2.value
 ]
 
+PROGRESS_ID_BY_ORDER : Sequence[str] = [
+    Stage.seaside.value,
+    Stage.woods.value,
+    Stage.castle.value,
+
+    Stage.boss1.value,
+
+    Stage.ciscocity.value,
+    Stage.studio.value,
+    Stage.halloween.value,
+    Stage.western.value,
+
+    Stage.boss2.value,
+
+    Stage.onsen.value,
+    Stage.snowfesta.value,
+    Stage.edotown.value,
+
+    Stage.boss3.value,
+
+    Stage.heaven.value,
+    Stage.toyhouse.value,
+    Stage.iceland.value,
+    Stage.arabian.value,
+
+    Stage.boss4.value,
+
+    Stage.asia.value,
+    Stage.plane.value,
+    Stage.hong.value,
+
+    Stage.boss5.value,
+
+    Stage.bay.value,
+    Stage.tomo.value,
+
+    Stage.boss6.value,
+
+    Stage.space.value,
+
+    Stage.specter1.value,
+    APHelper.pr_round2.value,
+]
+
 STAGES_TITLE : Sequence[str] = [
     Stage.title_screen.value
 ]
