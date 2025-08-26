@@ -1,5 +1,4 @@
 from argparse import ArgumentParser, Namespace
-from multiprocessing.dummy import current_process
 from typing import Optional, Sequence
 import typing
 import multiprocessing
@@ -14,7 +13,8 @@ from settings import get_settings
 
 from .data.Strings import Meta, APConsole
 from .data.Logic import ProgressionMode, ProgressionModeOptions
-from .data.Locations import MONKEYS_MASTER, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED
+from .data.Locations import MONKEYS_MASTER, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED, \
+    SHOP_PROGRESSION_75COMPLETION, SHOP_EVENT_ACCESS_DIRECTORY
 from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER
 from .data.Rules import GoalTarget, GoalTargetOptions, PostGameCondition
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
@@ -312,11 +312,6 @@ class AE3CommandProcessor(ClientCommandProcessor):
                 logger.info(" [!!!] DeathLink is currently DISABLED. Deathlink cannot be received.")
                 return
 
-            death_notes : dict = {
-                "time" : time.time(),
-                "cause": "Test Command"
-            }
-
             self.ctx.pending_deathlinks = int(count)
 
 class AE3Context(CommonContext):
@@ -361,6 +356,7 @@ class AE3Context(CommonContext):
     group_check_index : int = 0
 
     cache_missing : list[list[str]] = location_groups.copy()
+    is_cache_built : bool = False
     monkeys_checklist : Sequence[str] = MONKEYS_MASTER
     monkeys_checklist_count : int = 0
     checked_monkeys_cache : set[int] = set()
@@ -420,8 +416,9 @@ class AE3Context(CommonContext):
     check_break_rooms : bool = False
     camerasanity : int = None
     cellphonesanity : bool = None
-    shoppingsanity : int = 0
-    shop_progression : int = 27
+    shoppingsanity : int = None
+    shop_progress : int = 27
+    shop_progression : int = 0
     extra_keys : int = 0
     extra_shop_stocks : int = 0
 
@@ -497,6 +494,16 @@ class AE3Context(CommonContext):
             excluded_stages : list[str] = []
             excluded_locations : list[str] = [*MONKEYS_PASSWORDS]
 
+            # Exclude Shop Items based on Shoppingsanity Type and Blacklisted Channels
+            if data[APHelper.blacklist_channel.value] and data[APHelper.shoppingsanity.value] > 0:
+                ## Always exclude Ultim-ape Fighter Minigame if anything is blacklisted
+                excluded_locations.extend(SHOP_PROGRESSION_75COMPLETION)
+
+                ## Exclude Event/Condition-sensitive Items based on excluded levels
+                for region, item in SHOP_EVENT_ACCESS_DIRECTORY.items():
+                    if region in data[APHelper.blacklist_channel.value]:
+                        excluded_locations.extend(item)
+
             ## Monkeysanity - Break Rooms
             if APHelper.monkeysanitybr.value in data:
                 self.check_break_rooms = self.check_break_rooms or bool(data[APHelper.monkeysanitybr.value])
@@ -557,6 +564,9 @@ class AE3Context(CommonContext):
                     excluded_phones_id: list[str] = CELLPHONES_MASTER_ORDERED[channel]
                     excluded_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
 
+            # Exclude Ultim-ape Fighter from being a PGC requirement, as it requires as many monkeys as possible
+            excluded_locations.extend(SHOP_PROGRESSION_75COMPLETION)
+
             ## Post Game Access Rule Initialization
             self.post_game_condition = PostGameCondition(amounts, excluded_stages, excluded_locations)
 
@@ -571,6 +581,14 @@ class AE3Context(CommonContext):
             ## Cellphonesanity
             if self.cellphonesanity is None and APHelper.cellphonesanity.value in data:
                 self.cellphonesanity = data[APHelper.cellphonesanity.value]
+
+            ## Shoppingsanity
+            if self.shoppingsanity is None and APHelper.shoppingsanity.value in data:
+                self.shoppingsanity = data[APHelper.shoppingsanity.value]
+
+                if self.shoppingsanity >= 3 and APHelper.shop_progression.value in data:
+                    self.shop_progress = 0
+                    self.shop_progression = data[APHelper.shop_progression.value]
 
             ## Morph Duration
             if self.morph_duration == 0 and APHelper.base_morph_duration.value in data:
@@ -806,6 +824,8 @@ async def check_game(ctx : AE3Context):
         # Build Checked Location Cache
         if not ctx.cache_missing:
             await build_checked_cache(ctx)
+        elif ctx.cache_built:
+            await handle_collection_shop_item_recheck(ctx)
 
         # Get Character
         if ctx.character < 0:
