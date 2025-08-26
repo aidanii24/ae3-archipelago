@@ -131,6 +131,11 @@ class NTSCU(VersionAddresses):
         Itm.chassis_twin.value      : 0x649c98,  # boolean (0x00 - 0x01)
         Itm.chassis_black.value     : 0x649c99,  # boolean (0x00 - 0x01)
         Itm.chassis_pudding.value   : 0x649c9a,  # boolean (0x00 - 0x01)
+
+        ## Permanent Chassis Values
+        Itm.alt_chassis_twin.value      : 0x6499A0,
+        Itm.alt_chassis_black.value     : 0x6499A1,
+        Itm.alt_chassis_pudding.value   : 0x6499A2,
     }
 
     Locations: Dict[str, int] = {
@@ -1103,9 +1108,10 @@ class NTSCU(VersionAddresses):
         Game.spawn.value                : 0x772070,
 
         # Persistence
-        Game.last_cookies.value         : 0x6499C8,
-        Game.last_morph_energy.value    : 0x6499CC,
-        Game.last_morph_stock.value     : 0x6499D0,
+        Game.last_cookies.value         : 0x649994,
+        Game.last_morph_energy.value    : 0x649995,
+        Game.last_morph_stock.value     : 0x649996,
+        Game.shop_morph_stock.value     : 0x649997,
 
         # Archipelago
         Game.last_item_index.value      : 0x6499C4

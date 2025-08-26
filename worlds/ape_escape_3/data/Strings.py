@@ -46,6 +46,11 @@ class Itm(BaseEnum):
     chassis_black =     "Black Chassis"
     chassis_pudding =   "Pudding Chassis"
 
+    # Alt/Permanent Chassis Addresses
+    alt_chassis_twin = "Twin's Chassis"
+    alt_chassis_black = "Black Chassis"
+    alt_chassis_pudding = "Pudding Chassis"
+
     # Collectables
     nothing =           "Nothing"
     jacket =            "Jacket"
@@ -2484,6 +2489,7 @@ class Game(BaseEnum):
     last_cookies =          "Last Cookies"
     last_morph_energy =     "Last Morph Energy"
     last_morph_stock =      "Last Morph Stocks"
+    shop_morph_stock =      "Shop Morph Stocks"
 
     # Archipelago
     last_item_index =      "Last Item Index"

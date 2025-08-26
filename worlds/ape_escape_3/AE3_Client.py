@@ -4,7 +4,6 @@ import typing
 import multiprocessing
 import traceback
 import asyncio
-import time
 
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled, \
                           ClientStatus
@@ -369,7 +368,7 @@ class AE3Context(CommonContext):
     current_game_mode : int = 0x0
     in_travel_station : bool = False
     last_selected_channel_index : int = -1
-    supress_progress_correction : bool = False
+    suppress_progress_correction : bool = False
     character : int = -1
     player_control : bool = False
 
@@ -610,6 +609,7 @@ class AE3Context(CommonContext):
 
             # Initiate Checked Locations Cache Rebuilding if necessary:
             if not self.locations_checked and not self.cache_missing:
+                self.is_cache_built = False
                 self.cache_missing = self.location_groups.copy()
 
             # Initialize/Update Last Save Type Status on server if needed
@@ -792,7 +792,7 @@ async def check_game(ctx : AE3Context):
             await asyncio.sleep(1)
 
         # Run maintenance game checks when not in player control
-        if not ctx.supress_progress_correction:
+        if not ctx.suppress_progress_correction:
             await correct_progress(ctx)
         await check_background_states(ctx)
 
@@ -822,10 +822,14 @@ async def check_game(ctx : AE3Context):
             await update_offline_checked(ctx)
 
         # Build Checked Location Cache
-        if not ctx.cache_missing:
-            await build_checked_cache(ctx)
-        elif ctx.cache_built:
-            await handle_collection_shop_item_recheck(ctx)
+        if not ctx.cache_built:
+            if ctx.cache_missing:
+                await build_checked_cache(ctx)
+            else:
+                if ctx.shoppingsanity == 2:
+                    await handle_collection_shop_item_recheck(ctx)
+
+                ctx.cache_built = True
 
         # Get Character
         if ctx.character < 0:
