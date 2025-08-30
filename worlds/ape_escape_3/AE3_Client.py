@@ -827,14 +827,14 @@ async def check_game(ctx : AE3Context):
             await update_offline_checked(ctx)
 
         # Build Checked Location Cache
-        if not ctx.cache_built:
+        if not ctx.is_cache_built:
             if ctx.cache_missing:
                 await build_checked_cache(ctx)
             else:
                 if ctx.shoppingsanity == 2:
                     await handle_collection_shop_item_recheck(ctx)
 
-                ctx.cache_built = True
+                ctx.is_cache_built = True
 
         # Get Character
         if ctx.character < 0:
