@@ -470,12 +470,12 @@ class AEPS2Interface:
         for button in self.addresses.BUTTONS_BY_INTERNAL:
             self.pine.write_int32(button, 0x0)
 
-    def unlock_equipment(self, address_name : str, auto_equip : bool = False):
+    def unlock_equipment(self, address_name : str, auto_equip : bool = False, is_in_shop : bool = False):
         is_equipped : int = False
 
         # Redirect address to RC Car if the unlocked equipment is an RC Car Chassis
         if "Chassis" in address_name:
-            is_equipped = self.unlock_chassis(address_name)
+            is_equipped = self.unlock_chassis(address_name, is_in_shop)
             address : int = self.addresses.Items[Itm.gadget_rcc.value]
             address_name = Itm.gadget_rcc.value
         else:
@@ -486,8 +486,13 @@ class AEPS2Interface:
         if auto_equip and not is_equipped and address_name in Itm.get_gadgets_ordered():
             self.auto_equip(self.addresses.get_gadget_id(address))
 
-    def unlock_chassis(self, address_name : str) -> bool:
-        self.pine.write_int8(self.addresses.Items[address_name], 0x1)
+    def unlock_chassis(self, address_name : str, is_in_shop : bool = False) -> bool:
+        if not is_in_shop:
+            self.pine.write_int8(self.addresses.Items[address_name], 0x1)
+
+        if address_name in Itm.get_chassis_by_id(True):
+            id : int = Itm.get_chassis_by_id(True).index(address_name)
+            self.pine.write_int8(self.addresses.Items[Itm.get_real_chassis_by_id()[id]], 0x0)
 
         is_rcc_unlocked : bool = self.pine.read_int32(self.addresses.Items[Itm.gadget_rcc.value]) == 0x2
 
@@ -558,16 +563,21 @@ class AEPS2Interface:
         current : int | float = self.pine.read_int32(address) if type(amount) == int else self.pine.read_float(address)
         value : int = 0
 
-        if address_name == Itm.acc_morph_stock.value and is_in_shop:
-            current_stocks : int = self.get_persistent_morph_stock_value()
-            self.set_persistent_morph_stock_value(current_stocks + 1)
-
-        if isinstance(amount, int):
-            value = min(current + amount, maximum)
-            self.pine.write_int32(address, value)
-        elif isinstance(amount, float):
-            value = int(min(current + amount, maximum))
-            self.pine.write_float(address, min(current + amount, maximum))
+        if is_in_shop:
+            if address_name == Itm.acc_morph_stock.value:
+                current_stocks : int = self.get_persistent_morph_stock_value()
+                self.set_persistent_morph_stock_value(current_stocks + 1)
+            elif address_name in [Itm.cookie.value, Itm.cookie_giant.value]:
+                self.set_persistent_cookie_value(current + amount)
+            elif address_name in [Itm.energy.value, Itm.energy_mega.value]:
+                self.set_persistent_morph_energy_value(current + amount)
+        else:
+            if isinstance(amount, int):
+                value = min(current + amount, maximum)
+                self.pine.write_int32(address, value)
+            elif isinstance(amount, float):
+                value = int(min(current + amount, maximum))
+                self.pine.write_float(address, min(current + amount, maximum))
 
         self.update_hud(address_name, value)
 

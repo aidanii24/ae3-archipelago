@@ -10,7 +10,8 @@ from .data.Strings import Game, Loc, Itm, APHelper, Stage
 from .data.Addresses import NTSCU
 from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_INDEX, MONKEYS_BREAK_ROOMS, \
     MONKEYS_PASSWORDS, MONKEYS_BOSSES, MONKEYS_DIRECTORY, Cellphone_Name_to_ID, LOCATIONS_INDEX, \
-    SHOP_CATEGORIES_COLLECTION_DIRECTORY, SHOP_COLLECTION_DIRECTORY, SHOP_PERSISTENT_MASTER, SHOP_PROGRESSION_MORPH
+    SHOP_CATEGORIES_COLLECTION_DIRECTORY, SHOP_COLLECTION_DIRECTORY, SHOP_PERSISTENT_MASTER, SHOP_PROGRESSION_MORPH, \
+    SHOP_BONUS_RC_CARS
 from .data import Items
 
 if TYPE_CHECKING:
@@ -179,16 +180,6 @@ async def setup_level_select(ctx : 'AE3Context'):
         else:
             ctx.ipc.lock_equipment(ctx.dummy_morph)
 
-    # Temporarily unlock all Chassis when not in Travel Station to make sure their models load correctly when obtained
-    # RC Car Chassis can't be changed in levels, so it is safe to keep them on until the next Travel Station visit
-    if not ctx.rcc_unlocked:
-        if not ctx.ipc.is_a_level_confirmed():
-            for _ in range(3):
-                ctx.ipc.lock_chassis_direct(_)
-        else:
-            for _ in range(3):
-                ctx.ipc.unlock_chassis_direct(_)
-
     # Reset the spawnpoint properly as the game leaves it blank when coming from TV Station
     if is_a_level_confirmed:
         ctx.ipc.clear_spawn()
@@ -218,38 +209,61 @@ async def setup_level_select(ctx : 'AE3Context'):
         if ctx.save_state_on_room_transition and ctx.has_saved_on_transition:
             ctx.has_saved_on_transition = False
 
-async def set_shopping_area_progress(ctx : 'AE3Context'):
+async def setup_shopping_area(ctx : 'AE3Context'):
     if ctx.current_stage == Stage.travel_station_b.value:
-        ctx.suppress_progress_correction = True
-        ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(ctx.shop_progression, 27)])
+        if ctx.shoppingsanity >= 3:
+            ctx.suppress_progress_correction = True
+            ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(ctx.shop_progression, 27)])
 
         await set_persistent_values(ctx)
 
 async def set_persistent_values(ctx : 'AE3Context'):
-    cookies : int = int(ctx.ipc.get_cookies())
-    energy : int = int(ctx.ipc.get_morph_gauge_recharge_value())
-    stocks : int = ctx.ipc.get_morph_stock()
-    stock_shop_item : int = ctx.ipc.get_shop_morph_stock_checked()
-
-    ctx.ipc.set_persistent_cookie_value(cookies)
-    ctx.ipc.set_persistent_morph_energy_value(energy)
+    stocks: int = ctx.ipc.get_morph_stock()
     ctx.ipc.set_persistent_morph_stock_value(stocks)
-    # Swap out the current Morph Stocks the player has for the amount of Morph Stocks checked as a Shop Item Location
-    ctx.ipc.set_morph_stock(stock_shop_item)
+
+    if ctx.shoppingsanity:
+        for i in range(len(Itm.get_real_chassis_by_id())):
+            if ctx.ipc.is_location_checked(SHOP_BONUS_RC_CARS[i]):
+                ctx.ipc.unlock_chassis_direct(i)
+            else:
+                ctx.ipc.lock_chassis_direct(i)
+
+        stock_shop_item: int = ctx.ipc.get_shop_morph_stock_checked()
+
+        # Swap out the current Morph Stocks the player has for the amount of Morph Stocks checked as a Shop Item Location
+        ctx.ipc.set_morph_stock(stock_shop_item)
+    else:
+        ctx.ipc.set_morph_stock(10)
+
+    if not ctx.monkey_mart:
+        cookies: int = int(ctx.ipc.get_cookies())
+        energy: int = int(ctx.ipc.get_morph_gauge_recharge_value())
+
+        ctx.ipc.set_persistent_cookie_value(cookies)
+        ctx.ipc.set_persistent_morph_energy_value(energy)
 
 async def reapply_persistent_values(ctx : 'AE3Context'):
-    cookies: float = ctx.ipc.get_persistent_cookie_value()
-    energy: float = ctx.ipc.get_persistent_morph_energy_value()
+    if ctx.shoppingsanity:
+        for i in range(len(Itm.get_real_chassis_by_id())):
+            if ctx.ipc.is_chassis_unlocked(Itm.get_chassis_by_id()[i]):
+                ctx.ipc.unlock_chassis_direct(i)
+            else:
+                ctx.ipc.lock_chassis_direct(i)
+
+        stock_shop_item: int = int(ctx.ipc.get_morph_stock())
+        ctx.ipc.set_shop_morph_stock_checked(stock_shop_item)
+
     stocks: int = ctx.ipc.get_persistent_morph_stock_value()
-    stock_shop_item: int = int(ctx.ipc.get_morph_stock())
-
-    ctx.ipc.set_cookies(cookies)
-    ctx.ipc.set_morph_gauge_recharge(energy)
     ctx.ipc.set_morph_stock(stocks)
-    ctx.ipc.set_shop_morph_stock_checked(stock_shop_item)
 
-    ctx.ipc.set_persistent_cookie_value(0)
-    ctx.ipc.set_persistent_morph_energy_value(0)
+    if not ctx.monkey_mart:
+        cookies: float = ctx.ipc.get_persistent_cookie_value()
+        energy: float = ctx.ipc.get_persistent_morph_energy_value()
+
+        ctx.ipc.set_cookies(cookies)
+        ctx.ipc.set_morph_gauge_recharge(energy)
+        ctx.ipc.set_persistent_cookie_value(0)
+        ctx.ipc.set_persistent_morph_energy_value(0)
 
 async def setup_area(ctx : 'AE3Context'):
     # MORPH LOCK ENFORCEMENT
@@ -298,7 +312,7 @@ async def setup_area(ctx : 'AE3Context'):
             dispatch_dummy_morph(ctx, True)
 
             # Set Shopping Area Progress if in Shopping Area
-            await set_shopping_area_progress(ctx)
+            await setup_shopping_area(ctx)
 
             ctx.current_stage = ctx.ipc.get_stage()
             ctx.command_state = 2
@@ -389,7 +403,7 @@ async def receive_items(ctx : 'AE3Context'):
             elif item.item_id == AP[APHelper.shop_stock.value]:
                 ctx.shop_progression += ctx.shop_progress
 
-                await set_shopping_area_progress(ctx)
+                await setup_shopping_area(ctx)
 
             # Save State if desired
             if ctx.save_state_on_item_received and not ctx.pending_auto_save:
@@ -404,16 +418,13 @@ async def receive_items(ctx : 'AE3Context'):
                 ctx.swim_unlocked = True
 
             ### Check if RC Car or any Chassis is unlocked
-            if not ctx.rcc_unlocked and item.name in Itm.get_chassis_by_id():
-                ctx.rcc_unlocked = True
-                ctx.ipc.unlock_equipment(Itm.gadget_rcc.value)
+            if item.name in Itm.get_chassis_by_id():
+                ctx.ipc.unlock_equipment(item.name, auto_equip)
+                if not ctx.rcc_unlocked:
+                    ctx.rcc_unlocked = True
 
-                # Relock all other RC cars
-                for idx, name in enumerate(Itm.get_chassis_by_id(no_default=True)):
-                    if name == item.name:
-                        continue
-
-                    ctx.ipc.lock_chassis_direct(idx)
+                    # if item.name != Itm.gadget_rcc.value:
+                    #     ctx.ipc.set_chassis_direct(Itm.get_chassis_by_id(False).index(item.name))
 
             ### Track Morphs Unlocked
             if item.name in Itm.get_morphs_ordered():
@@ -528,7 +539,7 @@ async def resync_important_items(ctx : 'AE3Context'):
         if ctx.shop_progress != shop_stocks * ctx.shop_progression:
             ctx.shop_progress = shop_stocks * ctx.shop_progression
 
-            await set_shopping_area_progress(ctx)
+            await setup_shopping_area(ctx)
 
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
