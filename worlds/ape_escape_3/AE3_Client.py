@@ -367,6 +367,7 @@ class AE3Context(CommonContext):
     current_stage : str = None
     current_game_mode : int = 0x0
     in_travel_station : bool = False
+    in_shoppping_area : bool = False
     last_selected_channel_index : int = -1
     suppress_progress_correction : bool = False
     character : int = -1
@@ -843,8 +844,14 @@ async def check_game(ctx : AE3Context):
         # Setup Stage when needed and double check locations
         if ctx.in_travel_station:
             await setup_level_select(ctx)
-        else:
-            await setup_area(ctx)
+
+            if ctx.in_shoppping_area:
+                ctx.in_shoppping_area = False
+        elif not ctx.in_shoppping_area and ctx.current_channel == APHelper.shopping_area.value:
+            ctx.in_shoppping_area = True
+            await setup_shopping_area(ctx)
+
+        await setup_area(ctx)
 
         await check_states(ctx)
 
