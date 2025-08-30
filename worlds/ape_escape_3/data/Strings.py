@@ -47,9 +47,9 @@ class Itm(BaseEnum):
     chassis_pudding =   "Pudding Chassis"
 
     # Alt/Permanent Chassis Addresses
-    alt_chassis_twin = "Twin's Chassis"
-    alt_chassis_black = "Black Chassis"
-    alt_chassis_pudding = "Pudding Chassis"
+    real_chassis_twin =     "Real Twin's Chassis"
+    real_chassis_black =    "Real Black Chassis"
+    real_chassis_pudding =  "Real Pudding Chassis"
 
     # Collectables
     nothing =           "Nothing"
@@ -85,6 +85,13 @@ class Itm(BaseEnum):
             chassis.append(cls.gadget_rcc.value)
 
         chassis.extend([cls.chassis_twin.value, cls.chassis_black.value, cls.chassis_pudding.value])
+        return [*chassis]
+
+    @classmethod
+    def get_real_chassis_by_id(cls) -> Sequence[str]:
+        chassis: list[str] = []
+
+        chassis.extend([cls.real_chassis_twin.value, cls.real_chassis_black.value, cls.real_chassis_pudding.value])
         return [*chassis]
 
 class Loc(BaseEnum):

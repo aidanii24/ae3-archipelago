@@ -424,6 +424,7 @@ class AE3Context(CommonContext):
     morph_duration : float = 0.0
 
     early_free_play : bool = False
+    monkey_mart : bool = True
 
     state_slot : int = -1
     death_link : bool = False
@@ -601,6 +602,10 @@ class AE3Context(CommonContext):
             if APHelper.early_free_play.value in data:
                 self.early_free_play = data[APHelper.early_free_play.value]
                 self.alt_freeplay = self.early_free_play
+
+            ## Enable Monkey Mart
+            if APHelper.enable_monkey_mart.value in data:
+                self.monkey_mart = data[APHelper.enable_monkey_mart.value]
 
             ## DeathLink
             if APHelper.death_link.value in data:

@@ -696,7 +696,6 @@ class EnableMonkeyMart(DefaultOnToggle):
 
     Default: Enabled
     """
-    visibility = Visibility.none
     display_name : str = "Enable Monkey Mart"
 
 class LuckyTicketConsolationEffects(Toggle):

@@ -128,14 +128,14 @@ class NTSCU(VersionAddresses):
         Itm.morph_monkey.value      : 0x649948,
 
         # Accessories
-        Itm.chassis_twin.value      : 0x649c98,  # boolean (0x00 - 0x01)
-        Itm.chassis_black.value     : 0x649c99,  # boolean (0x00 - 0x01)
-        Itm.chassis_pudding.value   : 0x649c9a,  # boolean (0x00 - 0x01)
+        Itm.chassis_twin.value      : 0x6499A0,  # boolean (0x00 - 0x01)
+        Itm.chassis_black.value     : 0x6499A1,  # boolean (0x00 - 0x01)
+        Itm.chassis_pudding.value   : 0x6499A2,  # boolean (0x00 - 0x01)
 
-        ## Permanent Chassis Values
-        Itm.alt_chassis_twin.value      : 0x6499A0,
-        Itm.alt_chassis_black.value     : 0x6499A1,
-        Itm.alt_chassis_pudding.value   : 0x6499A2,
+        ## Functional Chassis Values
+        Itm.real_chassis_twin.value     : 0x649c98,
+        Itm.real_chassis_black.value    : 0x649c99,
+        Itm.real_chassis_pudding.value  : 0x649c9a,
     }
 
     Locations: Dict[str, int] = {
