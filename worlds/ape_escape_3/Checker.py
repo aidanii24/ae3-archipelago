@@ -210,7 +210,7 @@ async def setup_level_select(ctx : 'AE3Context'):
             ctx.has_saved_on_transition = False
 
 async def setup_shopping_area(ctx : 'AE3Context'):
-    if ctx.current_stage == Stage.travel_station_b.value:
+    if ctx.in_shoppping_area:
         if ctx.shoppingsanity >= 3:
             ctx.suppress_progress_correction = True
             ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(ctx.shop_progression, 27)])
@@ -384,9 +384,6 @@ async def receive_items(ctx : 'AE3Context'):
     # Auto-equip if option is enabled or for handling the starting inventory
     auto_equip: bool = ctx.auto_equip or not ctx.last_item_processed_index
 
-    # Handle certain items differently if the player is currently in the shopping area
-    in_shopping_area : bool = ctx.current_stage == Stage.travel_station_b.value
-
     # Get Difference to get only new items
     received : List[NetworkItem] = ctx.items_received[ctx.next_item_slot:]
     ctx.next_item_slot += len(received)
@@ -480,7 +477,7 @@ async def receive_items(ctx : 'AE3Context'):
 
             ### Handle Generic Items
             else:
-                ctx.ipc.give_collectable(item.resource, i.amount, maximum, in_shopping_area)
+                ctx.ipc.give_collectable(item.resource, i.amount, maximum, ctx.in_shoppping_area)
 
     if received:
         # Save Last Item Index Processed into Game Memory
@@ -606,13 +603,13 @@ async def check_locations(ctx : 'AE3Context'):
                 cleared.add(location_id)
 
     # Shop Items Check
-    if ctx.current_channel == Stage.travel_station_b.value and ctx.shoppingsanity:
-        stocks_checked : list[str] = [*SHOP_PROGRESSION_MORPH[ctx.ipc.get_morph_stock()]]
+    if ctx.in_shoppping_area and ctx.shoppingsanity:
+        stocks_checked : list[str] = [*SHOP_PROGRESSION_MORPH[:ctx.ipc.get_morph_stock()]]
 
         ctx.ipc.set_shop_morph_stock_checked(len(stocks_checked))
         cleared.update(ctx.locations_name_to_id[stock] for stock in stocks_checked)
 
-        for category in SHOP_CATEGORIES_COLLECTION_DIRECTORY.keys()[1:]:
+        for category in [*SHOP_CATEGORIES_COLLECTION_DIRECTORY.keys()][1:]:
             category_count: int = 0
             for item in SHOP_CATEGORIES_COLLECTION_DIRECTORY[category]:
                 if ctx.ipc.is_location_checked(item):

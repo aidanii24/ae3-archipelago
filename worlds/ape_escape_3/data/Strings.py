@@ -2567,6 +2567,7 @@ class APHelper(BaseEnum):
 
     # Game Groups
     travel_station =        "o_1"
+    shopping_area =         "o_2"
 
     zero =                  "s_0"
     seaside =               "s_1"
