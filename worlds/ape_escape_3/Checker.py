@@ -65,9 +65,9 @@ async def check_background_states(ctx : 'AE3Context'):
     ctx.in_travel_station = ctx.current_channel == APHelper.travel_station.value
 
 async def sweep_recheck_locations(ctx : 'AE3Context'):
-    batch: list[str] = list(itertools.chain.from_iterable(
-        [*ctx.location_groups[ctx.group_check_index * 20:ctx.group_check_index * 20 + 20]]))
-    await sweep_locations(ctx, batch)
+    batch: list[str] = [*ctx.location_groups[ctx.group_check_index * 20:ctx.group_check_index * 20 + 20]]
+
+    await sweep_locations(ctx, [x for y in batch for x in y])
 
     if ctx.group_check_index * 20 >= len(ctx.location_groups):
         ctx.group_check_index = 0
@@ -77,7 +77,7 @@ async def sweep_recheck_locations(ctx : 'AE3Context'):
 async def build_checked_cache(ctx : 'AE3Context'):
     # Build Checked Locations cache if needed
     if ctx.cache_missing:
-        await sweep_locations(ctx, [*ctx.cache_missing[:20]])
+        await sweep_locations(ctx, [x for y in [*ctx.cache_missing[:20]] for x in y])
         del ctx.cache_missing[:20]
 
         return
@@ -220,6 +220,7 @@ async def setup_shopping_area(ctx : 'AE3Context'):
 async def set_persistent_values(ctx : 'AE3Context'):
     stocks: int = ctx.ipc.get_morph_stock()
     ctx.ipc.set_persistent_morph_stock_value(stocks)
+
 
     if ctx.shoppingsanity:
         for i in range(len(Itm.get_real_chassis_by_id())):

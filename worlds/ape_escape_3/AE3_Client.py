@@ -853,7 +853,7 @@ async def check_game(ctx : AE3Context):
 
         if not ctx.in_travel_station:
             await check_locations(ctx)
-        else:
+        elif ctx.is_cache_built:
             await sweep_recheck_locations(ctx)
 
         # Revoke has just connected (of Game) status once the first checks are done
