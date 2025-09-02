@@ -613,7 +613,6 @@ async def check_locations(ctx : 'AE3Context'):
 
         for category in [*SHOP_CATEGORIES_COLLECTION_DIRECTORY.keys()][1:]:
             category_count: int = 0
-
             for item in SHOP_CATEGORIES_COLLECTION_DIRECTORY[category]:
                 if ctx.ipc.is_location_checked(item):
                     category_count += 1
@@ -621,9 +620,10 @@ async def check_locations(ctx : 'AE3Context'):
                     if 0 < ctx.shoppingsanity != 2:
                         cleared.add(ctx.locations_name_to_id[item])
 
-                # Count Collection Type
-                if ctx.shoppingsanity == 2 and category_count and category in SHOP_COLLECTION_DIRECTORY:
-                    cleared.update(*SHOP_COLLECTION_DIRECTORY[category][:category_count - 1])
+            # Count Collection Type
+            if ctx.shoppingsanity == 2 and category_count and category in SHOP_COLLECTION_DIRECTORY:
+                cleared.update(ctx.locations_name_to_id[item]
+                               for item in SHOP_COLLECTION_DIRECTORY[category][:category_count])
 
     # Get newly checked locations
     cleared = cleared.difference(ctx.checked_locations)
