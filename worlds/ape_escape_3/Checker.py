@@ -611,6 +611,7 @@ async def check_locations(ctx : 'AE3Context'):
 
         for category in [*SHOP_CATEGORIES_COLLECTION_DIRECTORY.keys()][1:]:
             category_count: int = 0
+
             for item in SHOP_CATEGORIES_COLLECTION_DIRECTORY[category]:
                 if ctx.ipc.is_location_checked(item):
                     category_count += 1

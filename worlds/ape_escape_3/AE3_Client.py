@@ -859,6 +859,9 @@ async def check_game(ctx : AE3Context):
         else:
             if ctx.current_channel == APHelper.travel_station.value:
                 ctx.in_travel_station = True
+            elif ctx.current_channel == APHelper.shopping_area.value:
+                ctx.in_shopping_area = True
+                await set_persistent_values(ctx)
 
         if ctx.in_travel_station:
             await setup_level_select(ctx)
