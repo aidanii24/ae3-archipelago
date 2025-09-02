@@ -650,6 +650,13 @@ class AE3Context(CommonContext):
                 self.unlocked_channels = self.progression.get_progress(self.keys, self.post_game_condition.check(self))
                 self.ipc.set_unlocked_stages(self.unlocked_channels)
 
+            ## Get Shop Stock
+            if self.shoppingsanity == 4 and 0 >= self.shop_progress > 27:
+                self.shop_progress = received_as_id.count(self.items_name_to_id[APHelper.shop_stock.value])
+                setup_shopping_area(self)
+
+            setup_shopping_area(self)
+
             # Check if dummy morph is needed
             self.dummy_morph_monkey_needed = self.items_name_to_id[Itm.morph_monkey.value] not in received_as_id
 

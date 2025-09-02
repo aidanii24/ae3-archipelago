@@ -406,6 +406,13 @@ class AEPS2Interface:
         if addr == 0x0:
             return
 
+        # Clear out current value
+        clearing_address: int = addr
+        for _ in range(6):
+            self.pine.write_int32(clearing_address, 0x0)
+            self.pine.write_int32(clearing_address, 0x0)
+            clearing_address += 4
+
         as_bytes : bytes = progress.encode() + b'\x00'
         self.pine.write_bytes(addr, as_bytes)
 
@@ -560,18 +567,21 @@ class AEPS2Interface:
     def give_collectable(self, address_name : str, amount : int | float = 0x1, maximum : int | float = 0x0,
                          is_in_shop : bool = False):
         address : int = self.addresses.GameStates[address_name]
-        current : int | float = self.pine.read_int32(address) if type(amount) == int else self.pine.read_float(address)
-        value : int = 0
 
-        if is_in_shop:
+        if is_in_shop and address_name in [Itm.acc_morph_stock.value, Itm.cookie.value, Itm.energy.value]:
             if address_name == Itm.acc_morph_stock.value:
-                current_stocks : int = self.get_persistent_morph_stock_value()
-                self.set_persistent_morph_stock_value(current_stocks + 1)
+                current = self.get_persistent_morph_stock_value()
+                self.set_persistent_morph_stock_value(current + 1)
             elif address_name in [Itm.cookie.value, Itm.cookie_giant.value]:
+                current = self.get_persistent_cookie_value()
                 self.set_persistent_cookie_value(current + amount)
             elif address_name in [Itm.energy.value, Itm.energy_mega.value]:
+                current = self.get_persistent_morph_energy_value()
                 self.set_persistent_morph_energy_value(current + amount)
         else:
+            current: int = self.pine.read_int32(address)
+            value: int = 0
+
             if isinstance(amount, int):
                 value = min(current + amount, maximum)
                 self.pine.write_int32(address, value)

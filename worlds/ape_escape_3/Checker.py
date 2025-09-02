@@ -213,7 +213,9 @@ async def setup_shopping_area(ctx : 'AE3Context'):
     if ctx.in_shopping_area:
         if ctx.shoppingsanity >= 3:
             ctx.suppress_progress_correction = True
-            ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(ctx.shop_progression, 27)])
+
+            progress = ctx.keys if ctx.shoppingsanity == 3 else ctx.shop_progress
+            ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(ctx.progress, 27)])
 
 async def set_persistent_values(ctx : 'AE3Context'):
     stocks: int = ctx.ipc.get_morph_stock()
@@ -399,7 +401,7 @@ async def receive_items(ctx : 'AE3Context'):
                 ctx.keys += 1
                 ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys, ctx.post_game_condition.check(ctx))
             elif item.item_id == AP[APHelper.shop_stock.value]:
-                ctx.shop_progression += ctx.shop_progress
+                ctx.shop_progress += ctx.shop_progression
 
                 await setup_shopping_area(ctx)
 
