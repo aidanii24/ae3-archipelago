@@ -210,17 +210,14 @@ async def setup_level_select(ctx : 'AE3Context'):
             ctx.has_saved_on_transition = False
 
 async def setup_shopping_area(ctx : 'AE3Context'):
-    if ctx.in_shoppping_area:
+    if ctx.in_shopping_area:
         if ctx.shoppingsanity >= 3:
             ctx.suppress_progress_correction = True
             ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(ctx.shop_progression, 27)])
 
-        await set_persistent_values(ctx)
-
 async def set_persistent_values(ctx : 'AE3Context'):
     stocks: int = ctx.ipc.get_morph_stock()
     ctx.ipc.set_persistent_morph_stock_value(stocks)
-
 
     if ctx.shoppingsanity:
         for i in range(len(Itm.get_real_chassis_by_id())):
@@ -242,6 +239,9 @@ async def set_persistent_values(ctx : 'AE3Context'):
 
         ctx.ipc.set_persistent_cookie_value(cookies)
         ctx.ipc.set_persistent_morph_energy_value(energy)
+
+        ctx.ipc.set_cookies(100.0)
+        ctx.ipc.set_morph_gauge_recharge(stocks + 1 * 100.0)
 
 async def reapply_persistent_values(ctx : 'AE3Context'):
     if ctx.shoppingsanity:
@@ -315,6 +315,7 @@ async def setup_area(ctx : 'AE3Context'):
             # Set Shopping Area Progress if in Shopping Area
             await setup_shopping_area(ctx)
 
+            ctx.current_channel = ctx.ipc.get_channel()
             ctx.current_stage = ctx.ipc.get_stage()
             ctx.command_state = 2
 
@@ -363,7 +364,6 @@ async def check_states(ctx : 'AE3Context'):
         if not ctx.swim_unlocked and ctx.ipc.is_on_water():
             ctx.ipc.kill_player(20.0)
             ctx.command_state = 1
-
 
 async def receive_items(ctx : 'AE3Context'):
     # Check if there are items missed from since the client was open; Refuse to take items until this index is confirmed
@@ -477,7 +477,7 @@ async def receive_items(ctx : 'AE3Context'):
 
             ### Handle Generic Items
             else:
-                ctx.ipc.give_collectable(item.resource, i.amount, maximum, ctx.in_shoppping_area)
+                ctx.ipc.give_collectable(item.resource, i.amount, maximum, ctx.in_shopping_area)
 
     if received:
         # Save Last Item Index Processed into Game Memory
@@ -603,7 +603,7 @@ async def check_locations(ctx : 'AE3Context'):
                 cleared.add(location_id)
 
     # Shop Items Check
-    if ctx.in_shoppping_area and ctx.shoppingsanity:
+    if ctx.in_shopping_area and ctx.shoppingsanity:
         stocks_checked : list[str] = [*SHOP_PROGRESSION_MORPH[:ctx.ipc.get_morph_stock()]]
 
         ctx.ipc.set_shop_morph_stock_checked(len(stocks_checked))
