@@ -1390,7 +1390,7 @@ class ShopItemRules:
             self.blacklisted_entrances.clear()
             self.blacklisted_stages.clear()
         else:
-            self.sets : int = math.ceil(28 / 28)
+            self.sets : int = math.ceil(world.options.restock_progression.value / 28)
             reached_shop_progress = lambda amount: has_shop_stock(amount)
 
             self.blacklisted_entrances.clear()
