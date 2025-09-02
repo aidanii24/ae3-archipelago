@@ -579,7 +579,7 @@ class AEPS2Interface:
                 value = int(min(current + amount, maximum))
                 self.pine.write_float(address, min(current + amount, maximum))
 
-        self.update_hud(address_name, value)
+            self.update_hud(address_name, value)
 
     def update_hud(self, address_name : str, value : int):
         if address_name not in HUD_OFFSETS:
