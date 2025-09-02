@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING, Set, List
-import itertools
 
 from NetUtils import NetworkItem
 
@@ -215,25 +214,25 @@ async def setup_shopping_area(ctx : 'AE3Context'):
             ctx.suppress_progress_correction = True
 
             progress = ctx.keys if ctx.shoppingsanity == 3 else ctx.shop_progress
-            ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(ctx.progress, 27)])
+            ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(progress, 27)])
 
 async def set_persistent_values(ctx : 'AE3Context'):
     stocks: int = ctx.ipc.get_morph_stock()
     ctx.ipc.set_persistent_morph_stock_value(stocks)
 
     if ctx.shoppingsanity:
-        for i in range(len(Itm.get_real_chassis_by_id())):
-            if ctx.ipc.is_location_checked(SHOP_BONUS_RC_CARS[i]):
-                ctx.ipc.unlock_chassis_direct(i)
-            else:
-                ctx.ipc.lock_chassis_direct(i)
+        if ctx.shuffle_chassis:
+            for i in range(len(Itm.get_real_chassis_by_id())):
+                if ctx.ipc.is_location_checked(SHOP_BONUS_RC_CARS[i]):
+                    ctx.ipc.unlock_chassis_direct(i)
+                else:
+                    ctx.ipc.lock_chassis_direct(i)
 
-        stock_shop_item: int = ctx.ipc.get_shop_morph_stock_checked()
+        if ctx.shuffle_morph_stock:
+            stock_shop_item: int = ctx.ipc.get_shop_morph_stock_checked()
 
-        # Swap out the current Morph Stocks the player has for the amount of Morph Stocks checked as a Shop Item Location
-        ctx.ipc.set_morph_stock(stock_shop_item + 1)
-    else:
-        ctx.ipc.set_morph_stock(10)
+            # Swap out the current Morph Stocks the player has for the amount of Morph Stocks checked as a Shop Item Location
+            ctx.ipc.set_morph_stock(stock_shop_item + 1)
 
     if not ctx.monkey_mart:
         cookies: int = int(ctx.ipc.get_cookies())
@@ -247,17 +246,19 @@ async def set_persistent_values(ctx : 'AE3Context'):
 
 async def reapply_persistent_values(ctx : 'AE3Context'):
     if ctx.shoppingsanity:
-        for i in range(len(Itm.get_real_chassis_by_id())):
-            if ctx.ipc.is_chassis_unlocked(Itm.get_chassis_by_id()[i]):
-                ctx.ipc.unlock_chassis_direct(i)
-            else:
-                ctx.ipc.lock_chassis_direct(i)
+        if ctx.shuffle_chassis:
+            for i in range(len(Itm.get_real_chassis_by_id())):
+                if ctx.ipc.is_chassis_unlocked(Itm.get_chassis_by_id()[i]):
+                    ctx.ipc.unlock_chassis_direct(i)
+                else:
+                    ctx.ipc.lock_chassis_direct(i)
 
-        stock_shop_item: int = int(ctx.ipc.get_morph_stock()) - 1
-        ctx.ipc.set_shop_morph_stock_checked(stock_shop_item)
+        if ctx.shuffle_morph_stock:
+            stock_shop_item: int = int(ctx.ipc.get_morph_stock()) - 1
+            ctx.ipc.set_shop_morph_stock_checked(stock_shop_item)
 
-    stocks: int = ctx.ipc.get_persistent_morph_stock_value()
-    ctx.ipc.set_morph_stock(stocks)
+            stocks: int = ctx.ipc.get_persistent_morph_stock_value()
+            ctx.ipc.set_morph_stock(stocks)
 
     if not ctx.monkey_mart:
         cookies: float = ctx.ipc.get_persistent_cookie_value()
@@ -267,6 +268,33 @@ async def reapply_persistent_values(ctx : 'AE3Context'):
         ctx.ipc.set_morph_gauge_recharge(energy)
         ctx.ipc.set_persistent_cookie_value(0)
         ctx.ipc.set_persistent_morph_energy_value(0)
+
+async def rebuild_persistent_values(ctx: 'AE3Context'):
+    received_as_id : list[int] = [ i.item for i in ctx.items_received ]
+
+    stocks: int = received_as_id.count(ctx.items_name_to_id[Itm.acc_morph_stock.value])
+
+    if ctx.shoppingsanity:
+        if ctx.shuffle_morph_stock:
+            ctx.ipc.set_persistent_morph_stock_value(stocks)
+            ctx.ipc.set_morph_stock(ctx.ipc.get_shop_morph_stock_checked() + 1)
+
+        if ctx.shuffle_chassis:
+            for i, item in enumerate(SHOP_BONUS_RC_CARS):
+                if ctx.ipc.is_location_checked(item):
+                    ctx.ipc.unlock_chassis_direct(i)
+                else:
+                    ctx.ipc.lock_chassis_direct(i)
+
+    if not ctx.monkey_mart:
+        cookies: int = int(ctx.ipc.get_cookies())
+        energy: int = int(ctx.ipc.get_morph_gauge_recharge_value())
+
+        ctx.ipc.set_persistent_cookie_value(cookies)
+        ctx.ipc.set_persistent_morph_energy_value(energy)
+
+        ctx.ipc.set_cookies(100.0)
+        ctx.ipc.set_morph_gauge_recharge((stocks + 1) * 100.0)
 
 async def setup_area(ctx : 'AE3Context'):
     # MORPH LOCK ENFORCEMENT

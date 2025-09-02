@@ -423,6 +423,8 @@ class AE3Context(CommonContext):
     extra_shop_stocks : int = 0
 
     morph_duration : float = 0.0
+    shuffle_chassis: bool = False
+    shuffle_morph_stock: bool = False
 
     early_free_play : bool = False
     monkey_mart : bool = True
@@ -595,6 +597,14 @@ class AE3Context(CommonContext):
             if self.morph_duration == 0 and APHelper.base_morph_duration.value in data:
                 self.morph_duration = float(data[APHelper.base_morph_duration.value])
 
+            ## Shuffle Chassis
+            if APHelper.shuffle_chassis.value in data:
+                self.shuffle_chassis = data[APHelper.shuffle_chassis.value]
+
+            ## Shuffle Morph Stock
+            if APHelper.shuffle_morph_stocks.value in data:
+                self.shuffle_morph_stocks = data[APHelper.shuffle_morph_stocks.value]
+
             ## Extra Keys
             if APHelper.extra_keys.value in data:
                 self.extra_keys = data[APHelper.extra_keys.value]
@@ -653,9 +663,6 @@ class AE3Context(CommonContext):
             ## Get Shop Stock
             if self.shoppingsanity == 4 and 0 >= self.shop_progress > 27:
                 self.shop_progress = received_as_id.count(self.items_name_to_id[APHelper.shop_stock.value])
-                setup_shopping_area(self)
-
-            setup_shopping_area(self)
 
             # Check if dummy morph is needed
             self.dummy_morph_monkey_needed = self.items_name_to_id[Itm.morph_monkey.value] not in received_as_id
@@ -868,7 +875,7 @@ async def check_game(ctx : AE3Context):
                 ctx.in_travel_station = True
             elif ctx.current_channel == APHelper.shopping_area.value:
                 ctx.in_shopping_area = True
-                await set_persistent_values(ctx)
+                await rebuild_persistent_values(ctx)
 
         if ctx.in_travel_station:
             await setup_level_select(ctx)
