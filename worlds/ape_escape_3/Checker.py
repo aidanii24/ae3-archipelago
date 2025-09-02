@@ -229,7 +229,7 @@ async def set_persistent_values(ctx : 'AE3Context'):
         stock_shop_item: int = ctx.ipc.get_shop_morph_stock_checked()
 
         # Swap out the current Morph Stocks the player has for the amount of Morph Stocks checked as a Shop Item Location
-        ctx.ipc.set_morph_stock(stock_shop_item)
+        ctx.ipc.set_morph_stock(stock_shop_item + 1)
     else:
         ctx.ipc.set_morph_stock(10)
 
@@ -241,7 +241,7 @@ async def set_persistent_values(ctx : 'AE3Context'):
         ctx.ipc.set_persistent_morph_energy_value(energy)
 
         ctx.ipc.set_cookies(100.0)
-        ctx.ipc.set_morph_gauge_recharge(stocks + 1 * 100.0)
+        ctx.ipc.set_morph_gauge_recharge((stocks + 1) * 100.0)
 
 async def reapply_persistent_values(ctx : 'AE3Context'):
     if ctx.shoppingsanity:
@@ -251,7 +251,7 @@ async def reapply_persistent_values(ctx : 'AE3Context'):
             else:
                 ctx.ipc.lock_chassis_direct(i)
 
-        stock_shop_item: int = int(ctx.ipc.get_morph_stock())
+        stock_shop_item: int = int(ctx.ipc.get_morph_stock()) - 1
         ctx.ipc.set_shop_morph_stock_checked(stock_shop_item)
 
     stocks: int = ctx.ipc.get_persistent_morph_stock_value()
@@ -604,10 +604,12 @@ async def check_locations(ctx : 'AE3Context'):
 
     # Shop Items Check
     if ctx.in_shopping_area and ctx.shoppingsanity:
-        stocks_checked : list[str] = [*SHOP_PROGRESSION_MORPH[:ctx.ipc.get_morph_stock()]]
+        stocks: int = ctx.ipc.get_morph_stock()
+        if stocks > 1:
+            stocks_checked : list[str] = [*SHOP_PROGRESSION_MORPH[:ctx.ipc.get_morph_stock() - 1]]
 
-        ctx.ipc.set_shop_morph_stock_checked(len(stocks_checked))
-        cleared.update(ctx.locations_name_to_id[stock] for stock in stocks_checked)
+            ctx.ipc.set_shop_morph_stock_checked(len(stocks_checked))
+            cleared.update(ctx.locations_name_to_id[stock] for stock in stocks_checked)
 
         for category in [*SHOP_CATEGORIES_COLLECTION_DIRECTORY.keys()][1:]:
             category_count: int = 0
