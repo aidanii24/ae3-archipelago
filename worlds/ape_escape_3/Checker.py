@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING, Set, List
+import math
 
 from NetUtils import NetworkItem
 
@@ -213,7 +214,12 @@ async def setup_shopping_area(ctx : 'AE3Context'):
         if ctx.shoppingsanity >= 3:
             ctx.suppress_progress_correction = True
 
-            progress = ctx.keys if ctx.shoppingsanity == 3 else ctx.shop_progress
+            progress = ctx.shop_progress * ctx.shop_progression
+            if ctx.shoppingsanity == 3:
+                progress = ctx.keys * ctx.shop_progression
+                if progress >= 27 and not ctx.post_game_condition.check(ctx):
+                    progress = math.floor(27 / ctx.shop_progression) * ctx.shop_progression
+
             ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(progress, 27)])
 
 async def set_persistent_values(ctx : 'AE3Context'):
