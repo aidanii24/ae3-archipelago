@@ -24,6 +24,10 @@ async def check_background_states(ctx : 'AE3Context'):
     new_channel = ctx.ipc.get_channel()
     ctx.current_stage = ctx.ipc.get_stage()
 
+    # Remove Intro Movie from player from the start so that it can actually be in the Shopping Area pool
+    if len(ctx.locations_checked) < 1:
+        ctx.ipc.unmark_location(Loc.movie_tape_1.value)
+
     # Set to last selected slot (not the id of the level randomized) for convenience and consistency
     if not ctx.current_stage and 0 <= ctx.last_selected_channel_index <= ctx.unlocked_channels:
         ctx.ipc.set_next_channel_choice(ctx.last_selected_channel_index)
