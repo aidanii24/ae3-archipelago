@@ -367,8 +367,9 @@ class AE3Context(CommonContext):
     current_stage : str = None
     current_game_mode : int = 0x0
     in_travel_station : bool = False
+    is_using_data_desk: bool = False
     in_shopping_area : bool = False
-    shop_ready: bool = False
+    is_shop_ready: bool = False
     last_selected_channel_index : int = -1
     suppress_progress_correction : bool = False
     character : int = -1
@@ -842,16 +843,6 @@ async def check_game(ctx : AE3Context):
         if ctx.offline_locations_checked:
             await update_offline_checked(ctx)
 
-        # Build Checked Location Cache
-        if not ctx.is_cache_built:
-            if ctx.cache_missing:
-                await build_checked_cache(ctx)
-            else:
-                if ctx.shoppingsanity == 2:
-                    await handle_collection_shop_item_recheck(ctx)
-
-                ctx.is_cache_built = True
-
         # Get Character
         if ctx.character < 0:
             ctx.character = ctx.ipc.get_character()
@@ -860,6 +851,7 @@ async def check_game(ctx : AE3Context):
         if ctx.in_travel_station:
             if ctx.current_channel != APHelper.travel_station.value:
                 ctx.in_travel_station = False
+                ctx.is_using_data_desk = False
 
                 if ctx.current_channel == APHelper.shopping_area.value:
                     ctx.in_shopping_area = True
@@ -876,12 +868,25 @@ async def check_game(ctx : AE3Context):
                 ctx.in_travel_station = True
             elif ctx.current_channel == APHelper.shopping_area.value:
                 ctx.in_shopping_area = True
+                ctx.is_using_data_desk = False
                 await rebuild_persistent_values(ctx)
+            else:
+                ctx.is_using_data_desk = False
 
         if ctx.in_travel_station:
             await setup_level_select(ctx)
         elif ctx.in_shopping_area:
             await setup_shopping_area(ctx)
+
+        # Build Checked Location Cache
+        if not ctx.is_cache_built and not ctx.is_using_data_desk:
+            if ctx.cache_missing:
+                await build_checked_cache(ctx)
+            else:
+                if ctx.shoppingsanity == 2:
+                    await handle_collection_shop_item_recheck(ctx)
+
+                ctx.is_cache_built = True
 
         await setup_area(ctx)
         await check_states(ctx)
@@ -889,10 +894,11 @@ async def check_game(ctx : AE3Context):
         # Check Progression
         await receive_items(ctx)
 
-        if not ctx.in_travel_station:
-            await check_locations(ctx)
-        elif ctx.is_cache_built:
-            await sweep_recheck_locations(ctx)
+        if not ctx.is_using_data_desk:
+            if not ctx.in_travel_station:
+                await check_locations(ctx)
+            elif ctx.is_cache_built:
+                await sweep_recheck_locations(ctx)
 
         # Revoke has just connected (of Game) status once the first checks are done
         if ctx.has_just_connected or ctx.pending_resync:
