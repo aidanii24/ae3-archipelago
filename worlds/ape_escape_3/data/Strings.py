@@ -903,6 +903,11 @@ class Loc(BaseEnum):
     bonus_rc_cars_2                 = "Bonus RC Cars \"Black Chassis\""
     bonus_rc_cars_3                 = "Bonus RC Cars \"Pudding Chassis\""
 
+    # Alt/Permanent Chassis Addresses
+    real_chassis_twin               = "Real Twin's Chassis"
+    real_chassis_black              = "Real Black Chassis"
+    real_chassis_pudding            = "Real Pudding Chassis"
+
     weird_photos_1                  = "Weird photos \"Weird photo #1\""
     weird_photos_2                  = "Weird photos \"Weird photo #2\""
     weird_photos_3                  = "Weird photos \"Weird photo #3\""

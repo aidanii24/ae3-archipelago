@@ -811,9 +811,9 @@ class NTSCU(VersionAddresses):
         Loc.bonus_rc_cars.value                 : 0x3D,
         Loc.lucky_photo.value                   : 0x40,
 
-        Loc.bonus_rc_cars_1.value               : 0x649c98,
-        Loc.bonus_rc_cars_2.value               : 0x649c99,
-        Loc.bonus_rc_cars_3.value               : 0x649c9a,
+        Loc.bonus_rc_cars_1.value               : 0x6499A3,
+        Loc.bonus_rc_cars_2.value               : 0x6499A4,
+        Loc.bonus_rc_cars_3.value               : 0x6499A5,
 
         Loc.shop_super_monkey_throw_stadium.value   : 0x649c9b,
         Loc.shop_ultim_ape_fighter.value            : 0x649c9c,
