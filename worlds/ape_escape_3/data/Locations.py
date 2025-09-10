@@ -1282,7 +1282,7 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.region_specter2.value         : MONKEYS_SPECTER_FINALE
 }
 
-BOSSES_ALTERNATIVE : dict[str, str] = {
+LOCATIONS_ALTERNATIVE : dict[str, str] = {
     Loc.boss_monkey_white.value         : Loc.boss_alt_white.value,
     Loc.boss_monkey_blue.value          : Loc.boss_alt_blue.value,
     Loc.boss_monkey_yellow.value        : Loc.boss_alt_yellow.value,

@@ -11,7 +11,7 @@ from .data.Addresses import NTSCU
 from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_INDEX, MONKEYS_BREAK_ROOMS, \
     MONKEYS_PASSWORDS, MONKEYS_BOSSES, MONKEYS_DIRECTORY, Cellphone_Name_to_ID, LOCATIONS_INDEX, \
     SHOP_CATEGORIES_COLLECTION_DIRECTORY, SHOP_COLLECTION_DIRECTORY, SHOP_PERSISTENT_MASTER, SHOP_PROGRESSION_MORPH, \
-    SHOP_BONUS_RC_CARS
+    SHOP_BONUS_RC_CARS, SHOP_COLLECTION_BONUS_RC_CARS
 from .data import Items
 
 if TYPE_CHECKING:
@@ -250,11 +250,14 @@ async def set_persistent_values(ctx : 'AE3Context'):
         ctx.ipc.set_cookies(100.0)
         ctx.ipc.set_morph_gauge_recharge((stocks + 1) * 100.0)
 
+    ctx.shop_ready = True
+
 async def reapply_persistent_values(ctx : 'AE3Context'):
+    ctx.shop_ready = False
     if ctx.shoppingsanity:
         if ctx.shuffle_chassis:
-            for i in range(len(Itm.get_real_chassis_by_id())):
-                if ctx.ipc.is_chassis_unlocked(Itm.get_chassis_by_id()[i]):
+            for i, chassis in enumerate(Itm.get_chassis_by_id(no_default=True)):
+                if ctx.ipc.is_chassis_unlocked(chassis):
                     ctx.ipc.unlock_chassis_direct(i)
                 else:
                     ctx.ipc.lock_chassis_direct(i)
@@ -639,7 +642,7 @@ async def check_locations(ctx : 'AE3Context'):
                 cleared.add(location_id)
 
     # Shop Items Check
-    if ctx.in_shopping_area and ctx.shoppingsanity:
+    if ctx.in_shopping_area and ctx.shoppingsanity and ctx.shop_ready:
         stocks: int = ctx.ipc.get_morph_stock()
         if stocks > 1:
             stocks_checked : list[str] = [*SHOP_PROGRESSION_MORPH[:ctx.ipc.get_morph_stock() - 1]]
@@ -647,7 +650,19 @@ async def check_locations(ctx : 'AE3Context'):
             ctx.ipc.set_shop_morph_stock_checked(len(stocks_checked))
             cleared.update(ctx.locations_name_to_id[stock] for stock in stocks_checked)
 
-        for category in [*SHOP_CATEGORIES_COLLECTION_DIRECTORY.keys()][1:]:
+        chassis_count: int = 0
+        real_chassis: list[str] = [*Itm.get_real_chassis_by_id()]
+        for i, chassis in enumerate(SHOP_BONUS_RC_CARS):
+            if ctx.ipc.is_real_chassis_unlocked(real_chassis[i]):
+                ctx.ipc.mark_location(chassis)
+                chassis_count += 1
+
+                if 0 < ctx.shoppingsanity != 2:
+                    cleared.add(ctx.locations_name_to_id[chassis])
+        cleared.update(ctx.locations_name_to_id[item] for item in SHOP_COLLECTION_BONUS_RC_CARS[:chassis_count])
+
+        for category in [category for category in [*SHOP_CATEGORIES_COLLECTION_DIRECTORY.keys()]
+                         if category not in [Loc.shop_morph_stock.value, Loc.bonus_rc_cars.value]]:
             category_count: int = 0
             for item in SHOP_CATEGORIES_COLLECTION_DIRECTORY[category]:
                 if ctx.ipc.is_location_checked(item):

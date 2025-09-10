@@ -5,7 +5,7 @@ from math import ceil
 
 from .data.Addresses import VersionAddresses, get_version_addresses
 from .data.Items import HUD_OFFSETS
-from .data.Locations import CELLPHONES_ID_DUPLICATES, CELLPHONES_STAGE_DUPLICATES, BOSSES_ALTERNATIVE
+from .data.Locations import CELLPHONES_ID_DUPLICATES, CELLPHONES_STAGE_DUPLICATES, LOCATIONS_ALTERNATIVE
 from .data.Stages import LEVELS_ID_BY_ORDER
 from .data.Strings import Itm, Loc, Meta, Game, APHelper, APConsole
 from .interface.pine import Pine
@@ -220,7 +220,13 @@ class AEPS2Interface:
 
     def is_chassis_unlocked(self, chassis_name : str) -> bool:
         if chassis_name not in Itm.get_chassis_by_id():
-            return True
+            return False
+
+        return self.pine.read_int8(self.addresses.Items[chassis_name]) == 0x1
+
+    def is_real_chassis_unlocked(self, chassis_name : str) -> bool:
+        if chassis_name not in Itm.get_real_chassis_by_id():
+            return False
 
         return self.pine.read_int8(self.addresses.Items[chassis_name]) == 0x1
 
@@ -271,9 +277,9 @@ class AEPS2Interface:
         alt_checked : bool = False
 
         # Check Permanent State Storage Addresses as well for locations that use it
-        has_alt : bool = name in BOSSES_ALTERNATIVE.keys()
+        has_alt : bool = name in LOCATIONS_ALTERNATIVE.keys()
         if has_alt:
-            alt_address = self.addresses.Locations[BOSSES_ALTERNATIVE[name]]
+            alt_address = self.addresses.Locations[LOCATIONS_ALTERNATIVE[name]]
             alt_checked = self.pine.read_int8(alt_address) == 0x01
 
         if not alt_checked:
@@ -494,23 +500,23 @@ class AEPS2Interface:
             self.auto_equip(self.addresses.get_gadget_id(address))
 
     def unlock_chassis(self, address_name : str, is_in_shop : bool = False) -> bool:
-        if not is_in_shop:
-            self.pine.write_int8(self.addresses.Items[address_name], 0x1)
-
         if address_name in Itm.get_chassis_by_id(True):
             id : int = Itm.get_chassis_by_id(True).index(address_name)
-            self.pine.write_int8(self.addresses.Items[Itm.get_real_chassis_by_id()[id]], 0x0)
+            self.pine.write_int8(self.addresses.Items[address_name], 0x1)
+
+            if not is_in_shop:
+                self.pine.write_int8(self.addresses.Items[Itm.get_real_chassis_by_id()[id]], 0x0)
 
         is_rcc_unlocked : bool = self.pine.read_int32(self.addresses.Items[Itm.gadget_rcc.value]) == 0x2
 
         return is_rcc_unlocked
 
     def unlock_chassis_direct(self, chassis_idx):
-        chassis : str = Itm.get_chassis_by_id(no_default=True)[chassis_idx]
+        chassis : str = Itm.get_real_chassis_by_id()[chassis_idx]
         self.pine.write_int8(self.addresses.Items[chassis], 0x1)
 
     def lock_chassis_direct(self, chassis_idx):
-        chassis : str = Itm.get_chassis_by_id(no_default=True)[chassis_idx]
+        chassis : str = Itm.get_real_chassis_by_id()[chassis_idx]
 
         if chassis:
             self.pine.write_int8(self.addresses.Items[chassis], 0x0)

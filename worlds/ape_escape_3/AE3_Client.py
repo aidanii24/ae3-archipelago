@@ -368,6 +368,7 @@ class AE3Context(CommonContext):
     current_game_mode : int = 0x0
     in_travel_station : bool = False
     in_shopping_area : bool = False
+    shop_ready: bool = False
     last_selected_channel_index : int = -1
     suppress_progress_correction : bool = False
     character : int = -1
