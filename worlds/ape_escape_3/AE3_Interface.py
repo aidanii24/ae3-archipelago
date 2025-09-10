@@ -293,6 +293,23 @@ class AEPS2Interface:
 
         return checked
 
+    def is_data_desk_interacted(self):
+        address: int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
+                                                 Game.interact_data.value)
+        address += self.addresses.GameStates[Game.data_desk.value]
+
+        # Return False when the address is invalid
+        if address <= 0x0:
+            return False
+
+        as_bytes: bytes = self.pine.read_bytes(address, 4)
+        try:
+            as_string: str = as_bytes.decode().replace("\x00", "")
+        except UnicodeDecodeError:
+            return False
+
+        return as_string == Game.save.value
+
     def is_camera_interacted(self) -> bool:
         address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
                                                   Game.interact_data.value)

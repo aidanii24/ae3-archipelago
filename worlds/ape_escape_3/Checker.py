@@ -122,6 +122,9 @@ async def setup_level_select(ctx : 'AE3Context'):
     gui_status: int = ctx.ipc.get_gui_status()
 
     if ctx.ipc.is_on_warp_gate():
+        if ctx.is_using_data_desk:
+            ctx.is_using_data_desk = False
+
         # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
         if selected_channel == 0x18 or selected_channel == 0x1A:
             target_progress : str = APHelper.pr_boss6.value if selected_channel == 0x18 else APHelper.pr_specter1.value
@@ -153,6 +156,8 @@ async def setup_level_select(ctx : 'AE3Context'):
 
             if ctx.suppress_progress_correction:
                 ctx.suppress_progress_correction = False
+
+        ctx.is_using_data_desk = ctx.ipc.is_data_desk_interacted() and ctx.ipc.get_gui_status() >= 1
 
         if ctx.is_channel_swapped:
             ctx.is_channel_swapped = False
@@ -250,10 +255,10 @@ async def set_persistent_values(ctx : 'AE3Context'):
         ctx.ipc.set_cookies(100.0)
         ctx.ipc.set_morph_gauge_recharge((stocks + 1) * 100.0)
 
-    ctx.shop_ready = True
+    ctx.is_shop_ready = True
 
 async def reapply_persistent_values(ctx : 'AE3Context'):
-    ctx.shop_ready = False
+    ctx.is_shop_ready = False
     if ctx.shoppingsanity:
         if ctx.shuffle_chassis:
             for i, chassis in enumerate(Itm.get_chassis_by_id(no_default=True)):
@@ -642,7 +647,7 @@ async def check_locations(ctx : 'AE3Context'):
                 cleared.add(location_id)
 
     # Shop Items Check
-    if ctx.in_shopping_area and ctx.shoppingsanity and ctx.shop_ready:
+    if ctx.in_shopping_area and ctx.shoppingsanity and ctx.is_shop_ready:
         stocks: int = ctx.ipc.get_morph_stock()
         if stocks > 1:
             stocks_checked : list[str] = [*SHOP_PROGRESSION_MORPH[:ctx.ipc.get_morph_stock() - 1]]

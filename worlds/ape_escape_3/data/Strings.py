@@ -2451,6 +2451,7 @@ class Game(BaseEnum):
 
     interact_data =         "Interact Data"
     status_tracker =        "Status Tracker"
+    data_desk =             "Data Desk"
     pipo_camera =           "Pipo Camera"
     cellphone =             "Cellphone"
     cellphone2 =            "Cellphone2"
