@@ -258,11 +258,14 @@ class AE3World(World):
         if self.options.post_game_condition_keys:
             post_game_conditions[APHelper.keys.value] = self.options.post_game_condition_keys.value
 
-        self.post_game_condition = PostGameCondition(post_game_conditions, exclude_regions, exclude_locations)
+        self.post_game_condition = PostGameCondition(post_game_conditions, exclude_regions, exclude_locations,
+                                                     self.options.shoppingsanity.value)
 
         self.shop_rules: ShopItemRules = ShopItemRules(self)
 
         self.item_pool = []
+
+        self.log_debug()
 
     def create_regions(self):
         create_regions(self)
@@ -411,6 +414,25 @@ class AE3World(World):
 
         spoiler_handle.write("\n")
 
+    def log_debug(self):
+        print("====================")
+        print("Channel Order:")
+        count = 0
+        for lset in self.progression.progression:
+            print(f"- < {count} > ---------------------")
+            current = lset if count > 0 else lset + 1
+            for channel in range(current):
+                print(LEVELS_BY_ORDER[self.progression.order[count]])
+                count += 1
+
+        print("\nPost Game Condition:")
+        for condition, amount in self.post_game_condition.amounts.items():
+            print(f"\t{condition}: {amount}")
+
+        print("\nGoal Target:")
+        print(f"\t{self.goal_target.amount} / {len(self.goal_target.locations)}")
+        for target in self.goal_target.locations:
+            print(target)
 
     def generate_output(self, directory : str):
         datas = {
