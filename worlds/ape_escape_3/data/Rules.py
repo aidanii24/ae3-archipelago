@@ -188,6 +188,7 @@ class PostGameCondition:
 
         # Define valid locations for checking
         to_id : dict[str, int] = generate_name_to_id()
+
         for category in self.location_categories:
             if category in self.amounts:
                 location_list : set[str] = {*LOCATIONS_DIRECTORY.get(category, [])}
@@ -1330,6 +1331,8 @@ class ShopItemRules:
         self.blacklisted_stages = [*STAGES_SHOP_PROGRESSION]
         self.cheap_early_items = []
 
+        self.sets = 0
+
         if not world.options.shoppingsanity:
             return
 
@@ -1371,7 +1374,7 @@ class ShopItemRules:
                 cheap_items_rule = post_game_condition_rule
             else:
                 cheap_items_rule = has_keys(math.ceil(
-                    required_keys * world.options.cheap_items_minimum_requirement.value))
+                    required_keys * (world.options.cheap_items_minimum_requirement.value / 100)))
 
             self.entrance_rules[Stage.entrance_travel_ab.value] = Rulesets(cheap_items_rule, *can_farm)
 
@@ -1390,7 +1393,7 @@ class ShopItemRules:
             self.blacklisted_entrances.clear()
             self.blacklisted_stages.clear()
         else:
-            self.sets : int = math.ceil(world.options.restock_progression.value / 28)
+            self.sets : int = math.ceil(28 / world.options.restock_progression.value)
             reached_shop_progress = lambda amount: has_shop_stock(amount)
 
             self.blacklisted_entrances.clear()
@@ -1401,7 +1404,7 @@ class ShopItemRules:
             if math.floor(i / self.sets) > 0:
                 self.entrance_rules[entrance.name] = Rulesets(reached_shop_progress(math.floor(i / self.sets)))
 
-            if not enough_cheap_items and cheap_items_early_amount:
+            if cheap_items_early_amount and not enough_cheap_items:
                 cheap : list[str] = [item for item in SHOP_PROGRESSION_DIRECTORY[entrance.destination]
                                           if item not in SHOP_CHEAP_MASTER]
                 expensive : list[str] = [item for item in SHOP_PROGRESSION_DIRECTORY[entrance.destination]
