@@ -8,16 +8,18 @@ from BaseClasses import CollectionState
 from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, Cellphone_Name_to_ID, MONKEYS_BOSSES, \
     MONKEYS_BREAK_ROOMS, MONKEYS_INDEX, MONKEYS_MASTER, MONKEYS_PASSWORDS, generate_name_to_id, LOCATIONS_INDEX, \
     LOCATIONS_DIRECTORY, SHOP_CHEAP_COLLECTION_INDEX, SHOP_CHEAP_MASTER, SHOP_PROGRESSION_DIRECTORY, SHOP_UNIQUE_MASTER, \
-    SHOP_COLLECTION_MASTER, SHOP_PERSISTENT_MASTER
+    SHOP_COLLECTION_MASTER, SHOP_PERSISTENT_MASTER, SHOP_CHEAP_COLLECTION_MASTER, SHOP_EVENT_ACCESS_DIRECTORY
 from .Logic import Rulesets, AccessRule, has_keys, event_invoked, has_enough_keys, can_access_region, \
     has_shop_stock
 from .Strings import Loc, Stage, Events, APHelper
-from .Stages import STAGES_DIRECTORY, ENTRANCES_SHOP_PSEUDOREGIONS, AE3EntranceMeta, ENTRANCES_SHOP_PROGRESSION, \
-    STAGES_SHOP_PROGRESSION
+from .Stages import (STAGES_DIRECTORY, STAGES_DIRECTORY_LABEL, ENTRANCES_SHOP_PSEUDOREGIONS, AE3EntranceMeta,
+                     ENTRANCES_SHOP_PROGRESSION, STAGES_SHOP_PROGRESSION, STAGES_FARMABLE, STAGES_FARMABLE_SNEAKY_BORG,
+                     LEVELS_BY_ORDER)
 
 if TYPE_CHECKING:
     from ..AE3_Client import AE3Context
     from .. import AE3World
+
 
 class GoalTarget:
     name : str = "Empty Goal"
@@ -199,6 +201,7 @@ class PostGameCondition:
                 self.locations[category] = {*location_list}
 
                 # Lower required amount if there are enough excluded locations to make the initial value impossible
+                print(f"{category} Amounts: {self.amounts[category]} | {len(location_list)}")
                 if self.amounts[category] > len(location_list):
                     if category == APHelper.shop.value:
                         self.amounts[category] = min(len(location_list), len(SHOP_UNIQUE_MASTER))
@@ -1317,6 +1320,9 @@ class ShopItemRules:
     item_rules : dict[str, Rulesets]
     entrances : list[AE3EntranceMeta]
     entrance_rules : dict[str, Rulesets]
+    post_game_items: set[str]
+    post_game_entrances: set[str]
+    blacklisted_items: set[str]
     blacklisted_entrances : list[str]
     blacklisted_stages : list[str]
     cheap_early_items : list[str]
@@ -1327,6 +1333,9 @@ class ShopItemRules:
         self.item_rules = {}
         self.entrances = []
         self.entrance_rules = {}
+        self.post_game_items = set()
+        self.post_game_entrances = set()
+        self.blacklisted_items = set()
         self.blacklisted_entrances = [*ENTRANCES_SHOP_PROGRESSION]
         self.blacklisted_stages = [*STAGES_SHOP_PROGRESSION]
         self.cheap_early_items = []
@@ -1336,18 +1345,29 @@ class ShopItemRules:
         if not world.options.shoppingsanity:
             return
 
+        # If farmable areas are not available before Post Game, and Cheap Items have a minimum requirement of PGC,
+        # All Shop Items will only be in logic after Post Game is unlocked.
+        # This also removes any Shop Item from being a requirement for PGC
+        are_farmables_available: bool = self.are_farmables_available(world)
+        if not are_farmables_available and world.options.cheap_items_minimum_requirement >= 100:
+            self.post_game_entrances.add(Stage.entrance_travel_ab.value)
+            self.post_game_items.update(SHOP_PERSISTENT_MASTER)
+
+            if world.options.shoppingsanity == 2:
+                self.post_game_items.update(SHOP_COLLECTION_MASTER)
+            else:
+                self.post_game_items.update(SHOP_UNIQUE_MASTER)
+
+            return
+
         # Post Game Properties
         required_keys : int = len(world.progression.progression) - 3
-        post_game_condition_rule : Callable[[CollectionState, int], bool] = world.post_game_condition.enact(
-            required_keys - 1, world.options.monkeysanity_break_rooms.value)
         can_farm : list[Rulesets] = [AccessRule.FARM]
 
         if world.options.farm_logic_sneaky_borgs.value:
             can_farm.append(AccessRule.FARM_DUPE)
 
         self.item_rules = {
-            Loc.shop_ultim_ape_fighter.value: Rulesets(post_game_condition_rule),
-
             Loc.hint_book_9.value: Rulesets(can_access_region(Stage.region_heaven_a.value)),
             Loc.hint_book_14.value: Rulesets(can_access_region(Stage.region_boss1.value)),
             Loc.hint_book_15.value: Rulesets(can_access_region(Stage.region_boss2.value)),
@@ -1360,29 +1380,48 @@ class ShopItemRules:
             Loc.movie_tape_17.value: Rulesets(can_access_region(Stage.region_tomo_a.value)),
         }
 
+        self.post_game_items.add(Loc.shop_ultim_ape_fighter.value)
+
         self.entrance_rules = {
             Stage.entrance_shop_expensive.value     : Rulesets(*can_farm),
             Stage.entrance_shop_morph.value         : Rulesets(AccessRule.MORPH),
         }
 
+        post_game_start_index: int = sum(world.progression.progression[:-1])
+        post_game_end_index: int = post_game_start_index + world.progression.progression[-2]
+        post_game_channels: list[str] = [LEVELS_BY_ORDER[channel] for channel in
+                                         world.progression.order[post_game_start_index:post_game_end_index]]
+        post_game_areas: list[str] = []
+        for channel in post_game_channels:
+            post_game_areas.extend(STAGES_DIRECTORY_LABEL[channel])
+
+        for channel, items in SHOP_EVENT_ACCESS_DIRECTORY.items():
+            if channel in post_game_areas:
+                self.post_game_items.update(items)
+
         cheap_items_early_amount: int = world.options.cheap_items_early_amount.value
 
         if world.options.cheap_items_minimum_requirement:
+            self.entrance_rules[Stage.entrance_travel_ab.value] = Rulesets(*can_farm)
             cheap_items_early_amount = 0
 
-            if world.options.cheap_items_minimum_requirement.value >= 100:
-                cheap_items_rule = post_game_condition_rule
-            else:
+            if world.options.cheap_items_minimum_requirement.value < 100:
                 cheap_items_rule = has_keys(math.ceil(
                     required_keys * (world.options.cheap_items_minimum_requirement.value / 100)))
 
-            self.entrance_rules[Stage.entrance_travel_ab.value] = Rulesets(cheap_items_rule, *can_farm)
+                self.entrance_rules[Stage.entrance_travel_ab.value].update(Rulesets(cheap_items_rule))
+            else:
+                if world.options.shoppingsanity.value != 2:
+                    self.post_game_items.update(SHOP_CHEAP_MASTER)
+                else:
+                    self.post_game_items.update(SHOP_CHEAP_COLLECTION_MASTER)
 
         if world.options.shoppingsanity.value <= 1:
             return
         elif world.options.shoppingsanity.value == 2:
-            for category in SHOP_CHEAP_COLLECTION_INDEX:
-                self.cheap_early_items.extend(category[cheap_items_early_amount])
+            if cheap_items_early_amount:
+                for category in SHOP_CHEAP_COLLECTION_INDEX:
+                    self.cheap_early_items.extend(category[:cheap_items_early_amount])
 
             return
         # Progression Splitting Properties
@@ -1401,7 +1440,10 @@ class ShopItemRules:
 
         enough_cheap_items : bool = False
         for i, entrance in enumerate(ENTRANCES_SHOP_PSEUDOREGIONS):
-            if math.floor(i / self.sets) > 0:
+            current_set = math.floor(i / self.sets)
+            if world.options.shoppingsanity.value == 3 and current_set * self.sets + self.sets >= 27:
+                self.post_game_entrances.add(entrance.name)
+            if math.floor(current_set / self.sets) > 0:
                 self.entrance_rules[entrance.name] = Rulesets(reached_shop_progress(math.floor(i / self.sets)))
 
             if cheap_items_early_amount and not enough_cheap_items:
@@ -1412,8 +1454,12 @@ class ShopItemRules:
 
                 if len(self.cheap_early_items) + len(cheap) <= cheap_items_early_amount:
                     self.cheap_early_items.extend(cheap)
-                    for item in expensive:
-                        self.item_rules[item] = Rulesets(*can_farm)
+
+                    if are_farmables_available:
+                        for items in expensive:
+                            self.item_rules[items] = Rulesets(*can_farm)
+                    else:
+                        self.post_game_items.update(expensive)
 
                     self.entrances.append(AE3EntranceMeta(entrance.name, Stage.travel_station_b.value,
                                                           entrance.destination))
@@ -1424,6 +1470,40 @@ class ShopItemRules:
             else:
                 self.entrances.append(AE3EntranceMeta(entrance.name, Stage.region_shop_expensive.value,
                                                       entrance.destination))
+
+    def are_farmables_available(self, world: 'AE3World') -> bool:
+        if not world.options.shoppingsanity.value: return True
+
+        farming_areas: list[str] = [*STAGES_FARMABLE]
+        if world.options.farm_logic_sneaky_borgs:
+            farming_areas.extend([*STAGES_FARMABLE_SNEAKY_BORG])
+
+        post_game_channels: list[str] = [LEVELS_BY_ORDER[channel] for channel in
+                                         world.progression.progression[:sum(world.progression.order[-3:-2])]]
+        post_game_areas: list[str] = []
+        for channel in post_game_channels:
+            post_game_areas.extend(STAGES_DIRECTORY_LABEL[channel])
+
+        return any(stage in post_game_areas for stage in farming_areas)
+
+    def set_pgc_rules(self, world : "AE3World") -> None:
+        if not world.options.shoppingsanity.value: return
+
+        required_keys:int = len(world.progression.progression) - 3
+        post_game_condition_rule:Callable[[CollectionState, int], bool] = world.post_game_condition.enact(
+            required_keys - 1, world.options.monkeysanity_break_rooms.value)
+
+        self.item_rules[Loc.shop_ultim_ape_fighter.value] = Rulesets(post_game_condition_rule)
+
+        if world.options.cheap_items_minimum_requirement.value >= 100:
+            self.entrance_rules.setdefault(
+                Stage.entrance_travel_ab.value, Rulesets()).update(Rulesets(post_game_condition_rule))
+
+        for item in self.post_game_items:
+            self.item_rules[item] = Rulesets(post_game_condition_rule)
+
+        for entrance in self.post_game_entrances:
+            self.entrance_rules[entrance] = Rulesets(post_game_condition_rule)
 
 # [<--- GOAL TARGETS --->]
 class Specter(GoalTarget):

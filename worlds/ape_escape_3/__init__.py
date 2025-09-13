@@ -258,11 +258,14 @@ class AE3World(World):
         if self.options.post_game_condition_keys:
             post_game_conditions[APHelper.keys.value] = self.options.post_game_condition_keys.value
 
+        self.shop_rules: ShopItemRules = ShopItemRules(self)
+        if self.shop_rules.post_game_items:
+            exclude_locations.extend(self.shop_rules.post_game_items)
+
         self.post_game_condition = PostGameCondition(post_game_conditions, exclude_regions, exclude_locations,
                                                      self.options.shoppingsanity.value)
 
-        self.shop_rules: ShopItemRules = ShopItemRules(self)
-
+        self.shop_rules.set_pgc_rules(self)
         self.item_pool = []
 
         self.log_debug()

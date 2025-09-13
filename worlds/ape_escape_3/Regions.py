@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 
 from BaseClasses import Entrance, Location, Region
-from .data.Rules import ShopItemRules
 
 from .data.Stages import STAGES_BREAK_ROOMS, STAGES_DIRECTORY, STAGES_MASTER, ENTRANCES_MASTER, STAGES_DIRECTORY_LABEL, \
     STAGES_SHOP_PROGRESSION, STAGES_FARMABLE, AE3EntranceMeta, STAGES_FARMABLE_SNEAKY_BORG
@@ -263,5 +262,5 @@ def create_regions(world : "AE3World"):
 
     # # <!> DEBUG
     # # Connection Diagrams
-    from Utils import visualize_regions
-    visualize_regions(world.multiworld.get_region("Menu", world.player), "_region_diagram.puml")
+    # from Utils import visualize_regions
+    # visualize_regions(world.multiworld.get_region("Menu", world.player), "_region_diagram.puml")
