@@ -450,6 +450,8 @@ async def receive_items(ctx : 'AE3Context'):
                 ctx.shop_progress += ctx.shop_progression
 
                 await setup_shopping_area(ctx)
+            elif item.item_id == AP[APHelper.hint_book.value]:
+                await request_hint(ctx)
 
             # Save State if desired
             if ctx.save_state_on_item_received and not ctx.pending_auto_save:
@@ -817,4 +819,11 @@ async def get_last_save_status(ctx : 'AE3Context'):
     await ctx.send_msgs([{
         "cmd": "Get",
         "keys": [f"{APHelper.last_save_type.value}_{ctx.team}_{ctx.slot}"]
+    }])
+
+async def request_hint(ctx : 'AE3Context'):
+    await ctx.send_msgs([{
+        "cmd": "CreateHints",
+        "locations": [],
+
     }])

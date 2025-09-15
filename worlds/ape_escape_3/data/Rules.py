@@ -201,7 +201,6 @@ class PostGameCondition:
                 self.locations[category] = {*location_list}
 
                 # Lower required amount if there are enough excluded locations to make the initial value impossible
-                print(f"{category} Amounts: {self.amounts[category]} | {len(location_list)}")
                 if self.amounts[category] > len(location_list):
                     if category == APHelper.shop.value:
                         self.amounts[category] = min(len(location_list), len(SHOP_UNIQUE_MASTER))

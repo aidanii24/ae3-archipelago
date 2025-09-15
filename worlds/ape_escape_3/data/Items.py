@@ -103,8 +103,9 @@ class UpgradeableItem(AE3ItemMeta):
     def to_item(self, player : int, classification : ItemClassification = ItemClassification.useful) -> AE3Item:
         return AE3Item(self.name, classification, self.item_id, player)
 
-    def to_items(self, player : int, classification : ItemClassification = ItemClassification.useful) -> list[AE3Item]:
-        return [self.to_item(player, classification) for _ in range(self.limit)]
+    def to_items(self, player : int, reduce: int = 0,
+                 classification : ItemClassification = ItemClassification.useful) -> list[AE3Item]:
+        return [self.to_item(player, classification) for _ in range(min(max(self.limit, self.limit - reduce), 0))]
 
 class ArchipelagoItem(AE3ItemMeta):
     """Base class for any non in-game item"""
@@ -141,6 +142,7 @@ AP : dict[str, int] = {
     APHelper.channel_key.value      : 0x3E8,
     APHelper.victory.value          : 0x3E9,
     APHelper.shop_stock.value       : 0x3EA,
+    APHelper.hint_book.value        : 0x3EB,
 }
 
 ### [< --- ITEMS --- >]
@@ -191,6 +193,7 @@ Ammo_Homing = CollectableItem(Itm.ammo_homing.value, Game.ammo_homing.value, 1, 
 # Archipelago
 Channel_Key = ArchipelagoItem(APHelper.channel_key.value)
 Shop_Stock = ArchipelagoItem(APHelper.shop_stock.value)
+Hint_Book = ArchipelagoItem(APHelper.hint_book.value)
 Victory = ArchipelagoItem(APHelper.victory.value)
 
 ### [< --- ITEM GROUPS --- >]
@@ -219,7 +222,7 @@ COLLECTABLES : Sequence[CollectableItem] = [
 ]
 
 ARCHIPELAGO : Sequence[ArchipelagoItem] = [
-    Channel_Key, Shop_Stock, Victory
+    Channel_Key, Shop_Stock, Hint_Book, Victory
 ]
 
 ITEMS_MASTER : Sequence[AE3ItemMeta] = [
@@ -302,6 +305,11 @@ def generate_item_groups() -> dict[str : set[str]]:
     # Glide
     groups.setdefault(APHelper.glide.value, set()).update([
         Itm.morph_hero.value, *groups[APHelper.fly.value]
+    ])
+
+    # Archipelago
+    groups.setdefault(APHelper.archipelago.value, set()).update([
+        APHelper.channel_key.value, APHelper.shop_stock.value
     ])
 
     return groups
