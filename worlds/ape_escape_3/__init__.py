@@ -10,7 +10,7 @@ import settings
 from .data.Items import AE3Item, AE3ItemMeta, ITEMS_MASTER, Nothing, generate_collectables
 from .data.Locations import Cellphone_Name_to_ID, MONKEYS_BOSSES, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, \
     CELLPHONES_MASTER_ORDERED, MONKEYS_PASSWORDS, MONKEYS_BREAK_ROOMS, SHOP_PROGRESSION_75COMPLETION, \
-    SHOP_EVENT_ACCESS_DIRECTORY
+    SHOP_EVENT_ACCESS_DIRECTORY, SHOP_HINT_BOOK, SHOP_COLLECTION_HINT_BOOK, SHOP_PERSISTENT_HINT_BOOK
 from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER, STAGES_DIRECTORY_LABEL
 from .data.Rules import GoalTarget, GoalTargetOptions, LogicPreference, LogicPreferenceOptions, PostGameCondition, \
     ShopItemRules
@@ -370,12 +370,8 @@ class AE3World(World):
         self.multiworld.completion_condition[self.player] = Rulesets(self.goal_target.enact()).condense(
              self.player)
 
-    def fill_slot_data(self):
-        slot_data : dict = self.options.as_dict(*slot_data_options())
-        slot_data[APHelper.progression.value] = self.progression.progression
-        slot_data[APHelper.channel_order.value] = self.progression.order
-        slot_data[APHelper.shop_progression.value] = self.shop_rules.sets
-
+    def generate_hint_book_hints(self):
+        hints: dict[int, Location] = {}
         scouts: list[Location] = []
         starting_items: list[str] = [Itm.gadget_net.value]
         items: list[str] = [*self.item_name_groups[APHelper.equipment.value],
@@ -408,8 +404,28 @@ class AE3World(World):
 
         for item in items:
             scouts.extend([loc for loc in self.multiworld.find_item_locations(item, self.player)])
+        scouts = self.random.sample(scouts, 20)
 
-        slot_data[APHelper.scouts.value] = self.random.sample(scouts, 20)
+        hint_books: list[int] = []
+        if self.options.shoppingsanity != 2:
+            hint_books = [self.location_name_to_id[book] for book in [*SHOP_COLLECTION_HINT_BOOK,
+                                                                      *SHOP_PERSISTENT_HINT_BOOK]]
+        else:
+            hint_books = [self.location_name_to_id[book] for book in SHOP_HINT_BOOK]
+
+        for i, loc in enumerate(scouts):
+            hints[hint_books[i]] = loc
+
+        return hints
+
+    def fill_slot_data(self):
+        slot_data : dict = self.options.as_dict(*slot_data_options())
+        slot_data[APHelper.progression.value] = self.progression.progression
+        slot_data[APHelper.channel_order.value] = self.progression.order
+        slot_data[APHelper.shop_progression.value] = self.shop_rules.sets
+
+        if self.options.shoppingsanity:
+            slot_data[APHelper.hints.value] = self.generate_hint_book_hints()
 
         return slot_data
 

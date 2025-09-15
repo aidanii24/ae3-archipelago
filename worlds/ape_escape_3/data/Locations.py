@@ -3286,6 +3286,17 @@ SHOP_PERSISTENT_MASTER : Sequence[str] = [
     *SHOP_PROGRESSION_SPECTER2_CAPTURE,
 ]
 
+SHOP_PERSISTENT_HINT_BOOK: Sequence[str] = [
+    Loc.hint_book_9.value,
+    Loc.hint_book_14.value,
+    Loc.hint_book_15.value,
+    Loc.hint_book_16.value,
+    Loc.hint_book_17.value,
+    Loc.hint_book_18.value,
+    Loc.hint_book_19.value,
+    Loc.hint_book_20.value,
+]
+
 SHOP_PROGRESSION_DIRECTORY : dict[str, Sequence[str]] = {
     Stage.region_shop_seaside.value     :   SHOP_PROGRESSION_SEASIDE,
     Stage.region_shop_woods.value       :   SHOP_PROGRESSION_WOODS,

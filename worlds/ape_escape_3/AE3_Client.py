@@ -7,8 +7,9 @@ import asyncio
 
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled, \
                           ClientStatus
-import Utils
 from settings import get_settings
+from BaseClasses import Location
+import Utils
 
 from .data.Strings import Meta, APConsole
 from .data.Logic import ProgressionMode, ProgressionModeOptions
@@ -358,7 +359,7 @@ class AE3Context(CommonContext):
     is_cache_built : bool = False
     monkeys_checklist : Sequence[str] = MONKEYS_MASTER
     monkeys_checklist_count : int = 0
-    checked_monkeys_cache : set[int] = set()
+    pre_hinted: dict[int, Location] = {}
 
     # Session Properties
     keys : int = 0
@@ -605,7 +606,7 @@ class AE3Context(CommonContext):
 
             ## Shuffle Morph Stock
             if APHelper.shuffle_morph_stocks.value in data:
-                self.shuffle_morph_stocks = data[APHelper.shuffle_morph_stocks.value]
+                self.shuffle_morph_stock = data[APHelper.shuffle_morph_stocks.value]
 
             ## Extra Keys
             if APHelper.extra_keys.value in data:
@@ -624,6 +625,10 @@ class AE3Context(CommonContext):
             if APHelper.death_link.value in data:
                 self.death_link = bool(data[APHelper.death_link.value])
                 Utils.async_start(self.update_death_link(self.death_link))
+
+            ## Pre-scouted
+            if APHelper.hints.value in data:
+                self.pre_hinted = data[APHelper.hints.value]
 
             # Initiate Checked Locations Cache Rebuilding if necessary:
             if not self.locations_checked and not self.cache_missing:
