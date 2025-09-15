@@ -1,8 +1,10 @@
 from copy import deepcopy
 from typing import ClassVar, List, Optional, TextIO
+
+from test.hosting import world
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
-from BaseClasses import MultiWorld, Tutorial
+from BaseClasses import MultiWorld, Tutorial, Location
 import settings
 
 from .data.Items import AE3Item, AE3ItemMeta, ITEMS_MASTER, Nothing, generate_collectables
@@ -12,7 +14,7 @@ from .data.Locations import Cellphone_Name_to_ID, MONKEYS_BOSSES, MONKEYS_MASTER
 from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER, STAGES_DIRECTORY_LABEL
 from .data.Rules import GoalTarget, GoalTargetOptions, LogicPreference, LogicPreferenceOptions, PostGameCondition, \
     ShopItemRules
-from .data.Strings import Loc, Meta, APHelper, APConsole
+from .data.Strings import Loc, Meta, APHelper, APConsole, Itm
 from .data.Logic import is_goal_achieved, are_goals_achieved, Rulesets, ProgressionMode, ProgressionModeOptions
 from .AE3_Options import AE3Options, create_option_groups, slot_data_options
 from .Regions import create_regions
@@ -268,7 +270,7 @@ class AE3World(World):
         self.shop_rules.set_pgc_rules(self)
         self.item_pool = []
 
-        self.log_debug()
+        # self.log_debug()
 
     def create_regions(self):
         create_regions(self)
@@ -340,18 +342,22 @@ class AE3World(World):
 
         # Add Upgradeables
         if self.options.shuffle_morph_stocks:
-            self.item_pool += Items.Acc_Morph_Stock.to_items(self.player)
+            starting_amount: int = [self.options.start_inventory.keys()].count(Itm.acc_morph_stock.value)
+            self.item_pool += Items.Acc_Morph_Stock.to_items(self.player, starting_amount)
 
         if self.options.add_morph_extensions:
-            self.item_pool += Items.Acc_Morph_Ext.to_items(self.player)
+            starting_amount: int = [self.options.start_inventory.keys()].count(Itm.acc_morph_ext.value)
+            self.item_pool += Items.Acc_Morph_Ext.to_items(self.player, starting_amount)
 
         # Add Archipelago Items
         self.item_pool += self.progression.generate_keys(self)
 
         if self.options.shoppingsanity.value == 4:
+            amount = self.options.restock_progression.value + self.options.extra_shop_stocks.value
+            amount -= min(max([self.options.start_inventory.keys()].count(APHelper.shop_stock.value), amount), 0)
+
             self.item_pool.extend([self.create_item(APHelper.shop_stock.value)
-                                   for _ in range(self.options.restock_progression.value +
-                                                  self.options.extra_shop_stocks.value)])
+                                   for _ in range(amount)])
 
         # Fill remaining locations with Collectables
         unfilled : int = len(self.multiworld.get_unfilled_locations(self.player)) - len(self.item_pool)
@@ -369,6 +375,41 @@ class AE3World(World):
         slot_data[APHelper.progression.value] = self.progression.progression
         slot_data[APHelper.channel_order.value] = self.progression.order
         slot_data[APHelper.shop_progression.value] = self.shop_rules.sets
+
+        scouts: list[Location] = []
+        starting_items: list[str] = [Itm.gadget_net.value]
+        items: list[str] = [*self.item_name_groups[APHelper.equipment.value],
+                            *self.item_name_groups[APHelper.archipelago.value]]
+
+        if self.options.starting_gadget:
+            gadgets: list[str] = [Itm.gadget_club.value,
+                                  Itm.gadget_radar.value,
+                                  Itm.gadget_hoop.value,
+                                  Itm.gadget_sling.value,
+                                  Itm.gadget_swim.value,
+                                  Itm.gadget_rcc.value,
+                                  Itm.gadget_fly.value]
+
+            starting_items.append(gadgets[self.options.starting_gadget - 1])
+
+        if self.options.starting_morph:
+            starting_items.append(Itm.get_morphs_ordered()[self.options.starting_morph - 1])
+
+        if self.options.shuffle_chassis:
+            items.extend(Itm.get_chassis_by_id(no_default=True))
+
+        if self.options.shuffle_morph_stocks:
+            items.append(Itm.acc_morph_stock.value)
+
+        if self.options.add_morph_extensions:
+            items.append(Itm.acc_morph_ext.value)
+
+        items = [item for item in items if item not in starting_items]
+
+        for item in items:
+            scouts.extend([loc for loc in self.multiworld.find_item_locations(item, self.player)])
+
+        slot_data[APHelper.scouts.value] = self.random.sample(scouts, 20)
 
         return slot_data
 

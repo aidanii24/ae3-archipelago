@@ -2538,8 +2538,10 @@ class APHelper(BaseEnum):
     """
 
     # Progression
+    archipelago =           "Archipelago"
     channel_key =           "Channel Key"
     shop_stock =            "Shop Stock"
+    hint_book =             "Hint Book"
     victory =               "Victory"
 
     # Custom Items
@@ -2683,6 +2685,8 @@ class APHelper(BaseEnum):
     auto_clean_saves =          "auto_clean_saves"
     clean_on_excess =           "clean_on_excess"
     date_threshold =            "date_threshold"
+
+    scouts =                    "scouts"
 
     # Local Save
     last_itm_idx_prc =          "last_item_index_processed"
