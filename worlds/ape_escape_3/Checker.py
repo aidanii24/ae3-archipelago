@@ -451,7 +451,7 @@ async def receive_items(ctx : 'AE3Context'):
 
                 await setup_shopping_area(ctx)
             elif item.item_id == AP[APHelper.hint_book.value]:
-                await request_hint(ctx)
+                await request_hint(ctx, server_item.location)
 
             # Save State if desired
             if ctx.save_state_on_item_received and not ctx.pending_auto_save:
@@ -821,9 +821,20 @@ async def get_last_save_status(ctx : 'AE3Context'):
         "keys": [f"{APHelper.last_save_type.value}_{ctx.team}_{ctx.slot}"]
     }])
 
-async def request_hint(ctx : 'AE3Context'):
+async def request_hint(ctx: 'AE3Context', hint_book_loc_id: int):
+    if not ctx.pre_hinted:
+        raise AssertionError("HintGenerationError: A Hint was requested, but there are no locations scouted to hint!")
+
+    if hint_book_loc_id not in ctx.pre_hinted:
+        raise AssertionError(f"HintGenerationError: A Hint was not associated with the hint book!")
+
+    location_player: int = ctx.pre_hinted[hint_book_loc_id].player
+    location_id: int = ctx.pre_hinted[hint_book_loc_id].address
+
+    ctx.pre_hinted.pop(0)
+
     await ctx.send_msgs([{
         "cmd": "CreateHints",
-        "locations": [],
+        "locations": [location_id, location_player],
 
     }])
