@@ -476,7 +476,7 @@ class ProgressionMode:
         amount: int = len(self.progression) - 3 + world.options.post_game_condition_keys + world.options.extra_keys
 
         # Subtract from Starting Inventory
-        amount -= min(max([world.options.start_inventory.keys()].count(APHelper.channel_key.value), amount), 0)
+        amount = max(amount - world.options.start_inventory[APHelper.channel_key.value], 0)
 
         return Channel_Key.to_items(world.player, amount)
 
