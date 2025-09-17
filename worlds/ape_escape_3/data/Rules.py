@@ -1347,7 +1347,7 @@ class ShopItemRules:
         # If farmable areas are not available before Post Game, and Cheap Items have a minimum requirement of PGC,
         # All Shop Items will only be in logic after Post Game is unlocked.
         # This also removes any Shop Item from being a requirement for PGC
-        are_farmables_available: bool = self.are_farmables_available(world)
+        are_farmables_available: bool = ShopItemRules.are_farmables_available(world)
         if not are_farmables_available and world.options.cheap_items_minimum_requirement >= 100:
             self.post_game_entrances.add(Stage.entrance_travel_ab.value)
             self.post_game_items.update(SHOP_PERSISTENT_MASTER)
@@ -1415,6 +1415,8 @@ class ShopItemRules:
                 else:
                     self.post_game_items.update(SHOP_CHEAP_COLLECTION_MASTER)
 
+        # TODO: Shoppingsanity Enabled might need to be moved up, as it keeping it here gives it the effects of
+        # Cheap Items Early Amount/Cheap Items Minimum Requirement, which it should not get
         if world.options.shoppingsanity.value <= 1:
             return
         elif world.options.shoppingsanity.value == 2:
@@ -1470,21 +1472,6 @@ class ShopItemRules:
                 self.entrances.append(AE3EntranceMeta(entrance.name, Stage.region_shop_expensive.value,
                                                       entrance.destination))
 
-    def are_farmables_available(self, world: 'AE3World') -> bool:
-        if not world.options.shoppingsanity.value: return True
-
-        farming_areas: list[str] = [*STAGES_FARMABLE]
-        if world.options.farm_logic_sneaky_borgs:
-            farming_areas.extend([*STAGES_FARMABLE_SNEAKY_BORG])
-
-        post_game_channels: list[str] = [LEVELS_BY_ORDER[channel] for channel in
-                                         world.progression.progression[:sum(world.progression.order[-3:-2])]]
-        post_game_areas: list[str] = []
-        for channel in post_game_channels:
-            post_game_areas.extend(STAGES_DIRECTORY_LABEL[channel])
-
-        return any(stage in post_game_areas for stage in farming_areas)
-
     def set_pgc_rules(self, world : "AE3World") -> None:
         if not world.options.shoppingsanity.value: return
 
@@ -1503,6 +1490,22 @@ class ShopItemRules:
 
         for entrance in self.post_game_entrances:
             self.entrance_rules[entrance] = Rulesets(post_game_condition_rule)
+
+    @staticmethod
+    def are_farmables_available(world: 'AE3World') -> bool:
+        if not world.options.shoppingsanity.value: return True
+
+        farming_areas: list[str] = [*STAGES_FARMABLE]
+        if world.options.farm_logic_sneaky_borgs:
+            farming_areas.extend([*STAGES_FARMABLE_SNEAKY_BORG])
+
+        post_game_channels: list[str] = [LEVELS_BY_ORDER[channel] for channel in
+                                         world.progression.progression[:sum(world.progression.order[-3:-2])]]
+        post_game_areas: list[str] = []
+        for channel in post_game_channels:
+            post_game_areas.extend(STAGES_DIRECTORY_LABEL[channel])
+
+        return any(stage in post_game_areas for stage in farming_areas)
 
 # [<--- GOAL TARGETS --->]
 class Specter(GoalTarget):

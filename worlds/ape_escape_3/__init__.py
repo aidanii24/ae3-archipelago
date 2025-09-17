@@ -1,7 +1,6 @@
 from copy import deepcopy
 from typing import ClassVar, List, Optional, TextIO
 
-from test.hosting import world
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 from BaseClasses import MultiWorld, Tutorial, Location
@@ -406,7 +405,6 @@ class AE3World(World):
             scouts.extend([loc for loc in self.multiworld.find_item_locations(item, self.player)])
         scouts = self.random.sample(scouts, 20)
 
-        hint_books: list[int] = []
         if self.options.shoppingsanity != 2:
             hint_books = [self.location_name_to_id[book] for book in [*SHOP_COLLECTION_HINT_BOOK,
                                                                       *SHOP_PERSISTENT_HINT_BOOK]]
