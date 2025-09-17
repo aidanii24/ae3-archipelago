@@ -359,7 +359,7 @@ class AE3Context(CommonContext):
     is_cache_built : bool = False
     monkeys_checklist : Sequence[str] = MONKEYS_MASTER
     monkeys_checklist_count : int = 0
-    pre_hinted: dict[int, Location] = {}
+    pre_hinted: dict[int, dict[str, int]] = {}
 
     # Session Properties
     keys : int = 0

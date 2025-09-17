@@ -370,7 +370,7 @@ class AE3World(World):
              self.player)
 
     def generate_hint_book_hints(self):
-        hints: dict[int, Location] = {}
+        hints: dict[int, dict[str, int]] = {}
         scouts: list[Location] = []
         starting_items: list[str] = [Itm.gadget_net.value]
         items: list[str] = [*self.item_name_groups[APHelper.equipment.value],
@@ -409,10 +409,13 @@ class AE3World(World):
             hint_books = [self.location_name_to_id[book] for book in [*SHOP_COLLECTION_HINT_BOOK,
                                                                       *SHOP_PERSISTENT_HINT_BOOK]]
         else:
-            hint_books = [self.location_name_to_id[book] for book in SHOP_HINT_BOOK]
+            hint_books = [{id:self.location_name_to_id[book]} for book in SHOP_HINT_BOOK]
 
         for i, loc in enumerate(scouts):
-            hints[hint_books[i]] = loc
+            hints[hint_books[i]] = {
+                "id"      : loc.address,
+                "player"  : loc.player
+            }
 
         return hints
 
