@@ -105,7 +105,7 @@ class UpgradeableItem(AE3ItemMeta):
 
     def to_items(self, player : int, reduce: int = 0,
                  classification : ItemClassification = ItemClassification.useful) -> list[AE3Item]:
-        return [self.to_item(player, classification) for _ in range(min(max(self.limit, self.limit - reduce), 0))]
+        return [self.to_item(player, classification) for _ in range(max(self.limit - reduce, 0))]
 
 class ArchipelagoItem(AE3ItemMeta):
     """Base class for any non in-game item"""
