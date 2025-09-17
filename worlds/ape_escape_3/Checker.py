@@ -828,8 +828,8 @@ async def request_hint(ctx: 'AE3Context', hint_book_loc_id: int):
     if hint_book_loc_id not in ctx.pre_hinted:
         raise AssertionError(f"HintGenerationError: A Hint was not associated with the hint book!")
 
-    location_player: int = ctx.pre_hinted[hint_book_loc_id].player
-    location_id: int = ctx.pre_hinted[hint_book_loc_id].address
+    location_player: int = ctx.pre_hinted[hint_book_loc_id]["id"]
+    location_id: int = ctx.pre_hinted[hint_book_loc_id]["player"]
 
     ctx.pre_hinted.pop(0)
 
