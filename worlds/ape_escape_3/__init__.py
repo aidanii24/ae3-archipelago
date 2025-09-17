@@ -409,7 +409,7 @@ class AE3World(World):
             hint_books = [self.location_name_to_id[book] for book in [*SHOP_COLLECTION_HINT_BOOK,
                                                                       *SHOP_PERSISTENT_HINT_BOOK]]
         else:
-            hint_books = [{id:self.location_name_to_id[book]} for book in SHOP_HINT_BOOK]
+            hint_books = [self.location_name_to_id[book] for book in SHOP_HINT_BOOK]
 
         for i, loc in enumerate(scouts):
             hints[hint_books[i]] = {
