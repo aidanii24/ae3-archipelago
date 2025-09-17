@@ -1386,6 +1386,9 @@ class ShopItemRules:
             Stage.entrance_shop_morph.value         : Rulesets(AccessRule.MORPH),
         }
 
+        if world.options.shoppingsanity.value <= 1:
+            return
+
         post_game_start_index: int = sum(world.progression.progression[:-1])
         post_game_end_index: int = post_game_start_index + world.progression.progression[-2]
         post_game_channels: list[str] = [LEVELS_BY_ORDER[channel] for channel in
@@ -1415,11 +1418,7 @@ class ShopItemRules:
                 else:
                     self.post_game_items.update(SHOP_CHEAP_COLLECTION_MASTER)
 
-        # TODO: Shoppingsanity Enabled might need to be moved up, as it keeping it here gives it the effects of
-        # Cheap Items Early Amount/Cheap Items Minimum Requirement, which it should not get
-        if world.options.shoppingsanity.value <= 1:
-            return
-        elif world.options.shoppingsanity.value == 2:
+        if world.options.shoppingsanity.value == 2:
             if cheap_items_early_amount:
                 for category in SHOP_CHEAP_COLLECTION_INDEX:
                     self.cheap_early_items.extend(category[:cheap_items_early_amount])

@@ -341,19 +341,17 @@ class AE3World(World):
 
         # Add Upgradeables
         if self.options.shuffle_morph_stocks:
-            starting_amount: int = self.options.start_inventory[Itm.acc_morph_stock.value]
-            self.item_pool += Items.Acc_Morph_Stock.to_items(self.player, starting_amount)
+            self.item_pool += Items.Acc_Morph_Stock.to_items(self.player)
 
         if self.options.add_morph_extensions:
-            starting_amount: int = self.options.start_inventory[Itm.acc_morph_ext.value]
-            self.item_pool += Items.Acc_Morph_Ext.to_items(self.player, starting_amount)
+            self.item_pool += Items.Acc_Morph_Ext.to_items(self.player)
 
         # Add Archipelago Items
         self.item_pool += self.progression.generate_keys(self)
 
         if self.options.shoppingsanity.value == 4:
             amount = self.options.restock_progression.value + self.options.extra_shop_stocks.value
-            amount = max(amount - self.options.start_inventory[APHelper.shop_stock.value], 0)
+
             self.item_pool.extend([self.create_item(APHelper.shop_stock.value)
                                    for _ in range(amount)])
 
