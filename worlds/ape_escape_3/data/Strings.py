@@ -2672,6 +2672,7 @@ class APHelper(BaseEnum):
 
     early_free_play =           "early_free_play"
     enable_monkey_mart =        "enable_monkey_mart"
+    hint_book_hints =           "hints_from_hintbooks"
     ticket_consolation =        "lucky_ticket_consolation_effects"
     consolation_blacklist =     "consolation_effects_blacklist"
 
