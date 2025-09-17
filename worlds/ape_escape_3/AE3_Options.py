@@ -698,6 +698,14 @@ class EnableMonkeyMart(DefaultOnToggle):
     """
     display_name : str = "Enable Monkey Mart"
 
+class HintsFromHintBooks(Toggle):
+    """
+    Choose if the Hint Book shop items will provide hints instead of items. Shoppingsanity must be at least enabled.
+
+    Default: Disabled
+    """
+    display_name : str = "Hints from Hint Books"
+
 class LuckyTicketConsolationEffects(Toggle):
     """
     Choose if Lucky Ticket Consolation Effects should be enabled. When you get a consolation prize, get a chance to
@@ -760,6 +768,7 @@ ae3_option_groups : dict[str, list] = {
                                    ExtraShopStocks],
     "Preferences"               : [EarlyFreePlay,
                                    EnableMonkeyMart,
+                                   HintsFromHintBooks,
                                    LuckyTicketConsolationEffects,
                                    ConsolationEffectsBlacklist],
     "Sync Options"              : [DeathLink]
@@ -810,6 +819,7 @@ class AE3Options(PerGameCommonOptions):
 
     early_free_play                         : EarlyFreePlay
     enable_monkey_mart                      : EnableMonkeyMart
+    hints_from_hintbooks                    : HintsFromHintBooks
     lucky_ticket_consolation_effects        : LuckyTicketConsolationEffects
     consolation_effects_blacklist           : ConsolationEffectsBlacklist
 
@@ -870,6 +880,7 @@ def slot_data_options() -> list[str]:
 
         APHelper.early_free_play.value,
         APHelper.enable_monkey_mart.value,
+        APHelper.hint_book_hints.value,
         APHelper.ticket_consolation.value,
         APHelper.consolation_blacklist.value,
 

@@ -366,6 +366,17 @@ class AE3World(World):
         self.multiworld.completion_condition[self.player] = Rulesets(self.goal_target.enact()).condense(
              self.player)
 
+    def pre_fill(self) -> None:
+        if self.options.shoppingsanity.value and self.options.hints_from_hintbooks:
+            if self.option.shoppingsanity.value == 2:
+                hint_books = [*SHOP_PERSISTENT_HINT_BOOK, *SHOP_COLLECTION_HINT_BOOK]
+            else:
+                hint_books = [*SHOP_HINT_BOOK]
+
+            for hint_book in hint_books:
+                self.multiworld.get_location(hint_book, self.player).place_locked_item(
+                    self.create_item(APHelper.hint_book.value))
+
     def generate_hint_book_hints(self):
         hints: dict[int, dict[str, int]] = {}
         scouts: list[Location] = []
@@ -422,7 +433,7 @@ class AE3World(World):
         slot_data[APHelper.channel_order.value] = self.progression.order
         slot_data[APHelper.shop_progression.value] = self.shop_rules.sets
 
-        if self.options.shoppingsanity:
+        if self.options.shoppingsanity and self.options.hints_from_hintbooks:
             slot_data[APHelper.hints.value] = self.generate_hint_book_hints()
 
         return slot_data
