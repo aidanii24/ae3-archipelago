@@ -475,9 +475,6 @@ class ProgressionMode:
         # Keys required by post game is handled by its corresponding option
         amount: int = len(self.progression) - 3 + world.options.post_game_condition_keys + world.options.extra_keys
 
-        # Subtract from Starting Inventory
-        amount = max(amount - world.options.start_inventory[APHelper.channel_key.value], 0)
-
         return Channel_Key.to_items(world.player, amount)
 
     def regenerate_level_select_entrances(self):
