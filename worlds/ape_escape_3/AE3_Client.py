@@ -105,6 +105,16 @@ class AE3CommandProcessor(ClientCommandProcessor):
                     logger.info(f"\n         Progression: {self.ctx.progression}")
                     logger.info(f"         Channel Keys: {self.ctx.keys} / {required_keys} "
                                 f"{f"+ {self.ctx.extra_keys} ({all_keys})" if self.ctx.extra_keys else ""}")
+
+                    if self.ctx.shoppingsanity > 2:
+                        target: int = math.ceil(28 / self.ctx.shop_progression) * self.ctx.shoppingsanity
+                        if self.ctx.shoppingsanity == 3:
+                            logger.info(f"\n         Shop Availability: {self.ctx.shop_progress} / {target}")
+                        elif self.ctx.shoppingsanity == 4:
+                            all_stocks: int = target + self.ctx.extra_shop_stocks
+                            logger.info(f"\n         Shop Stocks: {self.ctx.shop_progress} / {target}"
+                                        f"+ {self.ctx.extra_shop_stocks} ({all_stocks})")
+
                     logger.info(f"         Available Channels: {self.ctx.unlocked_channels + 1} / "
                                 f"{sum(self.ctx.progression.progression[:-1]) + 1}")
 
