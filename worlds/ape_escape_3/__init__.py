@@ -269,7 +269,7 @@ class AE3World(World):
         self.shop_rules.set_pgc_rules(self)
         self.item_pool = []
 
-        self.log_debug()
+        # self.log_debug()
 
     def create_regions(self):
         create_regions(self)
@@ -368,7 +368,7 @@ class AE3World(World):
 
     def pre_fill(self) -> None:
         if self.options.shoppingsanity.value and self.options.hints_from_hintbooks:
-            if self.option.shoppingsanity.value == 2:
+            if self.options.shoppingsanity.value == 2:
                 hint_books = [*SHOP_PERSISTENT_HINT_BOOK, *SHOP_COLLECTION_HINT_BOOK]
             else:
                 hint_books = [*SHOP_HINT_BOOK]
