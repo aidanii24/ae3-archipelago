@@ -711,7 +711,6 @@ class LuckyTicketConsolationEffects(Toggle):
     Choose if Lucky Ticket Consolation Effects should be enabled. When you get a consolation prize, get a chance to
     activate a special effect that can affect the Archipelago experience.
     """
-    visibility = Visibility.none
     display_name : str = "Lucky Ticket Consolation Effects"
 
 class ConsolationEffectsBlacklist(OptionList):
@@ -722,7 +721,6 @@ class ConsolationEffectsBlacklist(OptionList):
     If you wish to enable these effects, please refer to the settings in your host.yaml, or contact your game host
     in charge of generating the game.
     """
-    visibility = Visibility.none
     display_name : str = "Lucky Ticket Consolation Effects Blacklist"
     default = ["Bypass Post-Game Condition", "Instant Goal"]
 

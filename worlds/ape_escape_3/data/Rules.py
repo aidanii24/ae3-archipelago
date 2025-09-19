@@ -281,6 +281,9 @@ class PostGameCondition:
         self.passed = False
         return False
 
+    def bypass(self):
+        self.passed = True
+
     def get_progress(self, ctx : 'AE3Context') -> dict[str, list[int]]:
         total_checked: set[int] = ctx.locations_checked.copy()
 

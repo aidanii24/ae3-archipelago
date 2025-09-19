@@ -368,7 +368,7 @@ class AE3Context(CommonContext):
     is_cache_built : bool = False
     monkeys_checklist : Sequence[str] = MONKEYS_MASTER
     monkeys_checklist_count : int = 0
-    pre_hinted: dict[int, dict[str, int]] = {}
+    pre_hinted: dict[int, dict] = {}
 
     # Session Properties
     keys : int = 0
@@ -376,10 +376,13 @@ class AE3Context(CommonContext):
     current_channel: str = None
     current_stage : str = None
     current_game_mode : int = 0x0
+    current_coins: int = 0
+    current_jackets : int = 0
     in_travel_station : bool = False
     is_using_data_desk: bool = False
     in_shopping_area : bool = False
     is_shop_ready: bool = False
+    has_bought_ticket: bool = False
     last_selected_channel_index : int = -1
     suppress_progress_correction : bool = False
     character : int = -1
@@ -440,6 +443,8 @@ class AE3Context(CommonContext):
 
     early_free_play : bool = False
     monkey_mart : bool = True
+    ticket_consolation: bool = True
+    consolation_blacklist: list[str] = ["Bypass Post-Game Condition", "Instant Goal"]
 
     state_slot : int = -1
     death_link : bool = False
@@ -625,6 +630,13 @@ class AE3Context(CommonContext):
             if APHelper.early_free_play.value in data:
                 self.early_free_play = data[APHelper.early_free_play.value]
                 self.alt_freeplay = self.early_free_play
+
+            ## Lucky Ticket Consolation Effect
+            if APHelper.ticket_consolation.value in data:
+                self.ticket_consolation = data[APHelper.ticket_consolation.value]
+
+                if APHelper.consolation_blacklist.value in data:
+                    self.consolation_blacklist = data[APHelper.consolation_blacklist.value]
 
             ## Enable Monkey Mart
             if APHelper.enable_monkey_mart.value in data:

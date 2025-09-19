@@ -199,6 +199,9 @@ class AEPS2Interface:
     def get_character(self) -> int:
         return self.pine.read_int32(self.addresses.GameStates[Game.character.value])
 
+    def get_jackets(self) -> int:
+        return self.pine.read_int32(self.addresses.GameStates[Game.jackets.value])
+
     def get_cookies(self) -> float:
         return self.pine.read_float(self.addresses.GameStates[Game.cookies.value])
 
@@ -207,6 +210,9 @@ class AEPS2Interface:
 
     def get_morph_stock(self):
         return int(self.pine.read_float(self.addresses.GameStates[Game.morph_stocks.value]) / 100)
+
+    def get_coins(self):
+        return int(self.pine.read_int32(self.addresses.GameStates[Game.chips.value]))
 
     def is_equipment_unlocked(self, address_name : str) -> bool:
         # Redirect address to RC Car if the unlocked equipment is an RC Car Chassis
@@ -309,6 +315,23 @@ class AEPS2Interface:
             return False
 
         return as_string == Game.save.value
+
+    def is_in_monkey_mart(self):
+        address: int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
+                                                 Game.interact_data.value)
+        address += self.addresses.GameStates[Game.shop.value]
+
+        # Return False when the address is invalid
+        if address <= 0x0:
+            return False
+
+        as_bytes: bytes = self.pine.read_bytes(address, 8)
+        try:
+            as_string: str = as_bytes.decode().replace("\x00", "")
+        except UnicodeDecodeError:
+            return False
+
+        return as_string == Game.shop_super.value
 
     def is_camera_interacted(self) -> bool:
         address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
