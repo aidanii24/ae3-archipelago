@@ -1,5 +1,6 @@
 from copy import deepcopy
 from typing import ClassVar, List, Optional, TextIO
+import logging
 
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
@@ -103,6 +104,8 @@ class AE3World(World):
     progression : ProgressionMode
     post_game_condition : PostGameCondition
     shop_rules : ShopItemRules
+
+    logger: logging.Logger = logging.getLogger()
 
     def __init__(self, multiworld : MultiWorld, player: int):
         self.item_pool : List[AE3Item] = []
@@ -357,6 +360,9 @@ class AE3World(World):
 
         # Fill remaining locations with Collectables
         unfilled : int = len(self.multiworld.get_unfilled_locations(self.player)) - len(self.item_pool)
+        if self.options.shoppingsanity.value and self.options.hints_from_hintbooks.value:
+            unfilled -= 20
+
         self.item_pool += generate_collectables(self.random, self.player, unfilled)
 
         # Add Items to ItemPool
@@ -367,7 +373,7 @@ class AE3World(World):
              self.player)
 
     def pre_fill(self) -> None:
-        if self.options.shoppingsanity.value and self.options.hints_from_hintbooks:
+        if self.options.shoppingsanity.value and self.options.hints_from_hintbooks.value:
             if self.options.shoppingsanity.value == 2:
                 hint_books = [*SHOP_PERSISTENT_HINT_BOOK, *SHOP_COLLECTION_HINT_BOOK]
             else:
@@ -411,9 +417,17 @@ class AE3World(World):
 
         for item in items:
             scouts.extend([loc for loc in self.multiworld.find_item_locations(item, self.player)])
+
+        # Use fillers when not enough Progressive Item Locations are scouted
+        if len(scouts) < 20:
+            fillers: list[str] = [Itm.jacket.value, Itm.energy_mega.value, Itm.cookie_giant.value, Itm.chip_10x.value]
+            for i, filler in enumerate(fillers):
+                scouts.extend([loc for loc in self.multiworld.find_item_locations(filler, self.player)])
+                if len(scouts) >= 20: break
+
         scouts = self.random.sample(scouts, 20)
 
-        if self.options.shoppingsanity != 2:
+        if self.options.shoppingsanity == 2:
             hint_books = [self.location_name_to_id[book] for book in [*SHOP_COLLECTION_HINT_BOOK,
                                                                       *SHOP_PERSISTENT_HINT_BOOK]]
         else:
@@ -433,7 +447,7 @@ class AE3World(World):
         slot_data[APHelper.channel_order.value] = self.progression.order
         slot_data[APHelper.shop_progression.value] = self.shop_rules.sets
 
-        if self.options.shoppingsanity and self.options.hints_from_hintbooks:
+        if self.options.shoppingsanity.value and self.options.hints_from_hintbooks.value:
             slot_data[APHelper.hints.value] = self.generate_hint_book_hints()
 
         return slot_data

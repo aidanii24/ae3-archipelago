@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Set, List
 import math
+import enum
 
 from NetUtils import NetworkItem
 
@@ -17,6 +18,12 @@ from .data import Items
 if TYPE_CHECKING:
     from .AE3_Client import AE3Context
 
+class HintStatus(enum.IntEnum):
+    HINT_UNSPECIFIED = 0
+    HINT_NO_PRIORITY = 10
+    HINT_AVOID = 20
+    HINT_PRIORITY = 30
+    HINT_FOUND = 40
 
 ### [< --- CHECKS --- >]
 async def check_background_states(ctx : 'AE3Context'):
@@ -828,13 +835,11 @@ async def request_hint(ctx: 'AE3Context', hint_book_loc_id: int):
     if hint_book_loc_id not in ctx.pre_hinted:
         raise AssertionError(f"HintGenerationError: A Hint was not associated with the hint book!")
 
-    location_player: int = ctx.pre_hinted[hint_book_loc_id]["id"]
-    location_id: int = ctx.pre_hinted[hint_book_loc_id]["player"]
-
-    ctx.pre_hinted.pop(0)
+    location_player: int = ctx.pre_hinted[hint_book_loc_id]["player"]
+    location_id: int = ctx.pre_hinted[hint_book_loc_id]["id"]
 
     await ctx.send_msgs([{
         "cmd": "CreateHints",
-        "locations": [location_id, location_player],
-
+        "locations": [location_id],
+        "player": location_player,
     }])

@@ -8,7 +8,6 @@ import asyncio
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled, \
                           ClientStatus
 from settings import get_settings
-from BaseClasses import Location
 import Utils
 
 from .data.Strings import Meta, APConsole
@@ -638,7 +637,7 @@ class AE3Context(CommonContext):
 
             ## Pre-scouted
             if APHelper.hints.value in data:
-                self.pre_hinted = data[APHelper.hints.value]
+                self.pre_hinted = {int(key) : value for key, value in data[APHelper.hints.value].items()}
 
             # Initiate Checked Locations Cache Rebuilding if necessary:
             if not self.locations_checked and not self.cache_missing:
