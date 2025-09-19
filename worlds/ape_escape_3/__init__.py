@@ -383,9 +383,10 @@ class AE3World(World):
                 self.multiworld.get_location(hint_book, self.player).place_locked_item(
                     self.create_item(APHelper.hint_book.value))
 
-    def generate_hint_book_hints(self):
-        hints: dict[int, dict[str, int]] = {}
-        scouts: list[Location] = []
+    def generate_hints(self):
+        hints: dict[int, dict[str, int] | list[dict[str, int]]] = {}
+        progressive_scouts: list[dict[str, int]] = []
+        book_scouts: list[Location] = []
         starting_items: list[str] = [Itm.gadget_net.value]
         items: list[str] = [*self.item_name_groups[APHelper.equipment.value],
                             *self.item_name_groups[APHelper.archipelago.value]]
@@ -416,28 +417,40 @@ class AE3World(World):
         items = [item for item in items if item not in starting_items]
 
         for item in items:
-            scouts.extend([loc for loc in self.multiworld.find_item_locations(item, self.player)])
+            book_scouts.extend([loc for loc in self.multiworld.find_item_locations(item, self.player)])
 
         # Use fillers when not enough Progressive Item Locations are scouted
-        if len(scouts) < 20:
+        if self.options.hints_from_hintbooks and len(book_scouts) < 20:
+            if self.options.lucky_ticket_consolation_effects:
+                for scout in book_scouts:
+                    progressive_scouts.append({"id": scout.address, "player": scout.player})
+
             fillers: list[str] = [Itm.jacket.value, Itm.energy_mega.value, Itm.cookie_giant.value, Itm.chip_10x.value]
             for i, filler in enumerate(fillers):
-                scouts.extend([loc for loc in self.multiworld.find_item_locations(filler, self.player)])
-                if len(scouts) >= 20: break
+                book_scouts.extend([loc for loc in self.multiworld.find_item_locations(filler, self.player)])
+                if len(book_scouts) >= 20: break
 
-        scouts = self.random.sample(scouts, 20)
+        if self.options.lucky_ticket_consolation_effects:
+            if not progressive_scouts:
+                for scout in book_scouts:
+                    progressive_scouts.append({"id": scout.address, "player": scout.player})
 
-        if self.options.shoppingsanity == 2:
-            hint_books = [self.location_name_to_id[book] for book in [*SHOP_COLLECTION_HINT_BOOK,
-                                                                      *SHOP_PERSISTENT_HINT_BOOK]]
-        else:
-            hint_books = [self.location_name_to_id[book] for book in SHOP_HINT_BOOK]
+            hints[0] = progressive_scouts
 
-        for i, loc in enumerate(scouts):
-            hints[hint_books[i]] = {
-                "id"      : loc.address,
-                "player"  : loc.player
-            }
+        if self.options.hints_from_hintbooks:
+            book_scouts = self.random.sample(book_scouts, 20)
+
+            if self.options.shoppingsanity == 2:
+                hint_books = [self.location_name_to_id[book] for book in [*SHOP_COLLECTION_HINT_BOOK,
+                                                                          *SHOP_PERSISTENT_HINT_BOOK]]
+            else:
+                hint_books = [self.location_name_to_id[book] for book in SHOP_HINT_BOOK]
+
+            for i, loc in enumerate(book_scouts):
+                hints[hint_books[i]] = {
+                    "id"      : loc.address,
+                    "player"  : loc.player
+                }
 
         return hints
 
@@ -447,8 +460,9 @@ class AE3World(World):
         slot_data[APHelper.channel_order.value] = self.progression.order
         slot_data[APHelper.shop_progression.value] = self.shop_rules.sets
 
-        if self.options.shoppingsanity.value and self.options.hints_from_hintbooks.value:
-            slot_data[APHelper.hints.value] = self.generate_hint_book_hints()
+        if (self.options.shoppingsanity.value and self.options.hints_from_hintbooks.value or
+                self.options.lucky_ticket_consolation_effects):
+            slot_data[APHelper.hints.value] = self.generate_hints()
 
         return slot_data
 

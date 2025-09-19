@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING, Set, List
+import random
 import math
 import enum
 
@@ -14,9 +15,11 @@ from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_
     SHOP_CATEGORIES_COLLECTION_DIRECTORY, SHOP_COLLECTION_DIRECTORY, SHOP_PERSISTENT_MASTER, SHOP_PROGRESSION_MORPH, \
     SHOP_BONUS_RC_CARS, SHOP_COLLECTION_BONUS_RC_CARS
 from .data import Items
+from .data.Distribution import CONSOLATION_RATES
 
 if TYPE_CHECKING:
     from .AE3_Client import AE3Context
+
 
 class HintStatus(enum.IntEnum):
     HINT_UNSPECIFIED = 0
@@ -226,17 +229,41 @@ async def setup_level_select(ctx : 'AE3Context'):
             ctx.has_saved_on_transition = False
 
 async def setup_shopping_area(ctx : 'AE3Context'):
-    if ctx.in_shopping_area:
-        if ctx.shoppingsanity >= 3:
-            ctx.suppress_progress_correction = True
+    if ctx.shoppingsanity >= 3:
+        ctx.suppress_progress_correction = True
 
-            progress = ctx.shop_progress * ctx.shop_progression
-            if ctx.shoppingsanity == 3:
-                progress = ctx.keys * ctx.shop_progression
-                if progress >= 27 and not ctx.post_game_condition.check(ctx):
-                    progress = math.floor(27 / ctx.shop_progression) * ctx.shop_progression
+        progress = ctx.shop_progress * ctx.shop_progression
+        if ctx.shoppingsanity == 3:
+            progress = ctx.keys * ctx.shop_progression
+            if progress >= 27 and not ctx.post_game_condition.check(ctx):
+                progress = math.floor(27 / ctx.shop_progression) * ctx.shop_progression
 
-            ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(progress, 27)])
+        ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(progress, 27)])
+
+    gui_status = ctx.ipc.get_gui_status()
+    if gui_status > 0 and ctx.ipc.is_in_monkey_mart():
+        new_coins: int = ctx.ipc.get_coins()
+        if not ctx.has_bought_ticket and (gui_status == 1 or ctx.current_coins - new_coins == 30):
+            ctx.has_bought_ticket = True
+            ctx.current_coins = new_coins
+        elif ctx.has_bought_ticket:
+            if gui_status == 3:
+                ctx.current_coins = new_coins
+                ctx.has_bought_ticket = False
+            elif gui_status == 2:
+                new_jackets = ctx.ipc.get_jackets()
+
+                coin_diff = new_coins - ctx.current_coins
+                jacket_diff = new_jackets - ctx.current_jackets
+
+                rate_type: int = 0
+                if coin_diff == 30 or jacket_diff == 1:
+                    rate_type = 0
+                elif jacket_diff == 3:
+                    rate_type = 1
+
+                await roll_consolation(ctx, rate_type)
+                ctx.has_bought_ticket = False
 
 async def set_persistent_values(ctx : 'AE3Context'):
     stocks: int = ctx.ipc.get_morph_stock()
@@ -368,7 +395,8 @@ async def setup_area(ctx : 'AE3Context'):
             dispatch_dummy_morph(ctx, True)
 
             # Set Shopping Area Progress if in Shopping Area
-            await setup_shopping_area(ctx)
+            if ctx.in_shopping_area:
+                await setup_shopping_area(ctx)
 
             ctx.current_channel = ctx.ipc.get_channel()
             ctx.current_stage = ctx.ipc.get_stage()
@@ -458,7 +486,7 @@ async def receive_items(ctx : 'AE3Context'):
 
                 await setup_shopping_area(ctx)
             elif item.item_id == AP[APHelper.hint_book.value]:
-                await request_hint(ctx, server_item.location)
+                await get_hint_book_hint(ctx, server_item.location)
 
             # Save State if desired
             if ctx.save_state_on_item_received and not ctx.pending_auto_save:
@@ -536,6 +564,12 @@ async def receive_items(ctx : 'AE3Context'):
             else:
                 ctx.ipc.give_collectable(item.resource, i.amount, maximum, ctx.in_shopping_area)
 
+                ## Update Locally Tracked Items if so
+                if item.resource == Game.chips.value:
+                    ctx.current_coins += i.amount
+                elif item.resource == Game.jackets.value:
+                    ctx.current_jackets += 1
+
     if received:
         # Save Last Item Index Processed into Game Memory
         ctx.ipc.set_last_item_index(ctx.last_item_processed_index)
@@ -594,7 +628,8 @@ async def resync_important_items(ctx : 'AE3Context'):
         if ctx.shop_progress != shop_stocks * ctx.shop_progression:
             ctx.shop_progress = shop_stocks * ctx.shop_progression
 
-            await setup_shopping_area(ctx)
+            if ctx.in_shopping_area:
+                await setup_shopping_area(ctx)
 
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
@@ -828,7 +863,84 @@ async def get_last_save_status(ctx : 'AE3Context'):
         "keys": [f"{APHelper.last_save_type.value}_{ctx.team}_{ctx.slot}"]
     }])
 
-async def request_hint(ctx: 'AE3Context', hint_book_loc_id: int):
+async def roll_consolation(ctx : 'AE3Context', rate_type: int):
+    rates: dict[str, float] = {}
+    for p, r in CONSOLATION_RATES[rate_type].items():
+        if p in ctx.consolation_blacklist:
+            if APHelper.nothing.value not in rates:
+                rates[APHelper.nothing.value] = r
+            else:
+                rates[APHelper.nothing.value] += r
+
+        rates[p] = r
+
+    prize: str = random.choices([*rates.keys()], [*rates.values()])[0]
+
+    if prize in PRIZES:
+        await PRIZES[prize](ctx)
+
+async def hint_random(ctx : 'AE3Context'):
+    await request_hint(ctx, random.choice(*ctx.locations_name_to_id.values()), ctx.slot)
+
+async def hint_progressive(ctx : 'AE3Context'):
+    if 0 not in ctx.pre_hinted: return;
+
+    chosen: dict[str, int] = random.choice(*ctx.pre_hinted[0])
+
+    location_id: int = chosen["id"]
+    player: int = chosen["player"]
+
+    await request_hint(ctx, location_id, player)
+
+async def check_random(ctx : 'AE3Context'):
+    candidates: list[int] = [*set(ctx.locations_name_to_id.values()).difference(ctx.post_game_condition.location_ids,
+                                                                                ctx.goal_target.location_ids)]
+
+    if not candidates:
+        await hint_random(ctx)
+        return
+
+    location: int = random.choice(candidates)
+    await send_locations(ctx, [location])
+
+async def check_progressive(ctx : 'AE3Context'):
+    candidates: list[int] = [value["id"] for key, value in ctx.pre_hinted[0]
+                             if value["player"] == ctx.slot]
+
+    if not candidates:
+        await hint_progressive(ctx)
+        return
+
+    location: int = random.choice(candidates)
+    await send_locations(ctx, [location])
+
+async def check_pgc_random(ctx : 'AE3Context'):
+    candidates: list[int] = []
+    for ids in ctx.post_game_condition.location_ids.values():
+        candidates.extend(ids)
+
+    if not candidates:
+        await hint_random(ctx)
+        return
+
+    location: int = random.choice(candidates)
+    await send_locations(ctx, [location])
+
+async def check_gt_random(ctx : 'AE3Context'):
+    if len(ctx.goal_target.location_ids) < 10:
+        await hint_random(ctx)
+        return
+
+    location: int = random.choice(*ctx.goal_target.location_ids)
+    await send_locations(ctx, [location])
+
+async def bypass_pgc(ctx : 'AE3Context'):
+    ctx.post_game_condition.bypass()
+
+async def instant_goal(ctx : 'AE3Context'):
+    await ctx.goal()
+
+async def get_hint_book_hint(ctx : 'AE3Context', hint_book_loc_id: int):
     if not ctx.pre_hinted:
         raise AssertionError("HintGenerationError: A Hint was requested, but there are no locations scouted to hint!")
 
@@ -838,8 +950,25 @@ async def request_hint(ctx: 'AE3Context', hint_book_loc_id: int):
     location_player: int = ctx.pre_hinted[hint_book_loc_id]["player"]
     location_id: int = ctx.pre_hinted[hint_book_loc_id]["id"]
 
+    await request_hint(ctx, location_id, location_player)
+
+async def send_locations(ctx : 'AE3Context', locations: list[int]):
+    await ctx.send_msgs([{"cmd": "LocationChecks", "locations": locations}])
+
+async def request_hint(ctx : 'AE3Context', location_id: int, player: int):
     await ctx.send_msgs([{
         "cmd": "CreateHints",
         "locations": [location_id],
-        "player": location_player,
+        "player": player,
     }])
+
+PRIZES: dict = {
+    APHelper.hint_filler.value              : hint_random,
+    APHelper.hint_progressive.value         : hint_progressive,
+    APHelper.check_filler.value             : check_random,
+    APHelper.check_progressive.value        : check_progressive,
+    APHelper.check_pgc.value                : check_pgc_random,
+    APHelper.check_gt.value                 : check_gt_random,
+    APHelper.bypass_pgc.value               : bypass_pgc,
+    APHelper.instant_goal.value             : check_gt_random,
+}

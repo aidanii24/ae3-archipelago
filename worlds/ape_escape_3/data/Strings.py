@@ -2452,6 +2452,7 @@ class Game(BaseEnum):
     interact_data =         "Interact Data"
     status_tracker =        "Status Tracker"
     data_desk =             "Data Desk"
+    shop =                  "Shop"
     pipo_camera =           "Pipo Camera"
     cellphone =             "Cellphone"
     cellphone2 =            "Cellphone2"
@@ -2463,6 +2464,7 @@ class Game(BaseEnum):
     conte =                 "conte"
 
     save =                  "save"
+    shop_super =            "super"
 
     # Resources
     jackets =               "Jackets"
@@ -2714,6 +2716,17 @@ class APHelper(BaseEnum):
     arg_tags =                  "tags"
 
     last_save_type =            "AE3_Is_Last_Save_Normal"
+
+    ## Lucky Ticket Prizes
+    nothing =                   "Nothing"
+    hint_filler =               "Hint Filler"
+    hint_progressive =          "Hint Progressive"
+    check_filler =              "Check Filler"
+    check_progressive =         "Check Progressive"
+    check_pgc =                 "Check PGC"
+    check_gt =                  "Check GT"
+    bypass_pgc =                "Bypass Post-Game Condition"
+    instant_goal =              "Instant Goal"
 
 class APConsole:
     """
