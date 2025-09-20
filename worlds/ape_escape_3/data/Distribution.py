@@ -1,5 +1,5 @@
 from typing import Sequence
-from Strings import APHelper
+from .Strings import APHelper
 
 RATES0: dict[str, float] = {
     APHelper.nothing.value              : 70.0,

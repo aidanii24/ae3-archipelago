@@ -241,29 +241,40 @@ async def setup_shopping_area(ctx : 'AE3Context'):
         ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(progress, 27)])
 
     gui_status = ctx.ipc.get_gui_status()
-    if gui_status > 0 and ctx.ipc.is_in_monkey_mart():
+    if ctx.ticket_consolation and gui_status > 0 and ctx.ipc.is_in_monkey_mart():
         new_coins: int = ctx.ipc.get_coins()
-        if not ctx.has_bought_ticket and (gui_status == 1 or ctx.current_coins - new_coins == 30):
+        print("Bought Ticket?", ctx.has_bought_ticket)
+        print("Coin difference:", ctx.current_coins - new_coins)
+        if not ctx.has_bought_ticket and ctx.current_coins - new_coins == 30:
+            print(" >>> Bought Ticket!")
             ctx.has_bought_ticket = True
             ctx.current_coins = new_coins
         elif ctx.has_bought_ticket:
             if gui_status == 3:
+                print(" --- Won Ruffle!")
                 ctx.current_coins = new_coins
                 ctx.has_bought_ticket = False
             elif gui_status == 2:
+                print(" ... Lost Raffle!")
                 new_jackets = ctx.ipc.get_jackets()
 
                 coin_diff = new_coins - ctx.current_coins
                 jacket_diff = new_jackets - ctx.current_jackets
 
-                rate_type: int = 0
+                rate_type: int = -1
                 if coin_diff == 30 or jacket_diff == 1:
                     rate_type = 0
                 elif jacket_diff == 3:
                     rate_type = 1
 
-                await roll_consolation(ctx, rate_type)
+                if rate_type >= 0:
+                    await roll_consolation(ctx, rate_type)
+
                 ctx.has_bought_ticket = False
+                ctx.current_coins = new_coins
+                ctx.current_jackets = new_jackets
+    else:
+        ctx.current_coins = ctx.ipc.get_coins()
 
 async def set_persistent_values(ctx : 'AE3Context'):
     stocks: int = ctx.ipc.get_morph_stock()
@@ -293,6 +304,7 @@ async def set_persistent_values(ctx : 'AE3Context'):
         ctx.ipc.set_cookies(100.0)
         ctx.ipc.set_morph_gauge_recharge((stocks + 1) * 100.0)
 
+    ctx.current_jackets = ctx.ipc.get_jackets()
     ctx.is_shop_ready = True
 
 async def reapply_persistent_values(ctx : 'AE3Context'):
@@ -880,18 +892,19 @@ async def roll_consolation(ctx : 'AE3Context', rate_type: int):
         await PRIZES[prize](ctx)
 
 async def hint_random(ctx : 'AE3Context'):
-    await request_hint(ctx, random.choice(*ctx.locations_name_to_id.values()), ctx.slot)
+    await request_hint(ctx, random.choice([*ctx.locations_name_to_id.values()]), ctx.slot)
 
 async def hint_progressive(ctx : 'AE3Context'):
     if 0 not in ctx.pre_hinted: return;
 
-    chosen: dict[str, int] = random.choice(*ctx.pre_hinted[0])
+    chosen: dict[str, int] = random.choice(ctx.pre_hinted[0])
 
     location_id: int = chosen["id"]
     player: int = chosen["player"]
 
     await request_hint(ctx, location_id, player)
 
+# TODO: Use names instead of ID's so that the location can also be easily marked
 async def check_random(ctx : 'AE3Context'):
     candidates: list[int] = [*set(ctx.locations_name_to_id.values()).difference(ctx.post_game_condition.location_ids,
                                                                                 ctx.goal_target.location_ids)]
@@ -931,9 +944,10 @@ async def check_gt_random(ctx : 'AE3Context'):
         await hint_random(ctx)
         return
 
-    location: int = random.choice(*ctx.goal_target.location_ids)
+    location: int = random.choice([*ctx.goal_target.location_ids])
     await send_locations(ctx, [location])
 
+# TODO: Save the bypass in game memory so that it is persistent
 async def bypass_pgc(ctx : 'AE3Context'):
     ctx.post_game_condition.bypass()
 

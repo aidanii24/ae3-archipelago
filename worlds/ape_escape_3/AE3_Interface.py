@@ -696,6 +696,8 @@ class AEPS2Interface:
         self.pine.write_float(address, amount)
 
     def mark_location(self, name : str):
+        if name not in self.addresses.Locations: return
+
         address : int = self.addresses.Locations[name]
         self.pine.write_int8(address, 0x01)
 
