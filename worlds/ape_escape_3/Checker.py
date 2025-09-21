@@ -230,10 +230,11 @@ async def setup_shopping_area(ctx : 'AE3Context'):
 
         progress = ctx.shop_progress
         if ctx.shoppingsanity == 3:
-            progress = ctx.keys * ctx.shop_progression
+            progress = ctx.keys * ctx.shop_progression + ctx.shop_progression - 1
             if progress >= 27 and not ctx.post_game_condition.check(ctx):
-                progress = math.floor(27 / ctx.shop_progression) * ctx.shop_progression
+                progress = math.floor((28 - ctx.shop_progression) / ctx.shop_progression) * ctx.shop_progression - 1
 
+        print(PROGRESS_ID_BY_ORDER[min(progress, 27)], progress)
         ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(progress, 27)])
 
     gui_status = ctx.ipc.get_gui_status()
@@ -634,14 +635,21 @@ async def resync_important_items(ctx : 'AE3Context'):
     if ctx.shoppingsanity >= 3:
         if ctx.shoppingsanity == 3:
             progress: int = ctx.keys
+            progress = (progress + 1) * ctx.shop_progression - 1
+
+            if progress >= 27 and ctx.post_game_condition.check(ctx):
+                progress = math.floor((28 - ctx.shop_progression) / ctx.shop_progression) * ctx.shop_progression - 1
         else:
             progress: int = received_id.count(ctx.items_name_to_id[APHelper.shop_stock.value])
+            progress = (progress + 1) * ctx.shop_progression - 1
 
-        if ctx.shop_progress != progress * ctx.shop_progression:
-            ctx.shop_progress = progress * ctx.shop_progression
+        if ctx.shop_progress != progress:
+            ctx.shop_progress = progress
 
             if ctx.in_shopping_area:
                 await setup_shopping_area(ctx)
+
+    await ctx.goal_target.check(ctx)
 
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
