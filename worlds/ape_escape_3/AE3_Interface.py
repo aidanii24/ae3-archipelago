@@ -611,19 +611,20 @@ class AEPS2Interface:
         self.pine.write_float(self.addresses.GameStates[Game.morph_stocks.value],stocks * 100)
 
     def give_collectable(self, address_name : str, amount : int | float = 0x1, maximum : int | float = 0x0,
-                         is_in_shop : bool = False):
+                         is_in_shop : bool = False, stocks_shuffled: bool = False, monkey_mart_disabled: bool = False):
         address : int = self.addresses.GameStates[address_name]
 
-        if is_in_shop and address_name in [Itm.acc_morph_stock.value, Itm.cookie.value, Itm.energy.value]:
-            if address_name == Itm.acc_morph_stock.value:
+        if is_in_shop and address_name in [Game.morph_stocks.value, Game.cookies.value, Game.morph_energy.value]:
+            if stocks_shuffled and address_name == Game.morph_stocks.value:
                 current = self.get_persistent_morph_stock_value()
                 self.set_persistent_morph_stock_value(current + 1)
-            elif address_name in [Itm.cookie.value, Itm.cookie_giant.value]:
-                current = self.get_persistent_cookie_value()
-                self.set_persistent_cookie_value(current + amount)
-            elif address_name in [Itm.energy.value, Itm.energy_mega.value]:
-                current = self.get_persistent_morph_energy_value()
-                self.set_persistent_morph_energy_value(current + amount)
+            elif monkey_mart_disabled:
+                if address_name == Game.cookies.value:
+                    current = self.get_persistent_cookie_value()
+                    self.set_persistent_cookie_value(int(current + amount))
+                elif address_name == Game.morph_energy.value:
+                    current = self.get_persistent_morph_energy_value()
+                    self.set_persistent_morph_energy_value(int(current + amount))
         else:
             current: int = self.pine.read_int32(address)
             value: int = 0
