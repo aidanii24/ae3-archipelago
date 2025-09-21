@@ -360,7 +360,7 @@ class AE3Context(CommonContext):
 
     # APWorld Properties
     locations_name_to_id : dict[str, int] = Locations.generate_name_to_id()
-    active_locations: set[str] = set(*locations_name_to_id.keys()).difference(MONKEYS_PASSWORDS)
+    active_locations: set[str] = set(locations_name_to_id.keys()).difference(MONKEYS_PASSWORDS)
     items_name_to_id : dict[str, int] = Items.generate_name_to_id()
     location_groups : list[list[str]] = [[*locations] for locations in LOCATIONS_INDEX.values()]
     group_check_index : int = 0
