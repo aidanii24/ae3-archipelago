@@ -13,7 +13,7 @@ from .data.Addresses import NTSCU
 from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_INDEX, MONKEYS_BREAK_ROOMS, \
     MONKEYS_PASSWORDS, MONKEYS_BOSSES, MONKEYS_DIRECTORY, Cellphone_Name_to_ID, LOCATIONS_INDEX, \
     SHOP_CATEGORIES_COLLECTION_DIRECTORY, SHOP_COLLECTION_DIRECTORY, SHOP_PERSISTENT_MASTER, SHOP_PROGRESSION_MORPH, \
-    SHOP_BONUS_RC_CARS, SHOP_COLLECTION_BONUS_RC_CARS, SHOP_UNIQUE_MASTER, SHOP_COLLECTION_MASTER
+    SHOP_BONUS_RC_CARS, SHOP_COLLECTION_BONUS_RC_CARS
 from .data import Items
 from .data.Distribution import CONSOLATION_RATES
 
@@ -243,19 +243,14 @@ async def setup_shopping_area(ctx : 'AE3Context'):
     gui_status = ctx.ipc.get_gui_status()
     if ctx.ticket_consolation and gui_status > 0 and ctx.ipc.is_in_monkey_mart():
         new_coins: int = ctx.ipc.get_coins()
-        print("Bought Ticket?", ctx.has_bought_ticket)
-        print("Coin difference:", ctx.current_coins - new_coins)
         if not ctx.has_bought_ticket and ctx.current_coins - new_coins == 30:
-            print(" >>> Bought Ticket!")
             ctx.has_bought_ticket = True
             ctx.current_coins = new_coins
         elif ctx.has_bought_ticket:
             if gui_status == 3:
-                print(" --- Won Ruffle!")
                 ctx.current_coins = new_coins
                 ctx.has_bought_ticket = False
             elif gui_status == 2:
-                print(" ... Lost Raffle!")
                 new_jackets = ctx.ipc.get_jackets()
 
                 coin_diff = new_coins - ctx.current_coins
@@ -267,8 +262,8 @@ async def setup_shopping_area(ctx : 'AE3Context'):
                 elif jacket_diff == 3:
                     rate_type = 1
 
-                # if rate_type >= 0:
-                await roll_consolation(ctx, rate_type)
+                if rate_type >= 0:
+                    await roll_consolation(ctx, rate_type)
 
                 ctx.has_bought_ticket = False
                 ctx.current_coins = new_coins
