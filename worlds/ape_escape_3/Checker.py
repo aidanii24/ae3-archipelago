@@ -228,7 +228,7 @@ async def setup_shopping_area(ctx : 'AE3Context'):
     if ctx.shoppingsanity >= 3:
         ctx.suppress_progress_correction = True
 
-        progress = ctx.shop_progress * ctx.shop_progression
+        progress = ctx.shop_progress
         if ctx.shoppingsanity == 3:
             progress = ctx.keys * ctx.shop_progression
             if progress >= 27 and not ctx.post_game_condition.check(ctx):
@@ -630,11 +630,15 @@ async def resync_important_items(ctx : 'AE3Context'):
         ctx.unlocked_channels = unlocked
         ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
-    # Resync Shop Stock
+    # Resync Shop Availability
     if ctx.shoppingsanity >= 3:
-        shop_stocks : int = received_id.count(ctx.items_name_to_id[APHelper.shop_stock.value])
-        if ctx.shop_progress != shop_stocks * ctx.shop_progression:
-            ctx.shop_progress = shop_stocks * ctx.shop_progression
+        if ctx.shoppingsanity == 3:
+            progress: int = ctx.keys
+        else:
+            progress: int = received_id.count(ctx.items_name_to_id[APHelper.shop_stock.value])
+
+        if ctx.shop_progress != progress * ctx.shop_progression:
+            ctx.shop_progress = progress * ctx.shop_progression
 
             if ctx.in_shopping_area:
                 await setup_shopping_area(ctx)

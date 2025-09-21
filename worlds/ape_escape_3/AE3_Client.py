@@ -41,6 +41,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
             if self.ctx.server:
                 game_status : int = self.ctx.ipc.status.value
+                pgc_complete: bool = False
                 if game_status < 0:
                     logger.info(f"{"         Connected but playing a different game"}")
                     return
@@ -85,6 +86,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
                         pgc_progress : dict[str, list[int]] = self.ctx.post_game_condition.get_progress(self.ctx)
 
                         if all(v[0] >= v[1] for v in [*pgc_progress.values()]):
+                            pgc_complete = True
                             logger.info(f"         Post-Game Condition(s) are Complete! ")
 
                         if pgc_progress:
@@ -106,12 +108,18 @@ class AE3CommandProcessor(ClientCommandProcessor):
                                 f"{f"+ {self.ctx.extra_keys} ({all_keys})" if self.ctx.extra_keys else ""}")
 
                     if self.ctx.shoppingsanity > 2:
-                        target: int = math.ceil(28 / self.ctx.shop_progression) * self.ctx.shoppingsanity
                         if self.ctx.shoppingsanity == 3:
-                            logger.info(f"\n         Shop Availability: {self.ctx.shop_progress} / {target}")
+                            progress: int = self.ctx.keys * self.ctx.shop_progression + 1
+                            if progress >= 28 and not pgc_complete:
+                                progress = math.floor(28 / self.ctx.shop_progression) * self.ctx.shop_progression + 1
+
+                            percent: float = min(progress, 28) / 28 * 100
+                            logger.info(f"         Shop Availability: {percent:.2f}%")
                         elif self.ctx.shoppingsanity == 4:
+                            progress: int = self.ctx.shop_progress
+                            target: int = math.ceil(28 / self.ctx.shop_progression) * self.ctx.shop_progression
                             all_stocks: int = target + self.ctx.extra_shop_stocks
-                            logger.info(f"\n         Shop Stocks: {self.ctx.shop_progress} / {target}"
+                            logger.info(f"         Shop Stocks: {progress} / {target}"
                                         f"+ {self.ctx.extra_shop_stocks} ({all_stocks})")
 
                     logger.info(f"         Available Channels: {self.ctx.unlocked_channels + 1} / "
