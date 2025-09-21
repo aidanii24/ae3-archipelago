@@ -611,28 +611,27 @@ class AEPS2Interface:
         self.pine.write_float(self.addresses.GameStates[Game.morph_stocks.value],stocks * 100)
 
     def give_collectable(self, address_name : str, amount : int | float = 0x1, maximum : int | float = 0x0,
-                         is_in_shop : bool = False, stocks_shuffled: bool = False, monkey_mart_disabled: bool = False):
+                         is_in_shop : bool = False, stocks_shuffled: bool = False, monkey_mart:bool = True):
         address : int = self.addresses.GameStates[address_name]
 
-        if is_in_shop and address_name in [Game.morph_stocks.value, Game.cookies.value, Game.morph_energy.value]:
+        if is_in_shop and address_name in [Game.morph_stocks.value, Game.cookies.value]:
             if stocks_shuffled and address_name == Game.morph_stocks.value:
                 current = self.get_persistent_morph_stock_value()
                 self.set_persistent_morph_stock_value(current + 1)
-            elif monkey_mart_disabled:
-                if address_name == Game.cookies.value:
-                    current = self.get_persistent_cookie_value()
-                    self.set_persistent_cookie_value(int(current + amount))
-                elif address_name == Game.morph_energy.value:
-                    current = self.get_persistent_morph_energy_value()
-                    self.set_persistent_morph_energy_value(int(current + amount))
+            elif not monkey_mart and address_name == Game.cookies.value:
+                current = self.get_persistent_cookie_value()
+                self.set_persistent_cookie_value(min(int(current + amount), 100))
         else:
-            current: int = self.pine.read_int32(address)
             value: int = 0
 
             if isinstance(amount, int):
+                current: int = self.pine.read_int32(address)
+
                 value = min(current + amount, maximum)
                 self.pine.write_int32(address, value)
             elif isinstance(amount, float):
+                current: float = self.pine.read_float(address)
+
                 value = int(min(current + amount, maximum))
                 self.pine.write_float(address, min(current + amount, maximum))
 
