@@ -462,7 +462,15 @@ class AE3Context(CommonContext):
     early_free_play : bool = False
     monkey_mart : bool = True
     ticket_consolation: bool = True
-    consolation_blacklist: list[str] = ["Bypass Post-Game Condition", "Instant Goal"]
+    consolation_whitelist: list[str] = [
+        APHelper.nothing.value,
+        APHelper.hint_filler.value,
+        APHelper.hint_progressive.value,
+        APHelper.check_filler.value,
+        APHelper.check_progressive.value,
+        APHelper.check_pgc.value,
+        APHelper.check_gt.value,
+    ]
 
     state_slot : int = -1
     death_link : bool = False
@@ -662,8 +670,8 @@ class AE3Context(CommonContext):
             if APHelper.ticket_consolation.value in data:
                 self.ticket_consolation = data[APHelper.ticket_consolation.value]
 
-                if APHelper.consolation_blacklist.value in data:
-                    self.consolation_blacklist = data[APHelper.consolation_blacklist.value]
+                if APHelper.consolation_whitelist.value in data:
+                    self.consolation_whitelist = data[APHelper.consolation_whitelist.value]
 
             ## Enable Monkey Mart
             if APHelper.enable_monkey_mart.value in data:
