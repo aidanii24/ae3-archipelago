@@ -531,9 +531,7 @@ STAGES_FARMABLE : Sequence[str] = [
     Stage.region_castle_d1.value,
     Stage.region_studio_f1.value,
     Stage.region_halloween_f.value,
-    Stage.region_western_d.value,
     Stage.region_plane_c1.value,
-    Stage.region_plane_e.value,
     Stage.region_bay_f.value,
     Stage.region_space_a.value,
 ]
