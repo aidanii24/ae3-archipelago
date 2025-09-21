@@ -109,11 +109,13 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
                     if self.ctx.shoppingsanity > 2:
                         if self.ctx.shoppingsanity == 3:
-                            progress: int = self.ctx.keys * self.ctx.shop_progression + 1
-                            if progress >= 28 and not pgc_complete:
-                                progress = math.floor(28 / self.ctx.shop_progression) * self.ctx.shop_progression + 1
+                            initial: int = self.ctx.shop_progression - 1
+                            progress: int = self.ctx.keys * self.ctx.shop_progression + initial
+                            if progress >= 27 and not pgc_complete:
+                                progress = (math.floor((28 - self.ctx.shop_progression) / self.ctx.shop_progression)
+                                            * self.ctx.shop_progression - 1)
 
-                            percent: float = min(progress, 28) / 28 * 100
+                            percent: float = min(progress, 27) / 27 * 100
                             logger.info(f"         Shop Availability: {percent:.2f}%")
                         elif self.ctx.shoppingsanity == 4:
                             progress: int = self.ctx.shop_progress
@@ -616,8 +618,8 @@ class AE3Context(CommonContext):
                 self.shoppingsanity = data[APHelper.shoppingsanity.value]
 
                 if self.shoppingsanity >= 3 and APHelper.shop_progression.value in data:
-                    self.shop_progress = 0
                     self.shop_progression = data[APHelper.shop_progression.value]
+                    self.shop_progress = self.shop_progression - 1
 
             ## Morph Duration
             if self.morph_duration == 0 and APHelper.base_morph_duration.value in data:
@@ -708,9 +710,17 @@ class AE3Context(CommonContext):
                 self.unlocked_channels = self.progression.get_progress(self.keys, self.post_game_condition.check(self))
                 self.ipc.set_unlocked_stages(self.unlocked_channels)
 
+                if self.shoppingsanity == 3:
+                    self.shop_progress = (self.keys + 1) * self.shop_progression - 1
+
+                    if self.shop_progress >= 27:
+                        self.shop_progress = (math.floor((28 - self.shop_progression) / self.shop_progression)
+                                              * self.shop_progression - 1)
+
             ## Get Shop Stock
             if self.shoppingsanity == 4 and 0 >= self.shop_progress > 27:
-                self.shop_progress = received_as_id.count(self.items_name_to_id[APHelper.shop_stock.value])
+                self.shop_progress =( (received_as_id.count(self.items_name_to_id[APHelper.shop_stock.value]) + 1) *
+                                      self.shop_progression - 1 )
 
             # Check if dummy morph is needed
             self.dummy_morph_monkey_needed = self.items_name_to_id[Itm.morph_monkey.value] not in received_as_id

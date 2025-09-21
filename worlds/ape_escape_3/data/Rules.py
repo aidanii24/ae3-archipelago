@@ -1429,7 +1429,7 @@ class ShopItemRules:
             return
         # Progression Splitting Properties
         elif world.options.shoppingsanity.value == 3:
-            self.sets = math.ceil(28 / (required_keys + 1))
+            self.sets = math.ceil(28 / (required_keys + 2))
             reached_shop_progress = lambda amount : has_keys(amount)
 
             self.blacklisted_entrances.clear()
