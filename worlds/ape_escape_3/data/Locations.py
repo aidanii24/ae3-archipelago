@@ -3413,9 +3413,11 @@ SHOP_GROUPINGS_DIRECTORY : dict[str, Sequence[str]] = {
 LOCATIONS_INDEX : dict[str, Sequence[str]] = {
     key : [loc for loc in [*MONKEYS_INDEX.get(key, []),
                            CAMERAS_INDEX.get(key, []),
-                           *CELLPHONES_INDEX.get(key, [])]
+                           *CELLPHONES_INDEX.get(key, []),
+                           *SHOP_CATEGORIES_DIRECTORY.get(key, [])]
            if loc]
-    for key in [*{*MONKEYS_INDEX.keys(), *CAMERAS_INDEX.keys(), *CELLPHONES_INDEX.keys()}]
+    for key in [*{*MONKEYS_INDEX.keys(), *CAMERAS_INDEX.keys(), *CELLPHONES_INDEX.keys(),
+                  *SHOP_CATEGORIES_DIRECTORY.keys()}]
 }
 
 LOCATIONS_DIRECTORY : dict[str, Sequence[str]] = {
