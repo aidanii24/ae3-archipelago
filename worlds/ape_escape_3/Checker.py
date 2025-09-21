@@ -13,7 +13,7 @@ from .data.Addresses import NTSCU
 from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_INDEX, MONKEYS_BREAK_ROOMS, \
     MONKEYS_PASSWORDS, MONKEYS_BOSSES, MONKEYS_DIRECTORY, Cellphone_Name_to_ID, LOCATIONS_INDEX, \
     SHOP_CATEGORIES_COLLECTION_DIRECTORY, SHOP_COLLECTION_DIRECTORY, SHOP_PERSISTENT_MASTER, SHOP_PROGRESSION_MORPH, \
-    SHOP_BONUS_RC_CARS, SHOP_COLLECTION_BONUS_RC_CARS
+    SHOP_BONUS_RC_CARS, SHOP_COLLECTION_BONUS_RC_CARS, SHOP_UNIQUE_MASTER, SHOP_COLLECTION_MASTER
 from .data import Items
 from .data.Distribution import CONSOLATION_RATES
 
@@ -267,8 +267,8 @@ async def setup_shopping_area(ctx : 'AE3Context'):
                 elif jacket_diff == 3:
                     rate_type = 1
 
-                if rate_type >= 0:
-                    await roll_consolation(ctx, rate_type)
+                # if rate_type >= 0:
+                await roll_consolation(ctx, rate_type)
 
                 ctx.has_bought_ticket = False
                 ctx.current_coins = new_coins
@@ -891,8 +891,19 @@ async def roll_consolation(ctx : 'AE3Context', rate_type: int):
     if prize in PRIZES:
         await PRIZES[prize](ctx)
 
+def get_random_location(ctx : 'AE3Context', *excluded_locations):
+    candidates: list[str] = [*ctx.active_locations.difference(set(excluded_locations))]
+    if not candidates:
+        return ""
+
+    return random.choice(candidates)
+
+
 async def hint_random(ctx : 'AE3Context'):
-    await request_hint(ctx, random.choice([*ctx.locations_name_to_id.values()]), ctx.slot)
+    location: int = ctx.locations_name_to_id[get_random_location(ctx)]
+    if not location: return
+
+    await request_hint(ctx, location, ctx.slot)
 
 async def hint_progressive(ctx : 'AE3Context'):
     if 0 not in ctx.pre_hinted: return;
@@ -904,48 +915,51 @@ async def hint_progressive(ctx : 'AE3Context'):
 
     await request_hint(ctx, location_id, player)
 
-# TODO: Use names instead of ID's so that the location can also be easily marked
 async def check_random(ctx : 'AE3Context'):
-    candidates: list[int] = [*set(ctx.locations_name_to_id.values()).difference(ctx.post_game_condition.location_ids,
-                                                                                ctx.goal_target.location_ids)]
+    location: str = get_random_location(ctx, *ctx.goal_target.locations, *ctx.post_game_condition.locations)
 
-    if not candidates:
-        await hint_random(ctx)
-        return
+    if not location: return
 
-    location: int = random.choice(candidates)
-    await send_locations(ctx, [location])
+    ctx.ipc.mark_location(location)
+    await send_locations(ctx, [ctx.locations_name_to_id[location]])
 
 async def check_progressive(ctx : 'AE3Context'):
-    candidates: list[int] = [value["id"] for key, value in ctx.pre_hinted[0]
-                             if value["player"] == ctx.slot]
+    candidates: list[str] = [location["name"] for location in ctx.pre_hinted[0]
+                             if location["player"] == ctx.slot]
 
-    if not candidates:
-        await hint_progressive(ctx)
-        return
+    if not candidates: return
 
-    location: int = random.choice(candidates)
-    await send_locations(ctx, [location])
+    location: str = random.choice(candidates)
+
+    if location in ctx.locations_name_to_id:
+        ctx.ipc.mark_location(location)
+        await send_locations(ctx, [ctx.locations_name_to_id[location]])
 
 async def check_pgc_random(ctx : 'AE3Context'):
-    candidates: list[int] = []
-    for ids in ctx.post_game_condition.location_ids.values():
-        candidates.extend(ids)
+    candidates: list[str] = []
+    for locs in ctx.post_game_condition.locations.values():
+        candidates.extend(locs)
 
     if not candidates:
         await hint_random(ctx)
         return
 
-    location: int = random.choice(candidates)
-    await send_locations(ctx, [location])
+    location: str = random.choice(candidates)
+
+    if location in ctx.locations_name_to_id:
+        ctx.ipc.mark_location(location)
+        await send_locations(ctx, [ctx.locations_name_to_id[location]])
 
 async def check_gt_random(ctx : 'AE3Context'):
     if len(ctx.goal_target.location_ids) < 10:
         await hint_random(ctx)
         return
 
-    location: int = random.choice([*ctx.goal_target.location_ids])
-    await send_locations(ctx, [location])
+    location: str = random.choice([*ctx.goal_target.locations])
+
+    if location in ctx.locations_name_to_id:
+        ctx.ipc.mark_location(location)
+        await send_locations(ctx, [ctx.locations_name_to_id[location]])
 
 # TODO: Save the bypass in game memory so that it is persistent
 async def bypass_pgc(ctx : 'AE3Context'):
@@ -984,5 +998,5 @@ PRIZES: dict = {
     APHelper.check_pgc.value                : check_pgc_random,
     APHelper.check_gt.value                 : check_gt_random,
     APHelper.bypass_pgc.value               : bypass_pgc,
-    APHelper.instant_goal.value             : check_gt_random,
+    APHelper.instant_goal.value             : instant_goal,
 }
