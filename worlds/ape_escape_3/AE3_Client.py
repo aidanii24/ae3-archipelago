@@ -13,7 +13,7 @@ import Utils
 from .data.Strings import Meta, APConsole
 from .data.Logic import ProgressionMode, ProgressionModeOptions
 from .data.Locations import MONKEYS_MASTER, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED, \
-    SHOP_PROGRESSION_75COMPLETION, SHOP_EVENT_ACCESS_DIRECTORY
+    SHOP_PROGRESSION_75COMPLETION, SHOP_EVENT_ACCESS_DIRECTORY, SHOP_COLLECTION_MASTER, SHOP_UNIQUE_MASTER
 from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER
 from .data.Rules import GoalTarget, GoalTargetOptions, PostGameCondition
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
