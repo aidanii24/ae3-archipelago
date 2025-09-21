@@ -767,8 +767,9 @@ async def update_offline_checked(ctx : 'AE3Context'):
 async def sweep_locations(ctx : 'AE3Context', batch : list[str]):
     cleared : set[int] = set()
 
-    if any(stock_shop_item in cleared for stock_shop_item in SHOP_PROGRESSION_MORPH):
-        cleared.update(*SHOP_PROGRESSION_MORPH[ctx.ipc.get_shop_morph_stock_checked()])
+    if any(stock_shop_item in batch for stock_shop_item in SHOP_PROGRESSION_MORPH):
+        cleared.update([ctx.locations_name_to_id[stock] for stock in
+                        SHOP_PROGRESSION_MORPH[:ctx.ipc.get_shop_morph_stock_checked()]])
 
     for location in batch:
         if location in SHOP_PROGRESSION_MORPH:
@@ -783,8 +784,6 @@ async def sweep_locations(ctx : 'AE3Context', batch : list[str]):
         if ctx.ipc.is_location_checked(location):
             cleared.add(ctx.locations_name_to_id[name])
 
-    for id in cleared.difference(ctx.locations_checked):
-        print([*ctx.locations_name_to_id.keys()][[*ctx.locations_name_to_id.values()].index(id)])
     ctx.locations_checked.update(cleared)
 
     # Update Server for Locations checked that it did not know is checked
