@@ -387,7 +387,7 @@ class AE3World(World):
         hints: dict[int, dict[str, int] | list[dict[str, int]]] = {}
         progressive_scouts: list[dict[str, int]] = []
         book_scouts: list[Location] = []
-        starting_items: list[str] = [Itm.gadget_net.value]
+        excluded_items: list[str] = [Itm.gadget_net.value, APHelper.hint_book.value]
         items: list[str] = [*self.item_name_groups[APHelper.equipment.value],
                             *self.item_name_groups[APHelper.archipelago.value]]
 
@@ -400,10 +400,10 @@ class AE3World(World):
                                   Itm.gadget_rcc.value,
                                   Itm.gadget_fly.value]
 
-            starting_items.append(gadgets[self.options.starting_gadget - 1])
+            excluded_items.append(gadgets[self.options.starting_gadget - 1])
 
         if self.options.starting_morph:
-            starting_items.append(Itm.get_morphs_ordered()[self.options.starting_morph - 1])
+            excluded_items.append(Itm.get_morphs_ordered()[self.options.starting_morph - 1])
 
         if self.options.shuffle_chassis:
             items.extend(Itm.get_chassis_by_id(no_default=True))
@@ -414,7 +414,7 @@ class AE3World(World):
         if self.options.add_morph_extensions:
             items.append(Itm.acc_morph_ext.value)
 
-        items = [item for item in items if item not in starting_items]
+        items = [item for item in items if item not in excluded_items]
 
         for item in items:
             book_scouts.extend([loc for loc in self.multiworld.find_item_locations(item, self.player)])
@@ -423,7 +423,7 @@ class AE3World(World):
         if self.options.hints_from_hintbooks and len(book_scouts) < 20:
             if self.options.lucky_ticket_consolation_effects:
                 for scout in book_scouts:
-                    progressive_scouts.append({"id": scout.address, "player": scout.player})
+                    progressive_scouts.append({"name": scout.name, "id": scout.address, "player": scout.player})
 
             fillers: list[str] = [Itm.jacket.value, Itm.energy_mega.value, Itm.cookie_giant.value, Itm.chip_10x.value]
             for i, filler in enumerate(fillers):
@@ -433,7 +433,7 @@ class AE3World(World):
         if self.options.lucky_ticket_consolation_effects:
             if not progressive_scouts:
                 for scout in book_scouts:
-                    progressive_scouts.append({"id": scout.address, "player": scout.player})
+                    progressive_scouts.append({"name": scout.name, "id": scout.address, "player": scout.player})
 
             hints[0] = progressive_scouts
 

@@ -360,6 +360,7 @@ class AE3Context(CommonContext):
 
     # APWorld Properties
     locations_name_to_id : dict[str, int] = Locations.generate_name_to_id()
+    active_locations: set[str] = set(*locations_name_to_id.keys()).difference(MONKEYS_PASSWORDS)
     items_name_to_id : dict[str, int] = Items.generate_name_to_id()
     location_groups : list[list[str]] = [[*locations] for locations in LOCATIONS_INDEX.values()]
     group_check_index : int = 0
@@ -368,7 +369,7 @@ class AE3Context(CommonContext):
     is_cache_built : bool = False
     monkeys_checklist : Sequence[str] = MONKEYS_MASTER
     monkeys_checklist_count : int = 0
-    pre_hinted: dict[int, dict] = {}
+    pre_hinted: dict = {}
 
     # Session Properties
     keys : int = 0
@@ -659,6 +660,17 @@ class AE3Context(CommonContext):
             # Initialize/Update Last Save Type Status on server if needed
             if self.load_state_on_connect:
                 self.pending_last_save_status = True
+
+            # Create List of Active Locations
+            if not self.check_break_rooms:
+                self.active_locations.difference_update(MONKEYS_BREAK_ROOMS)
+
+            if self.shoppingsanity > 0:
+                if self.shoppingsanity == 2:
+                    self.active_locations.difference_update(set(SHOP_UNIQUE_MASTER).difference(SHOP_PERSISTENT_MASTER))
+                else:
+                    self.active_locations.difference_update(
+                        set(SHOP_COLLECTION_MASTER).difference(SHOP_PERSISTENT_MASTER))
 
         elif cmd == APHelper.cmd_rcv.value:
             index = args["index"]
