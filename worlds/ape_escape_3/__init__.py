@@ -353,7 +353,7 @@ class AE3World(World):
         self.item_pool += self.progression.generate_keys(self)
 
         if self.options.shoppingsanity.value == 4:
-            amount = self.options.restock_progression.value + self.options.extra_shop_stocks.value
+            amount = self.options.restock_progression.value + self.options.extra_shop_stocks.value - 1
 
             self.item_pool.extend([self.create_item(APHelper.shop_stock.value)
                                    for _ in range(amount)])
