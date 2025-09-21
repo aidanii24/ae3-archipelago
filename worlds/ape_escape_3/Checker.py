@@ -411,7 +411,7 @@ async def setup_area(ctx : 'AE3Context'):
     else:
         dispatch_dummy_morph(ctx)
 
-        if ctx.dummy_morph_monkey_needed:
+        if ctx.dummy_morph_monkey_needed and not ctx.in_travel_station:
             ctx.ipc.lock_equipment(Itm.morph_monkey.value)
 
         if ctx.command_state == 2:
