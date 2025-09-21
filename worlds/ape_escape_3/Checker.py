@@ -567,7 +567,8 @@ async def receive_items(ctx : 'AE3Context'):
 
             ### Handle Generic Items
             else:
-                ctx.ipc.give_collectable(item.resource, i.amount, maximum, ctx.in_shopping_area)
+                ctx.ipc.give_collectable(item.resource, i.amount, maximum, ctx.in_shopping_area,
+                                         ctx.shuffle_morph_stock, ctx.monkey_mart)
 
                 ## Update Locally Tracked Items if so
                 if item.resource == Game.chips.value:
