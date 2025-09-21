@@ -2676,7 +2676,7 @@ class APHelper(BaseEnum):
     enable_monkey_mart =        "enable_monkey_mart"
     hint_book_hints =           "hints_from_hintbooks"
     ticket_consolation =        "lucky_ticket_consolation_effects"
-    consolation_blacklist =     "consolation_effects_blacklist"
+    consolation_whitelist =     "consolation_effects_whitelist"
 
     death_link =                "death_link"
 

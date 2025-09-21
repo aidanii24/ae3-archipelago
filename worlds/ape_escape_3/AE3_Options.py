@@ -713,7 +713,7 @@ class LuckyTicketConsolationEffects(Toggle):
     """
     display_name : str = "Lucky Ticket Consolation Effects"
 
-class ConsolationEffectsBlacklist(OptionList):
+class ConsolationEffectsWhitelist(OptionList):
     """
     When `Lucky Ticket Consolation` is enabled, this option allows you to disable certain effects from being chosen.
 
@@ -722,7 +722,12 @@ class ConsolationEffectsBlacklist(OptionList):
     in charge of generating the game.
     """
     display_name : str = "Lucky Ticket Consolation Effects Blacklist"
-    default = ["Bypass Post-Game Condition", "Instant Goal"]
+    default = [APHelper.hint_filler.value,
+               APHelper.hint_progressive.value,
+               APHelper.check_filler.value,
+               APHelper.check_progressive.value,
+               APHelper.check_pgc.value,
+               APHelper.check_gt.value,]
 
 
 ae3_option_groups : dict[str, list] = {
@@ -768,7 +773,7 @@ ae3_option_groups : dict[str, list] = {
                                    EnableMonkeyMart,
                                    HintsFromHintBooks,
                                    LuckyTicketConsolationEffects,
-                                   ConsolationEffectsBlacklist],
+                                   ConsolationEffectsWhitelist],
     "Sync Options"              : [DeathLink]
 }
 
@@ -819,7 +824,7 @@ class AE3Options(PerGameCommonOptions):
     enable_monkey_mart                      : EnableMonkeyMart
     hints_from_hintbooks                    : HintsFromHintBooks
     lucky_ticket_consolation_effects        : LuckyTicketConsolationEffects
-    consolation_effects_blacklist           : ConsolationEffectsBlacklist
+    consolation_effects_whitelist           : ConsolationEffectsWhitelist
 
     death_link                              : DeathLink
 
@@ -880,7 +885,7 @@ def slot_data_options() -> list[str]:
         APHelper.enable_monkey_mart.value,
         APHelper.hint_book_hints.value,
         APHelper.ticket_consolation.value,
-        APHelper.consolation_blacklist.value,
+        APHelper.consolation_whitelist.value,
 
         APHelper.death_link.value
     ]

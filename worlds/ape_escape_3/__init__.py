@@ -51,6 +51,19 @@ class AE3Settings(settings.Group):
         > auto-equip : Automatically assign received gadgets to a face button
         """
 
+    class GenerationPreferences(settings.Sequence):
+        """
+        Preferences for game generation. Only relevant for world generation and not the setup of or during play.
+
+        > whitelist_pgc_bypass: Allow Ape Escape 3 players to enable "PGC Bypass" as a possible outcome for
+        Lucky Ticket Consolation Prize.
+        > whitelist_instant_goal: Allow Ape Escape 3 players to enable "Instant Goal" as a possible outcome for
+        Lucky Ticket Consolation Prize.
+        """
+
+    class GenerationPreference(settings.Sequence):
+        """"""
+
 
     save_state_on_room_transition : SessionPreferences | bool = False
     save_state_on_item_received : SessionsPreferences | bool = True
@@ -58,6 +71,9 @@ class AE3Settings(settings.Group):
     load_state_on_connect : SessionsPreferences | bool = False
 
     auto_equip : GamePreferences | bool = True
+
+    whitelist_pgc_bypass: GenerationPreferences | bool = False
+    whitelist_instant_goal: GenerationPreference | bool = False
 
 
 class AE3Web(WebWorld):
@@ -271,6 +287,21 @@ class AE3World(World):
 
         self.shop_rules.set_pgc_rules(self)
         self.item_pool = []
+
+        if self.options.lucky_ticket_consolation_effects:
+            current: set[str] = set(self.options.consolation_effects_whitelist)
+            exclude: set[str] = set()
+
+            if not self.settings.whitelist_pgc_bypass:
+                exclude.add(APHelper.bypass_pgc.value)
+
+            if not self.settings.whitelist_instant_goal:
+                exclude.add(APHelper.instant_goal.value)
+
+            current.difference_update(exclude)
+            current.add(APHelper.nothing.value)
+
+            self.options.consolation_effects_whitelist.value = [*current]
 
         # self.log_debug()
 

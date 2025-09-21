@@ -886,13 +886,13 @@ async def get_last_save_status(ctx : 'AE3Context'):
 async def roll_consolation(ctx : 'AE3Context', rate_type: int):
     rates: dict[str, float] = {}
     for p, r in CONSOLATION_RATES[rate_type].items():
-        if p in ctx.consolation_blacklist:
+        if p not in ctx.consolation_whitelist:
             if APHelper.nothing.value not in rates:
                 rates[APHelper.nothing.value] = r
             else:
                 rates[APHelper.nothing.value] += r
-
-        rates[p] = r
+        else:
+            rates[p] = r
 
     prize: str = random.choices([*rates.keys()], [*rates.values()])[0]
 
