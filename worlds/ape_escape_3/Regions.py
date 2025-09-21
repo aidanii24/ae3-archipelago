@@ -251,15 +251,6 @@ def create_regions(world : "AE3World"):
     # Send Regions to Archipelago
     world.multiworld.regions.extend(list(stages.values()))
 
-    # shop_locs = [x.name for y in STAGES_SHOP_PROGRESSION for x in stages[y].locations]
-    # shop_locs.extend(_.name for _ in shopping_area.locations)
-    #
-    # print("==================================")
-    # for k, v in SHOP_CATEGORIES_COLLECTION_DIRECTORY.items():
-    #     print(f"{k}: {len(set(v).intersection(shop_locs))} \t | {set(v).intersection(shop_locs)}")
-    #
-    # print(len(shop_locs), "\n")
-
     # # <!> DEBUG
     # # Connection Diagrams
     # from Utils import visualize_regions

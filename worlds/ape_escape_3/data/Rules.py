@@ -1360,6 +1360,10 @@ class ShopItemRules:
             else:
                 self.post_game_items.update(SHOP_UNIQUE_MASTER)
 
+            if world.options.shoppingsanity >= 3:
+                self.blacklisted_entrances = []
+                self.blacklisted_stages = []
+
             return
 
         # Post Game Properties
