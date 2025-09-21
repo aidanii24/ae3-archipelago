@@ -234,7 +234,6 @@ async def setup_shopping_area(ctx : 'AE3Context'):
             if progress >= 27 and not ctx.post_game_condition.check(ctx):
                 progress = math.floor((28 - ctx.shop_progression) / ctx.shop_progression) * ctx.shop_progression - 1
 
-        print(PROGRESS_ID_BY_ORDER[min(progress, 27)], progress)
         ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(progress, 27)])
 
     gui_status = ctx.ipc.get_gui_status()

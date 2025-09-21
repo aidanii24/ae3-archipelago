@@ -119,10 +119,16 @@ class AE3CommandProcessor(ClientCommandProcessor):
                             logger.info(f"         Shop Availability: {percent:.2f}%")
                         elif self.ctx.shoppingsanity == 4:
                             progress: int = self.ctx.shop_progress
-                            target: int = math.ceil(28 / self.ctx.shop_progression) * self.ctx.shop_progression
-                            all_stocks: int = target + self.ctx.extra_shop_stocks
-                            logger.info(f"         Shop Stocks: {progress} / {target}"
-                                        f"+ {self.ctx.extra_shop_stocks} ({all_stocks})")
+                            stocks: int = int((progress + 1) / self.ctx.shop_progression) - 1
+                            target: int = math.ceil(28 / self.ctx.shop_progression) - 1
+                            all_stocks: int = self.ctx.restock_progression + self.ctx.extra_shop_stocks
+                            logger.info(f"         Shop Stocks: {stocks} / {target} "
+                                        f"{f" ({self.ctx.restock_progression})" 
+                                        if self.ctx.restock_progression - 1 == stocks 
+                                        else ""}"
+                                        f"{f"+ {self.ctx.extra_shop_stocks}({all_stocks})" 
+                                        if self.ctx.extra_shop_stocks
+                                        else ""}")
 
                     logger.info(f"         Available Channels: {self.ctx.unlocked_channels + 1} / "
                                 f"{sum(self.ctx.progression.progression[:-1]) + 1}")
@@ -443,6 +449,7 @@ class AE3Context(CommonContext):
     camerasanity : int = None
     cellphonesanity : bool = None
     shoppingsanity : int = None
+    restock_progression : int = 28
     shop_progress : int = 27
     shop_progression : int = 0
     extra_keys : int = 0
@@ -621,6 +628,11 @@ class AE3Context(CommonContext):
                     self.shop_progression = data[APHelper.shop_progression.value]
                     self.shop_progress = self.shop_progression - 1
 
+                ## Restock Progression
+                if self. shoppingsanity == 4 and APHelper.restock_progression.value in data:
+                    self.restock_progression = data[APHelper.restock_progression.value]
+
+
             ## Morph Duration
             if self.morph_duration == 0 and APHelper.base_morph_duration.value in data:
                 self.morph_duration = float(data[APHelper.base_morph_duration.value])
@@ -636,6 +648,10 @@ class AE3Context(CommonContext):
             ## Extra Keys
             if APHelper.extra_keys.value in data:
                 self.extra_keys = data[APHelper.extra_keys.value]
+
+            ## Extra Shop Stocks
+            if APHelper.extra_shop_stocks.value in data:
+                self.extra_shop_stock = data[APHelper.extra_shop_stocks.value]
 
             ## Early Free Play
             if APHelper.early_free_play.value in data:
@@ -718,7 +734,7 @@ class AE3Context(CommonContext):
                                               * self.shop_progression - 1)
 
             ## Get Shop Stock
-            if self.shoppingsanity == 4 and 0 >= self.shop_progress > 27:
+            if self.shoppingsanity == 4 and 0 >= self.shop_progress >= 27:
                 self.shop_progress =( (received_as_id.count(self.items_name_to_id[APHelper.shop_stock.value]) + 1) *
                                       self.shop_progression - 1 )
 
