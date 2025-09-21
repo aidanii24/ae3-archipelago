@@ -129,10 +129,6 @@ async def setup_level_select(ctx : 'AE3Context'):
         if ctx.last_selected_channel_index > ctx.unlocked_channels:
             ctx.last_selected_channel_index = ctx.unlocked_channels
 
-    ## Reapply Persistent Values when coming from the Shopping Area
-    if ctx.ipc.get_persistent_cookie_value():
-        await reapply_persistent_values(ctx)
-
     gui_status: int = ctx.ipc.get_gui_status()
 
     if ctx.ipc.is_on_warp_gate():
@@ -289,7 +285,7 @@ async def set_persistent_values(ctx : 'AE3Context'):
 
     if not ctx.monkey_mart:
         cookies: int = int(ctx.ipc.get_cookies())
-        energy: int = int(ctx.ipc.get_morph_gauge_recharge_value())
+        energy: int = int(ctx.ipc.get_morph_gauge_recharge_value() / 10)
 
         ctx.ipc.set_persistent_cookie_value(cookies)
         ctx.ipc.set_persistent_morph_energy_value(energy)
@@ -319,12 +315,10 @@ async def reapply_persistent_values(ctx : 'AE3Context'):
 
     if not ctx.monkey_mart:
         cookies: float = ctx.ipc.get_persistent_cookie_value()
-        energy: float = ctx.ipc.get_persistent_morph_energy_value()
+        energy: float = ctx.ipc.get_persistent_morph_energy_value() * 10
 
         ctx.ipc.set_cookies(cookies)
         ctx.ipc.set_morph_gauge_recharge(energy)
-        ctx.ipc.set_persistent_cookie_value(0)
-        ctx.ipc.set_persistent_morph_energy_value(0)
 
 async def rebuild_persistent_values(ctx: 'AE3Context'):
     received_as_id : list[int] = [ i.item for i in ctx.items_received ]
@@ -333,7 +327,7 @@ async def rebuild_persistent_values(ctx: 'AE3Context'):
 
     if ctx.shoppingsanity:
         if ctx.shuffle_morph_stock:
-            ctx.ipc.set_persistent_morph_stock_value(stocks)
+            ctx.ipc.set_persistent_morph_stock_value(stocks + 1)
             ctx.ipc.set_morph_stock(ctx.ipc.get_shop_morph_stock_checked() + 1)
 
         if ctx.shuffle_chassis:
@@ -344,11 +338,14 @@ async def rebuild_persistent_values(ctx: 'AE3Context'):
                     ctx.ipc.lock_chassis_direct(i)
 
     if not ctx.monkey_mart:
-        cookies: int = int(ctx.ipc.get_cookies())
-        energy: int = int(ctx.ipc.get_morph_gauge_recharge_value())
+        stored_cookies: int = ctx.ipc.get_persistent_cookie_value()
+        stored_energy: int = ctx.ipc.get_persistent_morph_energy_value()
 
-        ctx.ipc.set_persistent_cookie_value(cookies)
-        ctx.ipc.set_persistent_morph_energy_value(energy)
+        if not stored_cookies:
+            ctx.ipc.set_persistent_cookie_value(100)
+
+        if not stored_energy:
+            ctx.ipc.set_persistent_morph_energy_value((stocks + 1) * 10)
 
         ctx.ipc.set_cookies(100.0)
         ctx.ipc.set_morph_gauge_recharge((stocks + 1) * 100.0)
@@ -556,7 +553,12 @@ async def receive_items(ctx : 'AE3Context'):
 
             ### Handle Morph Energy
             elif item.resource == Game.morph_gauge_active.value:
-                ctx.ipc.give_morph_energy(i.amount)
+                if ctx.in_shopping_area and not ctx.monkey_mart:
+                    current: int = ctx.ipc.get_persistent_morph_energy_value()
+                    current = min(int(current + i.amount / 10), 110)
+                    ctx.ipc.set_persistent_morph_energy_value(current)
+                else:
+                    ctx.ipc.give_morph_energy(i.amount)
 
             ### Handle Morph Extension
             elif item.resource == Game.morph_duration.value:
