@@ -266,8 +266,6 @@ async def setup_shopping_area(ctx : 'AE3Context'):
                     await roll_consolation(ctx, rate_type)
 
                 ctx.has_bought_ticket = False
-                ctx.current_coins = new_coins
-                ctx.current_jackets = new_jackets
     else:
         ctx.current_coins = ctx.ipc.get_coins()
 
