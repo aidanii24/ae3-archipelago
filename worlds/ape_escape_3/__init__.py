@@ -495,6 +495,8 @@ class AE3World(World):
                 self.options.lucky_ticket_consolation_effects):
             slot_data[APHelper.hints.value] = self.generate_hints()
 
+        slot_data[APHelper.version.value] = APConsole.Info.world_ver.value
+
         return slot_data
 
     def write_spoiler(self, spoiler_handle: TextIO) -> None:

@@ -516,6 +516,13 @@ class AE3Context(CommonContext):
             ## Reset Variables
             self.check_break_rooms = False
 
+            ## Check Generation Version if the client is compatible
+            if APHelper.version.value in data:
+                world_ver: str = data[APHelper.version.value]
+                assert_version_compatibility(world_ver, APConsole.Info.world_ver.value)
+            else:
+                assert_version_compatibility("", APConsole.Info.world_ver.value)
+
             ### Save/Load State Slot
             if APHelper.auto_save_slot.value in data:
                 self.state_slot = data[APHelper.auto_save_slot.value]
@@ -836,7 +843,7 @@ async def main_sync_task(ctx : AE3Context):
     # Greetings
     logger.info(APConsole.Info.decor.value)
     logger.info("    " + APConsole.Info.greet.value)
-    logger.info("    " + APConsole.Info.world_ver.value + "    " + APConsole.Info.client_ver.value)
+    logger.info("    World v" + APConsole.Info.world_ver.value + "    Client v" + APConsole.Info.client_ver.value)
     logger.info(APConsole.Info.decor.value)
     logger.info("\n")
     logger.info(APConsole.Info.p_init.value)
@@ -1012,6 +1019,68 @@ async def check_game(ctx : AE3Context):
 async def reconnect_game(ctx : AE3Context):
     ctx.ipc.connect_game()
     await asyncio.sleep(3)
+
+def parse_version(version: str) -> list[str]:
+    """
+    Converts String of version into a list of attributes (Major.minor.patch-pre+build)
+
+    We use a modified version of Semver for our purposes:
+        > Major - Denotes a significant feature update and will not have backwards compatibility
+            with any other major version.
+        > Minor - Denotes a small feature update and will not have backwards compatibility with previous minor versions.
+        > Patch - Denotes bug fixes with compatability with other versions of the same minor and major version.
+        > Pre - Denotes a pre-release that is not compatible with any other pre-release version
+            of the same Major and Minor version.
+        > Build - Denotes a minor pre-release patch that is compatible with the same Major, Minor and Pre version.
+    """
+
+    if not str:
+        return []
+
+    ext: list[str] = [*version.split("+")]
+    ext = [*ext[0].split("-"), *ext[1:]]
+    ext = [*ext[0].split("."), *ext[1:]]
+
+    if len(ext) == 4:
+        ext.append("0")
+
+    return ext
+
+def compare_versions(subject: list[str], base: list[str]) -> int:
+    if len(subject) < 3 or len(base) < 3 or len(subject) != len(base):
+        return -2
+
+    # Major Check
+    if subject[0] != base[0]:
+        return -1
+
+    # Minor Check
+    if subject[1] != base[1]:
+        return -1
+
+    # Pre Check
+    if len(subject) >= len(base) > 3 and subject[3] != base[3]:
+        return -1
+
+    return 0
+
+def assert_version_compatibility(subject: str, base: str):
+    subject_ver: list[str] = parse_version(subject)
+    base_ver: list[str] = parse_version(base)
+
+    error: int = compare_versions(subject_ver, base_ver)
+
+    if not error:
+        return
+
+    if error == -2:
+        raise AssertionError(f"The world being connected to has been generated with an incompatible version of "
+                             f"Ape Escape 3 Archipelago. Connection Aborted.")
+
+    elif error == -1:
+        raise AssertionError(f"The world being connected to has been generated with an Ape Escape 3 Archipelago "
+                             f"version that this client is not compatible with. Connection Aborted."
+                             f"\nWorld version: {subject}\nClient version: {base}")
 
 # Starting point of function
 def launch():
