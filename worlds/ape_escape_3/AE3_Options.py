@@ -181,11 +181,11 @@ class GoalTarget(Choice):
     option_bonus_collector : int = 7
     # option_scavenger_hunt : int = 10
 
-class GoalTargetOverride(NamedRange):
+class GoalTargetOverride(Range):
     """
-    Override the amount of checks required by Goal Target. This does not affect the "specter" and "specter_final:"
-    goals.
-    Default: 0 (No Override)
+    Override the amount of checks required by Goal Target by a percent amount.
+    This does not affect the "specter" and "specter_final" goals.
+    Default: 100 (No Override)
 
     Maximum Values:
     Bosses (Triple Threat): 8
@@ -195,13 +195,10 @@ class GoalTargetOverride(NamedRange):
     Shop Items (Collector): 267
     """
     display_name : str = "Goal Target Override"
-    default = 0
+    default = 100
 
     range_start = 1
-    range_end = 434
-    special_range_names = {
-        "disabled" : 0
-    }
+    range_end = 100
 
 
 class PostGameConditionMonkeys(NamedRange):

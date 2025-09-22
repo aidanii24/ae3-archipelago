@@ -82,11 +82,14 @@ class GoalTarget:
 
         self.location_ids = {generate_name_to_id()[location] for location in self.locations}
 
-        if amount:
+        if amount < 100:
+            mod: float = amount / 100
+            total_locs: int = len(self.locations)
+            new_total: int = int(math.ceil(total_locs * mod))
             if not self.amount or self.amount is None:
-                self.amount = len(self.locations) if not amount else min(amount, len(self.locations))
+                self.amount = total_locs if not amount else min(new_total, total_locs)
             else:
-                self.amount = max(min(len(self.locations), amount), 0)
+                self.amount = max(min(total_locs, new_total), 0)
         elif not self.amount or self.amount is None:
             self.amount = len(self.locations)
 
