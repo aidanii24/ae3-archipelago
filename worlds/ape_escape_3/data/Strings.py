@@ -2728,6 +2728,9 @@ class APHelper(BaseEnum):
     bypass_pgc =                "Bypass Post-Game Condition"
     instant_goal =              "Instant Goal"
 
+    ## Meta
+    version =                   "version"
+
 class APConsole:
     """
     Strings for all text to be used in the Archipelago Game Client
@@ -2740,8 +2743,8 @@ class APConsole:
         greet =         "Welcome to Ape Escape 3 Archipelago!"
         game_name =     "Ape Escape 3 Archipelago"
         client_name =   "Ape Escape 3 Client"
-        client_ver =    "Client v2.0.00-beta 3"
-        world_ver =     "World v2.0.00-beta 3"
+        client_ver =    "2.0.00-beta.3"
+        world_ver =     "2.0.00-beta.3"
 
         p_check =       " [|?|] Confirming PCSX2 Status..."
         p_init =        " [...] Connecting to PCSX2..."
