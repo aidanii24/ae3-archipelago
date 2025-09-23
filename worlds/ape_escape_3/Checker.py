@@ -145,7 +145,7 @@ async def setup_level_select(ctx : 'AE3Context'):
             ctx.ipc.set_progress()
 
         # Release Bosses as needed to enter the level normally
-        bosses_indexes : list[int] = [0x03, 0x08, 0xC, 0x11, 0x15, -1, -2, 0x1B]
+        bosses_indexes : list[int] = [0x03, 0x08, 0xC, 0x11, 0x15, -1, 0x1A, 0x1B]
         if selected_channel in bosses_indexes:
             boss : str = MONKEYS_BOSSES[bosses_indexes.index(selected_channel)]
             boss_captured : bool = ctx.ipc.is_location_checked(boss)
