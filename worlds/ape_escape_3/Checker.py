@@ -225,6 +225,10 @@ async def setup_level_select(ctx : 'AE3Context'):
             ctx.has_saved_on_transition = False
 
 async def setup_shopping_area(ctx : 'AE3Context'):
+    # Recapture Specter2 if already caught, as certain items only appear when he is captured
+    if ctx.ipc.is_location_checked(Loc.boss_specter_final.value):
+        ctx.ipc.mark_location(Loc.boss_specter_final.value)
+
     if ctx.shoppingsanity >= 3:
         ctx.suppress_progress_correction = True
 
@@ -392,13 +396,13 @@ async def setup_area(ctx : 'AE3Context'):
 
         ## Check rest of Screen Fade after Start
         else:
-            # Temporarily give a morph during transitions to keep Morph Gauge visible
-            # and to spawn Break Room loading zones
-            dispatch_dummy_morph(ctx, True)
-
             # Set Shopping Area Progress if in Shopping Area
             if ctx.in_shopping_area:
                 await setup_shopping_area(ctx)
+            else:
+                # Temporarily give a morph during transitions to keep Morph Gauge visible
+                # and to spawn Break Room loading zones
+                dispatch_dummy_morph(ctx, True)
 
             ctx.current_channel = ctx.ipc.get_channel()
             ctx.current_stage = ctx.ipc.get_stage()
