@@ -2746,7 +2746,7 @@ class APConsole:
         greet =         "Welcome to Ape Escape 3 Archipelago!"
         game_name =     "Ape Escape 3 Archipelago"
         client_name =   "Ape Escape 3 Client"
-        client_ver =    "2.0.00-beta.3"
+        client_ver =    "2.0.00-beta.3+1"
         world_ver =     "2.0.00-beta.3"
 =======
         greet =         " Welcome to Ape Escape 3 Archipelago!"

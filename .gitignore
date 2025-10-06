@@ -1,2 +1,8 @@
 # Caches
 **__pycache__
+<<<<<<< HEAD
+=======
+
+# IDE files
+.idea/*
+>>>>>>> git-refactor
