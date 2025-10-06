@@ -589,6 +589,12 @@ class AEPS2Interface:
         if target >= 0:
             self.pine.write_int32(target, gadget_id)
 
+    def check_pgc_cache(self) -> bool:
+        return self.pine.read_int8(self.addresses.GameStates[Game.pgc_cache.value]) == 0x1
+
+    def set_pgc_cache(self):
+        self.pine.write_int8(self.addresses.GameStates[Game.pgc_cache.value], 0x1)
+
     def set_morph_duration(self, character : int, duration : float, dummy : str = ""):
         if character < 0:
             return

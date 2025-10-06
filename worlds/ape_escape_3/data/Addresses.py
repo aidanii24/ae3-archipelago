@@ -1110,6 +1110,8 @@ class NTSCU(VersionAddresses):
         Game.spawn.value                : 0x772070,
 
         # Persistence
+        Game.pgc_cache.value            : 0x649BAE,
+
         Game.last_cookies.value         : 0x649994,
         Game.last_morph_energy.value    : 0x649995,
         Game.last_morph_stock.value     : 0x649996,

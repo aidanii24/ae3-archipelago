@@ -2501,6 +2501,8 @@ class Game(BaseEnum):
     kill_player =           "killPlayer"
 
     # Persistence
+    pgc_cache =             "PGC Cache"
+
     last_cookies =          "Last Cookies"
     last_morph_energy =     "Last Morph Energy"
     last_morph_stock =      "Last Morph Stocks"

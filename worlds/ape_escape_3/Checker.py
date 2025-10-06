@@ -77,6 +77,8 @@ async def check_background_states(ctx : 'AE3Context'):
 
     ctx.current_channel = new_channel
     ctx.in_travel_station = ctx.current_channel == APHelper.travel_station.value
+    if not ctx.in_travel_station and ctx.is_channel_swapped:
+        ctx.is_channel_swapped = False
 
 async def sweep_recheck_locations(ctx : 'AE3Context'):
     batch: list[str] = [*ctx.location_groups[ctx.group_check_index * 20:ctx.group_check_index * 20 + 20]]
@@ -96,7 +98,7 @@ async def build_checked_cache(ctx : 'AE3Context'):
 
         return
 
-    ctx.post_game_condition.check(ctx)
+    await ctx.check_pgc()
     await ctx.goal_target.check(ctx)
 
 # Ensure game is always set to "round2"
@@ -105,7 +107,7 @@ async def correct_progress(ctx : 'AE3Context'):
 
 async def setup_level_select(ctx : 'AE3Context'):
     is_a_level_confirmed: bool = ctx.ipc.is_a_level_confirmed()
-    post_game_state : bool = ctx.post_game_condition.check(ctx)
+    post_game_state : bool = await ctx.check_pgc()
 
     # Force Unlocked Stages to be in sync with the player's chosen option,
     # maxing out at 0x1B as supported by the game
@@ -159,8 +161,6 @@ async def setup_level_select(ctx : 'AE3Context'):
             ctx.is_mode_swapped = False
             ctx.ipc.set_game_mode(0xFFFF, False)
     else:
-        ctx.post_game_condition.check(ctx)
-
         if progress != APHelper.pr_round2.value:
             ctx.ipc.set_progress()
 
@@ -169,9 +169,6 @@ async def setup_level_select(ctx : 'AE3Context'):
 
         ctx.is_using_data_desk = ctx.ipc.is_data_desk_interacted() and ctx.ipc.get_gui_status() >= 1
 
-        if ctx.is_channel_swapped:
-            ctx.is_channel_swapped = False
-
         if ctx.save_state_on_room_transition and not ctx.has_saved_on_transition:
             ctx.has_saved_on_transition = True
             ctx.pending_auto_save = True
@@ -179,6 +176,8 @@ async def setup_level_select(ctx : 'AE3Context'):
         if ctx.load_state_on_connect and not ctx.is_last_save_normal and ctx.ipc.is_saving() and gui_status >= 3:
             ctx.is_last_save_normal = True
             await set_last_save_status(ctx)
+
+        await ctx.check_pgc()
 
     # If Super Monkey isn't properly unlocked yet, temporarily do so during level select to prevent Aki from
     # introducing and giving it to the player. Lock them while on the Pause Menu as well to prevent equipping them
@@ -235,7 +234,7 @@ async def setup_shopping_area(ctx : 'AE3Context'):
         progress = ctx.shop_progress
         if ctx.shoppingsanity == 3:
             progress = ctx.keys * ctx.shop_progression + ctx.shop_progression - 1
-            if progress >= 27 and not ctx.post_game_condition.check(ctx):
+            if progress >= 27 and not await ctx.check_pgc():
                 progress = math.floor((28 - ctx.shop_progression) / ctx.shop_progression) * ctx.shop_progression - 1
 
         ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(progress, 27)])
@@ -455,6 +454,8 @@ async def check_states(ctx : 'AE3Context'):
             ctx.command_state = 1
 
 async def receive_items(ctx : 'AE3Context'):
+    pgc_checked : bool = await ctx.check_pgc()
+
     # Check if there are items missed from since the client was open; Refuse to take items until this index is confirmed
     if ctx.last_item_processed_index < 0:
         ctx.last_item_processed_index = ctx.ipc.get_last_item_index()
@@ -486,7 +487,7 @@ async def receive_items(ctx : 'AE3Context'):
             ### Add Key Count and unlock levels accordingly
             if item.item_id == AP[APHelper.channel_key.value]:
                 ctx.keys += 1
-                ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys, ctx.post_game_condition.check(ctx))
+                ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys, pgc_checked)
             elif item.item_id == AP[APHelper.shop_stock.value]:
                 ctx.shop_progress += ctx.shop_progression
 
@@ -588,12 +589,14 @@ async def receive_items(ctx : 'AE3Context'):
 
         # Recheck Locations when receiving items for cases when locations are checked manually by the server/host
         await ctx.goal_target.check(ctx)
-        ctx.post_game_condition.check(ctx)
+        await ctx.check_pgc()
 
 async def resync_important_items(ctx : 'AE3Context'):
     # Do not resync if no items have been processed at all yet
     if ctx.last_item_processed_index < 1:
         return
+
+    pgc_checked: bool = await ctx.check_pgc()
 
     equipment : list[EquipmentItem] = [ *EQUIPMENT, *ACCESSORIES ]
     received_id : list[int] = [ item[0] for item in ctx.items_received ]
@@ -628,7 +631,7 @@ async def resync_important_items(ctx : 'AE3Context'):
 
     # Resync Channel Keys
     keys : int = received_id.count(ctx.items_name_to_id[APHelper.channel_key.value])
-    unlocked : int = ctx.progression.get_progress(keys, ctx.post_game_condition.check(ctx))
+    unlocked : int = ctx.progression.get_progress(keys, pgc_checked)
     if ctx.keys != keys or ctx.unlocked_channels != unlocked:
         ctx.keys = keys
         ctx.unlocked_channels = unlocked
@@ -640,7 +643,7 @@ async def resync_important_items(ctx : 'AE3Context'):
             progress: int = ctx.keys
             progress = (progress + 1) * ctx.shop_progression - 1
 
-            if progress >= 27 and ctx.post_game_condition.check(ctx):
+            if progress >= 27 and pgc_checked:
                 progress = math.floor((28 - ctx.shop_progression) / ctx.shop_progression) * ctx.shop_progression - 1
         else:
             progress: int = received_id.count(ctx.items_name_to_id[APHelper.shop_stock.value])
@@ -766,7 +769,7 @@ async def check_locations(ctx : 'AE3Context'):
             await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
             await ctx.goal_target.check(ctx)
 
-            if ctx.post_game_condition.check(ctx):
+            if await ctx.check_pgc():
                 new_unlocked : int = ctx.progression.get_progress(ctx.keys, True)
                 if ctx.unlocked_channels < new_unlocked:
                     ctx.unlocked_channels = new_unlocked
@@ -833,7 +836,7 @@ async def handle_collection_shop_item_recheck(ctx: 'AE3Context'):
         await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
         await check_progression(ctx)
 
-        ctx.post_game_condition.check(ctx)
+        await ctx.check_pgc()
         await ctx.goal_target.check(ctx)
 
     if not ctx.is_cache_built:
@@ -842,7 +845,7 @@ async def handle_collection_shop_item_recheck(ctx: 'AE3Context'):
 async def check_progression(ctx : 'AE3Context'):
     await ctx.goal_target.check(ctx)
 
-    if ctx.post_game_condition.check(ctx):
+    if await ctx.check_pgc():
         new_unlocked: int = ctx.progression.get_progress(ctx.keys, True)
         if ctx.unlocked_channels < new_unlocked:
             ctx.unlocked_channels = new_unlocked
@@ -973,8 +976,8 @@ async def check_gt_random(ctx : 'AE3Context'):
         ctx.ipc.mark_location(location)
         await send_locations(ctx, [ctx.locations_name_to_id[location]])
 
-# TODO: Save the bypass in game memory so that it is persistent
 async def bypass_pgc(ctx : 'AE3Context'):
+    ctx.ipc.set_pgc_cache()
     ctx.post_game_condition.bypass()
 
 async def instant_goal(ctx : 'AE3Context'):

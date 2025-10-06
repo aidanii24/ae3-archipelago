@@ -818,6 +818,15 @@ class AE3Context(CommonContext):
         self.ui = AE3Manager(self)
         self.ui_task = asyncio.create_task(self.ui.async_run(), name = "ui")
 
+    async def check_pgc(self) -> bool:
+        if self.post_game_condition.passed:
+            return True
+        if self.post_game_condition.check(self):
+            self.ipc.set_pgc_cache()
+            return True
+
+        return False
+
     async def goal(self):
         if self.game_goaled:
             return
@@ -933,6 +942,10 @@ async def check_game(ctx : AE3Context):
         # Get Character
         if ctx.character < 0:
             ctx.character = ctx.ipc.get_character()
+
+        # Get Cached PGC Status on connect
+        if ctx.has_just_connected:
+            ctx.post_game_condition.passed = ctx.ipc.check_pgc_cache()
 
         # Setup Stage when needed and double check locations
         if ctx.in_travel_station:
