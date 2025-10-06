@@ -17,7 +17,7 @@ Features
 
 Setup
 -----
-Please see our [setup guide](./worlds/ape_escape_3/docs/setup.md) for a full guide on getting started with Ape Escape 3 Archipelago.
+Please see our [setup guide](./docs/setup.md) for a full guide on getting started with Ape Escape 3 Archipelago.
 
 ### Prerequisites:
 - Archipelago (0.6.1 or higher) [[Install](https://github.com/ArchipelagoMW/Archipelago)] [[Guide](https://archipelago.gg/tutorial/Archipelago/setup/en)]
