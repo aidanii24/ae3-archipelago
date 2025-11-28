@@ -121,6 +121,8 @@ class AE3World(World):
     post_game_condition : PostGameCondition
     shop_rules : ShopItemRules
 
+    exclude_locations: list
+
     logger: logging.Logger = logging.getLogger()
 
     def __init__(self, multiworld : MultiWorld, player: int):
@@ -303,6 +305,8 @@ class AE3World(World):
 
             self.options.consolation_effects_whitelist.value = [*current]
 
+        self.exclude_locations = exclude_locations
+
         # self.log_debug()
 
     def create_regions(self):
@@ -392,7 +396,7 @@ class AE3World(World):
         # Fill remaining locations with Collectables
         unfilled : int = len(self.multiworld.get_unfilled_locations(self.player)) - len(self.item_pool)
         if self.options.shoppingsanity.value and self.options.hints_from_hintbooks.value:
-            unfilled -= 20
+            unfilled -= len([set(SHOP_HINT_BOOK).difference(self.exclude_locations)])
 
         self.item_pool += generate_collectables(self.random, self.player, unfilled)
 
@@ -405,12 +409,16 @@ class AE3World(World):
 
     def pre_fill(self) -> None:
         if self.options.shoppingsanity.value and self.options.hints_from_hintbooks.value:
+            print("Getting Hints...")
             if self.options.shoppingsanity.value == 2:
                 hint_books = [*SHOP_PERSISTENT_HINT_BOOK, *SHOP_COLLECTION_HINT_BOOK]
             else:
                 hint_books = [*SHOP_HINT_BOOK]
 
             for hint_book in hint_books:
+                if hint_book in self.exclude_locations:
+                    continue
+
                 self.multiworld.get_location(hint_book, self.player).place_locked_item(
                     self.create_item(APHelper.hint_book.value))
 
