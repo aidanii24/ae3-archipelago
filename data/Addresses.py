@@ -1108,6 +1108,7 @@ class NTSCU(VersionAddresses):
         Game.command.value              : 0x772030,
         Game.area_dest.value            : 0x772050,
         Game.spawn.value                : 0x772070,
+        Game.enter_norma.value          : 0x7720B0,
 
         # Persistence
         Game.pgc_cache.value            : 0x649BAE,

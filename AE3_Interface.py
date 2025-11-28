@@ -491,9 +491,16 @@ class AEPS2Interface:
         # Write new value
         self.pine.write_bytes(addr, id_as_bytes)
 
+    def reset_level_confirm_status(self):
+        self.pine.write_int8(self.addresses.GameStates[Game.channel_confirmed.value], 0x0)
+
     def set_change_area_destination(self, area : str):
         as_bytes : bytes = area.encode() + b'\x00'
         self.pine.write_bytes(self.addresses.GameStates[Game.area_dest.value], as_bytes)
+
+    def set_enter_norma_destination(self, area : str):
+        as_bytes : bytes = area.encode() + b'\x00'
+        self.pine.write_bytes(self.addresses.GameStates[Game.enter_norma.value], as_bytes)
 
     def clear_spawn(self):
         spawn_address : int = self.addresses.GameStates[Game.spawn.value]
@@ -504,6 +511,11 @@ class AEPS2Interface:
             spawn_address += 4
             dest_address += 4
 
+    def clear_norma(self):
+        norma_address : int = self.addresses.GameStates[Game.enter_norma.value]
+        for _ in range(6):
+            self.pine.write_int32(norma_address, 0x0)
+            norma_address += 4
 
     def set_game_mode(self, mode : int = 0x100, restart : bool = True):
         address = self.addresses.GameStates[Game.game_mode.value]
@@ -723,6 +735,10 @@ class AEPS2Interface:
         ## self.send_command(Game.kill_player.value) has a transition delay that takes too long
         ## changeArea is more instantaneous, but introduces a buggy respawn when all cookies are depleted
         self.change_area(self.get_stage())
+
+    def enter_norma(self, destination : str):
+        self.set_enter_norma_destination(destination)
+        self.send_command(Game.enter_norma.value)
 
     def change_area(self, destination : str):
         self.set_change_area_destination(destination)
