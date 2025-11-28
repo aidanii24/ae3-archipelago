@@ -7,7 +7,7 @@ from NetUtils import NetworkItem
 
 from .data.Items import ACCESSORIES, ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem, Capacities, AP, \
     EQUIPMENT
-from .data.Stages import PROGRESS_ID_BY_ORDER
+from .data.Stages import PROGRESS_ID_BY_ORDER, LEVELS_ID_BY_ORDER
 from .data.Strings import Game, Loc, Itm, APHelper, Stage
 from .data.Addresses import NTSCU
 from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_INDEX, MONKEYS_BREAK_ROOMS, \
@@ -80,6 +80,16 @@ async def check_background_states(ctx : 'AE3Context'):
     if not ctx.in_travel_station and ctx.is_channel_swapped:
         ctx.is_channel_swapped = False
 
+    if ctx.in_travel_station:
+        if ctx.dummy_morph_monkey_needed:
+            ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
+
+        ctx.ipc.reset_level_confirm_status()
+        ctx.is_channel_swapped = False
+    else:
+        if ctx.dummy_morph_monkey_needed:
+            ctx.ipc.lock_equipment(Itm.morph_monkey.value)
+
 async def sweep_recheck_locations(ctx : 'AE3Context'):
     batch: list[str] = [*ctx.location_groups[ctx.group_check_index * 20:ctx.group_check_index * 20 + 20]]
 
@@ -106,6 +116,7 @@ async def correct_progress(ctx : 'AE3Context'):
     ctx.ipc.set_progress()
 
 async def setup_level_select(ctx : 'AE3Context'):
+    is_on_warp_gate: bool = ctx.ipc.is_on_warp_gate()
     is_a_level_confirmed: bool = ctx.ipc.is_a_level_confirmed()
     post_game_state : bool = await ctx.check_pgc()
 
@@ -132,10 +143,15 @@ async def setup_level_select(ctx : 'AE3Context'):
             ctx.last_selected_channel_index = ctx.unlocked_channels
 
     gui_status: int = ctx.ipc.get_gui_status()
+    is_monkey_dummy_set: bool = False
 
-    if ctx.ipc.is_on_warp_gate():
+    if is_on_warp_gate:
         if ctx.is_using_data_desk:
             ctx.is_using_data_desk = False
+
+        if ctx.dummy_morph_monkey_needed:
+            ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
+            is_monkey_dummy_set = True
 
         # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
         if selected_channel == 0x18 or selected_channel == 0x1A:
@@ -183,19 +199,19 @@ async def setup_level_select(ctx : 'AE3Context'):
     # introducing and giving it to the player. Lock them while on the Pause Menu as well to prevent equipping them
     # from the Quick Morph Menu
     if ctx.dummy_morph_monkey_needed:
-        if gui_status < 3:
-            ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
-        else:
+        if gui_status >= 3 and not is_on_warp_gate:
             ctx.ipc.lock_equipment(Itm.morph_monkey.value)
+        elif not is_monkey_dummy_set:
+            ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
 
     if ctx.dummy_morph_needed:
-        if gui_status < 3:
-            ctx.ipc.unlock_equipment(ctx.dummy_morph)
-        else:
+        if gui_status >= 3 and not is_on_warp_gate:
             ctx.ipc.lock_equipment(ctx.dummy_morph)
+        else:
+            ctx.ipc.unlock_equipment(ctx.dummy_morph)
 
     # Reset the spawnpoint properly as the game leaves it blank when coming from TV Station
-    if is_a_level_confirmed:
+    if is_a_level_confirmed and is_on_warp_gate:
         ctx.ipc.clear_spawn()
 
         if ctx.ipc.get_button_pressed() == 0x07:    # L1/L2 Buttons
@@ -212,16 +228,24 @@ async def setup_level_select(ctx : 'AE3Context'):
             if ctx.last_selected_channel_index < 0:
                 ctx.last_selected_channel_index = selected_channel
 
-            ctx.ipc.set_selected_channel(min(ctx.progression.order[selected_channel], 0x1B))
+            new_channel_selected : int = min(ctx.progression.order[selected_channel], 0x1B)
+
+            ctx.ipc.set_selected_channel(new_channel_selected)
+            # ctx.ipc.clear_norma()
+            # ctx.ipc.enter_norma(f"{LEVELS_ID_BY_ORDER[new_channel_selected]}_a")
+
             ctx.is_channel_swapped = True
 
         # Lock Super Monkey Morph as Aki won't give it at this point if it's still supposed to be locked,
         # unless required to keep Break Rooms open
-        if ctx.dummy_morph_monkey_needed and ctx.dummy_morph != Itm.morph_monkey.value:
-            ctx.ipc.lock_equipment(Itm.morph_monkey.value)
+        # if ctx.dummy_morph_monkey_needed and ctx.dummy_morph != Itm.morph_monkey.value:
+        #     ctx.ipc.lock_equipment(Itm.morph_monkey.value)
 
         if ctx.save_state_on_room_transition and ctx.has_saved_on_transition:
             ctx.has_saved_on_transition = False
+    else:
+        if ctx.is_channel_swapped:
+            ctx.is_channel_swapped = False
 
 async def setup_shopping_area(ctx : 'AE3Context'):
     # Recapture Specter2 if already caught, as certain items only appear when he is captured

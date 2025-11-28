@@ -2496,6 +2496,7 @@ class Game(BaseEnum):
     area_dest =             "Area Destination"
     spawn =                 "Spawnpoint"
 
+    enter_norma =           "enterNorma"
     change_area =           "changeArea"
     restart_stage =         "restartStage"
     kill_player =           "killPlayer"
