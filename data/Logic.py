@@ -104,6 +104,33 @@ def can_fly(state : CollectionState, player : int):
 def can_glide(state : CollectionState, player : int):
     return state.has_group(APHelper.glide.value, player)
 
+## Boost Fly
+def can_boost_jump(state : CollectionState, player : int):
+    return (state.has(Itm.gadget_fly.value, player) and
+            state.has_any([Itm.gadget_net.value, Itm.gadget_club.value], player))
+
+## Quad Jump
+def can_qj(state : CollectionState, player : int):
+    return (state.has(Itm.gadget_club.value, player) and
+            state.has_any([
+                Itm.gadget_net.value,
+                Itm.gadget_radar.value,
+                Itm.gadget_hoop.value,
+                Itm.gadget_rcc.value,
+                Itm.gadget_fly.value,
+            ], player))
+
+## Glitch Float (Encompasses both Net Float and HDS)
+def can_glitch_float(state: CollectionState, player : int):
+    return state.has_all([Itm.gadget_net.value, Itm.gadget_sling.value], player)
+
+## Glitch Float related to Morphs
+def can_glitch_float_morph(state: CollectionState, player : int):
+    return state.has_any([
+        Itm.morph_ninja.value,
+        Itm.morph_monkey.value
+    ], player)
+
 # Access Checks
 def can_reach_region(state : CollectionState, player : int, region : str):
     return state.can_reach_region(region, player)
@@ -191,8 +218,10 @@ class AccessRule:
     NULL = (lambda state, player : False)
 
     # Glitches
-    GLITCH_FLY = 0
-    GLITCH_FLOAT = 0
+    BOOST = can_boost_jump                       # Can Boost Jump
+    QJ = can_qj                                 # Can use Quad Jumps (Stun Club and most other gadgets)
+    G_FLOAT = can_glitch_float                  # Can use Net Floats/HDS (Monkey Net and Slingback Shooter)
+    G_FLOAT_M = can_glitch_float_morph          # Can do Infinite Jumps with Eligible Morphs
 
     # Victory
     GOAL = is_goal_achieved
