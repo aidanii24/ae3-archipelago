@@ -143,6 +143,13 @@ class LogicPreference(Choice):
     """
     Choose a certain logic preset that determines how difficult the game will be and how much expertise is asked from
     the player.
+
+    > casual - Gadgets and Morphs are attempted to be given as early as possible
+    > normal - Gadgets and Morphs are given as needed by a normal playthrough of the game
+    > hard - Gadgets and Morphs are given as late as possible, where certain occasions may arise
+    where an unintuitive solution must be used, while still not requiring glitches
+    > expert - Glitches may often need to be exploited to progress
+
     Default: normal
     """
     display_name : str = "Logic Preference"
@@ -151,6 +158,7 @@ class LogicPreference(Choice):
     option_casual : int = 0
     option_normal : int = 1
     option_hard : int = 2
+    option_expert: int = 3
 
 
 class GoalTarget(Choice):

@@ -862,7 +862,11 @@ MONKEYS_BAY_E1 : Sequence[str] = [
 ]
 
 MONKEYS_BAY_E2 : Sequence[str] = [
-    Loc.bay_gimi_gimi.value, Loc.bay_pokkini.value, Loc.bay_bokino.value, Loc.bay_jimo.value
+    Loc.bay_gimi_gimi.value, Loc.bay_pokkini.value, Loc.bay_bokino.value
+]
+
+MONKEYS_BAY_E3 : Sequence[str] = [
+    Loc.bay_jimo.value
 ]
 
 MONKEYS_BAY_F : Sequence[str] = [
@@ -871,7 +875,8 @@ MONKEYS_BAY_F : Sequence[str] = [
 
 MONKEYS_BAY : Sequence[str] = [
     *MONKEYS_BAY_A, *MONKEYS_BAY_A1, *MONKEYS_BAY_A6, *MONKEYS_BAY_B, *MONKEYS_BAY_C, *MONKEYS_BAY_C1,
-    *MONKEYS_BAY_D, *MONKEYS_BAY_D1, *MONKEYS_BAY_E, *MONKEYS_BAY_E1, *MONKEYS_BAY_E2, *MONKEYS_BAY_F,
+    *MONKEYS_BAY_D, *MONKEYS_BAY_D1, *MONKEYS_BAY_E, *MONKEYS_BAY_E1, *MONKEYS_BAY_E2, *MONKEYS_BAY_E3,
+    *MONKEYS_BAY_F,
 ]
 
 # Tomo
@@ -912,11 +917,7 @@ MONKEYS_TOMO_F : Sequence[str] = [
 ]
 
 MONKEYS_TOMO_G : Sequence[str] = [
-    Loc.tomo_pipo_ron.value, Loc.tomo_mikita.value,
-]
-
-MONKEYS_TOMO_G1 : Sequence[str] = [
-    Loc.tomo_riley.value,
+    Loc.tomo_pipo_ron.value, Loc.tomo_mikita.value, Loc.tomo_riley.value
 ]
 
 MONKEYS_TOMO_H : Sequence[str] = [
@@ -933,7 +934,7 @@ MONKEYS_TOMO_J : Sequence[str] = [
 
 MONKEYS_TOMO : Sequence[str] = [
     *MONKEYS_TOMO_A,*MONKEYS_TOMO_B, *MONKEYS_TOMO_C, *MONKEYS_TOMO_E, *MONKEYS_TOMO_E1, *MONKEYS_TOMO_E2,
-    *MONKEYS_TOMO_E3, *MONKEYS_TOMO_F, *MONKEYS_TOMO_F2, *MONKEYS_TOMO_G, *MONKEYS_TOMO_G1, *MONKEYS_TOMO_H,
+    *MONKEYS_TOMO_E3, *MONKEYS_TOMO_F, *MONKEYS_TOMO_F2, *MONKEYS_TOMO_G, *MONKEYS_TOMO_H,
     *MONKEYS_TOMO_I, *MONKEYS_TOMO_J
 ]
 
@@ -1014,6 +1015,40 @@ MONKEYS_PASSWORDS : Sequence[str] = [
     Loc.woods_spork.value, Loc.castle_sal_1000.value, Loc.snowfesta_shimmy.value, Loc.snowfesta_pipotron_yellow.value,
     Loc.toyhouse_pipotron_red.value, Loc.plane_pipotron_blue.value, Loc.hong_dark_master.value,
     Loc.space_sal_3000.value
+]
+
+MONKEYS_INFINITE_GADGET_FLOAT_APPLICABLE: list[str] = [
+    Loc.seaside_morella.value,
+
+    Loc.castle_monga.value,
+
+    Loc.studio_minoh.value,
+    Loc.studio_monta.value,
+
+    Loc.onsen_mujakin.value,
+    Loc.onsen_fuji_chan.value,
+
+    Loc.snowfesta_kimisuke.value,
+    Loc.snowfesta_mitsuro.value,
+
+    Loc.edotown_walter.value,
+    Loc.edotown_monkibeth.value,
+
+    Loc.toyhouse_monto.value,
+
+    Loc.iceland_jolly_mon.value,
+    Loc.iceland_hikkori.value,
+    Loc.iceland_rammy.value,
+
+    Loc.asia_baku.value,
+
+    Loc.asia_ukki_ether.value,
+
+    Loc.hong_ukki_chan.value,
+    Loc.hong_uki_uki.value,
+    Loc.hong_muki_muki.value,
+    Loc.hong_bankan.value,
+    Loc.hong_sukei.value,
 ]
 
 MONKEYS_BREAK_ROOMS : Sequence[str] = [
@@ -1255,7 +1290,6 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.region_tomo_f.value           : MONKEYS_TOMO_F,
     Stage.region_tomo_f2.value          : MONKEYS_TOMO_F2,
     Stage.region_tomo_g.value           : MONKEYS_TOMO_G,
-    Stage.region_tomo_g1.value          : MONKEYS_TOMO_G1,
     Stage.region_tomo_h.value           : MONKEYS_TOMO_H,
     Stage.region_tomo_i.value           : MONKEYS_TOMO_I,
     Stage.region_tomo_j.value           : MONKEYS_TOMO_J,
@@ -2052,6 +2086,12 @@ EVENTS_SPACE_F2 : Sequence[str] = [
 
 EVENTS_SPACE_D : Sequence[str] = [
     Events.space_d_button.value
+]
+
+EVENTS_INFINITE_GADGET_FLOAT_APPLICABLE : Sequence[str] = [
+    Events.studio_b1_button.value,
+    Events.iceland_e_button.value,
+    Events.asia_e1_button.value,
 ]
 
 EVENTS_INDEX : dict[str, Sequence[str]] = {

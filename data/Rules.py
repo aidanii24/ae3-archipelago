@@ -8,13 +8,14 @@ from BaseClasses import CollectionState
 from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, Cellphone_Name_to_ID, MONKEYS_BOSSES, \
     MONKEYS_BREAK_ROOMS, MONKEYS_INDEX, MONKEYS_MASTER, MONKEYS_PASSWORDS, generate_name_to_id, LOCATIONS_INDEX, \
     LOCATIONS_DIRECTORY, SHOP_CHEAP_COLLECTION_INDEX, SHOP_CHEAP_MASTER, SHOP_PROGRESSION_DIRECTORY, SHOP_UNIQUE_MASTER, \
-    SHOP_COLLECTION_MASTER, SHOP_PERSISTENT_MASTER, SHOP_CHEAP_COLLECTION_MASTER, SHOP_EVENT_ACCESS_DIRECTORY
+    SHOP_COLLECTION_MASTER, SHOP_PERSISTENT_MASTER, SHOP_CHEAP_COLLECTION_MASTER, SHOP_EVENT_ACCESS_DIRECTORY, \
+    MONKEYS_INFINITE_GADGET_FLOAT_APPLICABLE, EVENTS_INFINITE_GADGET_FLOAT_APPLICABLE
 from .Logic import Rulesets, AccessRule, has_keys, event_invoked, has_enough_keys, can_access_region, \
     has_shop_stock
 from .Strings import Loc, Stage, Events, APHelper
 from .Stages import (STAGES_DIRECTORY, STAGES_DIRECTORY_LABEL, ENTRANCES_SHOP_PSEUDOREGIONS, AE3EntranceMeta,
                      ENTRANCES_SHOP_PROGRESSION, STAGES_SHOP_PROGRESSION, STAGES_FARMABLE, STAGES_FARMABLE_SNEAKY_BORG,
-                     LEVELS_BY_ORDER)
+                     LEVELS_BY_ORDER, ENTRANCES_INFINITE_GADGET_FLOAT_APPLICABLE)
 
 if TYPE_CHECKING:
     from ..AE3_Client import AE3Context
@@ -368,6 +369,33 @@ class LogicPreference:
 
         return rules
 
+    def apply_unlimited_gadget_float_rules(self, hds: bool, mqj: bool):
+        if not hds and not mqj:
+            return
+
+        rules: list = []
+        if hds:
+            rules.append(AccessRule.G_FLOAT)
+        if mqj:
+            rules.append(AccessRule.QJ)
+
+        for monkey in MONKEYS_INFINITE_GADGET_FLOAT_APPLICABLE:
+            self.monkey_rules.setdefault(monkey, Rulesets()).update(Rulesets(rules))
+
+        for event in EVENTS_INFINITE_GADGET_FLOAT_APPLICABLE:
+            self.event_rules.setdefault(event, Rulesets()).update(Rulesets(rules))
+
+        for entrance in ENTRANCES_INFINITE_GADGET_FLOAT_APPLICABLE:
+            self.entrance_rules.setdefault(entrance, Rulesets()).update(Rulesets(rules))
+
+    def apply_timed_kung_fu_rule(self):
+        # Should only be Implemented by Expert Logic
+        return
+
+    def apply_timed_morph_float(self):
+        # Should only be Implemented by Expert Logic
+        return
+
 # [<--- LOGIC PREFERENCES --->]
 class Hard(LogicPreference):
     """
@@ -379,6 +407,11 @@ class Hard(LogicPreference):
         super().__init__()
 
         self.small_starting_channels = [6, 18, 20, 22, 23]
+
+        self.blacklisted_entrances = [
+            Stage.entrance_bay_e1e3.value,
+            Stage.entrance_tomo_f2f.value
+        ]
 
         self.monkey_rules.update({
             # Seaside
@@ -435,16 +468,15 @@ class Hard(LogicPreference):
             Loc.hong_ukki_chan.value        : Rulesets(AccessRule.SHOOT),
             Loc.hong_uki_uki.value          : Rulesets(AccessRule.SHOOT, AccessRule.FLY),
             Loc.hong_muki_muki.value        : Rulesets(AccessRule.SHOOT, AccessRule.FLY),
-            Loc.hong_bankan.value           : Rulesets(AccessRule.NINJA, AccessRule.HERO),
+            Loc.hong_bankan.value           : Rulesets(AccessRule.GLIDE),
             Loc.hong_sukei.value            : Rulesets(AccessRule.SHOOT, AccessRule.NINJA),
 
             # Bay
             Loc.bay_shiny_pete.value        : Rulesets(AccessRule.SHOOT),
             Loc.bay_gimo.value              : Rulesets(AccessRule.SHOOT),
-            Loc.bay_jimo.value              : Rulesets([AccessRule.FLY, AccessRule.KUNGFU, AccessRule.SWIM]),
 
             # Tomo
-            Loc.tomo_riley.value            : Rulesets(AccessRule.MAGICIAN),
+            Loc.tomo_riley.value            : Rulesets([AccessRule.KUNGFU, AccessRule.MAGICIAN]),
             Loc.tomo_pipo_ron.value         : Rulesets(AccessRule.KUNGFU),
 
             # Space
@@ -497,6 +529,7 @@ class Hard(LogicPreference):
             Stage.entrance_woods_ad.value       : Rulesets(AccessRule.MONKEY),
 
             # Castle
+            Stage.entrance_castle_a1a.value     : Rulesets(AccessRule.HIT),
             Stage.entrance_castle_aa2.value     : Rulesets(event_invoked(Events.castle_a2_button.value)),
             Stage.entrance_castle_b1b.value     : Rulesets(event_invoked(Events.castle_b_clapper.value)),
             Stage.entrance_castle_be.value      : Rulesets(AccessRule.MONKEY),
@@ -530,8 +563,8 @@ class Hard(LogicPreference):
                 event_invoked(Events.halloween_b1_jumbo_robo_shoot.value)),
             Stage.entrance_halloween_c1c.value  : Rulesets(AccessRule.SWIM, AccessRule.HERO),
             Stage.entrance_halloween_cc1.value  : Rulesets(AccessRule.SWIM, AccessRule.HERO),
-            Stage.entrance_halloween_cc2.value  : Rulesets(AccessRule.SWIM, AccessRule.HERO),
-            Stage.entrance_halloween_c2c.value  : Rulesets(AccessRule.SWIM, AccessRule.HERO),
+            Stage.entrance_halloween_cc2.value  : Rulesets(AccessRule.SWIM, AccessRule.GLIDE),
+            Stage.entrance_halloween_c2c.value  : Rulesets(AccessRule.SWIM, AccessRule.GLIDE),
             Stage.entrance_halloween_d1e.value  : Rulesets(AccessRule.MONKEY),
 
             # Western
@@ -598,7 +631,7 @@ class Hard(LogicPreference):
             Stage.entrance_asia_aa1.value       : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_aa5.value       : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_a1a.value       : Rulesets(AccessRule.SWIM, AccessRule.HERO),
-            Stage.entrance_asia_a1b1.value      : Rulesets(AccessRule.SWIM, AccessRule.HERO),
+            Stage.entrance_asia_a1b2.value      : Rulesets(AccessRule.SWIM, AccessRule.HERO),
             Stage.entrance_asia_a1a2.value      : Rulesets(AccessRule.HERO),
             Stage.entrance_asia_a1a3.value      : Rulesets(AccessRule.SWIM, [AccessRule.HERO,
                                                             event_invoked(Events.asia_a2_block.value)]),
@@ -665,7 +698,7 @@ class Hard(LogicPreference):
             Stage.entrance_hong_dg.value        : Rulesets(AccessRule.KUNGFU),
 
             # Bay
-            Stage.entrance_bay_aa1.value        : Rulesets([AccessRule.SHOOT, AccessRule.SWIM], AccessRule.HERO),
+            Stage.entrance_bay_aa1.value        : Rulesets([AccessRule.SHOOT, AccessRule.SWIM], AccessRule.GLIDE),
             Stage.entrance_bay_a1a.value        : Rulesets(AccessRule.SWIM, AccessRule.HERO),
             Stage.entrance_bay_a1b.value        : Rulesets(AccessRule.RCC),
             Stage.entrance_bay_a1a2.value       : Rulesets(AccessRule.SWIM),
@@ -681,10 +714,10 @@ class Hard(LogicPreference):
             Stage.entrance_bay_ee1.value        : Rulesets(AccessRule.SHOOT),
             Stage.entrance_bay_ee2.value        : Rulesets(event_invoked(Events.bay_e1_button.value)),
             Stage.entrance_bay_e1e2.value       : Rulesets(AccessRule.HIT),
+            Stage.entrance_bay_e2e3.value       : Rulesets([AccessRule.FLY, AccessRule.KUNGFU]),
 
             # Tomo
-            Stage.entrance_tomo_aa1.value       : Rulesets(AccessRule.FLY),
-            Stage.entrance_tomo_a1a.value       : Rulesets(AccessRule.FLY),
+            Stage.entrance_tomo_a1a.value       : Rulesets(AccessRule.GLIDE),
             Stage.entrance_tomo_e1i.value       : Rulesets(AccessRule.MONKEY),
             Stage.entrance_tomo_e2e3.value      : Rulesets(AccessRule.KUNGFU),
             Stage.entrance_tomo_e3e2.value      : Rulesets(event_invoked(Events.tomo_e2_kungfu.value)),
@@ -723,6 +756,383 @@ class Hard(LogicPreference):
             Stage.entrance_space_jj1.value      : Rulesets(AccessRule.GLIDE),
             Stage.entrance_space_j1j.value      : Rulesets(AccessRule.GLIDE),
         })
+
+class Expert(Hard):
+    """
+    RuleType for players that want to take advantage of glitches (excluding very powerful ones such as HDS)
+    """
+
+    def __init__(self):
+        super().__init__()
+
+        self.blacklisted_entrances = []
+
+        self.monkey_rules.update({
+            Loc.seaside_morella.value:  Rulesets(
+                AccessRule.SHOOT, AccessRule.FLY, AccessRule.MAGICIAN,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Loc.castle_monga.value: Rulesets(
+                AccessRule.SHOOT, AccessRule.GLIDE,
+                AccessRule.QJ, AccessRule.G_FLOAT_M,
+            ),
+            Loc.studio_minoh.value: Rulesets(
+                AccessRule.SHOOT, AccessRule.GLIDE,
+                AccessRule.QJ, AccessRule.G_FLOAT_M,
+            ),
+            Loc.studio_monta.value: Rulesets(
+                AccessRule.SHOOT, AccessRule.GLIDE,
+                AccessRule.QJ, AccessRule.G_FLOAT_M,
+            ),
+            Loc.onsen_fuji_chan.value: Rulesets(
+                AccessRule.SHOOT, AccessRule.NINJA,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT_M,
+            ),
+            Loc.toyhouse_monto.value: Rulesets(
+                AccessRule.SHOOT, AccessRule.NINJA, AccessRule.FLYER,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT_M,
+            ),
+            Loc.toyhouse_mokitani.value: Rulesets(
+                AccessRule.RCC,
+                AccessRule.FLYER, AccessRule.NINJA
+            ),
+            Loc.asia_baku.value: Rulesets(
+                [AccessRule.SHOOT, AccessRule.SWIM], AccessRule.NINJA, AccessRule.HERO,
+                AccessRule.KUNGFU
+            ),
+            Loc.asia_takumon.value: Rulesets(
+                AccessRule.SWIM, AccessRule.NINJA, AccessRule.COWBOY, AccessRule.HERO,
+                AccessRule.KUNGFU
+            ),
+            Loc.asia_ukki_ether.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.KUNGFU
+            ),
+            Loc.hong_uki_uki.value: Rulesets(
+                AccessRule.SHOOT, AccessRule.FLY,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M,
+            ),
+            Loc.hong_muki_muki.value: Rulesets(
+                AccessRule.SHOOT, AccessRule.FLY,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M,
+            ),
+            Loc.hong_bankan.value: Rulesets(
+                AccessRule.GLIDE,
+                AccessRule.KUNGFU
+            ),
+            Loc.hong_sukei.value: Rulesets(
+                AccessRule.SHOOT, AccessRule.FLY
+            ),
+            Loc.tomo_riley.value: Rulesets(
+                [AccessRule.KUNGFU, AccessRule.MAGICIAN],
+                AccessRule.MAGICIAN
+            ),
+            Loc.space_rokkun.value: Rulesets(
+                AccessRule.RCC, AccessRule.COWBOY
+            )
+        })
+
+        self.event_rules.update({
+            Events.studio_b1_button.value: Rulesets(
+                AccessRule.SHOOT, AccessRule.GLIDE, AccessRule.MAGICIAN,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Events.asia_e1_button.value: Rulesets(
+                [AccessRule.FLY, AccessRule.SHOOT], [AccessRule.FLY, AccessRule.RCC],
+                [AccessRule.SHOOT, AccessRule.SWIM, AccessRule.KUNGFU],
+                [AccessRule.RCC, AccessRule.SWIM, AccessRule.KUNGFU],
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            )
+        })
+
+        self.entrance_rules.update({
+            Stage.entrance_seaside_ac.value: Rulesets(
+                AccessRule.MONKEY,
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_studio_b1b2.value: Rulesets(
+                event_invoked(Events.studio_b1_button.value),
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_halloween_c1c.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.G_FLOAT_M,
+            ),
+            Stage.entrance_halloween_cc1.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.G_FLOAT_M,
+            ),
+            Stage.entrance_halloween_cc2.value: Rulesets(
+                AccessRule.SWIM, AccessRule.GLIDE,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_halloween_c2c.value: Rulesets(
+                AccessRule.SWIM, AccessRule.GLIDE,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_western_ec.value: Rulesets(
+                AccessRule.KUNGFU, AccessRule.MONKEY,
+            ),
+            Stage.entrance_western_ee1.value: Rulesets(
+                AccessRule.GLIDE, AccessRule.SHOOT, AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_onsen_b1b.value: Rulesets(
+                [AccessRule.RCC, AccessRule.SWIM], AccessRule.GLIDE, AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_onsen_be.value: Rulesets(
+                AccessRule.FLY,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_snowfesta_ag.value: Rulesets(
+                AccessRule.MONKEY, AccessRule.KUNGFU
+            ),
+            Stage.entrance_snowfesta_dg.value: Rulesets(
+                AccessRule.MONKEY,
+                AccessRule.KUNGFU, [AccessRule.QJ, AccessRule.G_FLOAT]
+            ),
+            Stage.entrance_edotown_be.value: Rulesets(
+                event_invoked(Events.edotown_e_scroll.value),
+                AccessRule.NINJA
+            ),
+            Stage.entrance_edotown_c1c.value: Rulesets(
+                AccessRule.NINJA, AccessRule.HERO,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_edotown_cc1.value: Rulesets(
+                AccessRule.NINJA, AccessRule.HERO,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_heaven_ab.value: Rulesets(
+                AccessRule.GLIDE, AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M,
+            ),
+            Stage.entrance_heaven_ba.value: Rulesets(
+                AccessRule.GLIDE, AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M,
+            ),
+            Stage.entrance_asia_ab.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_asia_ba.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_asia_aa5.value: Rulesets(
+              AccessRule.SWIM,
+                AccessRule.KUNGFU,
+            ),
+            Stage.entrance_asia_a2a1.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.KUNGFU,
+            ),
+            Stage.entrance_asia_a1b2.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.KUNGFU,
+            ),
+            Stage.entrance_asia_b2a1.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT_M,
+            ),
+            Stage.entrance_asia_a1a3.value: Rulesets(
+                AccessRule.SWIM,
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value),
+                 AccessRule.HERO],
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value),
+                 AccessRule.KUNGFU]
+            ),
+            Stage.entrance_asia_a3a1.value: Rulesets(
+                AccessRule.SWIM,
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value),
+                 AccessRule.HERO],
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value),
+                 AccessRule.KUNGFU]
+            ),
+            Stage.entrance_asia_a2a3.value: Rulesets(
+                [event_invoked(Events.asia_a_block.value),
+                      event_invoked(Events.asia_a1_block.value),
+                      event_invoked(Events.asia_a2_block.value)],
+                     AccessRule.HERO,
+                     AccessRule.KUNGFU
+            ),
+            Stage.entrance_asia_a2a4.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_asia_a3a4.value: Rulesets(
+                AccessRule.SWIM,
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value),
+                 AccessRule.HERO],
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value),
+                 AccessRule.KUNGFU]
+            ),
+            Stage.entrance_asia_a4a3.value: Rulesets(
+                AccessRule.SWIM,
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value),
+                 AccessRule.HERO],
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value),
+                 AccessRule.KUNGFU]
+            ),
+            Stage.entrance_asia_a3a2.value: Rulesets(
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value)],
+                AccessRule.HERO,
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_asia_bb2.value: Rulesets(
+                [event_invoked(Events.asia_b2_button.value)], AccessRule.HERO,
+                AccessRule.BOOST, AccessRule.KUNGFU, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_asia_ee1.value: Rulesets(
+                [AccessRule.ATTACK, AccessRule.DASH],
+                [AccessRule.ATTACK, AccessRule.RCC],
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_asia_e1e2.value: Rulesets(
+                [AccessRule.SHOOT, AccessRule.FLY],
+                [AccessRule.ATTACK, AccessRule.RCC, AccessRule.FLY],
+                AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_plane_cg.value: Rulesets(
+                AccessRule.MONKEY,
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_plane_dd1.value: Rulesets(
+                AccessRule.GLIDE, AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_plane_d1d.value: Rulesets(
+                AccessRule.GLIDE, AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_hong_aa1.value: Rulesets(
+                AccessRule.KUNGFU, AccessRule.HERO,
+                AccessRule.BOOST, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_hong_b1f.value: Rulesets(
+                AccessRule.MONKEY, AccessRule.KUNGFU
+            ),
+            Stage.entrance_hong_cc1.value: Rulesets(
+                AccessRule.GLIDE, AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_hong_c1c.value: Rulesets(
+                AccessRule.GLIDE, AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_hong_c1c2.value: Rulesets(
+                AccessRule.NINJA, AccessRule.HERO,
+                AccessRule.G_FLOAT, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_hong_ee1.value: Rulesets(
+                AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_hong_dg.value: Rulesets(
+                AccessRule.KUNGFU, [AccessRule.QJ, AccessRule.G_FLOAT], AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_bay_aa1.value: Rulesets(
+                [AccessRule.SHOOT, AccessRule.SWIM], AccessRule.GLIDE,
+                AccessRule.KUNGFU, [AccessRule.SWIM, AccessRule.QJ], [AccessRule.SWIM, AccessRule.G_FLOAT],
+                AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_bay_a1a.value: Rulesets(
+                [AccessRule.SHOOT, AccessRule.SWIM], AccessRule.GLIDE,
+                AccessRule.KUNGFU, [AccessRule.SWIM, AccessRule.QJ], [AccessRule.SWIM, AccessRule.G_FLOAT],
+                AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_bay_a6f.value: Rulesets(
+                AccessRule.MONKEY,
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_bay_dd1.value: Rulesets(
+                AccessRule.KUNGFU,
+                AccessRule.BOOST, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_tomo_a1a.value: Rulesets(
+                AccessRule.GLIDE,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_tomo_f1f2.value: Rulesets(
+                AccessRule.NINJA, AccessRule.HERO,
+                AccessRule.KUNGFU, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_tomo_f2f1.value: Rulesets(
+                AccessRule.NINJA, AccessRule.HERO,
+                AccessRule.KUNGFU, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_tomo_f2f.value: Rulesets(AccessRule.FLY),
+            Stage.entrance_tomo_gg1.value: Rulesets(
+                AccessRule.KUNGFU,
+                AccessRule.BOOST, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_tomo_hh1.value: Rulesets(
+                AccessRule.GLIDE,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+        })
+
+        entrances_to_reset: list = [
+            Stage.entrance_castle_ad.value,
+            Stage.entrance_ciscocity_ad_2.value,
+            Stage.entrance_ciscocity_ce.value,
+            Stage.entrance_iceland_ef.value
+        ]
+        for entrance in entrances_to_reset:
+            if entrance in self.entrance_rules:
+                self.entrance_rules.pop(entrance)
+
+    def apply_timed_kungfu_rule(self):
+        locations: list = [
+            Loc.edotown_monkibeth.value
+        ]
+
+        for loc in locations:
+            self.monkey_rules.get(loc, AccessRule()).update(Rulesets(AccessRule.KUNGFU))
+
+        self.entrance_rules.get(Stage.entrance_asia_e1e2.value, AccessRule()).update(
+            Rulesets([AccessRule.SHOOT, AccessRule.SWIM, AccessRule.KUNGFU],
+                     [AccessRule.ATTACK, AccessRule.RCC, AccessRule.SWIM, AccessRule.KUNGFU],)
+        )
+
+        self.event_rules.get(Events.space_g_button.value, AccessRule()).update(Rulesets(AccessRule.KUNGFU))
+
+    def apply_timed_morph_float(self):
+        entrances: list = [
+            Stage.entrance_asia_ab.value,
+            Stage.entrance_asia_ba.value,
+            Stage.entrance_heaven_aa1.value,
+            Stage.entrance_heaven_a1a.value,
+            Stage.entrance_asia_a1a2.value,
+            Stage.entrance_asia_a1a3.value,
+            Stage.entrance_asia_a3a1.value,
+            Stage.entrance_asia_a2a3.value,
+            Stage.entrance_asia_a3a2.value,
+            Stage.entrance_asia_a2a4.value,
+            Stage.entrance_asia_a3a4.value,
+        ]
+
+        for e in entrances:
+            self.monkey_rules.get(e, AccessRule()).update(Rulesets(AccessRule.G_FLOAT_M))
 
 class Normal(Hard):
     """
@@ -975,12 +1385,16 @@ class Normal(Hard):
 
             # Bay
             Stage.entrance_bay_cc1.value        : Rulesets(AccessRule.HIT),
+            Stage.entrance_bay_e2e3.value       : Rulesets([AccessRule.FLY, AccessRule.SWIM, AccessRule.KUNGFU]),
 
             # Tomo
             Stage.entrance_tomo_aa1.value       : Rulesets(AccessRule.HERO, AccessRule.NINJA),
             Stage.entrance_tomo_a1a.value       : Rulesets(AccessRule.HERO, AccessRule.NINJA),
             Stage.entrance_tomo_ee1.value       : Rulesets(AccessRule.KNIGHT),
             Stage.entrance_tomo_ee2.value       : Rulesets(AccessRule.RCC),
+
+            # Space
+            Stage.entrance_space_ab.value       : Rulesets(AccessRule.HIT)
         })
 
 class Casual(Normal):
@@ -994,7 +1408,9 @@ class Casual(Normal):
 
         self.small_starting_channels = [6, 9, 11, 13, 15, 18, 20, 22, 23]
         self.blacklisted_entrances = [
-            Stage.entrance_asia_a1a2.value
+            Stage.entrance_asia_a1a2.value,
+            Stage.entrance_bay_e1e3.value,
+            Stage.entrance_tomo_f2f.value
         ]
 
         self.monkey_rules.update({
@@ -1270,7 +1686,7 @@ class Casual(Normal):
             Stage.entrance_asia_ab.value        : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_ba.value        : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_a1a.value       : Rulesets(AccessRule.SWIM),
-            Stage.entrance_asia_a1b1.value      : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_a1b2.value      : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_a1a3.value      : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_a2a1.value      : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_a2a3.value      : Rulesets([event_invoked(Events.asia_a_block.value),
@@ -1309,6 +1725,7 @@ class Casual(Normal):
             Stage.entrance_tomo_bc.value        : Rulesets(AccessRule.GLIDE),
 
             # Space
+            Stage.entrance_space_ab.value       : Rulesets(AccessRule.HIT),
             Stage.entrance_space_ff1.value      : Rulesets(AccessRule.GLIDE),
             Stage.entrance_space_gg1.value      : Rulesets([AccessRule.SWIM, AccessRule.ATTACK]),
         })
@@ -1316,7 +1733,8 @@ class Casual(Normal):
 LogicPreferenceOptions : list = [
     Casual,
     Normal,
-    Hard
+    Hard,
+    Expert
 ]
 
 # [<--- SHOP ITEMS RULES HANDLING --->]
