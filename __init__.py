@@ -164,6 +164,20 @@ class AE3World(World):
 
         # Get Logic Preference
         self.logic_preference = LogicPreferenceOptions[self.options.logic_preference]()
+        self.logic_preference.apply_unlimited_gadget_float_rules(
+            bool(self.options.hip_drop_storage_logic.value),
+            bool(self.options.prolonged_quad_jump_logic.value),
+        )
+
+        if self.options.base_morph_duration.value >= 30 or self.options.add_morph_extensions.value:
+            self.logic_preference.apply_timed_kung_fu_rule(
+                self.options.base_morph_duration.value,
+                bool(self.options.add_morph_extensions.value)
+            )
+            self.logic_preference.apply_timed_morph_float(
+                self.options.base_morph_duration.value,
+                bool(self.options.add_morph_extensions.value)
+            )
 
         # Get ProgressionMode
         self.progression = ProgressionModeOptions[self.options.progression_mode.value](self)
@@ -409,7 +423,6 @@ class AE3World(World):
 
     def pre_fill(self) -> None:
         if self.options.shoppingsanity.value and self.options.hints_from_hintbooks.value:
-            print("Getting Hints...")
             if self.options.shoppingsanity.value == 2:
                 hint_books = [*SHOP_PERSISTENT_HINT_BOOK, *SHOP_COLLECTION_HINT_BOOK]
             else:

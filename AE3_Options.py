@@ -160,6 +160,18 @@ class LogicPreference(Choice):
     option_hard : int = 2
     option_expert: int = 3
 
+class HipDropStorageLogic(Toggle):
+    """
+    Determine if Hip Drop Storage should be considered for Logic.
+    """
+    display_name : str = "Hip Drop Storage Logic"
+
+class ProlongedQuadJumpLogic(Toggle):
+    """
+    Determine if using Quad Jumps for extended periods of time should be considered for Logic.
+    """
+    display_name : str = "Prolonged Quad Jump Logic"
+
 
 class GoalTarget(Choice):
     """
@@ -742,6 +754,8 @@ ae3_option_groups : dict[str, list] = {
                                    RandomizeProgressionSetCount,
                                    RandomizeProgressionChannelRange,
                                    LogicPreference,
+                                   HipDropStorageLogic,
+                                   ProlongedQuadJumpLogic,
                                    GoalTarget,
                                    GoalTargetOverride,
                                    PostGameConditionMonkeys,
@@ -790,6 +804,8 @@ class AE3Options(PerGameCommonOptions):
     randomize_progression_set_count         : RandomizeProgressionSetCount
     randomize_progression_channel_range     : RandomizeProgressionChannelRange
     logic_preference                        : LogicPreference
+    hip_drop_storage_logic                  : HipDropStorageLogic
+    prolonged_quad_jump_logic               : ProlongedQuadJumpLogic
     goal_target                             : GoalTarget
     goal_target_override                    : GoalTargetOverride
     post_game_condition_monkeys             : PostGameConditionMonkeys
@@ -849,6 +865,8 @@ def slot_data_options() -> list[str]:
         APHelper.randomize_set_count.value,
         APHelper.randomize_channel_range.value,
         APHelper.logic_preference.value,
+        APHelper.hds_logic.value,
+        APHelper.pqj_logic.value,
         APHelper.goal_target.value,
         APHelper.goal_target_ovr.value,
         APHelper.pgc_monkeys.value,

@@ -144,6 +144,12 @@ def can_farm_boxes():
 def can_farm_sneaky_borgs():
     return lambda state, player : any(can_reach_region(state, player, region) for region in STAGES_FARMABLE_SNEAKY_BORG)
 
+def has_enough_morph_extensions(state : CollectionState, player : int, extensions : int = 10):
+    return state.has(Itm.acc_morph_ext.value, player, extensions)
+
+def has_morph_extensions(extensions: int = 10):
+    return lambda state, player : has_enough_morph_extensions(state, player, extensions)
+
 def has_enough_keys(state : CollectionState, player : int, keys : int):
     return state.has(APHelper.channel_key.value, player, keys)
 
