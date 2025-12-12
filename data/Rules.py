@@ -11,7 +11,7 @@ from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, Cellphon
     SHOP_COLLECTION_MASTER, SHOP_PERSISTENT_MASTER, SHOP_CHEAP_COLLECTION_MASTER, SHOP_EVENT_ACCESS_DIRECTORY, \
     MONKEYS_INFINITE_GADGET_FLOAT_APPLICABLE, EVENTS_INFINITE_GADGET_FLOAT_APPLICABLE
 from .Logic import Rulesets, AccessRule, has_keys, event_invoked, has_enough_keys, can_access_region, \
-    has_shop_stock
+    has_shop_stock, has_morph_extensions
 from .Strings import Loc, Stage, Events, APHelper
 from .Stages import (STAGES_DIRECTORY, STAGES_DIRECTORY_LABEL, ENTRANCES_SHOP_PSEUDOREGIONS, AE3EntranceMeta,
                      ENTRANCES_SHOP_PROGRESSION, STAGES_SHOP_PROGRESSION, STAGES_FARMABLE, STAGES_FARMABLE_SNEAKY_BORG,
@@ -388,11 +388,11 @@ class LogicPreference:
         for entrance in ENTRANCES_INFINITE_GADGET_FLOAT_APPLICABLE:
             self.entrance_rules.setdefault(entrance, Rulesets()).update(Rulesets(rules))
 
-    def apply_timed_kung_fu_rule(self):
+    def apply_timed_kung_fu_rule(self, base_duration: int, morph_extensions_enabled: bool):
         # Should only be Implemented by Expert Logic
         return
 
-    def apply_timed_morph_float(self):
+    def apply_timed_morph_float(self, base_duration: int, morph_extensions_enabled: bool):
         # Should only be Implemented by Expert Logic
         return
 
@@ -1101,22 +1101,27 @@ class Expert(Hard):
             if entrance in self.entrance_rules:
                 self.entrance_rules.pop(entrance)
 
-    def apply_timed_kungfu_rule(self):
+    def apply_timed_kungfu_rule(self, base_duration: int, morph_extensions_enabled: bool):
         locations: list = [
             Loc.edotown_monkibeth.value
         ]
 
-        for loc in locations:
-            self.monkey_rules.get(loc, AccessRule()).update(Rulesets(AccessRule.KUNGFU))
+        rules: list = [AccessRule.KUNGFU]
+        if base_duration < 30 and morph_extensions_enabled:
+            rules.append(has_morph_extensions())
 
-        self.entrance_rules.get(Stage.entrance_asia_e1e2.value, AccessRule()).update(
-            Rulesets([AccessRule.SHOOT, AccessRule.SWIM, AccessRule.KUNGFU],
-                     [AccessRule.ATTACK, AccessRule.RCC, AccessRule.SWIM, AccessRule.KUNGFU],)
+        for loc in locations:
+            self.monkey_rules.get(loc, Rulesets()).update(Rulesets(rules))
+
+
+        self.entrance_rules.get(Stage.entrance_asia_e1e2.value, Rulesets()).update(
+            Rulesets([AccessRule.SHOOT, AccessRule.SWIM, *rules],
+                     [AccessRule.ATTACK, AccessRule.RCC, AccessRule.SWIM, *rules],)
         )
 
-        self.event_rules.get(Events.space_g_button.value, AccessRule()).update(Rulesets(AccessRule.KUNGFU))
+        self.event_rules.get(Events.space_g_button.value, Rulesets()).update(Rulesets(AccessRule.KUNGFU))
 
-    def apply_timed_morph_float(self):
+    def apply_timed_morph_float(self, base_duration: int, morph_extensions_enabled: bool):
         entrances: list = [
             Stage.entrance_asia_ab.value,
             Stage.entrance_asia_ba.value,
@@ -1131,8 +1136,12 @@ class Expert(Hard):
             Stage.entrance_asia_a3a4.value,
         ]
 
+        rules: list = [AccessRule.G_FLOAT_M]
+        if base_duration < 30 and morph_extensions_enabled:
+            rules.append(has_morph_extensions())
+
         for e in entrances:
-            self.monkey_rules.get(e, AccessRule()).update(Rulesets(AccessRule.G_FLOAT_M))
+            self.monkey_rules.get(e, Rulesets()).update(Rulesets(rules))
 
 class Normal(Hard):
     """
