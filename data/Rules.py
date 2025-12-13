@@ -429,7 +429,6 @@ class Hard(LogicPreference):
 
             # Onsen
             Loc.onsen_chabimon.value        : Rulesets(AccessRule.RCC),
-            Loc.onsen_fuji_chan.value       : Rulesets(AccessRule.SHOOT, AccessRule.NINJA),
 
             # Snowfesta
             Loc.snowfesta_kimisuke.value    : Rulesets(AccessRule.SHOOT),
@@ -784,10 +783,6 @@ class Expert(Hard):
                 AccessRule.SHOOT, AccessRule.GLIDE,
                 AccessRule.QJ, AccessRule.G_FLOAT_M,
             ),
-            Loc.onsen_fuji_chan.value: Rulesets(
-                AccessRule.SHOOT, AccessRule.NINJA,
-                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT_M,
-            ),
             Loc.toyhouse_monto.value: Rulesets(
                 AccessRule.SHOOT, AccessRule.NINJA, AccessRule.FLYER,
                 AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT_M,
@@ -848,6 +843,10 @@ class Expert(Hard):
         self.entrance_rules.update({
             Stage.entrance_seaside_ac.value: Rulesets(
                 AccessRule.MONKEY,
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_castle_aa2.value: Rulesets(
+                event_invoked(Events.castle_a2_button.value),
                 AccessRule.KUNGFU
             ),
             Stage.entrance_studio_b1b2.value: Rulesets(
@@ -1095,7 +1094,8 @@ class Expert(Hard):
             Stage.entrance_castle_ad.value,
             Stage.entrance_ciscocity_ad_2.value,
             Stage.entrance_ciscocity_ce.value,
-            Stage.entrance_iceland_ef.value
+            Stage.entrance_iceland_ef.value,
+            Stage.entrance_space_f1f2.value
         ]
         for entrance in entrances_to_reset:
             if entrance in self.entrance_rules:
@@ -1195,7 +1195,7 @@ class Normal(Hard):
             # Onsen
             Loc.onsen_domobeh.value             : Rulesets(AccessRule.SWIM, AccessRule.CATCH_LONG),
             Loc.onsen_mujakin.value             : Rulesets(AccessRule.SWIM, AccessRule.CATCH_LONG),
-            Loc.onsen_fuji_chan.value           : Rulesets(AccessRule.SHOOT),
+            Loc.onsen_fuji_chan.value           : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE),
 
             # Snofesta
             Loc.snowfesta_konkichi.value        : Rulesets(AccessRule.RADAR),
