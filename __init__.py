@@ -51,7 +51,7 @@ class AE3Settings(settings.Group):
         > auto-equip : Automatically assign received gadgets to a face button
         """
 
-    class GenerationPreferences(settings.Sequence):
+    class GenerationPreferences(settings.Bool):
         """
         Preferences for game generation. Only relevant for world generation and not the setup of or during play.
 
@@ -61,8 +61,20 @@ class AE3Settings(settings.Group):
         Lucky Ticket Consolation Prize.
         """
 
-    class GenerationPreference(settings.Sequence):
+        def __len__(self):
+            return len(self)
+
+        def __getitem__(self, index):
+            return self[index]
+
+    class GenerationPreference(settings.Bool):
         """"""
+
+        def __len__(self):
+            return len(self)
+
+        def __getitem__(self, index):
+            return self[index]
 
 
     save_state_on_room_transition : SessionPreferences | bool = False
