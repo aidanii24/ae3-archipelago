@@ -3522,7 +3522,6 @@ def generate_location_groups() -> dict[str, int]:
             total.extend(CELLPHONES_MASTER_ORDERED[i])
 
         groups[channel] = total
-        print(total)
 
     groups.update(SHOP_PROGRESSION_DIRECTORY)
     groups.update(SHOP_CATEGORIES_DIRECTORY)
