@@ -126,6 +126,7 @@ class AE3World(World):
     location_name_to_id = Locations.generate_name_to_id()
 
     item_name_groups = Items.generate_item_groups()
+    location_name_groups = Locations.generate_location_groups()
 
     logic_preference : LogicPreference
     goal_target : GoalTarget = GoalTarget
