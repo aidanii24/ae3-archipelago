@@ -6,6 +6,7 @@ from BaseClasses import Location, Region, ItemClassification
 
 from .Strings import Loc, Stage, Events, Meta, APHelper
 from .Addresses import NTSCU
+from .Stages import LEVELS_BY_ORDER
 
 
 ### [< --- HELPERS --- >]
@@ -1015,6 +1016,12 @@ MONKEYS_PASSWORDS : Sequence[str] = [
     Loc.woods_spork.value, Loc.castle_sal_1000.value, Loc.snowfesta_shimmy.value, Loc.snowfesta_pipotron_yellow.value,
     Loc.toyhouse_pipotron_red.value, Loc.plane_pipotron_blue.value, Loc.hong_dark_master.value,
     Loc.space_sal_3000.value
+]
+
+MONKEYS_RACERS : Sequence[str] = [
+    Loc.ciscocity_ukki_mattan.value, Loc.ciscocity_bemucho.value,
+    Loc.toyhouse_ukki_x.value, Loc.toyhouse_mon_gareji.value, Loc.toyhouse_woo_makka.value,
+    Loc.bay_pipo_kate.value, Loc.bay_samtan.value, Loc.bay_pokkine.value
 ]
 
 MONKEYS_INFINITE_GADGET_FLOAT_APPLICABLE: list[str] = [
@@ -3489,3 +3496,50 @@ def generate_name_to_id() -> dict[str, int]:
             name_to_id[item] = meta.loc_id
 
     return name_to_id
+
+def generate_location_groups() -> dict[str, int]:
+    groups: dict[str: set[str]] = {}
+
+    groups.update({f"{k} Monkeys" : v for k, v in MONKEYS_INDEX.items()})
+    groups.update({f"{k} Cellphones" : v for k, v in CELLPHONES_INDEX.items()})
+
+    groups.update(MONKEYS_INDEX)
+    for k, v in CAMERAS_INDEX.items():
+        groups.setdefault(k, []).append(v)
+    for k, v in CELLPHONES_INDEX.items():
+        groups.setdefault(k, []).extend(v)
+
+    for i, channel in enumerate(LEVELS_BY_ORDER):
+        total: list = [*MONKEYS_MASTER_ORDERED[i]]
+        groups[f"{channel} Monkeys"] = MONKEYS_MASTER_ORDERED[i]
+
+        if CAMERAS_MASTER_ORDERED[i]:
+            groups[f"{channel} Cellphones"] = [].append(CAMERAS_MASTER_ORDERED[i])
+            total.append(CAMERAS_MASTER_ORDERED[i])
+
+        if CELLPHONES_MASTER_ORDERED[i]:
+            groups[f"{channel} Cellphones"] = CELLPHONES_MASTER_ORDERED[i]
+            total.extend(CELLPHONES_MASTER_ORDERED[i])
+
+        groups[channel] = total
+        print(total)
+
+    groups.update(SHOP_PROGRESSION_DIRECTORY)
+    groups.update(SHOP_CATEGORIES_DIRECTORY)
+
+    groups[Loc.lucky_photo.value] = SHOP_CATEGORIES_COLLECTION_DIRECTORY[Loc.lucky_photo.value]
+
+    for k, v in dict(list(SHOP_COLLECTION_DIRECTORY.items())[1:]).items():
+        groups.setdefault(k, []).extend(v)
+
+    for k, v in SHOP_GROUPINGS_DIRECTORY.items():
+        items: set = set()
+        for g in v:
+            items.update(groups.get(g, []))
+
+        groups[k] = [*items]
+
+    groups[APHelper.bosses.value] = MONKEYS_BOSSES
+    groups[APHelper.racers.value] = MONKEYS_RACERS
+
+    return groups

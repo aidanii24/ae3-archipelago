@@ -2572,6 +2572,9 @@ class APHelper(BaseEnum):
     fly =                   "Fly"
     glide =                 "Glide"
 
+    # Location Groups
+    racers =                "Racer Monkeys"
+
     # Post Game Categories
     keys =                  "Channel Keys"
     monkey =                "Pipo Monkeys"
