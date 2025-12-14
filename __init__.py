@@ -422,7 +422,7 @@ class AE3World(World):
         # Fill remaining locations with Collectables
         unfilled : int = len(self.multiworld.get_unfilled_locations(self.player)) - len(self.item_pool)
         if self.options.shoppingsanity.value and self.options.hints_from_hintbooks.value:
-            unfilled -= len([set(SHOP_HINT_BOOK).difference(self.exclude_locations)])
+            unfilled -= len(set(SHOP_HINT_BOOK).difference(self.exclude_locations))
 
         self.item_pool += generate_collectables(self.random, self.player, unfilled)
 
