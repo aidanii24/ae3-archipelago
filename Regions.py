@@ -172,7 +172,6 @@ def create_regions(world : "AE3World"):
     if world.options.shoppingsanity != 0:
         ## Handle Shop Items that require specific events
         for region, items in SHOP_EVENT_ACCESS_DIRECTORY.items():
-            print(region, items)
             if region in blacklist:
                 continue
 
