@@ -9,7 +9,7 @@ Features
 - Gadgets, Morphs and Morph Stocks are randomized, hidden through the game
 - Other Items such as Coins, Energy, Cookies and Jackets are also randomized.
 - Randomize and Upgrade the Morph Duration
-- Find your Items when Capturing Monkeys, using Pipo Cameras or Activating Cellphones
+- Find your Items when Capturing Monkeys, using Pipo Cameras, Activating Cellphones or Buying Shop Items
 - Randomize the Channels and choose how they should be unlocked
 - Choose how you want to goal
 - Use Free Play even if the Channel is not cleared
