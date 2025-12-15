@@ -528,7 +528,7 @@ class Hard(LogicPreference):
             Stage.entrance_woods_ad.value       : Rulesets(AccessRule.MONKEY),
 
             # Castle
-            Stage.entrance_castle_a1a.value     : Rulesets(AccessRule.HIT),
+            Stage.entrance_castle_a1a.value     : Rulesets(AccessRule.ATTACK),
             Stage.entrance_castle_aa2.value     : Rulesets(event_invoked(Events.castle_a2_button.value)),
             Stage.entrance_castle_b1b.value     : Rulesets(event_invoked(Events.castle_b_clapper.value)),
             Stage.entrance_castle_be.value      : Rulesets(AccessRule.MONKEY),
@@ -1328,7 +1328,6 @@ class Normal(Hard):
 
             # Castle
             Stage.entrance_castle_aa1.value     : Rulesets(AccessRule.HIT),
-            Stage.entrance_castle_a1a.value     : Rulesets(AccessRule.HIT),
             Stage.entrance_castle_bb1.value     : Rulesets(AccessRule.HIT),
 
             # Halloween
@@ -1403,7 +1402,7 @@ class Normal(Hard):
             Stage.entrance_tomo_ee2.value       : Rulesets(AccessRule.RCC),
 
             # Space
-            Stage.entrance_space_ab.value       : Rulesets(AccessRule.HIT)
+            Stage.entrance_space_ab.value       : Rulesets(AccessRule.ATTACK)
         })
 
 class Casual(Normal):
@@ -1615,7 +1614,6 @@ class Casual(Normal):
 
             # Castle
             Stage.entrance_castle_aa1.value     : Rulesets(AccessRule.ATTACK),
-            Stage.entrance_castle_a1a.value     : Rulesets(AccessRule.ATTACK),
             Stage.entrance_castle_dd1.value     : Rulesets(AccessRule.KNIGHT, AccessRule.SHOOT),
             Stage.entrance_castle_d1d.value     : Rulesets(AccessRule.KNIGHT, AccessRule.SHOOT),
             Stage.entrance_castle_bb1.value     : Rulesets(AccessRule.ATTACK),
@@ -1734,7 +1732,6 @@ class Casual(Normal):
             Stage.entrance_tomo_bc.value        : Rulesets(AccessRule.GLIDE),
 
             # Space
-            Stage.entrance_space_ab.value       : Rulesets(AccessRule.HIT),
             Stage.entrance_space_ff1.value      : Rulesets(AccessRule.GLIDE),
             Stage.entrance_space_gg1.value      : Rulesets([AccessRule.SWIM, AccessRule.ATTACK]),
         })
