@@ -1273,7 +1273,6 @@ class Normal(Hard):
         self.event_rules.update({
             # Castle
             Events.castle_b_clapper.value               : Rulesets(AccessRule.HIT),
-            Events.castle_a2_button.value               : Rulesets(AccessRule.HIT),
 
             # Ciscocity
             Events.ciscocity_c_button.value             : Rulesets(AccessRule.SHOOT, AccessRule.DASH, AccessRule.RCC),
@@ -1327,7 +1326,6 @@ class Normal(Hard):
             Stage.entrance_woods_bc.value       : Rulesets(AccessRule.HIT),
 
             # Castle
-            Stage.entrance_castle_aa1.value     : Rulesets(AccessRule.HIT),
             Stage.entrance_castle_bb1.value     : Rulesets(AccessRule.HIT),
 
             # Halloween
@@ -1559,7 +1557,6 @@ class Casual(Normal):
         self.event_rules.update({
             # Castle
             Events.castle_b_clapper.value               : Rulesets(AccessRule.ATTACK),
-            Events.castle_a2_button.value               : Rulesets(AccessRule.ATTACK),
 
             # Ciscocity
             Events.ciscocity_c_button.value             : Rulesets(AccessRule.SHOOT, AccessRule.DASH, AccessRule.RCC),
@@ -1613,7 +1610,6 @@ class Casual(Normal):
             Stage.entrance_woods_bc.value       : Rulesets(AccessRule.ATTACK),
 
             # Castle
-            Stage.entrance_castle_aa1.value     : Rulesets(AccessRule.ATTACK),
             Stage.entrance_castle_dd1.value     : Rulesets(AccessRule.KNIGHT, AccessRule.SHOOT),
             Stage.entrance_castle_d1d.value     : Rulesets(AccessRule.KNIGHT, AccessRule.SHOOT),
             Stage.entrance_castle_bb1.value     : Rulesets(AccessRule.ATTACK),
