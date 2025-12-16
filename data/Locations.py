@@ -1,6 +1,7 @@
 from typing import Sequence
 from dataclasses import dataclass
 from abc import ABC
+import copy
 
 from BaseClasses import Location, Region, ItemClassification
 
@@ -3503,7 +3504,7 @@ def generate_location_groups() -> dict[str, int]:
     groups.update({f"{k} Monkeys" : v for k, v in MONKEYS_INDEX.items()})
     groups.update({f"{k} Cellphones" : v for k, v in CELLPHONES_INDEX.items()})
 
-    groups.update(MONKEYS_INDEX)
+    groups.update(copy.deepcopy(MONKEYS_INDEX))
     for k, v in CAMERAS_INDEX.items():
         groups.setdefault(k, []).append(v)
     for k, v in CELLPHONES_INDEX.items():
