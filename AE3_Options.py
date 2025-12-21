@@ -201,13 +201,14 @@ class GoalTarget(Choice):
     option_bonus_collector : int = 7
     # option_scavenger_hunt : int = 10
 
-class GoalTargetOverride(Range):
+class GoalTargetOverride(NamedRange):
     """
     Override the amount of checks required by Goal Target by a percent amount.
     This does not affect the "specter" and "specter_final" goals.
-    Default: 100 (No Override)
+    Default: 0 (No Override)
 
-    Maximum Values:
+    Maximum possible counts for each category:
+    (Use this as basis for what percentage value to enter for this option)
     Bosses (Triple Threat): 8
     Pipo Monkeys (Play Spike/Play Jimmy): 434, 354 (No Break Room Monkeys)
     Pipo Cameras (Director's Cut): 20
@@ -215,10 +216,13 @@ class GoalTargetOverride(Range):
     Shop Items (Collector): 267
     """
     display_name : str = "Goal Target Override"
-    default = 100
+    default = 0
 
-    range_start = 1
+    range_start = 0
     range_end = 100
+    special_range_names = {
+        "disabled": 0
+    }
 
 
 class PostGameConditionMonkeys(NamedRange):
