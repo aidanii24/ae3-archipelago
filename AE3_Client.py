@@ -583,7 +583,9 @@ class AE3Context(CommonContext):
             ## Goal Target
             if not self.goal_target.locations and APHelper.goal_target.value in data:
                 goal_target = data[APHelper.goal_target.value]
-                self.goal_target = GoalTargetOptions[goal_target](goal_amount, excluded_stages, excluded_locations)
+                self.goal_target = GoalTargetOptions[goal_target](goal_amount,
+                                                                  excluded_stages,
+                                                                  excluded_locations)
 
             ## Get Post Game Conditions
             amounts : dict[str, int] = {}

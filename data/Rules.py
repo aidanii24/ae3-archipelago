@@ -83,7 +83,7 @@ class GoalTarget:
 
         self.location_ids = {generate_name_to_id()[location] for location in self.locations}
 
-        if amount < 100:
+        if amount and amount < 101:
             mod: float = amount / 100
             total_locs: int = len(self.locations)
             new_total: int = int(math.ceil(total_locs * mod))
