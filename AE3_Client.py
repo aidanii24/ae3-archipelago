@@ -27,6 +27,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
         super().__init__(ctx)
 
     def _cmd_resync(self):
+        """Sync status of important items such as gadgets, morphs and keys with the server."""
         if not isinstance(self.ctx, AE3Context):
             return
 
@@ -34,6 +35,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
             self.ctx.pending_resync = True
 
     def _cmd_status(self):
+        """Display current status of the game and session, along with a summary of the current progress."""
         if isinstance(self.ctx, AE3Context):
             logger.info(f" [-^-] Client Status")
 
@@ -150,6 +152,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
                         f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
 
     def _cmd_channels(self):
+        """List the true order of the channels"""
         if not isinstance(self.ctx, AE3Context):
             return
 
