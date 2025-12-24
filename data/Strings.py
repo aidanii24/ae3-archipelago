@@ -291,7 +291,7 @@ class Loc(BaseEnum):
     edotown_masan               = "Masan - The Emperor's Castle"
     edotown_mohachi             = "Mohachi - The Emperor's Castle"
     edotown_mon_ninpo           = "Mon Ninpo - The Emperor's Castle"
-    edotown_yosio               = "Yosi - The Emperor's Castleo"
+    edotown_yosio               = "Yosio - The Emperor's Castle"
     edotown_fatty_mcfats        = "Fatty Mcfats - The Emperor's Castle"
     edotown_kikimaru            = "Kikimaru - The Emperor's Castle"
     edotown_tomoku_chan         = "Tomoku-chan - The Emperor's Castle"
