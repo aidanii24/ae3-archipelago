@@ -5,9 +5,9 @@ import multiprocessing
 import traceback
 import asyncio
 
-from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled, \
-                          ClientStatus
+from CommonClient import ClientStatus, logger
 from settings import get_settings
+from kvui import GameManager
 import Utils
 
 from .data.Strings import Meta, APConsole
@@ -21,9 +21,19 @@ from . import AE3Settings
 from .Checker import *
 from .data import Items, Locations
 
+# Try to load Universal Tracker if present
+tracker_loaded: bool = False
+try:
+    from worlds.tracker.TrackerClient import (ClientCommandProcessor, TrackerGameContext as SuperContext,
+                                              get_base_parser, server_loop, gui_enabled)
+    tracker_loaded = True
+except ImportError:
+    from CommonClient import (ClientCommandProcessor, CommonContext as SuperContext, get_base_parser, server_loop,
+                              gui_enabled)
+
 
 class AE3CommandProcessor(ClientCommandProcessor):
-    def __init__(self, ctx: CommonContext):
+    def __init__(self, ctx: SuperContext):
         super().__init__(ctx)
 
     def _cmd_resync(self):
@@ -38,6 +48,9 @@ class AE3CommandProcessor(ClientCommandProcessor):
         """Display current status of the game and session, along with a summary of the current progress."""
         if isinstance(self.ctx, AE3Context):
             logger.info(f" [-^-] Client Status")
+
+            if tracker_loaded:
+                logger.info(f" [-v-] Universal Tracker Integrated")
 
             logger.info(f" [-o-] Game")
 
@@ -342,7 +355,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
             self.ctx.pending_deathlinks = int(count)
 
-class AE3Context(CommonContext):
+class AE3Context(SuperContext):
     # Archipelago Meta
     client_version: str = APConsole.Info.client_ver.value
     world_version : str = APConsole.Info.world_ver.value
@@ -353,6 +366,7 @@ class AE3Context(CommonContext):
 
     # Client Properties
     command_processor : ClientCommandProcessor = AE3CommandProcessor
+    tags: set[str] = {"AP"}
     items_handling : int = 0b111
 
     # Interface Properties
@@ -512,6 +526,8 @@ class AE3Context(CommonContext):
         await self.send_connect()
 
     def on_package(self, cmd: str, args: dict):
+        super().on_package(cmd, args)
+        
         # First Connection Check
         if cmd == APHelper.cmd_conn.value:
             data = args[APHelper.arg_sl_dt.value]
@@ -671,7 +687,7 @@ class AE3Context(CommonContext):
 
             ## Extra Shop Stocks
             if APHelper.extra_shop_stocks.value in data:
-                self.extra_shop_stock = data[APHelper.extra_shop_stocks.value]
+                self.extra_shop_stocks = data[APHelper.extra_shop_stocks.value]
 
             ## Early Free Play
             if APHelper.early_free_play.value in data:
@@ -813,15 +829,23 @@ class AE3Context(CommonContext):
         self.pending_deathlinks += 1
 
     # Client Command GUI
-    def run_gui(self):
-        from kvui import GameManager
+    def make_gui(self) -> type[GameManager]:
+        ui = super().make_gui()
+        ui.base_title = APConsole.Info.game_name.value
+        ui.logging_pairs = [("Client", "Archipelago")]
 
-        class AE3Manager(GameManager):
-            logging_pairs = [("Client", "Archipelago")]
-            base_title = APConsole.Info.game_name.value
+        return ui
 
-        self.ui = AE3Manager(self)
-        self.ui_task = asyncio.create_task(self.ui.async_run(), name = "ui")
+
+    # def run_gui(self):
+    #     from kvui import GameManager
+    #
+    #     class AE3Manager(GameManager):
+    #         logging_pairs = [("Client", "Archipelago")]
+    #         base_title = APConsole.Info.game_name.value
+    #
+    #     self.ui = AE3Manager(self)
+    #     self.ui_task = asyncio.create_task(self.ui.async_run(), name = "ui")
 
     async def check_pgc(self) -> bool:
         if self.post_game_condition.passed:
@@ -872,6 +896,9 @@ async def main_sync_task(ctx : AE3Context):
 
             # Check Progress if connection is good
             if is_game_connected:
+                # Generate UT on new connection
+                ctx.run_generator()
+
                 await check_game(ctx)
 
             # Attempt reconnection to PCSX2 otherwise
@@ -1120,6 +1147,8 @@ def launch():
 
         if gui_enabled:
             ctx.run_gui()
+        if tracker_loaded:
+            ctx.run_generator()
         ctx.run_cli()
 
         # Create Main Loop
