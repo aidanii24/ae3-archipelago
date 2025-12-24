@@ -144,6 +144,9 @@ class AE3World(World):
         super(AE3World, self).__init__(multiworld, player)
 
     def generate_early(self):
+        ut_initialized: bool = self.prepare_ut()
+        if ut_initialized: return
+
         # Limit Post/Blacklist Channels to 8 items
         if len(self.options.post_channel.value) > 8:
             additive: bool = APHelper.additive.value in self.options.post_channel
@@ -602,3 +605,165 @@ class AE3World(World):
         datas = {
             "slot_data" : self.fill_slot_data()
         }
+
+    @staticmethod
+    def interpret_slot_data(slot_data: dict) -> dict:
+        return slot_data
+
+    def prepare_ut(self) -> bool:
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        is_in_ut: bool = re_gen_passthrough and self.game in re_gen_passthrough
+        if is_in_ut:
+            slot_data = re_gen_passthrough[self.game]
+            # Re-instate important YAML Options
+            self.options.blacklist_channel.value = slot_data[APHelper.blacklist_channel.value]
+
+            self.options.monkeysanity_break_rooms.value = slot_data[APHelper.monkeysanitybr.value]
+            self.options.monkeysanity_passwords.value = slot_data[APHelper.monkeysanitypw.value]
+            self.options.camerasanity.value = slot_data[APHelper.camerasanity.value]
+            self.options.cellphonesanity.value = slot_data[APHelper.cellphonesanity.value]
+            self.options.shoppingsanity.value = slot_data[APHelper.shoppingsanity.value]
+
+            self.options.restock_progression.value = slot_data[APHelper.restock_progression.value]
+            self.options.cheap_items_minimum_requirement.value = slot_data[APHelper.cheap_items_min.value]
+            self.options.cheap_items_early_amount.value = slot_data[APHelper.cheap_items_early_amount.value]
+            self.options.farm_logic_sneaky_borgs.value = slot_data[APHelper.farm_logic_sneaky_borgs.value]
+
+            self.options.early_free_play.value = slot_data[APHelper.early_free_play.value]
+
+            # Regenerate Logic Preference
+            self.logic_preference = LogicPreferenceOptions[slot_data[APHelper.logic_preference.value]]()
+            self.logic_preference.apply_unlimited_gadget_float_rules(
+                bool(slot_data[APHelper.hds_logic.value]),
+                bool(slot_data[APHelper.pqj_logic.value]),
+            )
+
+            if self.options.base_morph_duration.value >= 30 or self.options.add_morph_extensions.value:
+                self.logic_preference.apply_timed_kung_fu_rule(
+                    self.options.base_morph_duration.value,
+                    bool(self.options.add_morph_extensions.value)
+                )
+                self.logic_preference.apply_timed_morph_float(
+                    self.options.base_morph_duration.value,
+                    bool(self.options.add_morph_extensions.value)
+                )
+
+            if slot_data[APHelper.base_morph_duration.value] >= 30 or slot_data[APHelper.add_morph_extensions.value]:
+                self.logic_preference.apply_timed_kung_fu_rule(
+                    slot_data[APHelper.base_morph_duration.value],
+                    bool(slot_data[APHelper.add_morph_extensions.value])
+                )
+                self.logic_preference.apply_timed_morph_float(
+                    slot_data[APHelper.base_morph_duration.value],
+                    bool(slot_data[APHelper.add_morph_extensions.value])
+                )
+
+            # Regenerate Progression, Goal Target, PGC and Rules
+            ## Progression Mode
+            if APHelper.progression_mode.value in slot_data:
+                self.progression = ProgressionModeOptions[slot_data[APHelper.progression_mode.value]]()
+
+                ## Progression
+                if APHelper.progression.value in slot_data and self.progression:
+                    self.progression.set_progression(slot_data[APHelper.progression.value])
+
+                ## Channel Order
+                if APHelper.channel_order.value in slot_data and self.progression:
+                    self.progression.set_order(slot_data[APHelper.channel_order.value])
+
+                self.progression.regenerate_level_select_entrances()
+
+
+            # Get initial exclusions for Goal Target
+            excluded_stages: list[str] = []
+            excluded_locations: list[str] = [*MONKEYS_PASSWORDS]
+
+            # Exclude Shop Items based on Shoppingsanity Type and Blacklisted Channels
+            if slot_data[APHelper.blacklist_channel.value] and slot_data[APHelper.shoppingsanity.value] > 0:
+                ## Always exclude Ultim-ape Fighter Minigame if anything is blacklisted
+                excluded_locations.extend(SHOP_PROGRESSION_75COMPLETION)
+
+                ## Exclude Event/Condition-sensitive Items based on excluded levels
+                for region, item in SHOP_EVENT_ACCESS_DIRECTORY.items():
+                    if region in slot_data[APHelper.blacklist_channel.value]:
+                        excluded_locations.extend(item)
+
+            if not self.options.monkeysanity_break_rooms:
+                excluded_stages.extend([*STAGES_BREAK_ROOMS])
+
+            ### Exclude Blacklisted Channels from Goal Target and Post Game Condition
+            if self.progression.progression[-1]:
+                for channel in self.progression.order[-self.progression.progression[-1]:]:
+                    excluded_locations.extend(MONKEYS_MASTER_ORDERED[channel])
+                    excluded_locations.append(CAMERAS_MASTER_ORDERED[channel])
+
+                    excluded_phones_id: list[str] = CELLPHONES_MASTER_ORDERED[channel]
+                    excluded_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
+
+            # Exclude Ultim-ape Fighter if any blacklisted channels exist
+            if self.progression.progression[-1]:
+                excluded_locations.extend(SHOP_PROGRESSION_75COMPLETION)
+
+            goal_amount: int = 0
+            if APHelper.goal_target_ovr.value in slot_data:
+                goal_amount: int = slot_data[APHelper.goal_target_ovr.value]
+
+            # Goal Target
+            if APHelper.goal_target.value in slot_data:
+                goal_target = slot_data[APHelper.goal_target.value]
+                self.goal_target = GoalTargetOptions[goal_target](goal_amount,
+                                                                  excluded_stages,
+                                                                  excluded_locations,
+                                                                  slot_data[APHelper.shoppingsanity.value])
+
+                ## Get Post Game Conditions
+                amounts: dict[str, int] = {}
+
+                if APHelper.pgc_monkeys.value in slot_data and slot_data[APHelper.pgc_monkeys.value]:
+                    amount: int = 434 if slot_data[APHelper.pgc_monkeys.value] < 0 \
+                        else slot_data[APHelper.pgc_monkeys.value]
+                    amounts[APHelper.monkey.value] = amount
+
+                if APHelper.pgc_bosses.value in slot_data and slot_data[APHelper.pgc_bosses.value]:
+                    amounts[APHelper.bosses.value] = slot_data[APHelper.pgc_bosses.value]
+
+                if APHelper.pgc_cameras.value in slot_data and slot_data[APHelper.pgc_cameras.value]:
+                    amounts[APHelper.camera.value] = slot_data[APHelper.pgc_cameras.value]
+
+                if APHelper.pgc_cellphones.value in slot_data and slot_data[APHelper.pgc_cellphones.value]:
+                    amounts[APHelper.cellphone.value] = slot_data[APHelper.pgc_cellphones.value]
+
+                if APHelper.pgc_shop.value in slot_data and slot_data[APHelper.pgc_shop.value]:
+                    amounts[APHelper.shop.value] = slot_data[APHelper.pgc_shop.value]
+
+                if APHelper.pgc_keys.value in slot_data and slot_data[APHelper.pgc_keys.value]:
+                    amounts[APHelper.keys.value] = slot_data[APHelper.pgc_keys.value]
+
+                # Exclude Channels in Post Game from being required for Post Game to be unlocked
+                post_game_start_index = sum(self.progression.progression[:-2]) + 1
+                for channel in (self.progression.order[post_game_start_index:
+                post_game_start_index + self.progression.progression[-2]]):
+                    excluded_locations.extend(MONKEYS_MASTER_ORDERED[channel])
+                    excluded_locations.append(CAMERAS_MASTER_ORDERED[channel])
+
+                    excluded_phones_id: list[str] = CELLPHONES_MASTER_ORDERED[channel]
+                    excluded_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
+
+                # Exclude Ultim-ape Fighter from being a PGC requirement, as it requires as many monkeys as possible
+                excluded_locations.extend(SHOP_PROGRESSION_75COMPLETION)
+
+                ## Post Game Access Rule Initialization
+                self.post_game_condition = PostGameCondition(amounts, excluded_stages, excluded_locations)
+
+                ## Set up Shop Rules
+                self.shop_rules: ShopItemRules = ShopItemRules(self)
+                if self.shop_rules.post_game_items:
+                    excluded_locations.extend(self.shop_rules.post_game_items)
+
+                self.post_game_condition = PostGameCondition(amounts, excluded_stages, excluded_locations,
+                                                             self.options.shoppingsanity.value)
+
+                # Set Shop Rules PGC
+                self.shop_rules.set_pgc_rules(self)
+
+        return is_in_ut
