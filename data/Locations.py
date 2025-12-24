@@ -1285,6 +1285,7 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.region_bay_e.value            : MONKEYS_BAY_E,
     Stage.region_bay_e1.value           : MONKEYS_BAY_E1,
     Stage.region_bay_e2.value           : MONKEYS_BAY_E2,
+    Stage.region_bay_e3.value           : MONKEYS_BAY_E3,
     Stage.region_bay_f.value            : MONKEYS_BAY_F,
 
     # tomo
