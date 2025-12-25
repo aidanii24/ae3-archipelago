@@ -1,3 +1,4 @@
+import logging
 from argparse import ArgumentParser, Namespace
 from typing import Optional, Sequence
 import typing
@@ -7,7 +8,6 @@ import asyncio
 
 from CommonClient import ClientStatus, logger
 from settings import get_settings
-from kvui import GameManager
 import Utils
 
 from .data.Strings import Meta, APConsole
@@ -829,7 +829,7 @@ class AE3Context(SuperContext):
         self.pending_deathlinks += 1
 
     # Client Command GUI
-    def make_gui(self) -> type[GameManager]:
+    def make_gui(self):
         ui = super().make_gui()
         ui.base_title = APConsole.Info.game_name.value
         ui.logging_pairs = [("Client", "Archipelago")]
