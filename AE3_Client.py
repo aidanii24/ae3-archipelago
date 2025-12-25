@@ -836,17 +836,6 @@ class AE3Context(SuperContext):
 
         return ui
 
-
-    # def run_gui(self):
-    #     from kvui import GameManager
-    #
-    #     class AE3Manager(GameManager):
-    #         logging_pairs = [("Client", "Archipelago")]
-    #         base_title = APConsole.Info.game_name.value
-    #
-    #     self.ui = AE3Manager(self)
-    #     self.ui_task = asyncio.create_task(self.ui.async_run(), name = "ui")
-
     async def check_pgc(self) -> bool:
         if self.post_game_condition.passed:
             return True
@@ -896,9 +885,6 @@ async def main_sync_task(ctx : AE3Context):
 
             # Check Progress if connection is good
             if is_game_connected:
-                # Generate UT on new connection
-                ctx.run_generator()
-
                 await check_game(ctx)
 
             # Attempt reconnection to PCSX2 otherwise
@@ -1145,10 +1131,10 @@ def launch():
         logger.info(APConsole.Info.p_init_s.value)
         ctx.server_task = asyncio.create_task(server_loop(ctx), name="Server Loop")
 
-        if gui_enabled:
-            ctx.run_gui()
         if tracker_loaded:
             ctx.run_generator()
+        if gui_enabled:
+            ctx.run_gui()
         ctx.run_cli()
 
         # Create Main Loop
