@@ -714,7 +714,7 @@ class AE3World(World):
                 self.goal_target = GoalTargetOptions[goal_target](goal_amount,
                                                                   excluded_stages,
                                                                   excluded_locations,
-                                                                  slot_data[APHelper.shoppingsanity.value])
+                                                                  self.options.shoppingsanity.value)
 
                 ## Get Post Game Conditions
                 amounts: dict[str, int] = {}

@@ -1807,6 +1807,9 @@ class ShopItemRules:
             Loc.hint_book_20.value: Rulesets(can_access_region(Stage.region_specter1.value)),
 
             Loc.movie_tape_17.value: Rulesets(can_access_region(Stage.region_tomo_a.value)),
+            Loc.movie_tape_26.value: Rulesets(can_access_region(Stage.region_specter2.value)),
+            Loc.movie_tape_27.value: Rulesets(can_access_region(Stage.region_specter2.value)),
+            Loc.music_disc_41.value: Rulesets(can_access_region(Stage.region_specter2.value)),
         }
 
         self.post_game_items.add(Loc.shop_ultim_ape_fighter.value)
