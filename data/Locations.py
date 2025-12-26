@@ -3512,35 +3512,35 @@ def generate_location_groups() -> dict[str, int]:
         groups.setdefault(k, []).extend(v)
 
     for i, channel in enumerate(LEVELS_BY_ORDER):
-        total: list = [*MONKEYS_MASTER_ORDERED[i]]
-        groups[f"{channel} Monkeys"] = MONKEYS_MASTER_ORDERED[i]
+        total: list = [*copy.deepcopy(MONKEYS_MASTER_ORDERED[i])]
+        groups[f"{channel} Monkeys"] = copy.deepcopy(MONKEYS_MASTER_ORDERED[i])
 
         if CAMERAS_MASTER_ORDERED[i]:
-            groups[f"{channel} Cellphones"] = [].append(CAMERAS_MASTER_ORDERED[i])
-            total.append(CAMERAS_MASTER_ORDERED[i])
+            groups[f"{channel} Cellphones"] = [].append(copy.deepcopy(CAMERAS_MASTER_ORDERED[i]))
+            total.append(copy.deepcopy(CAMERAS_MASTER_ORDERED[i]))
 
         if CELLPHONES_MASTER_ORDERED[i]:
-            groups[f"{channel} Cellphones"] = CELLPHONES_MASTER_ORDERED[i]
-            total.extend(CELLPHONES_MASTER_ORDERED[i])
+            groups[f"{channel} Cellphones"] = copy.deepcopy(CELLPHONES_MASTER_ORDERED[i])
+            total.extend(copy.deepcopy(CELLPHONES_MASTER_ORDERED[i]))
 
         groups[channel] = total
 
-    groups.update(SHOP_PROGRESSION_DIRECTORY)
-    groups.update(SHOP_CATEGORIES_DIRECTORY)
+    groups.update(copy.deepcopy(SHOP_PROGRESSION_DIRECTORY))
+    groups.update(copy.deepcopy(SHOP_CATEGORIES_DIRECTORY))
 
-    groups[Loc.lucky_photo.value] = SHOP_CATEGORIES_COLLECTION_DIRECTORY[Loc.lucky_photo.value]
+    groups[Loc.lucky_photo.value] = copy.deepcopy(SHOP_CATEGORIES_COLLECTION_DIRECTORY[Loc.lucky_photo.value])
 
     for k, v in dict(list(SHOP_COLLECTION_DIRECTORY.items())[1:]).items():
-        groups.setdefault(k, []).extend(v)
+        groups.setdefault(k, []).extend(copy.deepcopy(v))
 
     for k, v in SHOP_GROUPINGS_DIRECTORY.items():
         items: set = set()
         for g in v:
-            items.update(groups.get(g, []))
+            items.update(copy.deepcopy(groups.get(g, [])))
 
         groups[k] = [*items]
 
-    groups[APHelper.bosses.value] = MONKEYS_BOSSES
-    groups[APHelper.racers.value] = MONKEYS_RACERS
+    groups[APHelper.bosses.value] = copy.deepcopy(MONKEYS_BOSSES)
+    groups[APHelper.racers.value] = copy.deepcopy(MONKEYS_RACERS)
 
     return groups

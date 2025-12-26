@@ -7,7 +7,7 @@ from NetUtils import NetworkItem
 
 from .data.Items import ACCESSORIES, ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem, Capacities, AP, \
     EQUIPMENT
-from .data.Stages import PROGRESS_ID_BY_ORDER, LEVELS_ID_BY_ORDER
+from .data.Stages import PROGRESS_ID_BY_ORDER
 from .data.Strings import Game, Loc, Itm, APHelper, Stage
 from .data.Addresses import NTSCU
 from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_INDEX, MONKEYS_BREAK_ROOMS, \
