@@ -1137,6 +1137,8 @@ ENTRANCES_SUBREGIONS : list[AE3EntranceMeta] = [
     AE3EntranceMeta(Stage.entrance_bay_ee1.value, Stage.region_bay_e.value, Stage.region_bay_e1.value),
     AE3EntranceMeta(Stage.entrance_bay_ee2.value, Stage.region_bay_e.value, Stage.region_bay_e2.value),
     AE3EntranceMeta(Stage.entrance_bay_e1e2.value, Stage.region_bay_e1.value, Stage.region_bay_e2.value),
+    AE3EntranceMeta(Stage.entrance_bay_e1e3.value, Stage.region_bay_e1.value, Stage.region_bay_e3.value),
+    AE3EntranceMeta(Stage.entrance_bay_e2e3.value, Stage.region_bay_e2.value, Stage.region_bay_e3.value),
     AE3EntranceMeta(Stage.entrance_bay_e2e.value, Stage.region_bay_e2.value, Stage.region_bay_e.value),
 
     # Tomo
