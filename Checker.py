@@ -453,7 +453,11 @@ async def check_states(ctx : 'AE3Context'):
         cookies: float = ctx.ipc.get_cookies()
 
         # Check for DeathLinks
-        if ctx.death_link and not ctx.in_shopping_area:
+        state_valid_for_death: bool = True
+        if (ctx.in_shopping_area or ctx.in_travel_station) and ctx.ipc.get_gui_status() > 0:
+            state_valid_for_death = False
+
+        if ctx.death_link and state_valid_for_death:
             if ctx.pending_deathlinks and cookies > 0.0:
                 ctx.ipc.kill_player(100.0)
                 ctx.pending_deathlinks = max(ctx.pending_deathlinks - 1, 0)
