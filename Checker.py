@@ -516,7 +516,8 @@ async def receive_items(ctx : 'AE3Context'):
             elif item.item_id == AP[APHelper.shop_stock.value]:
                 ctx.shop_progress += ctx.shop_progression
 
-                await setup_shopping_area(ctx)
+                if ctx.in_shopping_area:
+                    await setup_shopping_area(ctx)
             elif item.item_id == AP[APHelper.hint_book.value]:
                 await get_hint_book_hint(ctx, server_item.location)
 
