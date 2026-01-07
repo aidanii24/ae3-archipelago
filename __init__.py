@@ -766,4 +766,7 @@ class AE3World(World):
                 # Set Shop Rules PGC
                 self.shop_rules.set_pgc_rules(self)
 
+                # Store excluded locations
+                self.exclude_locations = excluded_locations
+
         return is_in_ut
