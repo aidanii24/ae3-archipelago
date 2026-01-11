@@ -3,3 +3,6 @@
 
 # IDE files
 .idea/*
+
+# Data Files
+/data/location_groups.txt

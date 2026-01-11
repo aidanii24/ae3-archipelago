@@ -1266,7 +1266,7 @@ class Loc(BaseEnum):
     movie_tape_collection_28        = "Movie tape #28"
     movie_tape_collection_29        = "Movie tape #29"
 
-    music_disc                      = "Music dics"
+    music_disc                      = "Music disc"
     music_disc_collection_1         = "Music disc #1"
     music_disc_collection_2         = "Music disc #2"
     music_disc_collection_3         = "Music disc #3"
