@@ -1881,7 +1881,7 @@ class ShopItemRules:
 
             if cheap_items_early_amount and not enough_cheap_items:
                 cheap : list[str] = [item for item in SHOP_PROGRESSION_DIRECTORY[entrance.destination]
-                                          if item not in SHOP_CHEAP_MASTER]
+                                          if item in SHOP_CHEAP_MASTER]
                 expensive : list[str] = [item for item in SHOP_PROGRESSION_DIRECTORY[entrance.destination]
                                           if item not in SHOP_CHEAP_MASTER]
 
