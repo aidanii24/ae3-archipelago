@@ -199,7 +199,7 @@ def create_regions(world : "AE3World"):
 
             for i, item in enumerate(SHOP_PROGRESSION_MORPH):
                 meta : ShopItemLocation = ShopItemLocation(item, 1, i)
-                loc : Location = meta.to_location(world.player, shopping_area)
+                loc : Location = meta.to_location(world.player, stocks_region)
 
                 if item in world.shop_rules.item_rules:
                     loc.access_rule = world.shop_rules.item_rules[item].condense(world.player)
@@ -223,15 +223,14 @@ def create_regions(world : "AE3World"):
 
         if shop_locations_meta:
             for item in shop_locations_meta:
-                loc : Location = item.to_location(world.player, shopping_area)
+                parent = shopping_area if item.name in world.shop_rules.cheap_early_items else expensive_area
+
+                loc : Location = item.to_location(world.player, parent)
 
                 if item.name in world.shop_rules.item_rules:
                     loc.access_rule = world.shop_rules.item_rules[item.name].condense(world.player)
 
-                if item in world.shop_rules.cheap_early_items:
-                    shopping_area.locations.append(loc)
-                else:
-                    expensive_area.locations.append(loc)
+                parent.locations.append(loc)
 
     ## Handle Shoppingsanity Options Progressive/Restock
     elif 2 < world.options.shoppingsanity.value < 5:
