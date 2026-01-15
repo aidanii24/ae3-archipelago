@@ -241,7 +241,7 @@ class AE3World(World):
 
         post_game_conditions: dict[str, int] = {}
         if self.options.post_game_condition_monkeys:
-            amount: int = 434 if self.options.post_game_condition_monkeys < 0 \
+            amount: int = 441 if self.options.post_game_condition_monkeys < 0 \
                 else self.options.post_game_condition_monkeys
             post_game_conditions[APHelper.monkey.value] = amount
 

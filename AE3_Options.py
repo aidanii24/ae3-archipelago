@@ -210,7 +210,7 @@ class GoalTargetOverride(NamedRange):
     Maximum possible counts for each category:
     (Use this as basis for what percentage value to enter for this option)
     Bosses (Triple Threat): 8
-    Pipo Monkeys (Play Spike/Play Jimmy): 434, 354 (No Break Room Monkeys)
+    Pipo Monkeys (Play Spike/Play Jimmy): 441, 354 (No Break Room Monkeys)
     Pipo Cameras (Director's Cut): 20
     Cellphones (Phone Check): 53
     Shop Items (Collector): 267
@@ -242,13 +242,13 @@ class PostGameConditionMonkeys(NamedRange):
     <!> WARNING: Please make sure at least ONE Post-Game Condition Option is enabled (not 0/disabled).
     The multiworld WILL refuse to generate otherwise.
     """
-    __doc__ += "Maximum Value (No Break Room Monkeys): 354"
+    __doc__ += "Maximum Value (No Break Room Monkeys): 360"
 
     display_name : str = "Post-Game Condition: Pipo Monkeys"
     default = -2
 
     range_start = 0
-    range_end = 434
+    range_end = 441
     special_range_names = {
         "disabled" : 0,
         "vanilla": -2,

@@ -609,7 +609,7 @@ class AE3Context(SuperContext):
             amounts : dict[str, int] = {}
 
             if APHelper.pgc_monkeys.value in data and data[APHelper.pgc_monkeys.value]:
-                amount : int = 434 if data[APHelper.pgc_monkeys.value] < 0 else data[APHelper.pgc_monkeys.value]
+                amount : int = 441 if data[APHelper.pgc_monkeys.value] < 0 else data[APHelper.pgc_monkeys.value]
                 amounts[APHelper.monkey.value] = amount
 
             if APHelper.pgc_bosses.value in data and data[APHelper.pgc_bosses.value]:

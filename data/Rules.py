@@ -198,7 +198,9 @@ class PostGameCondition:
         for category in self.location_categories:
             if category in self.amounts:
                 location_list : set[str] = {*LOCATIONS_DIRECTORY.get(category, [])}
-                if category == APHelper.cellphone.value:
+                if category == APHelper.monkey.value:
+                    location_list -= {Loc.boss_tomoki.value}
+                elif category == APHelper.cellphone.value:
                     location_list = {Cellphone_Name_to_ID[loc] for loc in location_list}
                 location_list -= set(excluded_locations)
 
