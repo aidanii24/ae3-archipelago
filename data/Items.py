@@ -139,7 +139,9 @@ HUD_OFFSETS : dict[str, int] = {
 
 AP : dict[str, int] = {
     APHelper.channel_key.value      : 0x3E8,
-    APHelper.victory.value          : 0x3E9
+    APHelper.victory.value          : 0x3E9,
+    APHelper.shop_stock.value       : 0x3EA,
+    APHelper.hint_book.value        : 0x3EB,
 }
 
 ### [< --- ITEMS --- >]
@@ -189,6 +191,8 @@ Ammo_Homing = CollectableItem(Itm.ammo_homing.value, Game.ammo_homing.value, 1, 
 
 # Archipelago
 Channel_Key = ArchipelagoItem(APHelper.channel_key.value)
+Shop_Stock = ArchipelagoItem(APHelper.shop_stock.value)
+Hint_Book = ArchipelagoItem(APHelper.hint_book.value)
 Victory = ArchipelagoItem(APHelper.victory.value)
 
 ### [< --- ITEM GROUPS --- >]
@@ -217,7 +221,7 @@ COLLECTABLES : Sequence[CollectableItem] = [
 ]
 
 ARCHIPELAGO : Sequence[ArchipelagoItem] = [
-    Channel_Key, Victory
+    Channel_Key, Shop_Stock, Hint_Book, Victory
 ]
 
 ITEMS_MASTER : Sequence[AE3ItemMeta] = [
@@ -300,6 +304,11 @@ def generate_item_groups() -> dict[str : set[str]]:
     # Glide
     groups.setdefault(APHelper.glide.value, set()).update([
         Itm.morph_hero.value, *groups[APHelper.fly.value]
+    ])
+
+    # Archipelago
+    groups.setdefault(APHelper.archipelago.value, set()).update([
+        APHelper.channel_key.value, APHelper.shop_stock.value
     ])
 
     return groups

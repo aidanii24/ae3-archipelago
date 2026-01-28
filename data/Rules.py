@@ -1,16 +1,25 @@
-from typing import TYPE_CHECKING, Callable, Set
+from typing import TYPE_CHECKING, Callable, Set, ClassVar
+from dataclasses import dataclass, field
 from warnings import warn
+import math
 
 from BaseClasses import CollectionState
 
 from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, Cellphone_Name_to_ID, MONKEYS_BOSSES, \
-    MONKEYS_BREAK_ROOMS, MONKEYS_INDEX, MONKEYS_MASTER, MONKEYS_PASSWORDS, generate_name_to_id
-from .Logic import Rulesets, AccessRule, ProgressionMode, has_keys, event_invoked
-from .Strings import Loc, Stage, Events
-from .Stages import STAGES_DIRECTORY, ENTRANCES_STAGE_SELECT
+    MONKEYS_BREAK_ROOMS, MONKEYS_INDEX, MONKEYS_MASTER, MONKEYS_PASSWORDS, generate_name_to_id, LOCATIONS_INDEX, \
+    LOCATIONS_DIRECTORY, SHOP_CHEAP_COLLECTION_INDEX, SHOP_CHEAP_MASTER, SHOP_PROGRESSION_DIRECTORY, SHOP_UNIQUE_MASTER, \
+    SHOP_COLLECTION_MASTER, SHOP_PERSISTENT_MASTER, SHOP_CHEAP_COLLECTION_MASTER, SHOP_EVENT_ACCESS_DIRECTORY, \
+    MONKEYS_INFINITE_GADGET_FLOAT_APPLICABLE, EVENTS_INFINITE_GADGET_FLOAT_APPLICABLE
+from .Logic import Rulesets, AccessRule, has_keys, event_invoked, has_enough_keys, can_access_region, \
+    has_shop_stock, has_morph_extensions
+from .Strings import Loc, Stage, Events, APHelper
+from .Stages import (STAGES_DIRECTORY, STAGES_DIRECTORY_LABEL, ENTRANCES_SHOP_PSEUDOREGIONS, AE3EntranceMeta,
+                     ENTRANCES_SHOP_PROGRESSION, STAGES_SHOP_PROGRESSION, STAGES_FARMABLE, STAGES_FARMABLE_SNEAKY_BORG,
+                     LEVELS_BY_ORDER, ENTRANCES_INFINITE_GADGET_FLOAT_APPLICABLE)
 
 if TYPE_CHECKING:
     from ..AE3_Client import AE3Context
+    from .. import AE3World
 
 
 class GoalTarget:
@@ -22,8 +31,8 @@ class GoalTarget:
 
     amount : int = 0
 
-    def __init__(self, excluded_stages : list[str] = None, excluded_locations : list[str] = None,
-                 additional_locations : list[str] = None):
+    def __init__(self, amount : int = 0, excluded_stages : list[str] = None, excluded_locations : list[str] = None,
+                 shop_mode : int = 1):
         if not self.locations:
             return
 
@@ -33,11 +42,8 @@ class GoalTarget:
         if excluded_stages is None:
             excluded_stages = []
 
-        if additional_locations is None:
-            additional_locations = []
-
         # Add Extra Locations
-        self.locations = {*self.locations, *additional_locations}
+        self.locations = {*self.locations}
 
         # Exclude Specified Locations if any
         locations_excluded : list[str] = excluded_locations if excluded_locations else []
@@ -47,29 +53,45 @@ class GoalTarget:
                 locations_excluded.extend( locations for locations in CAMERAS_INDEX.get(stage, []) )
                 locations_excluded.extend( locations for locations in CELLPHONES_INDEX.get(stage, []) )
 
+        # Exclude Shop Item Locations that are not used
+        if shop_mode == 2:
+            locations_excluded.extend(set(SHOP_UNIQUE_MASTER).difference(SHOP_PERSISTENT_MASTER))
+        else:
+            locations_excluded.extend(set(SHOP_COLLECTION_MASTER).difference(SHOP_PERSISTENT_MASTER))
+
         if locations_excluded:
-            actual : str = "Actual:" if self.locations else "[ No Set Locations ] |"
+            actual : str = "Actual: " if self.locations else "[ No Set Locations ] |"
             for location in self.locations:
-                actual += f"> {location}"
+                actual += f"{location}, "
 
             self.locations.difference_update(set(locations_excluded))
             if len(self.locations) <= 0:
-                excluded : str = "Excluded:"
+                excluded : str = "Excluded: "
                 for stage in excluded_stages:
-                    excluded += f"> {stage}"
+                    excluded += f"{stage}, "
 
                 for location in locations_excluded:
-                    excluded += f">{location} |"
+                    excluded += f"{location} | "
 
-                raise AssertionError(f"There are no locations to check. Please reduce the excluded locations.",
+                raise AssertionError(f"AE3 > GoalTarget: There are no goal locations available to check. "
+                                     f"They might have been explicitly excluded. Please reduce the excluded locations.",
                                      f"{actual}", f"{excluded}")
             elif len(self.locations) < self.amount:
-                warn("Number of Locations required to check for Goal has been reduced due to excluded locations.")
+                warn("AE3 > GoalTarget :"
+                     " Number of Locations required to check for Goal has been reduced due to excluded locations.")
                 self.amount = len(self.locations)
 
         self.location_ids = {generate_name_to_id()[location] for location in self.locations}
 
-        if not self.amount or self.amount is None:
+        if amount and amount < 101:
+            mod: float = amount / 100
+            total_locs: int = len(self.locations)
+            new_total: int = int(math.ceil(total_locs * mod))
+            if not self.amount or self.amount is None:
+                self.amount = total_locs if not amount else min(new_total, total_locs)
+            else:
+                self.amount = max(min(total_locs, new_total), 0)
+        elif not self.amount or self.amount is None:
             self.amount = len(self.locations)
 
     def __bool__(self) -> bool:
@@ -87,19 +109,19 @@ class GoalTarget:
         self.locations = { * self.locations, *locations }
 
     async def check(self, ctx : 'AE3Context'):
-        checked: set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
+        checked: set[int] = ctx.locations_checked.copy()
 
         if len(self.location_ids.intersection(checked)) >= self.amount and not ctx.game_goaled:
             await ctx.goal()
 
     def get_progress(self, ctx : 'AE3Context') -> int:
-        checked: set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
+        checked: set[int] = ctx.locations_checked
         progress : int = len(self.location_ids.intersection(checked))
 
         return progress
 
     def get_remaining(self, ctx : 'AE3Context') -> list[str]:
-        checked: set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
+        checked: set[int] = ctx.locations_checked
         progressed : set[int] = self.location_ids.intersection(checked)
 
         name_to_id : dict[str, int] = generate_name_to_id()
@@ -119,31 +141,196 @@ class GoalTarget:
 
         return False
 
-    def as_access_rule(self) -> Callable[[CollectionState, int], bool]:
+    def enact(self) -> Callable[[CollectionState, int], bool]:
         return lambda state, player : self.verify(state, player)
 
-class PostGameAccessRule(GoalTarget):
-    name: str = "No Post Game Access Rule"
-    description: str = ""
+@dataclass
+class PostGameCondition:
+    name : str = "No Post Game Access Rule"
+    description : str = ""
+    passed : bool = False
 
-    locations: set[str] = {}
-    location_ids: set[int] = {}
+    locations : dict[str, set[str]] = field(default_factory=dict)
+    location_ids: dict[str, set[int]] = field(default_factory=dict)
+    amounts : dict[str, int] = field(default_factory=dict)
 
-    amount: int = 0
+    location_categories : ClassVar[list[str]] = [APHelper.monkey.value,
+                                                 APHelper.bosses.value,
+                                                 APHelper.camera.value,
+                                                 APHelper.cellphone.value,
+                                                 APHelper.shop.value]
 
-    def check(self, ctx : 'AE3Context'):
-        checked: set[int] = ctx.checked_volatile_locations.union(ctx.checked_monkeys_cache)
-        unlocked_sets: int = ctx.progression.get_progress(ctx.keys)
+    def __init__(self, amounts : dict[str, int], excluded_regions : list[str] = None,
+                 excluded_locations : list[str] = None, shop_mode : int = 1):
+        # Check if at least one Post Game Condition is enabled
+        if not amounts or all(_ <= 0 for _ in [*amounts.values()]):
+            raise AssertionError("AE3 > PostGameCondition: At least one Post-Game Condition must be enabled!")
 
-        if (unlocked_sets >= sum(ctx.progression.progression[:-1]) and len(self.location_ids.intersection(checked)) >=
-                self.amount):
-            ctx.unlocked_channels = 0x1B
+        # Initialize
+        self.passed : bool = False
+
+        self.locations = {}
+        self.location_ids = {}
+
+        if excluded_locations is None:
+            excluded_locations = []
+
+        if excluded_regions is None:
+            excluded_regions = []
+
+        # Set amounts
+        self.amounts = amounts
+
+        # Get locations from region to exclude
+        if excluded_regions:
+            for region in excluded_regions:
+                excluded_locations.extend(LOCATIONS_INDEX.get(region, []))
+
+        # Exclude Shop Item Locations that are not used
+        if shop_mode == 2:
+            excluded_locations.extend(set(SHOP_UNIQUE_MASTER).difference(SHOP_PERSISTENT_MASTER))
+        else:
+            excluded_locations.extend(set(SHOP_COLLECTION_MASTER).difference(SHOP_PERSISTENT_MASTER))
+
+        # Define valid locations for checking
+        to_id : dict[str, int] = generate_name_to_id()
+
+        for category in self.location_categories:
+            if category in self.amounts:
+                location_list : set[str] = {*LOCATIONS_DIRECTORY.get(category, [])}
+                if category == APHelper.monkey.value:
+                    location_list -= {Loc.boss_tomoki.value}
+                elif category == APHelper.cellphone.value:
+                    location_list = {Cellphone_Name_to_ID[loc] for loc in location_list}
+                location_list -= set(excluded_locations)
+
+                self.locations[category] = {*location_list}
+
+                # Lower required amount if there are enough excluded locations to make the initial value impossible
+                if self.amounts[category] > len(location_list):
+                    if category == APHelper.shop.value:
+                        self.amounts[category] = min(len(location_list), len(SHOP_UNIQUE_MASTER))
+                    else:
+                        self.amounts[category] = len(location_list)
+
+                self.location_ids[category] = { to_id[loc] for loc in location_list }
+
+    def verify(self, state : CollectionState, player : int, min_keys : int, break_rooms : int = 0) -> bool:
+        if not has_enough_keys(state, player, min_keys):
+            return False
+
+        rules : set[Callable] = set()
+        if any(category in self.amounts for category in self.location_categories[:3]):
+            rules.update({AccessRule.CATCH, AccessRule.FLY, AccessRule.DASH, AccessRule.SHOOT})
+        highest_scale : float = 0.0
+
+        if APHelper.monkey.value in self.amounts:
+            highest_scale = max(highest_scale, (self.amounts[APHelper.monkey.value] /
+                                                len(self.location_ids[APHelper.monkey.value])))
+            if break_rooms >= 2 and self.amounts[APHelper.monkey.value] > 354:
+                rules.add(AccessRule.MONKEY)
+
+        if APHelper.camera.value in self.amounts:
+            count : int = sum([state.can_reach_location(camera, player)
+                           for camera in self.locations[APHelper.camera.value]])
+
+            if count < self.amounts[APHelper.camera.value]:
+                return False
+
+        if APHelper.cellphone.value in self.amounts:
+            highest_scale = max(highest_scale, len(self.location_ids[APHelper.cellphone.value]) / 20)
+
+        if APHelper.keys.value in self.amounts:
+            rules.add(has_keys((min_keys - 1) + self.amounts[APHelper.keys.value]))
+
+        # Check Rules that only yields small progress if required amount is high enough
+        highest_scale *= 100
+        if highest_scale > 50:
+            rules.update({AccessRule.MAGICIAN, AccessRule.KUNGFU, AccessRule.SWIM})
+        if highest_scale > 80:
+            rules.update({AccessRule.RCC, AccessRule.SLING})
+
+        # Check Rules
+        if rules:
+            if not all(rule(state, player) for rule in rules):
+                return False
+
+        return True
+
+    def enact(self, min_keys : int, break_rooms : int = 0) -> Callable[[CollectionState, int], bool]:
+        return lambda state, player : self.verify(state, player, min_keys, break_rooms)
+
+    def check(self, ctx : 'AE3Context') -> bool:
+        # If already passed, use the cached status instead of checking everything again
+        if self.passed:
+            return True
+
+        total_checked : set[int] = ctx.locations_checked.copy()
+
+        passed : bool = True
+
+        # Count Checked Locations needed
+        for category in self.location_categories:
+            if not category in self.amounts or not category in self.location_ids:
+                continue
+
+            passed = passed and len(total_checked.intersection((self.location_ids[category]))) >= self.amounts[category]
+
+        # Check for keys required on post
+        if APHelper.keys.value in self.amounts:
+            passed = passed and ctx.keys - (len(ctx.progression.progression) - 3) >= self.amounts[APHelper.keys.value]
+
+        if passed and ctx.keys >= len(ctx.progression.progression) - 3:
+            self.passed = True
+            return True
+
+        self.passed = False
+        return False
+
+    def bypass(self):
+        self.passed = True
+
+    def get_progress(self, ctx : 'AE3Context') -> dict[str, list[int]]:
+        total_checked: set[int] = ctx.locations_checked.copy()
+
+        progress : dict[str, list[int]] = {}
+        for category in self.location_categories:
+            if category in self.amounts:
+                progress[category] = [len(total_checked.intersection((self.location_ids[category]))),
+                                      self.amounts[category]]
+
+        if APHelper.keys.value in self.amounts:
+            progress[APHelper.keys.value] = [ctx.keys,
+                                             len(ctx.progression.progression[:-3]) + self.amounts[APHelper.keys.value]]
+
+        return progress
+
+    def get_remaining(self, ctx : 'AE3Context') -> dict[str, list[str]]:
+        checked : set[int] = ctx.locations_checked
+
+        remaining : dict[str, list[str]] = {}
+        for category in self.location_categories:
+            if category in self.amounts:
+                remaining[category] = [location for location in self.locations[category]
+                                       if generate_name_to_id()[location] not in checked]
+
+        return remaining
 
 
 class LogicPreference:
     """
     Base Class for defined RuleTypes. RuleTypes determine the kinds of access rules locations or regions have
     based on a preferred play style
+
+    Attributes:
+        monkey_rules : Rulesets for Monkeys
+        event_rules : Rulesets for Events
+        entrance_rules : Rulesets for Entrances
+
+        blacklisted_entrances : Entrances that are excepted from generation and will never be in logic
+
+        small_starting_channels : Channels with Starting Areas too small that must be actively swapped out from being
+        an early level when Shuffle Channel is enabled.
     """
     monkey_rules : dict[str, Rulesets] = {}
     event_rules : dict[str, Rulesets] = {}
@@ -153,8 +340,6 @@ class LogicPreference:
 
     default_critical_rule : Set[Callable] = [AccessRule.CATCH]
     small_starting_channels : list[int]
-    final_level_rule : Set[Callable] = {AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC,
-                                        AccessRule.MAGICIAN, AccessRule.KUNGFU, AccessRule.HERO, AccessRule.MONKEY}
 
     def __init__(self):
         self.monkey_rules : dict[str, Rulesets] = {}
@@ -162,6 +347,9 @@ class LogicPreference:
         self.entrance_rules : dict[str, Rulesets] = {}
 
         self.blacklisted_entrances : list[str] = []
+        self.minimum_requirements : set[Callable] = set()
+        self.edge_requirements : set[Callable] = set()
+        self.edge_percentage : int = 0
 
     # Get all Access Rules within the channel
     def get_channel_clear_rules(self, *regions : str) -> Rulesets:
@@ -183,40 +371,32 @@ class LogicPreference:
 
         return rules
 
-    def set_level_progression_rules(self, progression : ProgressionMode, post_game_access_rule_option : int = 0,
-                                    post_game_rules : list[Callable] = None):
-        if post_game_rules is None:
-            post_game_rules = []
+    def apply_unlimited_gadget_float_rules(self, hds: bool, mqj: bool):
+        if not hds and not mqj:
+            return
 
-        levels_count : int = 0
-        for sets, levels in enumerate(progression.progression):
-            extra : int = 0
-            if sets < 1:
-                extra = 1
+        rules: list = []
+        if hds:
+            rules.append(AccessRule.G_FLOAT)
+        if mqj:
+            rules.append(AccessRule.QJ)
 
-            for _ in range(levels + extra):
-                rule : Rulesets = Rulesets()
-                req : int = sets
+        for monkey in MONKEYS_INFINITE_GADGET_FLOAT_APPLICABLE:
+            self.monkey_rules.setdefault(monkey, Rulesets()).update(Rulesets(rules))
 
-                if sets <= 0:
-                    levels_count += 1
-                    continue
-                elif sets > 0:
-                    rule = Rulesets(has_keys(req))
+        for event in EVENTS_INFINITE_GADGET_FLOAT_APPLICABLE:
+            self.event_rules.setdefault(event, Rulesets()).update(Rulesets(rules))
 
-                if sets == len(progression.progression) - 1:
-                    if post_game_access_rule_option < 4:
-                        req -= 1
+        for entrance in ENTRANCES_INFINITE_GADGET_FLOAT_APPLICABLE:
+            self.entrance_rules.setdefault(entrance, Rulesets()).update(Rulesets(rules))
 
-                    final_rule : list[Callable] = [has_keys(req)]
+    def apply_timed_kung_fu_rule(self, base_duration: int, morph_extensions_enabled: bool):
+        # Should only be Implemented by Expert Logic
+        return
 
-                    if post_game_rules:
-                        final_rule.append(*post_game_rules)
-
-                    rule = Rulesets(final_rule)
-
-                self.entrance_rules[ENTRANCES_STAGE_SELECT[levels_count].name] = rule
-                levels_count += 1
+    def apply_timed_morph_float(self, base_duration: int, morph_extensions_enabled: bool):
+        # Should only be Implemented by Expert Logic
+        return
 
 # [<--- LOGIC PREFERENCES --->]
 class Hard(LogicPreference):
@@ -229,6 +409,11 @@ class Hard(LogicPreference):
         super().__init__()
 
         self.small_starting_channels = [6, 18, 20, 22, 23]
+
+        self.blacklisted_entrances = [
+            Stage.entrance_bay_e1e3.value,
+            Stage.entrance_tomo_f2f.value
+        ]
 
         self.monkey_rules.update({
             # Seaside
@@ -246,7 +431,6 @@ class Hard(LogicPreference):
 
             # Onsen
             Loc.onsen_chabimon.value        : Rulesets(AccessRule.RCC),
-            Loc.onsen_fuji_chan.value       : Rulesets(AccessRule.SHOOT, AccessRule.NINJA),
 
             # Snowfesta
             Loc.snowfesta_kimisuke.value    : Rulesets(AccessRule.SHOOT),
@@ -285,16 +469,15 @@ class Hard(LogicPreference):
             Loc.hong_ukki_chan.value        : Rulesets(AccessRule.SHOOT),
             Loc.hong_uki_uki.value          : Rulesets(AccessRule.SHOOT, AccessRule.FLY),
             Loc.hong_muki_muki.value        : Rulesets(AccessRule.SHOOT, AccessRule.FLY),
-            Loc.hong_bankan.value           : Rulesets(AccessRule.NINJA, AccessRule.HERO),
+            Loc.hong_bankan.value           : Rulesets(AccessRule.GLIDE),
             Loc.hong_sukei.value            : Rulesets(AccessRule.SHOOT, AccessRule.NINJA),
 
             # Bay
             Loc.bay_shiny_pete.value        : Rulesets(AccessRule.SHOOT),
             Loc.bay_gimo.value              : Rulesets(AccessRule.SHOOT),
-            Loc.bay_jimo.value              : Rulesets([AccessRule.FLY, AccessRule.KUNGFU, AccessRule.SWIM]),
 
             # Tomo
-            Loc.tomo_riley.value            : Rulesets(AccessRule.MAGICIAN),
+            Loc.tomo_riley.value            : Rulesets([AccessRule.KUNGFU, AccessRule.MAGICIAN]),
             Loc.tomo_pipo_ron.value         : Rulesets(AccessRule.KUNGFU),
 
             # Space
@@ -347,6 +530,7 @@ class Hard(LogicPreference):
             Stage.entrance_woods_ad.value       : Rulesets(AccessRule.MONKEY),
 
             # Castle
+            Stage.entrance_castle_a1a.value     : Rulesets(AccessRule.ATTACK),
             Stage.entrance_castle_aa2.value     : Rulesets(event_invoked(Events.castle_a2_button.value)),
             Stage.entrance_castle_b1b.value     : Rulesets(event_invoked(Events.castle_b_clapper.value)),
             Stage.entrance_castle_be.value      : Rulesets(AccessRule.MONKEY),
@@ -380,8 +564,8 @@ class Hard(LogicPreference):
                 event_invoked(Events.halloween_b1_jumbo_robo_shoot.value)),
             Stage.entrance_halloween_c1c.value  : Rulesets(AccessRule.SWIM, AccessRule.HERO),
             Stage.entrance_halloween_cc1.value  : Rulesets(AccessRule.SWIM, AccessRule.HERO),
-            Stage.entrance_halloween_cc2.value  : Rulesets(AccessRule.SWIM, AccessRule.HERO),
-            Stage.entrance_halloween_c2c.value  : Rulesets(AccessRule.SWIM, AccessRule.HERO),
+            Stage.entrance_halloween_cc2.value  : Rulesets(AccessRule.SWIM, AccessRule.GLIDE),
+            Stage.entrance_halloween_c2c.value  : Rulesets(AccessRule.SWIM, AccessRule.GLIDE),
             Stage.entrance_halloween_d1e.value  : Rulesets(AccessRule.MONKEY),
 
             # Western
@@ -393,7 +577,8 @@ class Hard(LogicPreference):
             Stage.entrance_onsen_a2a.value      : Rulesets(event_invoked(Events.onsen_a_button.value)),
             Stage.entrance_onsen_a1b1.value     : Rulesets(AccessRule.DASH, AccessRule.RCC),
             Stage.entrance_onsen_a2b1.value     : Rulesets(AccessRule.DASH, AccessRule.RCC),
-            Stage.entrance_onsen_b1b.value      : Rulesets(AccessRule.GLIDE, [AccessRule.RCC, AccessRule.SWIM]),
+            Stage.entrance_onsen_b1b.value      : Rulesets(AccessRule.GLIDE, AccessRule.KUNGFU,
+                                                           [AccessRule.RCC, AccessRule.SWIM]),
             Stage.entrance_onsen_be.value       : Rulesets(AccessRule.FLY),
             Stage.entrance_onsen_bd1.value      : Rulesets(AccessRule.SHOOT, [AccessRule.RCC, AccessRule.ATTACK]),
             Stage.entrance_onsen_bd.value       : Rulesets(AccessRule.FLY),
@@ -416,7 +601,7 @@ class Hard(LogicPreference):
             Stage.entrance_edotown_eb.value     : Rulesets(event_invoked(Events.edotown_e_scroll.value)),
 
             # Heaven
-            Stage.entrance_heaven_ab.value      : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_heaven_ab.value      : Rulesets(AccessRule.GLIDE, AccessRule.KUNGFU),
             Stage.entrance_heaven_ba.value      : Rulesets(AccessRule.GLIDE),
             Stage.entrance_heaven_b1b.value     : Rulesets(event_invoked(Events.heaven_b_clapper.value)),
             Stage.entrance_heaven_ce.value      : Rulesets(AccessRule.MONKEY),
@@ -447,7 +632,7 @@ class Hard(LogicPreference):
             Stage.entrance_asia_aa1.value       : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_aa5.value       : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_a1a.value       : Rulesets(AccessRule.SWIM, AccessRule.HERO),
-            Stage.entrance_asia_a1b1.value      : Rulesets(AccessRule.SWIM, AccessRule.HERO),
+            Stage.entrance_asia_a1b2.value      : Rulesets(AccessRule.SWIM, AccessRule.HERO),
             Stage.entrance_asia_a1a2.value      : Rulesets(AccessRule.HERO),
             Stage.entrance_asia_a1a3.value      : Rulesets(AccessRule.SWIM, [AccessRule.HERO,
                                                             event_invoked(Events.asia_a2_block.value)]),
@@ -514,7 +699,7 @@ class Hard(LogicPreference):
             Stage.entrance_hong_dg.value        : Rulesets(AccessRule.KUNGFU),
 
             # Bay
-            Stage.entrance_bay_aa1.value        : Rulesets([AccessRule.SHOOT, AccessRule.SWIM], AccessRule.HERO),
+            Stage.entrance_bay_aa1.value        : Rulesets([AccessRule.SHOOT, AccessRule.SWIM], AccessRule.GLIDE),
             Stage.entrance_bay_a1a.value        : Rulesets(AccessRule.SWIM, AccessRule.HERO),
             Stage.entrance_bay_a1b.value        : Rulesets(AccessRule.RCC),
             Stage.entrance_bay_a1a2.value       : Rulesets(AccessRule.SWIM),
@@ -530,10 +715,10 @@ class Hard(LogicPreference):
             Stage.entrance_bay_ee1.value        : Rulesets(AccessRule.SHOOT),
             Stage.entrance_bay_ee2.value        : Rulesets(event_invoked(Events.bay_e1_button.value)),
             Stage.entrance_bay_e1e2.value       : Rulesets(AccessRule.HIT),
+            Stage.entrance_bay_e2e3.value       : Rulesets([AccessRule.FLY, AccessRule.KUNGFU]),
 
             # Tomo
-            Stage.entrance_tomo_aa1.value       : Rulesets(AccessRule.FLY),
-            Stage.entrance_tomo_a1a.value       : Rulesets(AccessRule.FLY),
+            Stage.entrance_tomo_a1a.value       : Rulesets(AccessRule.GLIDE),
             Stage.entrance_tomo_e1i.value       : Rulesets(AccessRule.MONKEY),
             Stage.entrance_tomo_e2e3.value      : Rulesets(AccessRule.KUNGFU),
             Stage.entrance_tomo_e3e2.value      : Rulesets(event_invoked(Events.tomo_e2_kungfu.value)),
@@ -559,7 +744,7 @@ class Hard(LogicPreference):
             Stage.entrance_space_g1g.value      : Rulesets(event_invoked(Events.space_g_button.value)),
             Stage.entrance_space_g1g_2.value    : Rulesets(event_invoked(Events.space_g1_button.value)),
             Stage.entrance_space_ff2.value      : Rulesets(event_invoked(Events.space_f2_button.value)),
-            Stage.entrance_space_ff1.value      : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_space_ff1.value      : Rulesets(AccessRule.GLIDE, AccessRule.KUNGFU),
             Stage.entrance_space_f1f2.value     : Rulesets(AccessRule.KUNGFU),
             Stage.entrance_space_f2f1.value     : Rulesets(event_invoked(Events.space_f1_kungfu.value)),
             Stage.entrance_space_f2f.value      : Rulesets(event_invoked(Events.space_f2_button.value)),
@@ -572,6 +757,393 @@ class Hard(LogicPreference):
             Stage.entrance_space_jj1.value      : Rulesets(AccessRule.GLIDE),
             Stage.entrance_space_j1j.value      : Rulesets(AccessRule.GLIDE),
         })
+
+class Expert(Hard):
+    """
+    RuleType for players that want to take advantage of glitches (excluding very powerful ones such as HDS)
+    """
+
+    def __init__(self):
+        super().__init__()
+
+        self.blacklisted_entrances = []
+
+        self.monkey_rules.update({
+            Loc.seaside_morella.value:  Rulesets(
+                AccessRule.SHOOT, AccessRule.FLY, AccessRule.MAGICIAN,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Loc.castle_monga.value: Rulesets(
+                AccessRule.SHOOT, AccessRule.GLIDE,
+                AccessRule.QJ, AccessRule.G_FLOAT_M,
+            ),
+            Loc.studio_minoh.value: Rulesets(
+                AccessRule.SHOOT, AccessRule.GLIDE,
+                AccessRule.QJ, AccessRule.G_FLOAT_M,
+            ),
+            Loc.studio_monta.value: Rulesets(
+                AccessRule.SHOOT, AccessRule.GLIDE,
+                AccessRule.QJ, AccessRule.G_FLOAT_M,
+            ),
+            Loc.toyhouse_monto.value: Rulesets(
+                AccessRule.SHOOT, AccessRule.NINJA, AccessRule.FLYER,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT_M,
+            ),
+            Loc.toyhouse_mokitani.value: Rulesets(
+                AccessRule.RCC,
+                AccessRule.FLYER, AccessRule.NINJA
+            ),
+            Loc.asia_baku.value: Rulesets(
+                [AccessRule.SHOOT, AccessRule.SWIM], AccessRule.NINJA, AccessRule.HERO,
+                AccessRule.KUNGFU
+            ),
+            Loc.asia_takumon.value: Rulesets(
+                AccessRule.SWIM, AccessRule.NINJA, AccessRule.COWBOY, AccessRule.HERO,
+                AccessRule.KUNGFU
+            ),
+            Loc.asia_ukki_ether.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.KUNGFU
+            ),
+            Loc.hong_uki_uki.value: Rulesets(
+                AccessRule.SHOOT, AccessRule.FLY,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M,
+            ),
+            Loc.hong_muki_muki.value: Rulesets(
+                AccessRule.SHOOT, AccessRule.FLY,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M,
+            ),
+            Loc.hong_bankan.value: Rulesets(
+                AccessRule.GLIDE,
+                AccessRule.KUNGFU
+            ),
+            Loc.hong_sukei.value: Rulesets(
+                AccessRule.SHOOT, AccessRule.FLY
+            ),
+            Loc.tomo_riley.value: Rulesets(
+                [AccessRule.KUNGFU, AccessRule.MAGICIAN],
+                AccessRule.MAGICIAN
+            ),
+            Loc.space_rokkun.value: Rulesets(
+                AccessRule.RCC, AccessRule.COWBOY
+            )
+        })
+
+        self.event_rules.update({
+            Events.studio_b1_button.value: Rulesets(
+                AccessRule.SHOOT, AccessRule.GLIDE, AccessRule.MAGICIAN,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Events.asia_e1_button.value: Rulesets(
+                [AccessRule.FLY, AccessRule.SHOOT], [AccessRule.FLY, AccessRule.RCC],
+                [AccessRule.SHOOT, AccessRule.SWIM, AccessRule.KUNGFU],
+                [AccessRule.RCC, AccessRule.SWIM, AccessRule.KUNGFU],
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            )
+        })
+
+        self.entrance_rules.update({
+            Stage.entrance_seaside_ac.value: Rulesets(
+                AccessRule.MONKEY,
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_castle_aa2.value: Rulesets(
+                event_invoked(Events.castle_a2_button.value),
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_studio_b1b2.value: Rulesets(
+                event_invoked(Events.studio_b1_button.value),
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_halloween_c1c.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.G_FLOAT_M,
+            ),
+            Stage.entrance_halloween_cc1.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.G_FLOAT_M,
+            ),
+            Stage.entrance_halloween_cc2.value: Rulesets(
+                AccessRule.SWIM, AccessRule.GLIDE,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_halloween_c2c.value: Rulesets(
+                AccessRule.SWIM, AccessRule.GLIDE,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_western_ec.value: Rulesets(
+                AccessRule.KUNGFU, AccessRule.MONKEY,
+            ),
+            Stage.entrance_western_ee1.value: Rulesets(
+                AccessRule.GLIDE, AccessRule.SHOOT, AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_onsen_b1b.value: Rulesets(
+                [AccessRule.RCC, AccessRule.SWIM], AccessRule.GLIDE, AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_onsen_be.value: Rulesets(
+                AccessRule.FLY,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_snowfesta_ag.value: Rulesets(
+                AccessRule.MONKEY, AccessRule.KUNGFU
+            ),
+            Stage.entrance_snowfesta_dg.value: Rulesets(
+                AccessRule.MONKEY,
+                AccessRule.KUNGFU, [AccessRule.QJ, AccessRule.G_FLOAT]
+            ),
+            Stage.entrance_edotown_be.value: Rulesets(
+                event_invoked(Events.edotown_e_scroll.value),
+                AccessRule.NINJA
+            ),
+            Stage.entrance_edotown_c1c.value: Rulesets(
+                AccessRule.NINJA, AccessRule.HERO,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_edotown_cc1.value: Rulesets(
+                AccessRule.NINJA, AccessRule.HERO,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_heaven_ab.value: Rulesets(
+                AccessRule.GLIDE, AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M,
+            ),
+            Stage.entrance_heaven_ba.value: Rulesets(
+                AccessRule.GLIDE, AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M,
+            ),
+            Stage.entrance_asia_ab.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_asia_ba.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_asia_aa5.value: Rulesets(
+              AccessRule.SWIM,
+                AccessRule.KUNGFU,
+            ),
+            Stage.entrance_asia_a2a1.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.KUNGFU,
+            ),
+            Stage.entrance_asia_a1b2.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.KUNGFU,
+            ),
+            Stage.entrance_asia_b2a1.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT_M,
+            ),
+            Stage.entrance_asia_a1a3.value: Rulesets(
+                AccessRule.SWIM,
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value),
+                 AccessRule.HERO],
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value),
+                 AccessRule.KUNGFU]
+            ),
+            Stage.entrance_asia_a3a1.value: Rulesets(
+                AccessRule.SWIM,
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value),
+                 AccessRule.HERO],
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value),
+                 AccessRule.KUNGFU]
+            ),
+            Stage.entrance_asia_a2a3.value: Rulesets(
+                [event_invoked(Events.asia_a_block.value),
+                      event_invoked(Events.asia_a1_block.value),
+                      event_invoked(Events.asia_a2_block.value)],
+                     AccessRule.HERO,
+                     AccessRule.KUNGFU
+            ),
+            Stage.entrance_asia_a2a4.value: Rulesets(
+                AccessRule.SWIM, AccessRule.HERO,
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_asia_a3a4.value: Rulesets(
+                AccessRule.SWIM,
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value),
+                 AccessRule.HERO],
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value),
+                 AccessRule.KUNGFU]
+            ),
+            Stage.entrance_asia_a4a3.value: Rulesets(
+                AccessRule.SWIM,
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value),
+                 AccessRule.HERO],
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value),
+                 AccessRule.KUNGFU]
+            ),
+            Stage.entrance_asia_a3a2.value: Rulesets(
+                [event_invoked(Events.asia_a_block.value),
+                 event_invoked(Events.asia_a1_block.value),
+                 event_invoked(Events.asia_a2_block.value)],
+                AccessRule.HERO,
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_asia_bb2.value: Rulesets(
+                [event_invoked(Events.asia_b2_button.value)], AccessRule.HERO,
+                AccessRule.BOOST, AccessRule.KUNGFU, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_asia_ee1.value: Rulesets(
+                [AccessRule.ATTACK, AccessRule.DASH],
+                [AccessRule.ATTACK, AccessRule.RCC],
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_asia_e1e2.value: Rulesets(
+                [AccessRule.SHOOT, AccessRule.FLY],
+                [AccessRule.ATTACK, AccessRule.RCC, AccessRule.FLY],
+                AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_plane_cg.value: Rulesets(
+                AccessRule.MONKEY,
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_plane_dd1.value: Rulesets(
+                AccessRule.GLIDE, AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_plane_d1d.value: Rulesets(
+                AccessRule.GLIDE, AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_hong_aa1.value: Rulesets(
+                AccessRule.KUNGFU, AccessRule.HERO,
+                AccessRule.BOOST, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_hong_b1f.value: Rulesets(
+                AccessRule.MONKEY, AccessRule.KUNGFU
+            ),
+            Stage.entrance_hong_cc1.value: Rulesets(
+                AccessRule.GLIDE, AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_hong_c1c.value: Rulesets(
+                AccessRule.GLIDE, AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_hong_c1c2.value: Rulesets(
+                AccessRule.NINJA, AccessRule.HERO,
+                AccessRule.G_FLOAT, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_hong_ee1.value: Rulesets(
+                AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_hong_dg.value: Rulesets(
+                AccessRule.KUNGFU, [AccessRule.QJ, AccessRule.G_FLOAT], AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_bay_aa1.value: Rulesets(
+                [AccessRule.SHOOT, AccessRule.SWIM], AccessRule.GLIDE,
+                AccessRule.KUNGFU, [AccessRule.SWIM, AccessRule.QJ], [AccessRule.SWIM, AccessRule.G_FLOAT],
+                AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_bay_a1a.value: Rulesets(
+                [AccessRule.SHOOT, AccessRule.SWIM], AccessRule.GLIDE,
+                AccessRule.KUNGFU, [AccessRule.SWIM, AccessRule.QJ], [AccessRule.SWIM, AccessRule.G_FLOAT],
+                AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_bay_a6f.value: Rulesets(
+                AccessRule.MONKEY,
+                AccessRule.KUNGFU
+            ),
+            Stage.entrance_bay_dd1.value: Rulesets(
+                AccessRule.KUNGFU,
+                AccessRule.BOOST, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_tomo_a1a.value: Rulesets(
+                AccessRule.GLIDE,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_tomo_f1f2.value: Rulesets(
+                AccessRule.NINJA, AccessRule.HERO,
+                AccessRule.KUNGFU, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_tomo_f2f1.value: Rulesets(
+                AccessRule.NINJA, AccessRule.HERO,
+                AccessRule.KUNGFU, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_tomo_f2f.value: Rulesets(AccessRule.FLY),
+            Stage.entrance_tomo_gg1.value: Rulesets(
+                AccessRule.KUNGFU,
+                AccessRule.BOOST, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_tomo_hh1.value: Rulesets(
+                AccessRule.GLIDE,
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+        })
+
+        entrances_to_reset: list = [
+            Stage.entrance_castle_ad.value,
+            Stage.entrance_ciscocity_ad_2.value,
+            Stage.entrance_ciscocity_ce.value,
+            Stage.entrance_iceland_ef.value,
+            Stage.entrance_space_f1f2.value
+        ]
+        for entrance in entrances_to_reset:
+            if entrance in self.entrance_rules:
+                self.entrance_rules.pop(entrance)
+
+    def apply_timed_kungfu_rule(self, base_duration: int, morph_extensions_enabled: bool):
+        locations: list = [
+            Loc.edotown_monkibeth.value
+        ]
+
+        rules: list = [AccessRule.KUNGFU]
+        if base_duration < 30 and morph_extensions_enabled:
+            rules.append(has_morph_extensions())
+
+        for loc in locations:
+            self.monkey_rules.get(loc, Rulesets()).update(Rulesets(rules))
+
+
+        self.entrance_rules.get(Stage.entrance_asia_e1e2.value, Rulesets()).update(
+            Rulesets([AccessRule.SHOOT, AccessRule.SWIM, *rules],
+                     [AccessRule.ATTACK, AccessRule.RCC, AccessRule.SWIM, *rules],)
+        )
+
+        self.event_rules.get(Events.space_g_button.value, Rulesets()).update(Rulesets(AccessRule.KUNGFU))
+
+    def apply_timed_morph_float(self, base_duration: int, morph_extensions_enabled: bool):
+        entrances: list = [
+            Stage.entrance_asia_ab.value,
+            Stage.entrance_asia_ba.value,
+            Stage.entrance_heaven_aa1.value,
+            Stage.entrance_heaven_a1a.value,
+            Stage.entrance_asia_a1a2.value,
+            Stage.entrance_asia_a1a3.value,
+            Stage.entrance_asia_a3a1.value,
+            Stage.entrance_asia_a2a3.value,
+            Stage.entrance_asia_a3a2.value,
+            Stage.entrance_asia_a2a4.value,
+            Stage.entrance_asia_a3a4.value,
+        ]
+
+        rules: list = [AccessRule.G_FLOAT_M]
+        if base_duration < 30 and morph_extensions_enabled:
+            rules.append(has_morph_extensions())
+
+        for e in entrances:
+            self.monkey_rules.get(e, Rulesets()).update(Rulesets(rules))
 
 class Normal(Hard):
     """
@@ -625,7 +1197,7 @@ class Normal(Hard):
             # Onsen
             Loc.onsen_domobeh.value             : Rulesets(AccessRule.SWIM, AccessRule.CATCH_LONG),
             Loc.onsen_mujakin.value             : Rulesets(AccessRule.SWIM, AccessRule.CATCH_LONG),
-            Loc.onsen_fuji_chan.value           : Rulesets(AccessRule.SHOOT),
+            Loc.onsen_fuji_chan.value           : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE),
 
             # Snofesta
             Loc.snowfesta_konkichi.value        : Rulesets(AccessRule.RADAR),
@@ -703,7 +1275,6 @@ class Normal(Hard):
         self.event_rules.update({
             # Castle
             Events.castle_b_clapper.value               : Rulesets(AccessRule.HIT),
-            Events.castle_a2_button.value               : Rulesets(AccessRule.HIT),
 
             # Ciscocity
             Events.ciscocity_c_button.value             : Rulesets(AccessRule.SHOOT, AccessRule.DASH, AccessRule.RCC),
@@ -757,8 +1328,6 @@ class Normal(Hard):
             Stage.entrance_woods_bc.value       : Rulesets(AccessRule.HIT),
 
             # Castle
-            Stage.entrance_castle_aa1.value     : Rulesets(AccessRule.HIT),
-            Stage.entrance_castle_a1a.value     : Rulesets(AccessRule.HIT),
             Stage.entrance_castle_bb1.value     : Rulesets(AccessRule.HIT),
 
             # Halloween
@@ -779,6 +1348,7 @@ class Normal(Hard):
             Stage.entrance_onsen_a2a1.value     : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
             Stage.entrance_onsen_a1a1m.value    : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
             Stage.entrance_onsen_a2a2m.value    : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN),
+            Stage.entrance_onsen_b1b.value      : Rulesets(AccessRule.GLIDE, [AccessRule.RCC, AccessRule.SWIM]),
 
             # Edotown
             Stage.entrance_edotown_a1a.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
@@ -795,6 +1365,7 @@ class Normal(Hard):
             # Heaven
             Stage.entrance_heaven_a1a.value     : Rulesets(AccessRule.GLIDE),
             Stage.entrance_heaven_aa1.value     : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_heaven_ab.value      : Rulesets(AccessRule.GLIDE),
             Stage.entrance_heaven_bb1.value     : Rulesets(AccessRule.HIT),
 
             # Toyhouse
@@ -822,12 +1393,16 @@ class Normal(Hard):
 
             # Bay
             Stage.entrance_bay_cc1.value        : Rulesets(AccessRule.HIT),
+            Stage.entrance_bay_e2e3.value       : Rulesets([AccessRule.FLY, AccessRule.SWIM, AccessRule.KUNGFU]),
 
             # Tomo
             Stage.entrance_tomo_aa1.value       : Rulesets(AccessRule.HERO, AccessRule.NINJA),
             Stage.entrance_tomo_a1a.value       : Rulesets(AccessRule.HERO, AccessRule.NINJA),
             Stage.entrance_tomo_ee1.value       : Rulesets(AccessRule.KNIGHT),
             Stage.entrance_tomo_ee2.value       : Rulesets(AccessRule.RCC),
+
+            # Space
+            Stage.entrance_space_ab.value       : Rulesets(AccessRule.ATTACK)
         })
 
 class Casual(Normal):
@@ -841,7 +1416,9 @@ class Casual(Normal):
 
         self.small_starting_channels = [6, 9, 11, 13, 15, 18, 20, 22, 23]
         self.blacklisted_entrances = [
-            Stage.entrance_asia_a1a2.value
+            Stage.entrance_asia_a1a2.value,
+            Stage.entrance_bay_e1e3.value,
+            Stage.entrance_tomo_f2f.value
         ]
 
         self.monkey_rules.update({
@@ -881,7 +1458,7 @@ class Casual(Normal):
             # Western
             Loc.western_jay_mohn.value          : Rulesets(AccessRule.ATTACK),
             Loc.western_jaja_jamo.value         : Rulesets(AccessRule.ATTACK, AccessRule.HOOP),
-            Loc.western_chammy_mo.value         : Rulesets(AccessRule.ATTACK),
+            Loc.western_chammy_mo.value         : Rulesets(AccessRule.SHOOT, AccessRule.FLY),
             Loc.western_golozo.value            : Rulesets(AccessRule.ATTACK),
             Loc.western_golon_moe.value         : Rulesets(AccessRule.MORPH_NO_MONKEY),
 
@@ -982,7 +1559,6 @@ class Casual(Normal):
         self.event_rules.update({
             # Castle
             Events.castle_b_clapper.value               : Rulesets(AccessRule.ATTACK),
-            Events.castle_a2_button.value               : Rulesets(AccessRule.ATTACK),
 
             # Ciscocity
             Events.ciscocity_c_button.value             : Rulesets(AccessRule.SHOOT, AccessRule.DASH, AccessRule.RCC),
@@ -1036,8 +1612,6 @@ class Casual(Normal):
             Stage.entrance_woods_bc.value       : Rulesets(AccessRule.ATTACK),
 
             # Castle
-            Stage.entrance_castle_aa1.value     : Rulesets(AccessRule.ATTACK),
-            Stage.entrance_castle_a1a.value     : Rulesets(AccessRule.ATTACK),
             Stage.entrance_castle_dd1.value     : Rulesets(AccessRule.KNIGHT, AccessRule.SHOOT),
             Stage.entrance_castle_d1d.value     : Rulesets(AccessRule.KNIGHT, AccessRule.SHOOT),
             Stage.entrance_castle_bb1.value     : Rulesets(AccessRule.ATTACK),
@@ -1117,7 +1691,7 @@ class Casual(Normal):
             Stage.entrance_asia_ab.value        : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_ba.value        : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_a1a.value       : Rulesets(AccessRule.SWIM),
-            Stage.entrance_asia_a1b1.value      : Rulesets(AccessRule.SWIM),
+            Stage.entrance_asia_a1b2.value      : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_a1a3.value      : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_a2a1.value      : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_a2a3.value      : Rulesets([event_invoked(Events.asia_a_block.value),
@@ -1156,14 +1730,216 @@ class Casual(Normal):
             Stage.entrance_tomo_bc.value        : Rulesets(AccessRule.GLIDE),
 
             # Space
+            Stage.entrance_space_ff1.value      : Rulesets(AccessRule.GLIDE),
             Stage.entrance_space_gg1.value      : Rulesets([AccessRule.SWIM, AccessRule.ATTACK]),
         })
 
 LogicPreferenceOptions : list = [
     Casual,
     Normal,
-    Hard
+    Hard,
+    Expert
 ]
+
+# [<--- SHOP ITEMS RULES HANDLING --->]
+@dataclass
+class ShopItemRules:
+    item_rules : dict[str, Rulesets]
+    entrances : list[AE3EntranceMeta]
+    entrance_rules : dict[str, Rulesets]
+    post_game_items: set[str]
+    post_game_entrances: set[str]
+    blacklisted_items: set[str]
+    blacklisted_entrances : list[str]
+    blacklisted_stages : list[str]
+    cheap_early_items : list[str]
+
+    sets : int = 0
+
+    def __init__(self, world : "AE3World"):
+        self.item_rules = {}
+        self.entrances = []
+        self.entrance_rules = {}
+        self.post_game_items = set()
+        self.post_game_entrances = set()
+        self.blacklisted_items = set()
+        self.blacklisted_entrances = [*ENTRANCES_SHOP_PROGRESSION]
+        self.blacklisted_stages = [*STAGES_SHOP_PROGRESSION]
+        self.cheap_early_items = []
+
+        self.sets = 0
+
+        if not world.options.shoppingsanity:
+            return
+
+        # If farmable areas are not available before Post Game, and Cheap Items have a minimum requirement of PGC,
+        # All Shop Items will only be in logic after Post Game is unlocked.
+        # This also removes any Shop Item from being a requirement for PGC
+        are_farmables_available: bool = ShopItemRules.are_farmables_available(world)
+        if not are_farmables_available and world.options.cheap_items_minimum_requirement >= 100:
+            self.post_game_entrances.add(Stage.entrance_travel_ab.value)
+            self.post_game_items.update(SHOP_PERSISTENT_MASTER)
+
+            if world.options.shoppingsanity == 2:
+                self.post_game_items.update(SHOP_COLLECTION_MASTER)
+            else:
+                self.post_game_items.update(SHOP_UNIQUE_MASTER)
+
+            if world.options.shoppingsanity >= 3:
+                self.blacklisted_entrances = []
+                self.blacklisted_stages = []
+
+            return
+
+        # Post Game Properties
+        required_keys : int = len(world.progression.progression) - 3
+        can_farm : list[Rulesets] = [AccessRule.FARM]
+
+        if world.options.farm_logic_sneaky_borgs.value:
+            can_farm.append(AccessRule.FARM_DUPE)
+
+        self.item_rules = {
+            Loc.hint_book_9.value: Rulesets(can_access_region(Stage.region_heaven_a.value)),
+            Loc.hint_book_14.value: Rulesets(can_access_region(Stage.region_boss1.value)),
+            Loc.hint_book_15.value: Rulesets(can_access_region(Stage.region_boss2.value)),
+            Loc.hint_book_16.value: Rulesets(can_access_region(Stage.region_boss3.value)),
+            Loc.hint_book_17.value: Rulesets(can_access_region(Stage.region_boss4.value)),
+            Loc.hint_book_18.value: Rulesets(can_access_region(Stage.region_boss5.value)),
+            Loc.hint_book_19.value: Rulesets(can_access_region(Stage.region_boss6.value)),
+            Loc.hint_book_20.value: Rulesets(can_access_region(Stage.region_specter1.value)),
+
+            Loc.movie_tape_17.value: Rulesets(can_access_region(Stage.region_tomo_a.value)),
+            Loc.movie_tape_26.value: Rulesets(can_access_region(Stage.region_specter2.value)),
+            Loc.movie_tape_27.value: Rulesets(can_access_region(Stage.region_specter2.value)),
+            Loc.music_disc_41.value: Rulesets(can_access_region(Stage.region_specter2.value)),
+        }
+
+        self.post_game_items.add(Loc.shop_ultim_ape_fighter.value)
+
+        self.entrance_rules = {
+            Stage.entrance_shop_expensive.value     : Rulesets(*can_farm),
+            Stage.entrance_shop_morph.value         : Rulesets(AccessRule.MORPH),
+        }
+
+        if world.options.shoppingsanity.value <= 1:
+            return
+
+        post_game_start_index: int = sum(world.progression.progression[:-1])
+        post_game_end_index: int = post_game_start_index + world.progression.progression[-2]
+        post_game_channels: list[str] = [LEVELS_BY_ORDER[channel] for channel in
+                                         world.progression.order[post_game_start_index:post_game_end_index]]
+        post_game_areas: list[str] = []
+        for channel in post_game_channels:
+            post_game_areas.extend(STAGES_DIRECTORY_LABEL[channel])
+
+        for channel, items in SHOP_EVENT_ACCESS_DIRECTORY.items():
+            if channel in post_game_areas:
+                self.post_game_items.update(items)
+
+        cheap_items_early_amount: int = world.options.cheap_items_early_amount.value
+
+        if world.options.cheap_items_minimum_requirement:
+            self.entrance_rules[Stage.entrance_travel_ab.value] = Rulesets(*can_farm)
+            cheap_items_early_amount = 0
+
+            if world.options.cheap_items_minimum_requirement.value < 100:
+                cheap_items_rule = has_keys(math.ceil(
+                    required_keys * (world.options.cheap_items_minimum_requirement.value / 100)))
+
+                self.entrance_rules[Stage.entrance_travel_ab.value].update(Rulesets(cheap_items_rule))
+            else:
+                if world.options.shoppingsanity.value != 2:
+                    self.post_game_items.update(SHOP_CHEAP_MASTER)
+                else:
+                    self.post_game_items.update(SHOP_CHEAP_COLLECTION_MASTER)
+
+        if world.options.shoppingsanity.value == 2:
+            if cheap_items_early_amount:
+                for category in SHOP_CHEAP_COLLECTION_INDEX:
+                    self.cheap_early_items.extend(category[:cheap_items_early_amount])
+
+            return
+        # Progression Splitting Properties
+        elif world.options.shoppingsanity.value == 3:
+            self.sets = math.ceil(28 / (required_keys + 2))
+            reached_shop_progress = lambda amount : has_keys(amount)
+
+            self.blacklisted_entrances.clear()
+            self.blacklisted_stages.clear()
+        else:
+            self.sets : int = math.ceil(28 / world.options.restock_progression.value)
+            reached_shop_progress = lambda amount: has_shop_stock(amount)
+
+            self.blacklisted_entrances.clear()
+            self.blacklisted_stages.clear()
+
+        enough_cheap_items : bool = False
+        for i, entrance in enumerate(ENTRANCES_SHOP_PSEUDOREGIONS):
+            current_set = math.floor(i / self.sets)
+            if world.options.shoppingsanity.value == 3 and current_set * self.sets + self.sets >= 27:
+                self.post_game_entrances.add(entrance.name)
+            if math.floor(current_set / self.sets) > 0:
+                self.entrance_rules[entrance.name] = Rulesets(reached_shop_progress(math.floor(i / self.sets)))
+
+            if cheap_items_early_amount and not enough_cheap_items:
+                cheap : list[str] = [item for item in SHOP_PROGRESSION_DIRECTORY[entrance.destination]
+                                          if item in SHOP_CHEAP_MASTER]
+                expensive : list[str] = [item for item in SHOP_PROGRESSION_DIRECTORY[entrance.destination]
+                                          if item not in SHOP_CHEAP_MASTER]
+
+                if len(self.cheap_early_items) + len(cheap) <= cheap_items_early_amount:
+                    self.cheap_early_items.extend(cheap)
+
+                    if are_farmables_available:
+                        for items in expensive:
+                            self.item_rules[items] = Rulesets(*can_farm)
+                    else:
+                        self.post_game_items.update(expensive)
+
+                    self.entrances.append(AE3EntranceMeta(entrance.name, Stage.travel_station_b.value,
+                                                          entrance.destination))
+                else:
+                    enough_cheap_items = True
+                    self.entrances.append(AE3EntranceMeta(entrance.name, Stage.region_shop_expensive.value,
+                                                          entrance.destination))
+            else:
+                self.entrances.append(AE3EntranceMeta(entrance.name, Stage.region_shop_expensive.value,
+                                                      entrance.destination))
+
+    def set_pgc_rules(self, world : "AE3World") -> None:
+        if not world.options.shoppingsanity.value: return
+
+        required_keys:int = len(world.progression.progression) - 3
+        post_game_condition_rule:Callable[[CollectionState, int], bool] = world.post_game_condition.enact(
+            required_keys - 1, world.options.monkeysanity_break_rooms.value)
+
+        self.item_rules[Loc.shop_ultim_ape_fighter.value] = Rulesets(post_game_condition_rule)
+
+        if world.options.cheap_items_minimum_requirement.value >= 100:
+            self.entrance_rules.setdefault(
+                Stage.entrance_travel_ab.value, Rulesets()).update(Rulesets(post_game_condition_rule))
+
+        for item in self.post_game_items:
+            self.item_rules[item] = Rulesets(post_game_condition_rule)
+
+        for entrance in self.post_game_entrances:
+            self.entrance_rules[entrance] = Rulesets(post_game_condition_rule)
+
+    @staticmethod
+    def are_farmables_available(world: 'AE3World') -> bool:
+        if not world.options.shoppingsanity.value: return True
+
+        farming_areas: list[str] = [*STAGES_FARMABLE]
+        if world.options.farm_logic_sneaky_borgs:
+            farming_areas.extend([*STAGES_FARMABLE_SNEAKY_BORG])
+
+        post_game_channels: list[str] = [LEVELS_BY_ORDER[channel] for channel in
+                                         world.progression.progression[:sum(world.progression.order[-3:-2])]]
+        post_game_areas: list[str] = []
+        for channel in post_game_channels:
+            post_game_areas.extend(STAGES_DIRECTORY_LABEL[channel])
+
+        return any(stage in post_game_areas for stage in farming_areas)
 
 # [<--- GOAL TARGETS --->]
 class Specter(GoalTarget):
@@ -1232,6 +2008,13 @@ class PhoneCheck(DirectorsCut):
 
     locations = {*Cellphone_Name_to_ID.values()}
 
+class ShopCollector(GoalTarget):
+    name = "Shop Collector"
+    description = "Buy all of the Shop Items in the Shopping Area!"
+
+    locations = {*LOCATIONS_DIRECTORY[APHelper.shop.value]}
+    amount = len(SHOP_UNIQUE_MASTER)
+
 
 class PasswordHunt(DirectorsCut):
     name = "Password Hunt"
@@ -1240,89 +2023,5 @@ class PasswordHunt(DirectorsCut):
 
 
 GoalTargetOptions : list[Callable] = [
-    Specter, SpecterFinal, TripleThreat, PlaySpike, PlayJimmy, DirectorsCut, PhoneCheck
-]
-
-class Vanilla(PostGameAccessRule):
-    name = "Vanilla"
-    description = "Capture all Base and Break Room Monkeys"
-
-    locations = {monkey for monkey in MONKEYS_MASTER
-                 if monkey != Loc.boss_tomoki.value and monkey not in MONKEYS_PASSWORDS }
-
-    def verify(self, state : CollectionState, player : int) -> bool:
-        for rule in [AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC, AccessRule.MAGICIAN,
-                     AccessRule.KUNGFU, AccessRule.HERO]:
-            if not rule(state, player):
-                return False
-
-        return True
-
-class ActiveMonkeys(PostGameAccessRule):
-    name = "Active Monkeys"
-    description = "Capture all Active Monkeys (marked as locations)"
-
-    locations = {monkey for monkey in MONKEYS_MASTER if monkey != Loc.boss_tomoki.value }
-
-    def verify(self, state: CollectionState, player: int) -> bool:
-        minimum_equipment : list[Callable] = [AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC,
-                                              AccessRule.MAGICIAN, AccessRule.KUNGFU, AccessRule.HERO]
-
-        if any(monkey in MONKEYS_BREAK_ROOMS for monkey in self.locations):
-            minimum_equipment.append(AccessRule.MONKEY)
-
-        for rule in minimum_equipment:
-            if not rule(state, player):
-                return False
-
-        return True
-
-class AllCameras(PostGameAccessRule):
-    name = "All Cameras"
-    description = "Capture all Monkey Films"
-
-    locations = { *CAMERAS_MASTER }
-
-class AllCellphones(PostGameAccessRule):
-    name = "All Cellphones"
-    description = "Activate all Cellphones"
-
-    locations = { *Cellphone_Name_to_ID.values() }
-
-class ChannelKey(PostGameAccessRule):
-    name = "Channel Key"
-    description = "Find the extra Channel Key"
-
-    locations = { Loc.boss_specter.value }
-
-    def get_progress(self, ctx : 'AE3Context') -> int:
-        all_keys = len(ctx.progression.progression) - 1
-        if ctx.post_game_access_rule_option < 4:
-            all_keys -= 1
-
-        return int(ctx.keys / all_keys)
-
-    def get_remaining(self, ctx : 'AE3Context') -> list[str]:
-        return ["Channel Key"] if self.get_progress(ctx) != 1 else []
-
-    def verify(self, state : CollectionState, player : int) -> bool:
-        checks : int = 0
-        for boss in MONKEYS_BOSSES:
-            if not state.can_reach_location(boss, player):
-                continue
-
-            checks += 1
-            if checks >= 6:
-                return True
-
-        return False
-
-class AfterEnd(ChannelKey):
-    name = "After End"
-    description = "Defeat the Final Boss before tackling the Post Game!"
-
-    locations = { Loc.boss_specter.value }
-
-PostGameAccessRuleOptions : list[Callable] = [
-    Vanilla, ActiveMonkeys, AllCameras, AllCellphones, ChannelKey, AfterEnd
+    Specter, SpecterFinal, TripleThreat, PlaySpike, PlayJimmy, DirectorsCut, PhoneCheck, ShopCollector
 ]

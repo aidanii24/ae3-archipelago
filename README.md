@@ -9,7 +9,7 @@ Features
 - Gadgets, Morphs and Morph Stocks are randomized, hidden through the game
 - Other Items such as Coins, Energy, Cookies and Jackets are also randomized.
 - Randomize and Upgrade the Morph Duration
-- Find your Items when Capturing Monkeys, using Pipo Cameras or Activating Cellphones
+- Find your Items when Capturing Monkeys, using Pipo Cameras, Activating Cellphones or Buying Shop Items
 - Randomize the Channels and choose how they should be unlocked
 - Choose how you want to goal
 - Use Free Play even if the Channel is not cleared
@@ -17,7 +17,7 @@ Features
 
 Setup
 -----
-Please see our [setup guide](./worlds/ape_escape_3/docs/setup.md) for a full guide on getting started with Ape Escape 3 Archipelago.
+Please see our [setup guide](./docs/setup.md) for a full guide on getting started with Ape Escape 3 Archipelago.
 
 ### Prerequisites:
 - Archipelago (0.6.1 or higher) [[Install](https://github.com/ArchipelagoMW/Archipelago)] [[Guide](https://archipelago.gg/tutorial/Archipelago/setup/en)]
@@ -33,6 +33,7 @@ Thank you to these projects and individuals for helping us make this Archipelago
 - evilwb's PCSX2 Interface
 - coltonious for helping with the first initiative of the Implementation
 - ButterKnife and Moaks for their technical knowledge with the game
+- Ape Escape Speedrunning Discord Server for consultation with glitches
 - All of our players for playing and enjoying the implementation, as well as giving feedback and suggestions!
 
 Support

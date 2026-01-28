@@ -108,6 +108,50 @@ LEVELS_ID_BY_ORDER : Sequence[str] = [
     Stage.specter2.value
 ]
 
+PROGRESS_ID_BY_ORDER : Sequence[str] = [
+    Stage.seaside.value,
+    Stage.woods.value,
+    Stage.castle.value,
+
+    Stage.boss1.value,
+
+    Stage.ciscocity.value,
+    Stage.studio.value,
+    Stage.halloween.value,
+    Stage.western.value,
+
+    Stage.boss2.value,
+
+    Stage.onsen.value,
+    Stage.snowfesta.value,
+    Stage.edotown.value,
+
+    Stage.boss3.value,
+
+    Stage.heaven.value,
+    Stage.toyhouse.value,
+    Stage.iceland.value,
+    Stage.arabian.value,
+
+    Stage.boss4.value,
+
+    Stage.asia.value,
+    Stage.plane.value,
+    Stage.hong.value,
+
+    Stage.boss5.value,
+
+    Stage.bay.value,
+    Stage.tomo.value,
+
+    Stage.boss6.value,
+
+    Stage.space.value,
+
+    Stage.specter1.value,
+    APHelper.pr_round2.value,
+]
+
 STAGES_TITLE : Sequence[str] = [
     Stage.title_screen.value
 ]
@@ -357,6 +401,7 @@ STAGES_BAY : Sequence[str] = [
     Stage.region_bay_e.value,
     Stage.region_bay_e1.value,
     Stage.region_bay_e2.value,
+    Stage.region_bay_e3.value,
     Stage.region_bay_f.value
 ]
 
@@ -432,18 +477,70 @@ STAGES_BREAK_ROOMS : Sequence[str] = [
     Stage.region_space_h.value,
 ]
 
+STAGES_SHOP_PROGRESSION : Sequence[str] = [
+    Stage.region_shop_seaside.value,
+    Stage.region_shop_woods.value,
+    Stage.region_shop_castle.value,
+    Stage.region_shop_boss1.value,
+    Stage.region_shop_ciscocity.value,
+    Stage.region_shop_studio.value,
+    Stage.region_shop_halloween.value,
+    Stage.region_shop_western.value,
+    Stage.region_shop_boss2.value,
+    Stage.region_shop_onsen.value,
+    Stage.region_shop_snowfesta.value,
+    Stage.region_shop_edotown.value,
+    Stage.region_shop_boss3.value,
+    Stage.region_shop_heaven.value,
+    Stage.region_shop_toyhouse.value,
+    Stage.region_shop_iceland.value,
+    Stage.region_shop_arabian.value,
+    Stage.region_shop_boss4.value,
+    Stage.region_shop_asia.value,
+    Stage.region_shop_plane.value,
+    Stage.region_shop_hong.value,
+    Stage.region_shop_boss5.value,
+    Stage.region_shop_bay.value,
+    Stage.region_shop_tomo.value,
+    Stage.region_shop_boss6.value,
+    Stage.region_shop_space.value,
+    Stage.region_shop_specter1.value,
+    Stage.region_shop_round2.value,
+]
+
+STAGES_SHOP_CHECKS : Sequence[str] = [
+    Stage.region_shop_morph.value,
+    Stage.region_shop_expensive.value,
+]
+
 STAGES_MASTER : Sequence[str] = [
     *STAGES_ZERO, *STAGES_SEASIDE, *STAGES_WOODS, *STAGES_CASTLE, *STAGES_CISCOCITY, *STAGES_STUDIO,
     *STAGES_HALLOWEEN, *STAGES_WESTERN, *STAGES_ONSEN, *STAGES_SNOWFESTA, *STAGES_EDOTOWN, *STAGES_HEAVEN,
     *STAGES_TOYHOUSE, *STAGES_ICELAND, *STAGES_ARABIAN, *STAGES_ASIA, *STAGES_PLANE, *STAGES_HONG,
-    *STAGES_BAY, *STAGES_TOMO, *STAGES_SPACE, *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB
+    *STAGES_BAY, *STAGES_TOMO, *STAGES_SPACE, *STAGES_BOSSES, *STAGES_TITLE, *STAGES_HUB, *STAGES_SHOP_PROGRESSION,
+    *STAGES_SHOP_CHECKS
 ]
 
 STAGES_INDEX : Sequence[Sequence[str]] = [
     STAGES_ZERO, STAGES_SEASIDE, STAGES_WOODS, STAGES_CASTLE, STAGES_CISCOCITY, STAGES_STUDIO,
     STAGES_HALLOWEEN, STAGES_WESTERN, STAGES_ONSEN, STAGES_SNOWFESTA, STAGES_EDOTOWN, STAGES_HEAVEN,
     STAGES_TOYHOUSE, STAGES_ICELAND, STAGES_ARABIAN, STAGES_ASIA, STAGES_PLANE, STAGES_HONG, STAGES_BAY,
-    STAGES_TOMO, STAGES_BOSSES, STAGES_SPACE, STAGES_TITLE, STAGES_HUB
+    STAGES_TOMO, STAGES_BOSSES, STAGES_SPACE, STAGES_TITLE, STAGES_HUB, STAGES_SHOP_PROGRESSION
+]
+
+STAGES_FARMABLE : Sequence[str] = [
+    Stage.region_studio_f1.value,
+    Stage.region_halloween_f.value,
+    Stage.region_plane_c1.value,
+    Stage.region_bay_f.value,
+]
+
+STAGES_FARMABLE_SNEAKY_BORG : Sequence[str] = [
+    Stage.region_ciscocity_b.value,
+    Stage.region_snowfesta_b.value,
+    Stage.region_toyhouse_e.value,
+    Stage.region_bay_a1.value,
+
 ]
 
 STAGES_DIRECTORY : dict[str, Sequence[str]] = {
@@ -468,6 +565,50 @@ STAGES_DIRECTORY : dict[str, Sequence[str]] = {
     APHelper.bay.value                  : STAGES_BAY,
     APHelper.tomo.value                 : STAGES_TOMO,
     APHelper.space.value                : STAGES_SPACE,
+}
+
+STAGES_DIRECTORY_LABEL : dict[str, Sequence[str]] = {
+    Stage.channel_seaside.value         : STAGES_SEASIDE,
+    Stage.channel_woods.value           : STAGES_WOODS,
+    Stage.channel_castle.value          : STAGES_CASTLE,
+
+    Stage.region_boss1.value            : [Stage.region_boss1.value],
+
+    Stage.channel_ciscocity.value       : STAGES_CISCOCITY,
+    Stage.channel_studio.value          : STAGES_STUDIO,
+    Stage.channel_halloween.value       : STAGES_HALLOWEEN,
+    Stage.channel_western.value         : STAGES_WESTERN,
+
+    Stage.region_boss2.value            : [Stage.region_boss2.value],
+
+    Stage.channel_onsen.value           : STAGES_ONSEN,
+    Stage.channel_snowfesta.value       : STAGES_SNOWFESTA,
+    Stage.channel_edotown.value         : STAGES_EDOTOWN,
+
+    Stage.region_boss3.value            : [Stage.region_boss3.value],
+
+    Stage.channel_heaven.value          : STAGES_HEAVEN,
+    Stage.channel_toyhouse.value        : STAGES_TOYHOUSE,
+    Stage.channel_iceland.value         : STAGES_ICELAND,
+    Stage.channel_arabian.value         : STAGES_ARABIAN,
+
+    Stage.region_boss4.value            : [Stage.region_boss4.value],
+
+    Stage.channel_asia.value            : STAGES_ASIA,
+    Stage.channel_plane.value           : STAGES_PLANE,
+    Stage.channel_hong.value            : STAGES_HONG,
+
+    Stage.region_boss5.value            : [Stage.region_boss5.value],
+
+    Stage.channel_bay.value             : STAGES_BAY,
+    Stage.channel_tomo.value            : STAGES_TOMO,
+
+    Stage.region_boss6.value            : [Stage.region_boss6.value],
+
+    Stage.channel_space.value           : STAGES_SPACE,
+
+    Stage.region_specter1.value         : [Stage.region_specter1.value],
+    Stage.region_specter2.value         : [Stage.region_specter2.value],
 }
 
 ### [< --- VANILLA ENTRANCES --- >]
@@ -672,12 +813,12 @@ ENTRANCES_MAIN : list[AE3EntranceMeta] = [
 
     # Asia
     AE3EntranceMeta(Stage.entrance_asia_ab.value, Stage.region_asia_a.value, Stage.region_asia_b.value),
-    AE3EntranceMeta(Stage.entrance_asia_a1b1.value, Stage.region_asia_a1.value, Stage.region_asia_b1.value),
+    AE3EntranceMeta(Stage.entrance_asia_a1b2.value, Stage.region_asia_a1.value, Stage.region_asia_b2.value),
     AE3EntranceMeta(Stage.entrance_asia_a2d2.value, Stage.region_asia_a2.value, Stage.region_asia_d2.value),
     AE3EntranceMeta(Stage.entrance_asia_a3e.value, Stage.region_asia_a3.value, Stage.region_asia_e.value),
     AE3EntranceMeta(Stage.entrance_asia_a4d1.value, Stage.region_asia_a4.value, Stage.region_asia_d1.value),
     AE3EntranceMeta(Stage.entrance_asia_ba.value, Stage.region_asia_b.value, Stage.region_asia_a.value),
-    AE3EntranceMeta(Stage.entrance_asia_b2a2.value, Stage.region_asia_b2.value, Stage.region_asia_a2.value),
+    AE3EntranceMeta(Stage.entrance_asia_b2a1.value, Stage.region_asia_b2.value, Stage.region_asia_a1.value),
     AE3EntranceMeta(Stage.entrance_asia_d1a4.value, Stage.region_asia_d1.value, Stage.region_asia_a4.value),
     AE3EntranceMeta(Stage.entrance_asia_d2a2.value, Stage.region_asia_d2.value, Stage.region_asia_a2.value),
     AE3EntranceMeta(Stage.entrance_asia_ea3.value, Stage.region_asia_e.value, Stage.region_asia_a3.value),
@@ -788,6 +929,10 @@ ENTRANCES_SUBREGIONS : list[AE3EntranceMeta] = [
 
     AE3EntranceMeta(Stage.entrance_travel_ab.value, Stage.travel_station_a.value, Stage.travel_station_b.value),
     AE3EntranceMeta(Stage.entrance_travel_ba.value, Stage.travel_station_b.value, Stage.travel_station_a.value),
+
+    AE3EntranceMeta(Stage.entrance_shop_expensive.value, Stage.travel_station_b.value,
+                    Stage.region_shop_expensive.value),
+    AE3EntranceMeta(Stage.entrance_shop_morph.value, Stage.region_shop_expensive.value, Stage.region_shop_morph.value),
 
     # Castle
     AE3EntranceMeta(Stage.entrance_castle_aa2.value, Stage.region_castle_a.value, Stage.region_castle_a2.value),
@@ -992,6 +1137,8 @@ ENTRANCES_SUBREGIONS : list[AE3EntranceMeta] = [
     AE3EntranceMeta(Stage.entrance_bay_ee1.value, Stage.region_bay_e.value, Stage.region_bay_e1.value),
     AE3EntranceMeta(Stage.entrance_bay_ee2.value, Stage.region_bay_e.value, Stage.region_bay_e2.value),
     AE3EntranceMeta(Stage.entrance_bay_e1e2.value, Stage.region_bay_e1.value, Stage.region_bay_e2.value),
+    AE3EntranceMeta(Stage.entrance_bay_e1e3.value, Stage.region_bay_e1.value, Stage.region_bay_e3.value),
+    AE3EntranceMeta(Stage.entrance_bay_e2e3.value, Stage.region_bay_e2.value, Stage.region_bay_e3.value),
     AE3EntranceMeta(Stage.entrance_bay_e2e.value, Stage.region_bay_e2.value, Stage.region_bay_e.value),
 
     # Tomo
@@ -1007,6 +1154,7 @@ ENTRANCES_SUBREGIONS : list[AE3EntranceMeta] = [
     AE3EntranceMeta(Stage.entrance_tomo_f2f1.value, Stage.region_tomo_f2.value, Stage.region_tomo_f1.value),
     AE3EntranceMeta(Stage.entrance_tomo_ff2.value, Stage.region_tomo_f.value, Stage.region_tomo_f2.value),
     AE3EntranceMeta(Stage.entrance_tomo_ff1.value, Stage.region_tomo_f.value, Stage.region_tomo_f1.value),
+    AE3EntranceMeta(Stage.entrance_tomo_f2f.value, Stage.region_tomo_f2.value, Stage.region_tomo_f.value),
     AE3EntranceMeta(Stage.entrance_tomo_gg1.value, Stage.region_tomo_g.value, Stage.region_tomo_g1.value),
     AE3EntranceMeta(Stage.entrance_tomo_g1g.value, Stage.region_tomo_g1.value, Stage.region_tomo_g.value),
     AE3EntranceMeta(Stage.entrance_tomo_h1h.value, Stage.region_tomo_h1.value, Stage.region_tomo_h.value),
@@ -1031,6 +1179,38 @@ ENTRANCES_SUBREGIONS : list[AE3EntranceMeta] = [
     AE3EntranceMeta(Stage.entrance_space_dd_2.value, Stage.region_space_d.value, Stage.region_space_d.value),
     AE3EntranceMeta(Stage.entrance_space_jj1.value, Stage.region_space_j.value, Stage.region_space_j1.value),
     AE3EntranceMeta(Stage.entrance_space_j1j.value, Stage.region_space_j1.value, Stage.region_space_j.value),
+]
+
+ENTRANCES_SHOP_PSEUDOREGIONS : Sequence[AE3EntranceMeta] = [
+    AE3EntranceMeta(Stage.entrance_shop_seaside.value, Stage.travel_station_b.value, Stage.region_shop_seaside.value),
+    AE3EntranceMeta(Stage.entrance_shop_woods.value, Stage.travel_station_b.value, Stage.region_shop_woods.value),
+    AE3EntranceMeta(Stage.entrance_shop_castle.value, Stage.travel_station_b.value, Stage.region_shop_castle.value),
+    AE3EntranceMeta(Stage.entrance_shop_boss1.value, Stage.travel_station_b.value, Stage.region_shop_boss1.value),
+    AE3EntranceMeta(Stage.entrance_shop_ciscocity.value, Stage.travel_station_b.value,
+                    Stage.region_shop_ciscocity.value),
+    AE3EntranceMeta(Stage.entrance_shop_studio.value, Stage.travel_station_b.value, Stage.region_shop_studio.value),
+    AE3EntranceMeta(Stage.entrance_shop_halloween.value, Stage.travel_station_b.value, Stage.region_shop_halloween.value),
+    AE3EntranceMeta(Stage.entrance_shop_western.value, Stage.travel_station_b.value, Stage.region_shop_western.value),
+    AE3EntranceMeta(Stage.entrance_shop_boss2.value, Stage.travel_station_b.value, Stage.region_shop_boss2.value),
+    AE3EntranceMeta(Stage.entrance_shop_onsen.value, Stage.travel_station_b.value, Stage.region_shop_onsen.value),
+    AE3EntranceMeta(Stage.entrance_shop_snowfesta.value, Stage.travel_station_b.value, Stage.region_shop_snowfesta.value),
+    AE3EntranceMeta(Stage.entrance_shop_edotown.value, Stage.travel_station_b.value, Stage.region_shop_edotown.value),
+    AE3EntranceMeta(Stage.entrance_shop_boss3.value, Stage.travel_station_b.value, Stage.region_shop_boss3.value),
+    AE3EntranceMeta(Stage.entrance_shop_heaven.value, Stage.travel_station_b.value, Stage.region_shop_heaven.value),
+    AE3EntranceMeta(Stage.entrance_shop_toyhouse.value, Stage.travel_station_b.value, Stage.region_shop_toyhouse.value),
+    AE3EntranceMeta(Stage.entrance_shop_iceland.value, Stage.travel_station_b.value, Stage.region_shop_iceland.value),
+    AE3EntranceMeta(Stage.entrance_shop_arabian.value, Stage.travel_station_b.value, Stage.region_shop_arabian.value),
+    AE3EntranceMeta(Stage.entrance_shop_boss4.value, Stage.travel_station_b.value, Stage.region_shop_boss4.value),
+    AE3EntranceMeta(Stage.entrance_shop_asia.value, Stage.travel_station_b.value, Stage.region_shop_asia.value),
+    AE3EntranceMeta(Stage.entrance_shop_plane.value, Stage.travel_station_b.value, Stage.region_shop_plane.value),
+    AE3EntranceMeta(Stage.entrance_shop_hong.value, Stage.travel_station_b.value, Stage.region_shop_hong.value),
+    AE3EntranceMeta(Stage.entrance_shop_boss5.value, Stage.travel_station_b.value, Stage.region_shop_boss5.value),
+    AE3EntranceMeta(Stage.entrance_shop_bay.value, Stage.travel_station_b.value, Stage.region_shop_bay.value),
+    AE3EntranceMeta(Stage.entrance_shop_tomo.value, Stage.travel_station_b.value, Stage.region_shop_tomo.value),
+    AE3EntranceMeta(Stage.entrance_shop_boss6.value, Stage.travel_station_b.value, Stage.region_shop_boss6.value),
+    AE3EntranceMeta(Stage.entrance_shop_space.value, Stage.travel_station_b.value, Stage.region_shop_space.value),
+    AE3EntranceMeta(Stage.entrance_shop_specter1.value, Stage.travel_station_b.value, Stage.region_shop_specter1.value),
+    AE3EntranceMeta(Stage.entrance_shop_round2.value, Stage.travel_station_b.value, Stage.region_shop_round2.value),
 ]
 
 ## Entrances for selecting a stage
@@ -1405,7 +1585,7 @@ ENTRANCES_ASIA : list[str] = [
     Stage.entrance_asia_aa1.value,
     Stage.entrance_asia_aa5.value,
     Stage.entrance_asia_a1a.value,
-    Stage.entrance_asia_a1b1.value,
+    Stage.entrance_asia_a1b2.value,
     Stage.entrance_asia_a1a2.value,
     Stage.entrance_asia_a1a3.value,
     Stage.entrance_asia_a1a4.value,
@@ -1430,7 +1610,7 @@ ENTRANCES_ASIA : list[str] = [
     Stage.entrance_asia_b1b2.value,
     Stage.entrance_asia_b2b1.value,
     Stage.entrance_asia_b2b.value,
-    Stage.entrance_asia_b2a2.value,
+    Stage.entrance_asia_b2a1.value,
     Stage.entrance_asia_d1a4.value,
     Stage.entrance_asia_d1d.value,
     Stage.entrance_asia_dd1.value,
@@ -1542,7 +1722,9 @@ ENTRANCES_BAY : list[str] = [
     Stage.entrance_bay_ee1.value,
     Stage.entrance_bay_ee2.value,
     Stage.entrance_bay_e1e2.value,
+    Stage.entrance_bay_e1e3.value,
     Stage.entrance_bay_e2e.value,
+    Stage.entrance_bay_e2e3.value,
     Stage.entrance_bay_fa6.value
 ]
 
@@ -1571,6 +1753,7 @@ ENTRANCES_TOMO : list[str] = [
     Stage.entrance_tomo_f2g.value,
     Stage.entrance_tomo_ff2.value,
     Stage.entrance_tomo_ff1.value,
+    Stage.entrance_tomo_f2f.value,
     Stage.entrance_tomo_fg1.value,
     Stage.entrance_tomo_fh1.value,
     Stage.entrance_tomo_gf2.value,
@@ -1622,6 +1805,182 @@ ENTRANCES_SPACE : list[str] = [
     Stage.entrance_space_he.value,
     Stage.entrance_space_hk.value,
     Stage.entrance_space_kh.value
+]
+
+ENTRANCES_SHOP_PROGRESSION : list[str] = [
+    Stage.entrance_shop_seaside.value,
+    Stage.entrance_shop_woods.value,
+    Stage.entrance_shop_castle.value,
+    Stage.entrance_shop_boss1.value,
+    Stage.entrance_shop_ciscocity.value,
+    Stage.entrance_shop_studio.value,
+    Stage.entrance_shop_halloween.value,
+    Stage.entrance_shop_western.value,
+    Stage.entrance_shop_boss2.value,
+    Stage.entrance_shop_onsen.value,
+    Stage.entrance_shop_snowfesta.value,
+    Stage.entrance_shop_edotown.value,
+    Stage.entrance_shop_boss3.value,
+    Stage.entrance_shop_heaven.value,
+    Stage.entrance_shop_toyhouse.value,
+    Stage.entrance_shop_iceland.value,
+    Stage.entrance_shop_arabian.value,
+    Stage.entrance_shop_boss4.value,
+    Stage.entrance_shop_asia.value,
+    Stage.entrance_shop_plane.value,
+    Stage.entrance_shop_hong.value,
+    Stage.entrance_shop_boss5.value,
+    Stage.entrance_shop_bay.value,
+    Stage.entrance_shop_tomo.value,
+    Stage.entrance_shop_boss6.value,
+    Stage.entrance_shop_space.value,
+    Stage.entrance_shop_specter1.value,
+    Stage.entrance_shop_round2.value,
+]
+
+ENTRANCES_SHOP_CHECKS : list[str] = [
+    Stage.entrance_shop_morph.value,
+    Stage.entrance_shop_expensive.value,
+]
+
+ENTRANCES_INFINITE_GADGET_FLOAT_APPLICABLE: list[str] = [
+    Stage.entrance_seaside_ab.value,
+    Stage.entrance_seaside_ac.value,
+
+    Stage.entrance_woods_ad.value,
+
+    Stage.entrance_castle_aa1.value,
+    Stage.entrance_castle_a1a.value,
+    Stage.entrance_castle_aa2.value,
+    Stage.entrance_castle_be.value,
+    Stage.entrance_castle_b1b.value,
+
+    Stage.entrance_ciscocity_ad.value,
+    Stage.entrance_ciscocity_ad_2.value,
+
+    Stage.entrance_studio_b1b2.value,
+
+    Stage.entrance_halloween_aa1.value,
+    Stage.entrance_halloween_a1a.value,
+    Stage.entrance_halloween_bb1.value,
+    Stage.entrance_halloween_b1b.value,
+    Stage.entrance_halloween_c1c.value,
+    Stage.entrance_halloween_cc1.value,
+    Stage.entrance_halloween_cc2.value,
+    Stage.entrance_halloween_c2c.value,
+
+    Stage.entrance_western_ec.value,
+    Stage.entrance_western_ee1.value,
+
+    Stage.entrance_onsen_aa1.value,
+    Stage.entrance_onsen_aa2.value,
+    Stage.entrance_onsen_a1a2.value,
+    Stage.entrance_onsen_a2a1.value,
+    Stage.entrance_onsen_a1a1m.value,
+    Stage.entrance_onsen_a1ma1.value,
+    Stage.entrance_onsen_a2a2m.value,
+    Stage.entrance_onsen_a2ma2.value,
+    Stage.entrance_onsen_a1b1.value,
+    Stage.entrance_onsen_a2b1.value,
+    Stage.entrance_onsen_b1b.value,
+    Stage.entrance_onsen_be.value,
+    Stage.entrance_onsen_dd1.value,
+    Stage.entrance_onsen_dc.value,
+
+    Stage.entrance_snowfesta_ab.value,
+    Stage.entrance_snowfesta_ag.value,
+    Stage.entrance_snowfesta_ec.value,
+
+    Stage.entrance_edotown_b1b2.value,
+    Stage.entrance_edotown_b2b1.value,
+    Stage.entrance_edotown_be.value,
+    Stage.entrance_edotown_cc1.value,
+    Stage.entrance_edotown_c1c.value,
+
+    Stage.entrance_heaven_ab.value,
+    Stage.entrance_heaven_bb1.value,
+    Stage.entrance_heaven_b1b.value,
+
+    Stage.entrance_toyhouse_ae.value,
+    Stage.entrance_toyhouse_ea.value,
+    Stage.entrance_toyhouse_dh.value,
+
+    Stage.entrance_arabian_cc1.value,
+    Stage.entrance_arabian_c1c.value,
+    Stage.entrance_arabian_bf.value,
+    Stage.entrance_arabian_e1e.value,
+
+    Stage.entrance_asia_ab.value,
+    Stage.entrance_asia_aa1.value,
+    Stage.entrance_asia_aa5.value,
+    Stage.entrance_asia_a1a.value,
+    Stage.entrance_asia_a1b2.value,
+    Stage.entrance_asia_a1a2.value,
+    Stage.entrance_asia_a1a3.value,
+    Stage.entrance_asia_a1a4.value,
+    Stage.entrance_asia_a2a1.value,
+    Stage.entrance_asia_a2d2.value,
+    Stage.entrance_asia_a2a3.value,
+    Stage.entrance_asia_a2a4.value,
+    Stage.entrance_asia_a3a1.value,
+    Stage.entrance_asia_a3a4.value,
+    Stage.entrance_asia_a3a2.value,
+    Stage.entrance_asia_a3e.value,
+    Stage.entrance_asia_a4a1.value,
+    Stage.entrance_asia_a4a3.value,
+    Stage.entrance_asia_a4a5.value,
+    Stage.entrance_asia_a4d1.value,
+    Stage.entrance_asia_a5a6.value,
+    Stage.entrance_asia_a6a5.value,
+    Stage.entrance_asia_bb2.value,
+    Stage.entrance_asia_b1b2.value,
+    Stage.entrance_asia_b2b1.value,
+    Stage.entrance_asia_d1a4.value,
+    Stage.entrance_asia_dd1.value,
+    Stage.entrance_asia_ee1.value,
+    Stage.entrance_asia_ef.value,
+    Stage.entrance_asia_e1e2.value,
+    Stage.entrance_asia_e2e.value,
+
+    Stage.entrance_plane_aa1.value,
+    Stage.entrance_plane_ac.value,
+    Stage.entrance_plane_dd1.value,
+
+    Stage.entrance_hong_aa1.value,
+    Stage.entrance_hong_a1a2.value,
+    Stage.entrance_hong_bb1.value,
+    Stage.entrance_hong_bb2.value,
+    Stage.entrance_hong_b1b.value,
+    Stage.entrance_hong_b1f.value,
+    Stage.entrance_hong_b2b.value,
+    Stage.entrance_hong_cc1.value,
+    Stage.entrance_hong_c1c.value,
+    Stage.entrance_hong_c1c2.value,
+    Stage.entrance_hong_ee1.value,
+    Stage.entrance_hong_dg.value,
+
+    Stage.entrance_bay_aa1.value,
+    Stage.entrance_bay_a1a.value,
+    Stage.entrance_bay_a3a4.value,
+    Stage.entrance_bay_a4d1.value,
+    Stage.entrance_bay_d1d.value,
+    Stage.entrance_bay_ee1.value,
+    Stage.entrance_bay_e1e2.value,
+    Stage.entrance_bay_e2e3.value,
+
+    Stage.entrance_tomo_aa1.value,
+    Stage.entrance_tomo_a1a.value,
+    Stage.entrance_tomo_f1f2.value,
+    Stage.entrance_tomo_f2f1.value,
+    Stage.entrance_tomo_f2f.value,
+    Stage.entrance_tomo_gg1.value,
+    Stage.entrance_tomo_hh1.value,
+
+    Stage.entrance_space_bi.value,
+    Stage.entrance_space_ff1.value,
+    Stage.entrance_space_f2f1.value,
+    Stage.entrance_space_jj1.value,
+    Stage.entrance_space_j1j.value,
 ]
 
 ENTRANCES_INDEX : dict[str, list[str]] = {
