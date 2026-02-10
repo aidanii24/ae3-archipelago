@@ -699,7 +699,7 @@ class Hard(LogicPreference):
             Stage.entrance_hong_dg.value        : Rulesets(AccessRule.KUNGFU),
 
             # Bay
-            Stage.entrance_bay_aa1.value        : Rulesets([AccessRule.SHOOT, AccessRule.SWIM], AccessRule.GLIDE),
+            Stage.entrance_bay_aa1.value        : Rulesets([AccessRule.SHOOT, AccessRule.SWIM], AccessRule.HERO),
             Stage.entrance_bay_a1a.value        : Rulesets(AccessRule.SWIM, AccessRule.HERO),
             Stage.entrance_bay_a1b.value        : Rulesets(AccessRule.RCC),
             Stage.entrance_bay_a1a2.value       : Rulesets(AccessRule.SWIM),
@@ -1383,6 +1383,7 @@ class Normal(Hard):
             Stage.entrance_asia_b2b.value       : Rulesets(AccessRule.HIT),
 
             # Plane
+            Stage.entrance_plane_ac.value       : Rulesets(AccessRule.RCC, AccessRule.DASH),
             Stage.entrance_plane_b1h.value      : Rulesets(AccessRule.RCC, AccessRule.HERO),
             Stage.entrance_plane_hb1.value      : Rulesets(AccessRule.RCC, AccessRule.HERO),
             Stage.entrance_plane_b1b2.value     : Rulesets(AccessRule.RCC, AccessRule.HERO),
