@@ -20,14 +20,26 @@ from . import AE3Settings
 from .Checker import *
 from .data import Items, Locations
 
+# Try importing gui_enabled in Utils first before trying to import them from CommonClient
+# Core AP will be officially moving it to Utils in the future, so this is in accommodation for that
+gui_loaded_from_utils: bool = False
+try:
+    from Utils import gui_enabled
+    gui_loaded_from_utils = True
+except ImportError:
+    pass
+
 # Try to load Universal Tracker if present
 tracker_loaded: bool = False
 try:
     from worlds.tracker.TrackerClient import (ClientCommandProcessor, TrackerGameContext as SuperContext,
                                               get_base_parser, server_loop)
     tracker_loaded = True
+
+    if not gui_loaded_from_utils: from worlds.tracker.TrackerClient import gui_enabled
 except ImportError:
     from CommonClient import (ClientCommandProcessor, CommonContext as SuperContext, get_base_parser, server_loop)
+    if not gui_loaded_from_utils: from CommonClient import gui_enabled
 
 
 class AE3CommandProcessor(ClientCommandProcessor):
@@ -1131,7 +1143,7 @@ def launch():
 
         if tracker_loaded:
             ctx.run_generator()
-        if Utils.gui_enabled:
+        if gui_enabled:
             ctx.run_gui()
         ctx.run_cli()
 
