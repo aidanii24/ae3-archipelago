@@ -1052,7 +1052,7 @@ class Expert(Hard):
                 AccessRule.KUNGFU, [AccessRule.QJ, AccessRule.G_FLOAT], AccessRule.G_FLOAT_M
             ),
             Stage.entrance_bay_aa1.value: Rulesets(
-                [AccessRule.SHOOT, AccessRule.SWIM], AccessRule.GLIDE,
+                [AccessRule.SHOOT, AccessRule.SWIM], AccessRule.HERO, AccessRule.FLYER,
                 AccessRule.KUNGFU, [AccessRule.SWIM, AccessRule.QJ], [AccessRule.SWIM, AccessRule.G_FLOAT],
                 AccessRule.G_FLOAT_M
             ),
