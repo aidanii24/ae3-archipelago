@@ -1057,7 +1057,7 @@ class Expert(Hard):
                 AccessRule.G_FLOAT_M
             ),
             Stage.entrance_bay_a1a.value: Rulesets(
-                [AccessRule.SHOOT, AccessRule.SWIM], AccessRule.GLIDE,
+                [AccessRule.SHOOT, AccessRule.SWIM], AccessRule.HERO, AccessRule.FLYER,
                 AccessRule.KUNGFU, [AccessRule.SWIM, AccessRule.QJ], [AccessRule.SWIM, AccessRule.G_FLOAT],
                 AccessRule.G_FLOAT_M
             ),
@@ -1723,7 +1723,7 @@ class Casual(Normal):
 
             # Bay
             Stage.entrance_bay_aa1.value        : Rulesets([AccessRule.ATTACK, AccessRule.SHOOT, AccessRule.SWIM]),
-            Stage.entrance_bay_a1a.value        : Rulesets(AccessRule.SWIM),
+            Stage.entrance_bay_a1a.value        : Rulesets([AccessRule.ATTACK, AccessRule.SWIM]),
             Stage.entrance_bay_a3a4.value       : Rulesets(AccessRule.RCC),
             Stage.entrance_bay_cc1.value        : Rulesets([AccessRule.ATTACK, AccessRule.FLY]),
             Stage.entrance_bay_e1e2.value       : Rulesets(AccessRule.ATTACK),
