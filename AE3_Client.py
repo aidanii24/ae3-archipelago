@@ -24,11 +24,10 @@ from .data import Items, Locations
 tracker_loaded: bool = False
 try:
     from worlds.tracker.TrackerClient import (ClientCommandProcessor, TrackerGameContext as SuperContext,
-                                              get_base_parser, server_loop, gui_enabled)
+                                              get_base_parser, server_loop)
     tracker_loaded = True
 except ImportError:
-    from CommonClient import (ClientCommandProcessor, CommonContext as SuperContext, get_base_parser, server_loop,
-                              gui_enabled)
+    from CommonClient import (ClientCommandProcessor, CommonContext as SuperContext, get_base_parser, server_loop)
 
 
 class AE3CommandProcessor(ClientCommandProcessor):
@@ -1132,7 +1131,7 @@ def launch():
 
         if tracker_loaded:
             ctx.run_generator()
-        if gui_enabled:
+        if Utils.gui_enabled:
             ctx.run_gui()
         ctx.run_cli()
 
