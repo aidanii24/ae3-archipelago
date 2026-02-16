@@ -1097,6 +1097,7 @@ class Expert(Hard):
             Stage.entrance_ciscocity_ad_2.value,
             Stage.entrance_ciscocity_ce.value,
             Stage.entrance_iceland_ef.value,
+            Stage.entrance_plane_cc1.value,
             Stage.entrance_space_f1f2.value
         ]
         for entrance in entrances_to_reset:
