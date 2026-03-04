@@ -423,7 +423,11 @@ class AE3World(World):
         # Fill remaining locations with Collectables
         unfilled : int = len(self.multiworld.get_unfilled_locations(self.player)) - len(self.item_pool)
         if self.options.shoppingsanity.value and self.options.hints_from_hintbooks.value:
-            unfilled -= len(set(SHOP_HINT_BOOK).difference(self.exclude_locations))
+            if self.options.shoppingsanity.value == 2:
+                hint_books = set([*SHOP_PERSISTENT_HINT_BOOK, *SHOP_COLLECTION_HINT_BOOK])
+            else:
+                hint_books = set(SHOP_HINT_BOOK)
+            unfilled -= len(hint_books.difference(self.exclude_locations))
 
         if unfilled < 0:
             raise OptionError(
