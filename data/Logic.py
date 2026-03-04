@@ -475,6 +475,19 @@ class ProgressionMode:
         self.order = deepcopy(new_order)
         self.progression = deepcopy(new_progression)
 
+    @property
+    def pgc_entrance_names(self) -> set[str]:
+        post_game_set_idx = len(self.progression) - 2
+        if post_game_set_idx <= 0 or self.progression[post_game_set_idx] <= 0:
+            return set()
+
+        total_before = sum(self.progression[:post_game_set_idx]) + 1
+        return {
+            self.level_select_entrances[total_before + ch].name
+            for ch in range(self.progression[post_game_set_idx])
+            if total_before + ch < len(self.level_select_entrances)
+        }
+
     def generate_rules(self, world : 'AE3World') -> dict[str, Rulesets]:
         channel_rules : dict[str, Rulesets] = {}
 

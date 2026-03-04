@@ -46,7 +46,8 @@ def create_regions(world : "AE3World"):
     blacklisted_entrances : list[Entrance] = [*world.logic_preference.blacklisted_entrances,
                                               *world.shop_rules.blacklisted_entrances]
 
-    # Connect Regions
+    # Connect Regions, building a name->Entrance lookup for indirect condition registration
+    entrance_objects : dict[str, Entrance] = {}
     for entrance in entrances:
         if entrance.name in blacklisted_entrances:
             continue
@@ -67,21 +68,41 @@ def create_regions(world : "AE3World"):
             ruleset = entrance_rules[entrance.name]
 
         establish_entrance(world.player, entrance.name, parent, destination, ruleset)
+        entrance_objects[entrance.name] = destination.entrances[-1]
 
     # Register Indirect Connections
+    farm_entrances : set[str] = set()
+    pgc_entrances : set[str] = set()
+
     if world.options.shoppingsanity.value >= 1:
+        farm_entrances.add(Stage.entrance_shop_expensive.value)
+        if world.options.cheap_items_minimum_requirement:
+            farm_entrances.add(Stage.entrance_travel_ab.value)
+
+    if world.options.post_game_condition_cameras:
+        pgc_entrances.update(entrance_rules.keys() & world.progression.pgc_entrance_names)
+
+        if world.options.shoppingsanity.value >= 1:
+            pgc_entrances.update(world.shop_rules.post_game_entrances)
+            if world.options.cheap_items_minimum_requirement.value >= 100:
+                pgc_entrances.add(Stage.entrance_travel_ab.value)
+
+    if farm_entrances:
         farmable_stages : list[str] = [*STAGES_FARMABLE]
         if world.options.farm_logic_sneaky_borgs.value:
             farmable_stages.extend(STAGES_FARMABLE_SNEAKY_BORG)
+        farmable_regions = [region for name, region in stages.items() if name in farmable_stages]
+        for ent_name in farm_entrances:
+            if ent_name in entrance_objects:
+                for region in farmable_regions:
+                    world.multiworld.register_indirect_condition(region, entrance_objects[ent_name])
 
-        # Register Shop Expensive Entrance as requiring an indirect condition
-        for entrance in stages[Stage.region_shop_expensive.value].entrances:
-            if entrance.name == Stage.entrance_shop_expensive.value:
-
-                for region in [region for name, region in stages.items() if name in farmable_stages]:
-                    world.multiworld.register_indirect_condition(region, entrance)
-
-            break
+    if pgc_entrances:
+        camera_regions = [region for name, region in stages.items() if name in CAMERAS_INDEX]
+        for ent_name in pgc_entrances:
+            if ent_name in entrance_objects:
+                for region in camera_regions:
+                    world.multiworld.register_indirect_condition(region, entrance_objects[ent_name])
 
     # Define Regions
     blacklist : list[str] = [stage for channel in world.options.blacklist_channel.value
