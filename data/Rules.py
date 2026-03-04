@@ -74,7 +74,7 @@ class GoalTarget:
                 for location in locations_excluded:
                     excluded += f"{location} | "
 
-                raise OptionsError(f"AE3 > GoalTarget: There are no goal locations available to check. "
+                raise OptionError(f"AE3 > GoalTarget: There are no goal locations available to check. "
                                      f"They might have been explicitly excluded. Please reduce the excluded locations.",
                                      f"{actual}", f"{excluded}")
             elif len(self.locations) < self.amount:

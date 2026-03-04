@@ -4,6 +4,7 @@ import logging
 
 from worlds.AutoWorld import World, WebWorld
 from BaseClasses import MultiWorld, Tutorial, Location
+from Options import OptionError
 import settings
 
 from .data.Items import AE3Item, AE3ItemMeta, ITEMS_MASTER, Nothing, generate_collectables
@@ -218,14 +219,22 @@ class AE3World(World):
                 excluded_phones_id: list[str] = CELLPHONES_MASTER_ORDERED[channel]
                 exclude_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
 
+        # Force-enable shoppingsanity early if required by goal target or post-game condition
+        goal_target_index = self.options.goal_target.value
+        if goal_target_index == 7 or self.options.post_game_condition_shop:
+            if not self.options.shoppingsanity:
+                self.options.shoppingsanity.value = 1
+
         # Exclude Shop Items based on Shoppingsanity Type and Blacklisted Channels
         if self.options.blacklist_channel.value and self.options.shoppingsanity.value > 0:
             ## Always exclude Ultim-ape Fighter Minigame if anything is blacklisted
             exclude_locations.extend(SHOP_PROGRESSION_75COMPLETION)
 
             ## Exclude Event/Condition-sensitive Items based on excluded levels
+            blacklisted_stages = {stage for channel in self.options.blacklist_channel.value
+                                  for stage in STAGES_DIRECTORY_LABEL[channel]}
             for region, item in SHOP_EVENT_ACCESS_DIRECTORY.items():
-                if region in self.options.blacklist_channel.value:
+                if region in blacklisted_stages:
                     exclude_locations.extend(item)
 
         # Check for Options that may override Monkeysanity Break Rooms Option
@@ -248,7 +257,6 @@ class AE3World(World):
                 exclude_regions.extend([*STAGES_BREAK_ROOMS])
 
         # Get Goal Target
-        goal_target_index = self.options.goal_target.value
         self.goal_target = GoalTargetOptions[goal_target_index](self.options.goal_target_override,
                                                                 [*exclude_regions], [*exclude_locations],
                                                                 self.options.shoppingsanity.value)
@@ -257,8 +265,6 @@ class AE3World(World):
             self.options.camerasanity.value = 1
         elif goal_target_index == 6 and not self.options.cellphonesanity:
             self.options.cellphonesanity.value = True
-        elif goal_target_index == 7 and not self.options.shoppingsanity:
-            self.options.shoppingsanity.value = 1
 
         # Exclude Channels in Post Game from being required for Post Game to be unlocked
         post_game_start_index = sum(self.progression.progression[:-2]) + 1
@@ -297,9 +303,6 @@ class AE3World(World):
 
         if self.options.post_game_condition_shop:
             post_game_conditions[APHelper.shop.value] = self.options.post_game_condition_shop.value
-
-            if not self.options.shoppingsanity:
-                self.options.shoppingsanity.value = 1
 
         if self.options.post_game_condition_keys:
             post_game_conditions[APHelper.keys.value] = self.options.post_game_condition_keys.value
@@ -421,6 +424,11 @@ class AE3World(World):
         unfilled : int = len(self.multiworld.get_unfilled_locations(self.player)) - len(self.item_pool)
         if self.options.shoppingsanity.value and self.options.hints_from_hintbooks.value:
             unfilled -= len(set(SHOP_HINT_BOOK).difference(self.exclude_locations))
+
+        if unfilled < 0:
+            raise OptionError(
+                f"AE3: Too many progression items for available locations (overflow: {-unfilled}). "
+                f"Reduce extra_keys, extra_shop_stocks, or blacklisted channels.")
 
         self.item_pool += generate_collectables(self.random, self.player, unfilled)
 
