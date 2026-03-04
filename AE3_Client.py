@@ -4,8 +4,9 @@ import typing
 import multiprocessing
 import traceback
 import asyncio
+import sys
 
-from CommonClient import ClientStatus, logger
+from CommonClient import ClientStatus, logger, handle_url_arg
 from settings import get_settings
 import Utils
 
@@ -1124,49 +1125,55 @@ def assert_version_compatibility(subject: str, base: str):
                              f"\nWorld version: {subject}\nClient version: {base}")
 
 # Starting point of function
-def launch():
-    async def main():
-        multiprocessing.freeze_support()
+async def main(args: Namespace):
+    multiprocessing.freeze_support()
 
-        # Parse Command Line
-        parser : ArgumentParser = get_base_parser()
-        parser.add_argument("AE3AP_file", default="", type=str, nargs="?",
-                            help="Path to an Archipelago Patch File")
-        args : Namespace = parser.parse_args()
+    # Create Game Context
+    ctx = AE3Context(args.connect, args.password)
 
-        # Create Game Context
-        ctx = AE3Context(args.connect, args.password)
+    # Archipelago Server Connections
+    logger.info(APConsole.Info.p_init_s.value)
+    ctx.server_task = asyncio.create_task(server_loop(ctx), name="Server Loop")
 
-        # Archipelago Server Connections
-        logger.info(APConsole.Info.p_init_s.value)
-        ctx.server_task = asyncio.create_task(server_loop(ctx), name="Server Loop")
+    if tracker_loaded:
+        ctx.run_generator()
+    if gui_enabled:
+        ctx.run_gui()
+    ctx.run_cli()
 
-        if tracker_loaded:
-            ctx.run_generator()
-        if gui_enabled:
-            ctx.run_gui()
-        ctx.run_cli()
+    # Create Main Loop
+    ctx.interface_sync_task = asyncio.create_task(main_sync_task(ctx), name="PCSX2 Sync")
 
-        # Create Main Loop
-        ctx.interface_sync_task = asyncio.create_task(main_sync_task(ctx), name="PCSX2 Sync")
+    await ctx.exit_event.wait()
+    ctx.server_address = None
 
-        await ctx.exit_event.wait()
-        ctx.server_address = None
+    await ctx.shutdown()
 
-        await ctx.shutdown()
+    # Call Main Client Loop
+    if ctx.interface_sync_task:
+        await asyncio.sleep(3)
+        await ctx.interface_sync_task
 
-        # Call Main Client Loop
-        if ctx.interface_sync_task:
-            await asyncio.sleep(3)
-            await ctx.interface_sync_task
+def launch(*args: str):
+    launch_init(*args)
 
+def launch_init(*args: Sequence[str]) -> None:
     # Run Client
     import colorama
 
+    # Parse Command Line
+    parser: ArgumentParser = get_base_parser()
+    parser.add_argument("--patch", default="", type=str, nargs="?",
+                        help="Path to an Archipelago Patch File")
+    parser.add_argument("--name", default="", type=str, nargs="?", help="Slot Name to connect as")
+    parser.add_argument("--url", default="", type=str, nargs="?",
+                        help="URL of Archipelago Room to connect to")
+    launch_args: Namespace = handle_url_arg(parser.parse_args(*args))
+
     colorama.init()
-    asyncio.run(main())
+    asyncio.run(main(launch_args))
     colorama.deinit()
 
 # Ensures file will only run as the main file
 if __name__ == '__main__':
-    launch()
+    launch(*sys.argv[1:])

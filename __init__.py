@@ -3,7 +3,6 @@ from typing import ClassVar, List, Optional, TextIO
 import logging
 
 from worlds.AutoWorld import World, WebWorld
-from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 from BaseClasses import MultiWorld, Tutorial, Location
 import settings
 
@@ -21,13 +20,8 @@ from .Regions import create_regions
 from .data import Items, Locations
 
 
-# Identifier for Archipelago to recognize and run the client
-def run_client(_url : Optional[str] = None):
-    from .AE3_Client import launch
-    launch_subprocess(launch, name="AE3Client")
-
-components.append(
-    Component(APConsole.Info.client_name.value, func = run_client, component_type = Type.CLIENT))
+# Load Client component for Archipelago to recognize the Client
+from . import components as components
 
 class AE3Settings(settings.Group):
     class SessionPreferences(settings.Bool):
