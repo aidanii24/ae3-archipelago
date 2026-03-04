@@ -694,7 +694,7 @@ class Open(ProgressionMode):
 
     def reorder(self, set_interest : int, channels : list[str]):
         super().reorder(set_interest, channels)
-        if self.progression[1] != 0 and self.required_keys:
+        if len(self.progression) > 1 and self.progression[1] != 0 and self.required_keys:
             self.progression[1:1] = [0 for _ in range(self.required_keys)]
 
 class Randomize(ProgressionMode):
