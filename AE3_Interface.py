@@ -632,14 +632,20 @@ class AEPS2Interface:
                          is_in_shop : bool = False, stocks_shuffled: bool = False, monkey_mart:bool = True):
         address : int = self.addresses.GameStates[address_name]
 
+        use_main: bool = True
         if is_in_shop and address_name in [Game.morph_stocks.value, Game.cookies.value]:
+            use_main = False
             if stocks_shuffled and address_name == Game.morph_stocks.value:
                 current = self.get_persistent_morph_stock_value()
                 self.set_persistent_morph_stock_value(current + 1)
-            elif not monkey_mart and address_name == Game.cookies.value:
-                current = self.get_persistent_cookie_value()
-                self.set_persistent_cookie_value(min(int(current + amount), 100))
-        else:
+            elif address_name == Game.cookies.value:
+                if not monkey_mart:
+                    current = self.get_persistent_cookie_value()
+                    self.set_persistent_cookie_value(min(int(current + amount), 100))
+                else:
+                    use_main = True
+
+        if use_main:
             value: int = 0
 
             if isinstance(amount, int):
