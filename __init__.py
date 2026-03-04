@@ -145,7 +145,7 @@ class AE3World(World):
         # Limit Post/Blacklist Channels to 8 items
         if len(self.options.post_channel.value) > 8:
             additive: bool = APHelper.additive.value in self.options.post_channel
-            new_post: list[str] = [*self.options.post_channel.value][:8]
+            new_post: list[str] = sorted(self.options.post_channel.value)[:8]
             if additive:
                 new_post.append(APHelper.additive.value)
 
@@ -198,9 +198,9 @@ class AE3World(World):
             self.progression.shuffle(self)
         # Directly Apply Channel Rules otherwise
         else:
-            self.progression.reorder(-1, [*self.options.blacklist_channel.value])
-            self.progression.reorder(-2, [*self.options.post_channel.value])
-            self.progression.reorder(-3, [*self.options.push_channel.value])
+            self.progression.reorder(-1, sorted(self.options.blacklist_channel.value))
+            self.progression.reorder(-2, sorted(self.options.post_channel.value))
+            self.progression.reorder(-3, sorted(self.options.push_channel.value))
             self.progression.regenerate_level_select_entrances()
 
         # Get Post Game Access Rule and exclude locations as necessary
@@ -330,7 +330,7 @@ class AE3World(World):
             current.difference_update(exclude)
             current.add(APHelper.nothing.value)
 
-            self.options.consolation_effects_whitelist.value = [*current]
+            self.options.consolation_effects_whitelist.value = sorted(current)
 
         self.exclude_locations = exclude_locations
 

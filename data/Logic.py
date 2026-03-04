@@ -330,9 +330,9 @@ class ProgressionMode:
         self.order = [*new_order]
 
         # Apply Channel Rules
-        self.reorder(-1, [*world.options.blacklist_channel.value])
-        self.reorder(-2, [*world.options.post_channel.value])
-        self.reorder(-3, [*world.options.push_channel.value])
+        self.reorder(-1, sorted(world.options.blacklist_channel.value))
+        self.reorder(-2, sorted(world.options.post_channel.value))
+        self.reorder(-3, sorted(world.options.push_channel.value))
 
         self.regenerate_level_select_entrances()
 
@@ -372,7 +372,7 @@ class ProgressionMode:
         # Re-insert Channels specified to be preserved in their vanilla indices
         if world.options.preserve_channel:
             preserve_indices : list[int] = [
-                LEVELS_BY_ORDER.index(channel) for channel in world.options.preserve_channel
+                LEVELS_BY_ORDER.index(channel) for channel in sorted(world.options.preserve_channel)
             ]
 
             if preserve_indices:
@@ -567,7 +567,7 @@ class Group(ProgressionMode):
         new_order : list[int] = self.generate_new_order(world)
 
         ## Pre-emptively remove Blacklisted Channels
-        blacklist : list[int] = [LEVELS_BY_ORDER.index(channel) for channel in world.options.blacklist_channel
+        blacklist : list[int] = [LEVELS_BY_ORDER.index(channel) for channel in sorted(world.options.blacklist_channel)
                                  if channel in LEVELS_BY_ORDER]
         new_order : list[int] = [_ for _ in new_order if _ not in blacklist]
 
@@ -619,8 +619,8 @@ class Group(ProgressionMode):
         self.order = [*new_order]
 
         # Apply Channel Rules
-        self.reorder(-2, [*world.options.post_channel.value])
-        self.reorder(-3, [*world.options.push_channel.value])
+        self.reorder(-2, sorted(world.options.post_channel.value))
+        self.reorder(-3, sorted(world.options.push_channel.value))
 
         # Update new Channel Destinations
         self.regenerate_level_select_entrances()
@@ -637,7 +637,7 @@ class World(ProgressionMode):
         new_order : list[int] = self.generate_new_order(world)
 
         # Pre-emptively remove Blacklisted Channels
-        blacklist : list[int] = [LEVELS_BY_ORDER.index(channel) for channel in world.options.blacklist_channel
+        blacklist : list[int] = [LEVELS_BY_ORDER.index(channel) for channel in sorted(world.options.blacklist_channel)
                                  if channel in LEVELS_BY_ORDER]
         if blacklist:
             new_order = [_ for _ in new_order if _ not in blacklist]
@@ -664,8 +664,8 @@ class World(ProgressionMode):
         self.order = [*new_order]
 
         # Apply Channel Rules
-        self.reorder(-2, [*world.options.post_channel.value])
-        self.reorder(-3, [*world.options.push_channel.value])
+        self.reorder(-2, sorted(world.options.post_channel.value))
+        self.reorder(-3, sorted(world.options.push_channel.value))
 
         # Update new Channel Destinations
         self.regenerate_level_select_entrances()
