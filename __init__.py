@@ -4,6 +4,7 @@ import logging
 
 from worlds.AutoWorld import World, WebWorld
 from BaseClasses import MultiWorld, Tutorial, Location
+from Options import OptionError
 import settings
 
 from .data.Items import AE3Item, AE3ItemMeta, ITEMS_MASTER, Nothing, generate_collectables
@@ -421,6 +422,11 @@ class AE3World(World):
         unfilled : int = len(self.multiworld.get_unfilled_locations(self.player)) - len(self.item_pool)
         if self.options.shoppingsanity.value and self.options.hints_from_hintbooks.value:
             unfilled -= len(set(SHOP_HINT_BOOK).difference(self.exclude_locations))
+
+        if unfilled < 0:
+            raise OptionError(
+                f"AE3: Too many progression items for available locations (overflow: {-unfilled}). "
+                f"Reduce extra_keys, extra_shop_stocks, or blacklisted channels.")
 
         self.item_pool += generate_collectables(self.random, self.player, unfilled)
 
