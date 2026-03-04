@@ -231,8 +231,10 @@ class AE3World(World):
             exclude_locations.extend(SHOP_PROGRESSION_75COMPLETION)
 
             ## Exclude Event/Condition-sensitive Items based on excluded levels
+            blacklisted_stages = {stage for channel in self.options.blacklist_channel.value
+                                  for stage in STAGES_DIRECTORY_LABEL[channel]}
             for region, item in SHOP_EVENT_ACCESS_DIRECTORY.items():
-                if region in self.options.blacklist_channel.value:
+                if region in blacklisted_stages:
                     exclude_locations.extend(item)
 
         # Check for Options that may override Monkeysanity Break Rooms Option
