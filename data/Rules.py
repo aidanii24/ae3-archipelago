@@ -4,6 +4,7 @@ from warnings import warn
 import math
 
 from BaseClasses import CollectionState
+from Options import OptionError
 
 from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, Cellphone_Name_to_ID, MONKEYS_BOSSES, \
     MONKEYS_BREAK_ROOMS, MONKEYS_INDEX, MONKEYS_MASTER, MONKEYS_PASSWORDS, generate_name_to_id, LOCATIONS_INDEX, \
@@ -73,7 +74,7 @@ class GoalTarget:
                 for location in locations_excluded:
                     excluded += f"{location} | "
 
-                raise AssertionError(f"AE3 > GoalTarget: There are no goal locations available to check. "
+                raise OptionsError(f"AE3 > GoalTarget: There are no goal locations available to check. "
                                      f"They might have been explicitly excluded. Please reduce the excluded locations.",
                                      f"{actual}", f"{excluded}")
             elif len(self.locations) < self.amount:
@@ -164,7 +165,7 @@ class PostGameCondition:
                  excluded_locations : list[str] = None, shop_mode : int = 1):
         # Check if at least one Post Game Condition is enabled
         if not amounts or all(_ <= 0 for _ in [*amounts.values()]):
-            raise AssertionError("AE3 > PostGameCondition: At least one Post-Game Condition must be enabled!")
+            raise OptionError("AE3 > PostGameCondition: At least one Post-Game Condition must be enabled!")
 
         # Initialize
         self.passed : bool = False
