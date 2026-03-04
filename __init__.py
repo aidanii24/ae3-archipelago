@@ -218,6 +218,12 @@ class AE3World(World):
                 excluded_phones_id: list[str] = CELLPHONES_MASTER_ORDERED[channel]
                 exclude_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
 
+        # Force-enable shoppingsanity early if required by goal target or post-game condition
+        goal_target_index = self.options.goal_target.value
+        if goal_target_index == 7 or self.options.post_game_condition_shop:
+            if not self.options.shoppingsanity:
+                self.options.shoppingsanity.value = 1
+
         # Exclude Shop Items based on Shoppingsanity Type and Blacklisted Channels
         if self.options.blacklist_channel.value and self.options.shoppingsanity.value > 0:
             ## Always exclude Ultim-ape Fighter Minigame if anything is blacklisted
@@ -248,7 +254,6 @@ class AE3World(World):
                 exclude_regions.extend([*STAGES_BREAK_ROOMS])
 
         # Get Goal Target
-        goal_target_index = self.options.goal_target.value
         self.goal_target = GoalTargetOptions[goal_target_index](self.options.goal_target_override,
                                                                 [*exclude_regions], [*exclude_locations],
                                                                 self.options.shoppingsanity.value)
@@ -257,8 +262,6 @@ class AE3World(World):
             self.options.camerasanity.value = 1
         elif goal_target_index == 6 and not self.options.cellphonesanity:
             self.options.cellphonesanity.value = True
-        elif goal_target_index == 7 and not self.options.shoppingsanity:
-            self.options.shoppingsanity.value = 1
 
         # Exclude Channels in Post Game from being required for Post Game to be unlocked
         post_game_start_index = sum(self.progression.progression[:-2]) + 1
@@ -297,9 +300,6 @@ class AE3World(World):
 
         if self.options.post_game_condition_shop:
             post_game_conditions[APHelper.shop.value] = self.options.post_game_condition_shop.value
-
-            if not self.options.shoppingsanity:
-                self.options.shoppingsanity.value = 1
 
         if self.options.post_game_condition_keys:
             post_game_conditions[APHelper.keys.value] = self.options.post_game_condition_keys.value
