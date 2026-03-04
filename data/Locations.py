@@ -3503,7 +3503,11 @@ def generate_location_groups() -> dict[str, int]:
     groups: dict[str: set[str]] = {}
 
     groups.update({f"{k} Monkeys" : v for k, v in MONKEYS_INDEX.items()})
-    groups.update({f"{k} Cellphones" : v for k, v in CELLPHONES_INDEX.items()})
+    groups.update({f"{k} Cellphones" : [Cellphone_Name_to_ID[c] for c in v]
+                   for k, v in CELLPHONES_INDEX.items()})
+
+    phonet = {f"{k} Cellphones" : [Cellphone_Name_to_ID[c] for c in v]
+                   for k, v in CELLPHONES_INDEX.items()}
 
     groups.update(copy.deepcopy(MONKEYS_INDEX))
     for k, v in CAMERAS_INDEX.items():
