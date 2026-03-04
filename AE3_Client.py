@@ -1130,6 +1130,7 @@ async def main(args: Namespace):
 
     # Create Game Context
     ctx = AE3Context(args.connect, args.password)
+    ctx.auth = args.name
 
     # Archipelago Server Connections
     logger.info(APConsole.Info.p_init_s.value)
@@ -1166,9 +1167,9 @@ def launch_init(*args: Sequence[str]) -> None:
     parser.add_argument("--patch", default="", type=str, nargs="?",
                         help="Path to an Archipelago Patch File")
     parser.add_argument("--name", default="", type=str, nargs="?", help="Slot Name to connect as")
-    parser.add_argument("--url", default="", type=str, nargs="?",
+    parser.add_argument("url", default="", type=str, nargs="?",
                         help="URL of Archipelago Room to connect to")
-    launch_args: Namespace = handle_url_arg(parser.parse_args(*args))
+    launch_args: Namespace = handle_url_arg(parser.parse_args(args))
 
     colorama.init()
     asyncio.run(main(launch_args))
