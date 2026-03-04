@@ -69,7 +69,7 @@ def create_regions(world : "AE3World"):
         establish_entrance(world.player, entrance.name, parent, destination, ruleset)
 
     # Register Indirect Connections
-    if world.options.shoppingsanity.value > 1:
+    if world.options.shoppingsanity.value >= 1:
         farmable_stages : list[str] = [*STAGES_FARMABLE]
         if world.options.farm_logic_sneaky_borgs.value:
             farmable_stages.extend(STAGES_FARMABLE_SNEAKY_BORG)
