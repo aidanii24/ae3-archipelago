@@ -3506,25 +3506,22 @@ def generate_location_groups() -> dict[str, int]:
     groups.update({f"{k} Cellphones" : [Cellphone_Name_to_ID[c] for c in v]
                    for k, v in CELLPHONES_INDEX.items()})
 
-    phonet = {f"{k} Cellphones" : [Cellphone_Name_to_ID[c] for c in v]
-                   for k, v in CELLPHONES_INDEX.items()}
-
     groups.update(copy.deepcopy(MONKEYS_INDEX))
     for k, v in CAMERAS_INDEX.items():
         groups.setdefault(k, []).append(v)
     for k, v in CELLPHONES_INDEX.items():
-        groups.setdefault(k, []).extend(v)
+        groups.setdefault(k, []).extend([Cellphone_Name_to_ID[c] for c in v])
 
     for i, channel in enumerate(LEVELS_BY_ORDER):
         total: list = [*copy.deepcopy(MONKEYS_MASTER_ORDERED[i])]
         groups[f"{channel} Monkeys"] = copy.deepcopy(MONKEYS_MASTER_ORDERED[i])
 
         if CAMERAS_MASTER_ORDERED[i]:
-            groups[f"{channel} Cellphones"] = [].append(copy.deepcopy(CAMERAS_MASTER_ORDERED[i]))
+            groups[f"{channel} Cameras"] = [copy.deepcopy(CAMERAS_MASTER_ORDERED[i])]
             total.append(copy.deepcopy(CAMERAS_MASTER_ORDERED[i]))
 
         if CELLPHONES_MASTER_ORDERED[i]:
-            groups[f"{channel} Cellphones"] = copy.deepcopy(CELLPHONES_MASTER_ORDERED[i])
+            groups[f"{channel} Cellphones"] = [Cellphone_Name_to_ID[c] for c in CELLPHONES_MASTER_ORDERED[i]]
             total.extend(copy.deepcopy(CELLPHONES_MASTER_ORDERED[i]))
 
         groups[channel] = total
