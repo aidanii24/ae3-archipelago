@@ -1936,13 +1936,15 @@ class ShopItemRules:
         if world.options.farm_logic_sneaky_borgs:
             farming_areas.extend([*STAGES_FARMABLE_SNEAKY_BORG])
 
+        post_game_start_index: int = sum(world.progression.progression[:-1])
+        post_game_end_index: int = post_game_start_index + world.progression.progression[-2]
         post_game_channels: list[str] = [LEVELS_BY_ORDER[channel] for channel in
-                                         world.progression.progression[:sum(world.progression.order[-3:-2])]]
+                                         world.progression.order[post_game_start_index:post_game_end_index]]
         post_game_areas: list[str] = []
         for channel in post_game_channels:
             post_game_areas.extend(STAGES_DIRECTORY_LABEL[channel])
 
-        return any(stage in post_game_areas for stage in farming_areas)
+        return any(stage not in post_game_areas for stage in farming_areas)
 
 # [<--- GOAL TARGETS --->]
 class Specter(GoalTarget):
