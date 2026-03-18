@@ -11,7 +11,7 @@ from .data.Items import AE3Item, AE3ItemMeta, ITEMS_MASTER, Nothing, generate_co
 from .data.Locations import Cellphone_Name_to_ID, MONKEYS_BOSSES, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, \
     CELLPHONES_MASTER_ORDERED, MONKEYS_PASSWORDS, MONKEYS_BREAK_ROOMS, SHOP_PROGRESSION_75COMPLETION, \
     SHOP_EVENT_ACCESS_DIRECTORY, SHOP_HINT_BOOK, SHOP_COLLECTION_HINT_BOOK, SHOP_PERSISTENT_HINT_BOOK
-from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER, STAGES_DIRECTORY_LABEL
+from .data.Stages import LEVELS_BY_ORDER, STAGES_BOSSES, STAGES_BREAK_ROOMS, STAGES_DIRECTORY_LABEL
 from .data.Rules import GoalTarget, GoalTargetOptions, LogicPreference, LogicPreferenceOptions, PostGameCondition, \
     ShopItemRules
 from .data.Strings import Loc, Meta, APHelper, APConsole, Itm
@@ -172,6 +172,63 @@ class AE3World(World):
         ## Remove Post Channels that exists in Blacklist Channel Option
         if self.options.post_channel:
             self.options.post_channel.value.difference_update(self.options.blacklist_channel)
+
+        ## If Goal Target is either of Specter bosses and Specters Goal Target As Post is enabled,
+        ## Add the corresponding Specter Boss to Post Channel
+        if self.options.goal_target.value < 2 and self.options.specters_goal_target_as_post.value:
+            if self.options.blacklist_bosses == 1:
+                raise OptionError("Specters Goal Target As Post is enabled and should take effect "
+                                  "but Blacklist Bosses has also been set to Blacklist Specters."
+                                  "Either change the Blacklist Bosses option, "
+                                  "disable the Specters Goal Target As Post option, "
+                                  "or change the Goal Target Option.")
+
+            if len(self.options.post_channel.value) > 8:
+                raise OptionError("Specters Goal Target As Post is enabled, "
+                                  "but the Post Channel Option has already reached "
+                                  "the maximum amount of Channels it can use. "
+                                  "Either reduce the Channels in the Post Channel option, "
+                                  "or disable Specters Goal Target As Post.")
+
+            specter_channel = LEVELS_BY_ORDER[26 + self.options.goal_target.value]
+            self.options.push_channel.value.discard(specter_channel)
+            self.options.blacklist_channel.value.discard(specter_channel)
+
+            self.options.post_channel.value.add(specter_channel)
+
+        ## If Exclude Bosses is enabled, add the bosses to Blacklist Channel
+        if self.options.blacklist_bosses.value > 0:
+            if self.options.blacklist_bosses.value == 1:
+                bosses = {*STAGES_BOSSES}
+            else:
+                bosses = {*[*STAGES_BOSSES][:-2]}
+
+            if len(self.options.blacklist_channel.value) + len(bosses) > 8:
+                raise OptionError("Exclude Bosses is enabled, but the Blacklist Channel Option has already reached "
+                                  "the maximum amount of Channels it can use. "
+                                  "Either reduce the Channels in the Blacklist Channel option, "
+                                  "or change the option for Exclude Bosses.")
+
+            self.options.push_channel.value.difference_update(bosses)
+            self.options.post_channel.value.difference_update(bosses)
+
+            self.options.blacklist_channel.value.update(bosses)
+
+        ## If Progression Mode is set to Group or World, but there are too many bosses pushed, posted
+        ## and or blacklisted, abort the generation
+        if 0 < self.options.progression_mode.value < 3:
+            moved_bosses: set = {*self.options.push_channel.value,
+                                 *self.options.post_channel.value,
+                                 *self.options.blacklist_channel.value}.intersection(STAGES_BOSSES)
+
+            print(len(moved_bosses), moved_bosses)
+
+            if len(moved_bosses) > 6:
+                raise OptionError("Group/World Progression Mode relies on bosses for Channel Set splitting, "
+                                  "but too many bosses have been moved using the Push/Post/Blacklist Channel options. "
+                                  "Either remove more bosses from these options, "
+                                  "or choose a different progression mode.")
+
 
         # Get Logic Preference
         self.logic_preference = LogicPreferenceOptions[self.options.logic_preference]()

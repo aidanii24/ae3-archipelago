@@ -193,7 +193,7 @@ class AccessRule:
     HIT = can_hit                               # Can hit at all
     DASH = can_dash                             # Unlocked Super Hoop or any fast moving Morph
     SHOOT = can_shoot                           # Slingback Shooter unlocked or has any morph with long range attacks
-    SHOOT_BOOM = can_shoot_boom                      # Slingback Shooter unlocked or has any morph with long range attacks
+    SHOOT_BOOM = can_shoot_boom                 # Slingback Shooter unlocked or has any morph with long range attacks
     SWIM = can_swim
     FLY = can_fly                               # Sky Flyer unlocked or has any morph that can fly (gain height)
     GLIDE = can_glide                           # Sky Flyer unlocked or has any morph that can glide

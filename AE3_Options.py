@@ -368,6 +368,41 @@ class ShuffleChannel(Choice):
     option_full_shuffle : int = 2
 
 
+class SpectersGoalTargetAsPost(DefaultOnToggle):
+    """
+    If either Specter or Specter Final is chosen as the goal, determine if they should be forced behind PGC,
+    requiring PGC Conditions to be met before they can be accessed. This will automatically add them to the Post Channel
+    option. If Post Channel exceeds its limit and this is enabled, Generation will refuse to initiate and fail.
+
+    This option takes precedence over the Push/Post/Blacklist Channels, and will modify them as necessary.
+    """
+    display_name : str = "Specters Goal Target As Post"
+
+
+class BlacklistBosses(Choice):
+    """
+    Determine if bosses should be blacklisted from the Channel selection pool. If enabled,
+    bosses will be automatically added to the Blacklist Channel option. If the Blacklist Channel option
+    exceeds its limit because of this option, generation will refuse to continue and fail.
+
+    If Specters Goal Target As Post option is enabled and relevant, and this option is also set to enabled,
+    generation will refuse to continue and abort.
+
+    This option takes precedence over the Push/Post/Blacklist Channels, and will modify them as necessary.
+    Default: disabled
+
+    > disabled - Bosses will be part of the Channel Selection pool
+    > enabled - Bosses will automatically be added to the Blacklist Channel option
+    > keep_specters - The Freaky Monkey Five and Dr. Tomoki Bosses will be removed from the Channel Selection pool,
+    but Specter and Specter Final channels will remain available.
+    """
+    display_name : str = "Blacklist Bosses"
+    default = 0
+
+    option_disabled : int = 0
+    option_enabled : int = 1
+    option_keep_specters : int = 2
+
 class PreserveChannel(OptionSet):
     """
     If Channel Order is not disabled, choose which channel should preserve their number.
@@ -414,7 +449,7 @@ class PostChannel(OptionSet):
     valid_keys = [*LEVELS_BY_ORDER, APHelper.additive.value]
 
 
-class BlacklistChannel(OptionList):
+class BlacklistChannel(OptionSet):
     """
     Specify which channels whose locations should be excluded from generation, and then placed at the end of the
     channel order.
@@ -769,6 +804,8 @@ ae3_option_groups : dict[str, list] = {
                                    PostGameConditionShopItems,
                                    PostGameConditionChannelKeys],
     "Map Options"               : [ShuffleChannel,
+                                   SpectersGoalTargetAsPost,
+                                   BlacklistBosses,
                                    PreserveChannel,
                                    PushChannel,
                                    PostChannel,
@@ -819,6 +856,8 @@ class AE3Options(PerGameCommonOptions):
     post_game_condition_shop                : PostGameConditionShopItems
     post_game_condition_keys                : PostGameConditionChannelKeys
     shuffle_channel                         : ShuffleChannel
+    specters_goal_target_as_post            : SpectersGoalTargetAsPost
+    blacklist_bosses                        : BlacklistBosses
     preserve_channel                        : PreserveChannel
     push_channel                            : PushChannel
     post_channel                            : PostChannel
@@ -881,6 +920,8 @@ def slot_data_options() -> list[str]:
         APHelper.pgc_keys.value,
 
         APHelper.shuffle_channel.value,
+        APHelper.specters_goal_target_as_post.value,
+        APHelper.blacklist_bosses.value,
         APHelper.preserve_channel.value,
         APHelper.push_channel.value,
         APHelper.post_channel.value,
