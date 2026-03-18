@@ -2641,7 +2641,6 @@ class APHelper(BaseEnum):
     pr_round2_clean =       "round2"
 
     # AP Options
-    auto_save_slot =                "auto_save_state_slot"
     progression_mode =              "progression_mode"
     progression =                   "progression"
     open_required =                 "open_progression_keys"
@@ -2694,6 +2693,10 @@ class APHelper(BaseEnum):
     consolation_whitelist =         "consolation_effects_whitelist"
 
     death_link =                    "death_link"
+
+    auto_save_slot =                "auto_save_state_slot"
+    emu_win_slot =                  "emulator_windows_preferred_slot"
+    emu_linux_platform =            "emulator_linux_preferred_platform"
 
     additive =                      "ADDITIVE"
 

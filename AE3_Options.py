@@ -7,29 +7,6 @@ from .data.Strings import APHelper
 from .data.Stages import LEVELS_BY_ORDER
 
 
-class AutoSaveStateSlot(NamedRange):
-    """
-    Choose which slot this slot session should be saved on. Useful when playing multiple instances of this game within
-    the same multiworld. Slots 1 - 10 are used by the PCSX2 for quick use and will not be used for this purpose.
-
-    Please refer to your host.yaml file for more AutoSave/AutoLoad State settings.
-
-    <!> WARNING: It is highly recommended to not weight this option and explicitly specify a custom value.
-    To specify custom values, add it alongside the pre-existing options, copying their format.
-    Format: value : weight
-
-    Default: 0
-    """
-    display_name : str = "Auto Save State Slot"
-    default = 0
-
-    range_start = 11
-    range_end = 255
-    special_range_names = {
-        "default": 0
-    }
-
-
 class ProgressionMode(Choice):
     """
     Choose how the progression of the randomizer should be.
@@ -785,9 +762,69 @@ class ConsolationEffectsWhitelist(OptionList):
                APHelper.check_pgc.value,
                APHelper.check_gt.value,]
 
+class AutoSaveStateSlot(NamedRange):
+    """
+    Choose which slot this slot session should be saved on. Useful when playing multiple instances of this game within
+    the same multiworld. Slots 1 - 10 are used by the PCSX2 for quick use and will not be used for this purpose.
+
+    Please refer to your host.yaml file for more AutoSave/AutoLoad State settings.
+
+    <!> WARNING: It is highly recommended to not weight this option and explicitly specify a custom value.
+    To specify custom values, add it alongside the pre-existing options, copying their format.
+    Format: value : weight
+
+    Default: 0
+    """
+    display_name : str = "Auto Save State Slot"
+    default = 0
+
+    range_start = 11
+    range_end = 255
+    special_range_names = {
+        "default": 0
+    }
+
+
+class EmulatorWindowsPreferredPort(Range):
+    """
+    *For Windows Players only
+    Specify the preferred port to use when connecting the Archipelago Client with PCSX2
+    upon connection to an Archipelago Room. This should be the same port that is specified in PCSX2
+    under Settings > Advanced > PINE Settings > Slot. More details about connecting the client to PCSX2
+    can be found in this apworld's setup guide.
+    Connection details can be changed anytime during play by using the client command `/pine connect <port>`.
+
+     <!> WARNING: It is highly recommended to not weight this option and explicitly specify a custom value.
+    To specify custom values, add it alongside the pre-existing options, copying their format.
+    Format: value : weight
+    """
+    display_name : str = "Emulator Windows Preferred Port"
+    default = 28011
+
+    range_start = 0
+    range_end = 65535
+
+
+class EmulatorLinuxPreferredPlatform(Choice):
+    """
+    *For Linux Players only
+    Specify which PCSX2 installation to prioritize searching and connecting to upon connection to an Archipelago Room.
+    When the client fails to detect the preferred platform, it will still attempt to search
+    for other running PCSX2 installations before starting over.
+
+    > standard - Prioritize connecting to a normal installation of PCSX2, either from a traditional package manager,
+    the official appimage, or others. Even if multiple sources of this type are present,
+    they are all detected as a singular instance, and cannot be individually connected to.
+    > flatpak - Prioritize connecting to the Flatpak installation of PCSX2.
+    """
+    display_name : str = "Emulator Linux Preferred Platform"
+    default = 0
+
+    option_standard = 0
+    option_flatpak = 1
+
 
 ae3_option_groups : dict[str, list] = {
-    "Session Options"           : [AutoSaveStateSlot],
     "Randomizer Options"        : [ProgressionMode,
                                    OpenProgressionKeys,
                                    RandomizeProgressionSetCount,
@@ -834,12 +871,14 @@ ae3_option_groups : dict[str, list] = {
                                    HintsFromHintBooks,
                                    LuckyTicketConsolationEffects,
                                    ConsolationEffectsWhitelist],
-    "Sync Options"              : [DeathLink]
+    "Sync Options"              : [DeathLink],
+    "Session Options"           : [AutoSaveStateSlot,
+                                   EmulatorWindowsPreferredPort,
+                                   EmulatorLinuxPreferredPlatform,]
 }
 
 @dataclass
 class AE3Options(PerGameCommonOptions):
-    auto_save_state_slot                    : AutoSaveStateSlot
     progression_mode                        : ProgressionMode
     open_progression_keys                   : OpenProgressionKeys
     randomize_progression_set_count         : RandomizeProgressionSetCount
@@ -892,6 +931,10 @@ class AE3Options(PerGameCommonOptions):
 
     death_link                              : DeathLink
 
+    auto_save_state_slot                    : AutoSaveStateSlot
+    emulator_windows_preferred_port         : EmulatorWindowsPreferredPort
+    emulator_linux_preferred_platform       : EmulatorLinuxPreferredPlatform
+
 def create_option_groups() -> list[OptionGroup]:
     groups : list[OptionGroup] = []
     for group, options in ae3_option_groups.items():
@@ -901,8 +944,6 @@ def create_option_groups() -> list[OptionGroup]:
 
 def slot_data_options() -> list[str]:
     return [
-        APHelper.auto_save_slot.value,
-
         APHelper.progression_mode.value,
         APHelper.open_required.value,
         APHelper.randomize_set_count.value,
@@ -955,5 +996,9 @@ def slot_data_options() -> list[str]:
         APHelper.ticket_consolation.value,
         APHelper.consolation_whitelist.value,
 
-        APHelper.death_link.value
+        APHelper.death_link.value,
+
+        APHelper.auto_save_slot.value,
+        APHelper.emu_win_slot.value,
+        APHelper.emu_linux_platform.value,
     ]
