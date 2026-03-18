@@ -2064,6 +2064,7 @@ class Stage(BaseEnum):
     entrance_hong_fb1 =                 "Kung-Fu Alley - Break Room - Exit Door"
     entrance_hong_cb1 =                 "Kung-Fu Alley - City - Pathway Down"
     entrance_hong_cc1 =                 "Kung-Fu Alley - City - Private Roof Jump"
+    entrance_hong_cc2 =                 "Kung-Fu Alley - City - Glide Maneuver to Abandoned Building"
     entrance_hong_ce =                  "Kung-Fu Alley - City - Restaurant Entrance"
     entrance_hong_cd =                  "Kung-Fu Alley - City - Higher Pole Up"
     entrance_hong_ch =                  "Kung-Fu Alley - City - Dentist's Clinic Doorway"

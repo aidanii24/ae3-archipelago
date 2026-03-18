@@ -694,6 +694,7 @@ class Hard(LogicPreference):
             Stage.entrance_hong_b1f.value       : Rulesets(AccessRule.MONKEY),
             Stage.entrance_hong_b2b.value       : Rulesets(event_invoked(Events.hong_b2_button.value)),
             Stage.entrance_hong_cc1.value       : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_hong_cc2.value       : Rulesets(AccessRule.FLYER),
             Stage.entrance_hong_c1c.value       : Rulesets(AccessRule.GLIDE),
             Stage.entrance_hong_c1c2.value      : Rulesets(AccessRule.NINJA, AccessRule.HERO),
             Stage.entrance_hong_ee1.value       : Rulesets(AccessRule.KUNGFU),
@@ -1037,13 +1038,13 @@ class Expert(Hard):
                 AccessRule.GLIDE, AccessRule.KUNGFU,
                 AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
+            Stage.entrance_hong_cc2.value: Rulesets(
+                AccessRule.FLYER,
+                AccessRule.QJ, AccessRule.G_FLOAT
+            ),
             Stage.entrance_hong_c1c.value: Rulesets(
                 AccessRule.GLIDE, AccessRule.KUNGFU,
                 AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
-            ),
-            Stage.entrance_hong_c1c2.value: Rulesets(
-                AccessRule.NINJA, AccessRule.HERO,
-                AccessRule.G_FLOAT, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_hong_ee1.value: Rulesets(
                 AccessRule.KUNGFU,
@@ -1127,10 +1128,14 @@ class Expert(Hard):
 
     def apply_timed_morph_float(self, base_duration: int, morph_extensions_enabled: bool):
         entrances: list = [
-            Stage.entrance_asia_ab.value,
-            Stage.entrance_asia_ba.value,
+            Stage.entrance_halloween_aa1.value,
+            Stage.entrance_halloween_a1a.value,
+            Stage.entrance_halloween_c1c.value,
+            Stage.entrance_halloween_cc1.value,
             Stage.entrance_heaven_aa1.value,
             Stage.entrance_heaven_a1a.value,
+            Stage.entrance_asia_ab.value,
+            Stage.entrance_asia_ba.value,
             Stage.entrance_asia_a1a2.value,
             Stage.entrance_asia_a1a3.value,
             Stage.entrance_asia_a3a1.value,
@@ -1138,6 +1143,8 @@ class Expert(Hard):
             Stage.entrance_asia_a3a2.value,
             Stage.entrance_asia_a2a4.value,
             Stage.entrance_asia_a3a4.value,
+            Stage.entrance_hong_c1c2.value,
+            Stage.entrance_hong_cc2.value,
         ]
 
         rules: list = [AccessRule.G_FLOAT_M]
@@ -1156,6 +1163,11 @@ class Normal(Hard):
         super().__init__()
 
         self.small_starting_channels = [6, 9, 11, 15, 18, 20, 22, 23]
+        self.blacklisted_entrances = [
+            Stage.entrance_hong_cc2.value,
+            Stage.entrance_bay_e1e3.value,
+            Stage.entrance_tomo_f2f.value
+        ]
 
         self.monkey_rules.update({
             # Seaside
