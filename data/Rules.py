@@ -427,8 +427,8 @@ class Hard(LogicPreference):
             Loc.castle_monga.value          : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE),
 
             # Studio
-            Loc.studio_minoh.value          : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE),
-            Loc.studio_monta.value          : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE),
+            Loc.studio_minoh.value          : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE, AccessRule.MAGICIAN),
+            Loc.studio_monta.value          : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE, AccessRule.MAGICIAN),
 
             # Onsen
             Loc.onsen_chabimon.value        : Rulesets(AccessRule.RCC),
@@ -1191,6 +1191,8 @@ class Normal(Hard):
             Loc.castle_pipo_guard.value         : Rulesets(AccessRule.HIT),
             Loc.castle_ukkii.value              : Rulesets(AccessRule.HIT),
             Loc.castle_sal_1000.value           : Rulesets(AccessRule.HIT),
+            Loc.castle_monga.value              : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE,
+                                                           AccessRule.MAGICIAN),
 
             # Ciscocity
             Loc.ciscocity_pipo_mondy.value      : Rulesets(AccessRule.DASH),
