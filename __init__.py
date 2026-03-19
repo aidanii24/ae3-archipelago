@@ -154,7 +154,7 @@ class AE3World(World):
             self.options.post_channel.value = {*deepcopy(new_post)}
 
         if len(self.options.blacklist_channel.value) > 8:
-            self.options.blacklist_channel.value = self.options.blacklist_channel.value[:8]
+            self.options.blacklist_channel.value = {*sorted(self.options.blacklist_channel.value)[:8]}
 
         # Handle duplicate entries between Channel Options
         ## Remove Preserve Channels that exists in Push, Post and Blacklist Channel Options
