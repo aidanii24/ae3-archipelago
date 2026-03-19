@@ -861,7 +861,7 @@ ENTRANCES_MAIN : list[AE3EntranceMeta] = [
     AE3EntranceMeta(Stage.entrance_hong_ec.value, Stage.region_hong_e.value, Stage.region_hong_c.value),
     AE3EntranceMeta(Stage.entrance_hong_dc.value, Stage.region_hong_d.value, Stage.region_hong_c.value),
     AE3EntranceMeta(Stage.entrance_hong_dg.value, Stage.region_hong_d.value, Stage.region_hong_g.value),
-    AE3EntranceMeta(Stage.entrance_hong_eb2.value, Stage.region_hong_e.value, Stage.region_hong_b2.value),
+    AE3EntranceMeta(Stage.entrance_hong_db2.value, Stage.region_hong_d.value, Stage.region_hong_b2.value),
     AE3EntranceMeta(Stage.entrance_hong_gd.value, Stage.region_hong_g.value, Stage.region_hong_d.value),
 
     # Bay
@@ -1687,7 +1687,7 @@ ENTRANCES_HONG : list[str] = [
     Stage.entrance_hong_e1e.value,
     Stage.entrance_hong_dc.value,
     Stage.entrance_hong_dg.value,
-    Stage.entrance_hong_eb2.value,
+    Stage.entrance_hong_db2.value,
     Stage.entrance_hong_gd.value,
 ]
 

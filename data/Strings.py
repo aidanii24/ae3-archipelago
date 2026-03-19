@@ -2077,7 +2077,7 @@ class Stage(BaseEnum):
     entrance_hong_e1e =                 "Kung-Fu Alley - Restuarant - Second Floor Drop"
     entrance_hong_dc =                  "Kung-Fu Alley - Apartments - Lower Exit"
     entrance_hong_dg =                  "Kung-Fu Alley - Apartments - Triad Headquarters Entrance"
-    entrance_hong_eb2 =                 "Kung-Fu Alley - Apartments - Higher Exit"
+    entrance_hong_db2 =                 "Kung-Fu Alley - Apartments - Higher Exit"
     entrance_hong_gd =                  "Kung-Fu Alley - Triad Headquarters - Exit"
 
     entrance_bay_aa1 =                  "Midnight Bay - Port - Jump to Yard"
@@ -2695,7 +2695,7 @@ class APHelper(BaseEnum):
     death_link =                    "death_link"
 
     auto_save_slot =                "auto_save_state_slot"
-    emu_win_slot =                  "emulator_windows_preferred_slot"
+    emu_win_slot =                  "emulator_windows_preferred_port"
     emu_linux_platform =            "emulator_linux_preferred_platform"
 
     additive =                      "ADDITIVE"

@@ -693,6 +693,7 @@ class Hard(LogicPreference):
             Stage.entrance_hong_bb2.value       : Rulesets(event_invoked(Events.hong_b2_button.value)),
             Stage.entrance_hong_b1f.value       : Rulesets(AccessRule.MONKEY),
             Stage.entrance_hong_b2b.value       : Rulesets(event_invoked(Events.hong_b2_button.value)),
+            Stage.entrance_hong_b1c.value       : Rulesets(AccessRule.KUNGFU),
             Stage.entrance_hong_cc1.value       : Rulesets(AccessRule.GLIDE),
             Stage.entrance_hong_cc2.value       : Rulesets(AccessRule.FLYER),
             Stage.entrance_hong_c1c.value       : Rulesets(AccessRule.GLIDE),
@@ -1034,6 +1035,14 @@ class Expert(Hard):
             Stage.entrance_hong_b1f.value: Rulesets(
                 AccessRule.MONKEY, AccessRule.KUNGFU
             ),
+            Stage.entrance_hong_bb1.value: Rulesets(
+                AccessRule.KUNGFU,
+                AccessRule.BOOST, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
+            Stage.entrance_hong_b1c.value: Rulesets(
+                AccessRule.KUNGFU,
+                AccessRule.BOOST, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
             Stage.entrance_hong_cc1.value: Rulesets(
                 AccessRule.GLIDE, AccessRule.KUNGFU,
                 AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
@@ -1048,7 +1057,7 @@ class Expert(Hard):
             ),
             Stage.entrance_hong_ee1.value: Rulesets(
                 AccessRule.KUNGFU,
-                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+                AccessRule.BOOST, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_hong_dg.value: Rulesets(
                 AccessRule.KUNGFU, [AccessRule.QJ, AccessRule.G_FLOAT], AccessRule.G_FLOAT_M

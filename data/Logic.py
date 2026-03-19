@@ -224,7 +224,7 @@ class AccessRule:
     NULL = (lambda state, player : False)
 
     # Glitches
-    BOOST = can_boost_jump                       # Can Boost Jump
+    BOOST = can_boost_jump                      # Can Boost Jump
     QJ = can_qj                                 # Can use Quad Jumps (Stun Club and most other gadgets)
     G_FLOAT = can_glitch_float                  # Can use Net Floats/HDS (Monkey Net and Slingback Shooter)
     G_FLOAT_M = can_glitch_float_morph          # Can do Infinite Jumps with Eligible Morphs
