@@ -33,8 +33,11 @@ class AEPS2Interface:
     sync_task = None
     logger : Logger
 
-    def __init__(self, logger : Logger):
+    def __init__(self, logger : Logger, port: int = 28011, linux_platform: str = "auto"):
         self.logger = logger
+        self.pine = Pine(port, linux_platform)
+
+        self.active_platform = self.pine.active_platform
 
     # { PINE Network }
     def connect_game(self):
@@ -47,6 +50,8 @@ class AEPS2Interface:
                 return
 
             self.logger.info(APConsole.Info.init.value)
+
+        self.active_platform = self.pine.active_platform
 
         # Check for Game running in PCSX2
         try:
@@ -72,10 +77,14 @@ class AEPS2Interface:
         if self.status is ConnectionStatus.DISCONNECTED:
             self.status = ConnectionStatus.CONNECTED
 
-    def disconnect_game(self):
+    def disconnect_game(self, status: int = 0):
         self.pine.disconnect()
         self.loaded_game = None
-        self.logger.info(APConsole.Err.sock_disc.value)
+
+        if status:
+            self.logger.info(APConsole.Err.sock_disc.value)
+        else:
+            self.logger.info("[-!-] Closed connection to PCSX2.")
 
     def get_connection_state(self) -> bool:
         try:
@@ -85,8 +94,13 @@ class AEPS2Interface:
         except RuntimeError:
             return False
 
-    # { Generic }
+    def set_port(self, port: int) -> None:
+        self.pine.set_slot(port)
 
+    def set_linux_platform(self, linux_platform: str = "auto") -> None:
+        self.pine.set_linux_platform(linux_platform)
+
+    # { Generic }
     def follow_pointer_chain(self, start_address : int, pointer_chain : str) -> int:
         # Get first pointer
         addr : int = self.pine.read_int32(start_address)

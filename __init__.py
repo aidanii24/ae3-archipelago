@@ -34,6 +34,7 @@ class AE3Settings(settings.Group):
         > save_state_on_location_check: Automatically create a save state when checking a new location.
         > load_state_on_connect: Load a state automatically after connecting to the multiworld if the client
         is already connected to the game and that the last save is from a save state and not a normal game save.
+        > pine_connect_offline: Make attempts to connect to PCSX2 even if the client has not yet connected to a room.
         """
 
     class SessionsPreferences(settings.Bool):
@@ -76,6 +77,7 @@ class AE3Settings(settings.Group):
     save_state_on_item_received : SessionsPreferences | bool = True
     save_state_on_location_check : SessionsPreferences | bool = False
     load_state_on_connect : SessionsPreferences | bool = False
+    pine_connect_offline : SessionsPreferences | bool = True
 
     auto_equip : GamePreferences | bool = True
 

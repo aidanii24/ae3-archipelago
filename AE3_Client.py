@@ -3,6 +3,7 @@ from typing import Optional, Sequence
 import typing
 import multiprocessing
 import traceback
+import platform
 import asyncio
 import sys
 
@@ -64,6 +65,11 @@ class AE3CommandProcessor(ClientCommandProcessor):
                 logger.info(f" [-v-] Universal Tracker Integrated")
 
             logger.info(f" [-o-] Game")
+            if platform.system() == "Windows":
+                logger.info(f"         > Slot/Port: {self.ctx.pine_port}")
+            elif platform.system() == "Linux":
+                is_auto = self.ctx.pine_linux_platform == "auto"
+                logger.info(f"        > Platform: {self.ctx.ipc.active_platform} {"(auto)" if is_auto else ""}")
 
             if self.ctx.server:
                 game_status : int = self.ctx.ipc.status.value
@@ -307,6 +313,61 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
             logger.info(f" [-!-] Freeplay Toggle is now " f"{"ENABLED" if self.ctx.alt_freeplay else "DISABLED"}")
 
+    def _cmd_pine_slot(self, slot: str):
+        """
+        *Windows only
+        Change the Slot/Port the client uses to connect to PCSX2.
+        Provide any valid port between 0 and 65525.
+        """
+        if isinstance(self.ctx, AE3Context):
+            if not slot.isdigit():
+                logger.info(f" [!!!] Invalid Port Number {slot}")
+
+            slot_as_int = int(slot)
+
+            if self.ctx.pine_port != slot_as_int:
+                if slot_as_int < 0 or slot_as_int > 65535:
+                    logger.info(f" [-!-] Port {slot_as_int} is out of range. Please specify a port between 0 and 65535.")
+                    return
+
+                self.ctx.pine_port = slot_as_int
+                self.ctx.ipc.set_port(slot_as_int)
+
+                logger.info(f" [-/-] PINE Slot is now set to {slot_as_int}")
+
+    def _cmd_pine_platform(self, linux_platform):
+        """
+        *Linux only
+        Change the preferred installation of PCSX2 to connect to.
+        Valid options are: "auto", "standard" and "flatpak".
+        """
+        if isinstance(self.ctx, AE3Context):
+            if platform.system() != "Linux":
+                logger.info(f" [-!-] This command is not applicable for {platform.system()}.")
+                return
+
+            valid_platforms: list[str] = ["auto", "standard", "flatpak"]
+            if linux_platform not in valid_platforms:
+                logger.info(f" <!> {linux_platform} is not a valid option.")
+                return
+
+            if platform and self.ctx.pine_linux_platform != linux_platform:
+                self.ctx.pine_linux_platform = linux_platform
+                self.ctx.ipc.set_linux_platform(linux_platform)
+
+                logger.info(f" [-/-] PINE preferred platform is now set to {linux_platform}")
+
+    def _cmd_pine_connect(self):
+        """
+        Attempt a connection to PCSX2. If a connection is already established,
+        it will be closed first and then a re-connection is made.
+        """
+        if isinstance(self.ctx, AE3Context):
+            if self.ctx.ipc.status != ConnectionStatus.DISCONNECTED:
+                self.ctx.ipc.disconnect_game()
+
+            self.ctx.ipc.connect_game()
+
     def _cmd_deathlink(self):
         """Toggle if death links should be enabled. This affects both receiving and sending deaths."""
         if isinstance(self.ctx, AE3Context):
@@ -383,6 +444,7 @@ class AE3Context(SuperContext):
     # Interface Properties
     ipc : AEPS2Interface = AEPS2Interface
     is_game_connected : bool = ConnectionStatus.DISCONNECTED
+    has_archipelago_package: bool = False
     has_just_connected : bool = False
     interface_sync_task : asyncio.tasks = None
     last_message : Optional[str] = None
@@ -464,6 +526,9 @@ class AE3Context(SuperContext):
     save_state_on_location_check : bool = False
     load_state_on_connect : bool = False
 
+    pine_port: int = 28011
+    pine_linux_platform: str = "auto"
+
     auto_equip : bool = False
 
     # Player Set Options
@@ -524,6 +589,7 @@ class AE3Context(SuperContext):
         self.save_state_on_item_received = self.settings.save_state_on_item_received
         self.save_state_on_location_check = self.settings.save_state_on_location_check
         self.load_state_on_connect = self.settings.load_state_on_connect
+        self.pine_connect_offline = self.settings.pine_connect_offline
 
         self.auto_equip = self.settings.auto_equip
 
@@ -556,6 +622,29 @@ class AE3Context(SuperContext):
             ### Save/Load State Slot
             if APHelper.auto_save_slot.value in data:
                 self.state_slot = data[APHelper.auto_save_slot.value]
+
+            ### Emulator Connection Preferences
+            has_connection_options: bool = False
+            if APHelper.emu_win_slot.value in data and platform.system() == "Windows":
+                pine_port = data[APHelper.emu_win_slot.value]
+                if self.pine_port != pine_port:
+                    self.pine_port = pine_port
+                    self.ipc.set_port(self.pine_port)
+
+                    has_connection_options = True
+            elif APHelper.emu_linux_platform.value in data and platform.system() == "Linux":
+                if data[APHelper.emu_linux_platform.value] == 1:
+                    pine_linux_platform = "standard"
+                elif data[APHelper.emu_linux_platform.value] == 2:
+                    pine_linux_platform = "flatpak"
+                else:
+                    pine_linux_platform = "auto"
+
+                if self.pine_linux_platform != pine_linux_platform:
+                    self.pine_linux_platform = pine_linux_platform
+                    self.ipc.set_linux_platform(self.pine_linux_platform)
+
+                    has_connection_options = True
 
             ## Progression Mode
             if not self.unlocked_channels and APHelper.progression_mode.value in data:
@@ -745,6 +834,29 @@ class AE3Context(SuperContext):
                     self.active_locations.difference_update(
                         set(SHOP_COLLECTION_MASTER).difference(SHOP_PERSISTENT_MASTER))
 
+            # When connection details from options are different from defaults,
+            # reconnect to the emulator with the new details
+            if has_connection_options:
+                logger.info("<!> Preferred Connection Details detected from Slot Data.")
+                if platform.system() == "Windows":
+                    logger.info(f"[-!-] PINE Slot is now set to {self.pine_port}."
+                                "      Please make sure the PINE Slot set for the emulator is the same.")
+                elif platform.system() == "Linux":
+                    logger.info(f"[-!-] PINE Platform is now set to {self.pine_linux_platform}.")
+                    logger.info("      Please make sure you use the correct PCSX2 installation.")
+
+                logger.info("[...] These settings can be changed at anytime in the client using the pine commands.")
+
+                if self.ipc.status != ConnectionStatus.DISCONNECTED:
+                    self.ipc.disconnect_game()
+                    logger.info("Re-establishing emulator connection with new details from the Slot Data.")
+
+                self.ipc.connect_game()
+
+            # Signify that the client has already made a connection to an Archipelago Room
+            # during this session
+            self.has_archipelago_package = True
+
         elif cmd == APHelper.cmd_rcv.value:
             index = args["index"]
 
@@ -884,9 +996,10 @@ async def main_sync_task(ctx : AE3Context):
     logger.info("    World v" + APConsole.Info.world_ver.value + "    Client v" + APConsole.Info.client_ver.value)
     logger.info(APConsole.Info.decor.value)
     logger.info("\n")
-    logger.info(APConsole.Info.p_init.value)
 
-    ctx.ipc.connect_game()
+    if ctx.pine_connect_offline:
+        logger.info(APConsole.Info.p_init.value)
+        ctx.ipc.connect_game()
 
     while not ctx.exit_event.is_set():
         try:
@@ -899,15 +1012,17 @@ async def main_sync_task(ctx : AE3Context):
                 await check_game(ctx)
 
             # Attempt reconnection to PCSX2 otherwise
-            else:
+            elif ctx.pine_connect_offline or ctx.has_archipelago_package:
                 await reconnect_game(ctx)
+            else:
+                await asyncio.sleep(3)
 
             if ctx.server and ctx.should_deathlink_tag_update:
                 await ctx.update_death_link(ctx.death_link)
                 ctx.should_deathlink_tag_update = False
 
         except ConnectionError:
-            ctx.ipc.disconnect_game()
+            ctx.ipc.disconnect_game(1)
         except Exception as e:
             if isinstance(e, RuntimeError):
                 logger.error(str(e))

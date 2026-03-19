@@ -62,12 +62,15 @@ class Pine:
         INT32 = 4,
         INT64 = 8,
 
-    def __init__(self, slot: int = 28011):
+    def __init__(self, slot: int = 28011, linux_platform: str = "auto"):
         if not 0 < slot <= 65536:
             raise ValueError("Provided slot number is outside valid range")
         self._slot: int = slot
         self._sock: socket.socket = socket.socket()
         self._sock_state: bool = False
+
+        self.linux_platform = linux_platform
+        self.active_platform = "None"
 
         # self._init_socket()
 
@@ -75,26 +78,36 @@ class Pine:
         if system() == "Windows":
             socket_family = socket.AF_INET
             socket_name = ("127.0.0.1", self._slot)
+
+            self.active_platform = "Windows"
         elif system() == "Linux":
             socket_family = socket.AF_UNIX
 
             socket_name = os.environ.get("XDG_RUNTIME_DIR", "/tmp")
 
             # Default/AppImage Socket Path
-            if os.access(socket_name + "/pcsx2.sock", os.R_OK):
+            if os.access(socket_name + "/pcsx2.sock", os.R_OK) and self.linux_platform != "flatpak":
                 socket_name += "/pcsx2.sock"
+
+                self.active_platform = "Linux Standard"
             # Flatpak Socket Path
-            else:
+            elif self.linux_platform != "standard":
                 socket_name += "/.flatpak/net.pcsx2.PCSX2/xdg-run"
                 socket_name += "/pcsx2.sock"
+
+                self.active_platform = "Flatpak"
 
         elif system() == "Darwin":
             socket_family = socket.AF_UNIX
             socket_name = os.environ.get("TMPDIR", "/tmp")
             socket_name += "/pcsx2.sock"
+
+            self.active_platform = "Darwin"
         else:
             socket_family = socket.AF_UNIX
             socket_name = "/tmp/pcsx2.sock"
+
+            self.active_platform = "Unknown"
 
         try:
             self._sock = socket.socket(socket_family, socket.SOCK_STREAM)
@@ -109,13 +122,19 @@ class Pine:
 
         self._sock_state = True
 
-    def connect(self) -> None:
+    def connect(self,) -> None:
         if not self._sock_state:
             self._init_socket()
 
     def disconnect(self) -> None:
         if self._sock_state:
             self._sock.close()
+
+    def set_slot(self, slot: int = 28011) -> None:
+        self._slot = slot
+
+    def set_linux_platform(self, linux_platform: str = "auto") -> None:
+        self.linux_platform = linux_platform
 
     def is_connected(self) -> bool:
         return self._sock_state

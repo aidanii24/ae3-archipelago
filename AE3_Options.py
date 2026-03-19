@@ -792,7 +792,7 @@ class EmulatorWindowsPreferredPort(Range):
     upon connection to an Archipelago Room. This should be the same port that is specified in PCSX2
     under Settings > Advanced > PINE Settings > Slot. More details about connecting the client to PCSX2
     can be found in this apworld's setup guide.
-    Connection details can be changed anytime during play by using the client command `/pine connect <port>`.
+    Connection details can be changed anytime during play by using the client command `/pine_port <port>`.
 
      <!> WARNING: It is highly recommended to not weight this option and explicitly specify a custom value.
     To specify custom values, add it alongside the pre-existing options, copying their format.
@@ -809,9 +809,9 @@ class EmulatorLinuxPreferredPlatform(Choice):
     """
     *For Linux Players only
     Specify which PCSX2 installation to prioritize searching and connecting to upon connection to an Archipelago Room.
-    When the client fails to detect the preferred platform, it will still attempt to search
-    for other running PCSX2 installations before starting over.
+    Connection details can be changed anytime during play by using the client command `/pine_platform <option>`.
 
+    > auto - Automatically search for any running PCSX2 installation and connect to the first one detected.
     > standard - Prioritize connecting to a normal installation of PCSX2, either from a traditional package manager,
     the official appimage, or others. Even if multiple sources of this type are present,
     they are all detected as a singular instance, and cannot be individually connected to.
@@ -820,8 +820,9 @@ class EmulatorLinuxPreferredPlatform(Choice):
     display_name : str = "Emulator Linux Preferred Platform"
     default = 0
 
-    option_standard = 0
-    option_flatpak = 1
+    option_auto = 0
+    option_standard = 1
+    option_flatpak = 2
 
 
 ae3_option_groups : dict[str, list] = {
