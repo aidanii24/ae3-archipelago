@@ -2695,7 +2695,7 @@ class APHelper(BaseEnum):
     death_link =                    "death_link"
 
     auto_save_slot =                "auto_save_state_slot"
-    emu_win_slot =                  "emulator_windows_preferred_port"
+    emu_win_slot =                  "emulator_windows_preferred_slot"
     emu_linux_platform =            "emulator_linux_preferred_platform"
 
     additive =                      "ADDITIVE"

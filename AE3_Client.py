@@ -66,7 +66,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
             logger.info(f" [-o-] Game")
             if platform.system() == "Windows":
-                logger.info(f"         > Slot/Port: {self.ctx.pine_port}")
+                logger.info(f"         > Slot/Port: {self.ctx.pine_slot}")
             elif platform.system() == "Linux":
                 is_auto = self.ctx.pine_linux_platform == "auto"
                 logger.info(f"        > Platform: {self.ctx.ipc.active_platform} {"(auto)" if is_auto else ""}")
@@ -325,13 +325,13 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
             slot_as_int = int(slot)
 
-            if self.ctx.pine_port != slot_as_int:
+            if self.ctx.pine_slot != slot_as_int:
                 if slot_as_int < 0 or slot_as_int > 65535:
                     logger.info(f" [-!-] Port {slot_as_int} is out of range. Please specify a port between 0 and 65535.")
                     return
 
-                self.ctx.pine_port = slot_as_int
-                self.ctx.ipc.set_port(slot_as_int)
+                self.ctx.pine_slot = slot_as_int
+                self.ctx.ipc.set_slot(slot_as_int)
 
                 logger.info(f" [-/-] PINE Slot is now set to {slot_as_int}")
 
@@ -526,7 +526,7 @@ class AE3Context(SuperContext):
     save_state_on_location_check : bool = False
     load_state_on_connect : bool = False
 
-    pine_port: int = 28011
+    pine_slot: int = 28011
     pine_linux_platform: str = "auto"
 
     auto_equip : bool = False
@@ -626,10 +626,10 @@ class AE3Context(SuperContext):
             ### Emulator Connection Preferences
             has_connection_options: bool = False
             if APHelper.emu_win_slot.value in data and platform.system() == "Windows":
-                pine_port = data[APHelper.emu_win_slot.value]
-                if self.pine_port != pine_port:
-                    self.pine_port = pine_port
-                    self.ipc.set_port(self.pine_port)
+                pine_slot = data[APHelper.emu_win_slot.value]
+                if self.pine_slot != pine_slot:
+                    self.pine_slot = pine_slot
+                    self.ipc.set_slot(self.pine_slot)
 
                     has_connection_options = True
             elif APHelper.emu_linux_platform.value in data and platform.system() == "Linux":
@@ -839,7 +839,7 @@ class AE3Context(SuperContext):
             if has_connection_options:
                 logger.info("<!> Preferred Connection Details detected from Slot Data.")
                 if platform.system() == "Windows":
-                    logger.info(f"[-!-] PINE Slot is now set to {self.pine_port}."
+                    logger.info(f"[-!-] PINE Slot is now set to {self.pine_slot}."
                                 "      Please make sure the PINE Slot set for the emulator is the same.")
                 elif platform.system() == "Linux":
                     logger.info(f"[-!-] PINE Platform is now set to {self.pine_linux_platform}.")

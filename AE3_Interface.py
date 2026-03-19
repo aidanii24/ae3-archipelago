@@ -33,9 +33,9 @@ class AEPS2Interface:
     sync_task = None
     logger : Logger
 
-    def __init__(self, logger : Logger, port: int = 28011, linux_platform: str = "auto"):
+    def __init__(self, logger : Logger, slot: int = 28011, linux_platform: str = "auto"):
         self.logger = logger
-        self.pine = Pine(port, linux_platform)
+        self.pine = Pine(slot, linux_platform)
 
         self.active_platform = self.pine.active_platform
 
@@ -94,8 +94,8 @@ class AEPS2Interface:
         except RuntimeError:
             return False
 
-    def set_port(self, port: int) -> None:
-        self.pine.set_slot(port)
+    def set_slot(self, slot: int) -> None:
+        self.pine.set_slot(slot)
 
     def set_linux_platform(self, linux_platform: str = "auto") -> None:
         self.pine.set_linux_platform(linux_platform)

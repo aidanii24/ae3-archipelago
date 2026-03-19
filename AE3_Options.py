@@ -785,16 +785,16 @@ class AutoSaveStateSlot(NamedRange):
     }
 
 
-class EmulatorWindowsPreferredPort(Range):
+class EmulatorWindowsPreferredSlot(Range):
     """
     *For Windows Players only
-    Specify the preferred port to use when connecting the Archipelago Client with PCSX2
-    upon connection to an Archipelago Room. This should be the same port that is specified in PCSX2
+    Specify the preferred slot to use when connecting the Archipelago Client with PCSX2
+    upon connection to an Archipelago Room. This should be the same slot that is specified in PCSX2
     under Settings > Advanced > PINE Settings > Slot. More details about connecting the client to PCSX2
     can be found in this apworld's setup guide.
-    Connection details can be changed anytime during play by using the client command `/pine_port <port>`.
+    Connection details can be changed anytime during play by using the client command `/pine_slot <port>`.
 
-     <!> WARNING: It is highly recommended to not weight this option and explicitly specify a custom value.
+    <!> WARNING: It is highly recommended to not weight this option and explicitly specify a custom value.
     To specify custom values, add it alongside the pre-existing options, copying their format.
     Format: value : weight
     """
@@ -810,6 +810,8 @@ class EmulatorLinuxPreferredPlatform(Choice):
     *For Linux Players only
     Specify which PCSX2 installation to prioritize searching and connecting to upon connection to an Archipelago Room.
     Connection details can be changed anytime during play by using the client command `/pine_platform <option>`.
+
+    <!> WARNING: It is highly recommended to not weight this option.
 
     > auto - Automatically search for any running PCSX2 installation and connect to the first one detected.
     > standard - Prioritize connecting to a normal installation of PCSX2, either from a traditional package manager,
@@ -874,8 +876,8 @@ ae3_option_groups : dict[str, list] = {
                                    ConsolationEffectsWhitelist],
     "Sync Options"              : [DeathLink],
     "Session Options"           : [AutoSaveStateSlot,
-                                   EmulatorWindowsPreferredPort,
-                                   EmulatorLinuxPreferredPlatform,]
+                                   EmulatorWindowsPreferredSlot,
+                                   EmulatorLinuxPreferredPlatform, ]
 }
 
 @dataclass
@@ -933,7 +935,7 @@ class AE3Options(PerGameCommonOptions):
     death_link                              : DeathLink
 
     auto_save_state_slot                    : AutoSaveStateSlot
-    emulator_windows_preferred_port         : EmulatorWindowsPreferredPort
+    emulator_windows_preferred_slot         : EmulatorWindowsPreferredSlot
     emulator_linux_preferred_platform       : EmulatorLinuxPreferredPlatform
 
 def create_option_groups() -> list[OptionGroup]:
