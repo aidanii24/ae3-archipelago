@@ -1076,7 +1076,7 @@ class Expert(Hard):
                 AccessRule.MONKEY,
                 AccessRule.KUNGFU
             ),
-            Stage.entrance_bay_dd1.value: Rulesets(
+            Stage.entrance_bay_d1d.value: Rulesets(
                 AccessRule.KUNGFU,
                 AccessRule.BOOST, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
