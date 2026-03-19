@@ -1014,14 +1014,15 @@ class Expert(Hard):
             Stage.entrance_asia_e1e2.value: Rulesets(
                 [AccessRule.SHOOT, AccessRule.FLY],
                 [AccessRule.ATTACK, AccessRule.RCC, AccessRule.FLY],
-                AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+                AccessRule.HERO,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_plane_cg.value: Rulesets(
                 AccessRule.MONKEY,
                 AccessRule.KUNGFU
             ),
             Stage.entrance_plane_dd1.value: Rulesets(
-                AccessRule.GLIDE, AccessRule.KUNGFU,
+                AccessRule.GLIDE, AccessRule.MORPH,
                 AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_plane_d1d.value: Rulesets(
