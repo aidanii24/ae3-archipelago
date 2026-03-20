@@ -607,7 +607,8 @@ class Hard(LogicPreference):
             Stage.entrance_edotown_eb.value     : Rulesets(event_invoked(Events.edotown_e_scroll.value)),
 
             # Heaven
-            Stage.entrance_heaven_ab.value      : Rulesets(AccessRule.GLIDE, AccessRule.KUNGFU),
+            Stage.entrance_heaven_ab.value      : Rulesets(AccessRule.GLIDE, AccessRule.KUNGFU,
+                                                           AccessRule.MAGICIAN),
             Stage.entrance_heaven_ba.value      : Rulesets(AccessRule.GLIDE),
             Stage.entrance_heaven_b1b.value     : Rulesets(event_invoked(Events.heaven_b_clapper.value)),
             Stage.entrance_heaven_ce.value      : Rulesets(AccessRule.MONKEY),
@@ -915,7 +916,7 @@ class Expert(Hard):
                 AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_heaven_ab.value: Rulesets(
-                AccessRule.GLIDE, AccessRule.KUNGFU,
+                AccessRule.GLIDE, AccessRule.KUNGFU, AccessRule.MAGICIAN,
                 AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M,
             ),
             Stage.entrance_heaven_ba.value: Rulesets(
@@ -1070,7 +1071,7 @@ class Expert(Hard):
                 AccessRule.KUNGFU, [AccessRule.QJ, AccessRule.G_FLOAT], AccessRule.G_FLOAT_M
             ),
             Stage.entrance_bay_aa1.value: Rulesets(
-                [AccessRule.SHOOT, AccessRule.SWIM], AccessRule.HERO, AccessRule.FLYER,
+                [AccessRule.SHOOT, AccessRule.SWIM], AccessRule.HERO, AccessRule.FLYER, AccessRule.MAGICIAN,
                 AccessRule.KUNGFU, [AccessRule.SWIM, AccessRule.QJ], [AccessRule.SWIM, AccessRule.G_FLOAT],
                 AccessRule.G_FLOAT_M
             ),
