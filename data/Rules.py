@@ -12,7 +12,7 @@ from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, Cellphon
     SHOP_COLLECTION_MASTER, SHOP_PERSISTENT_MASTER, SHOP_CHEAP_COLLECTION_MASTER, SHOP_EVENT_ACCESS_DIRECTORY, \
     MONKEYS_INFINITE_GADGET_FLOAT_APPLICABLE, EVENTS_INFINITE_GADGET_FLOAT_APPLICABLE
 from .Logic import Rulesets, AccessRule, has_keys, event_invoked, has_enough_keys, can_access_region, \
-    has_shop_stock, has_morph_extensions
+    has_shop_stock, has_morph_stocks, has_morph_extensions, can_farm_boxes, can_farm_sneaky_borgs
 from .Strings import Loc, Stage, Events, APHelper
 from .Stages import (STAGES_DIRECTORY, STAGES_DIRECTORY_LABEL, ENTRANCES_SHOP_PSEUDOREGIONS, AE3EntranceMeta,
                      ENTRANCES_SHOP_PROGRESSION, STAGES_SHOP_PROGRESSION, STAGES_FARMABLE, STAGES_FARMABLE_SNEAKY_BORG,
@@ -20,7 +20,7 @@ from .Stages import (STAGES_DIRECTORY, STAGES_DIRECTORY_LABEL, ENTRANCES_SHOP_PS
 
 if TYPE_CHECKING:
     from ..AE3_Client import AE3Context
-    from .. import AE3World
+    from .. import AE3World, AE3Options
 
 
 class GoalTarget:
@@ -397,6 +397,10 @@ class LogicPreference:
 
     def apply_timed_morph_float(self, base_duration: int, morph_extensions_enabled: bool):
         # Should only be Implemented by Expert Logic
+        return
+
+    def apply_option_logic(self, options: 'AE3Options'):
+        # Should be implemented by each LogicPreference as needed
         return
 
 # [<--- LOGIC PREFERENCES --->]
@@ -1014,7 +1018,7 @@ class Expert(Hard):
             Stage.entrance_asia_e1e2.value: Rulesets(
                 [AccessRule.SHOOT, AccessRule.FLY],
                 [AccessRule.ATTACK, AccessRule.RCC, AccessRule.FLY],
-                AccessRule.HERO,
+                [AccessRule.HERO, has_morph_stocks(1)],
                 AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_plane_cg.value: Rulesets(
@@ -1162,7 +1166,15 @@ class Expert(Hard):
             rules.append(has_morph_extensions())
 
         for e in entrances:
-            self.monkey_rules.get(e, Rulesets()).update(Rulesets(rules))
+            self.entrance_rules.get(e, Rulesets()).update(Rulesets(rules))
+
+    def apply_option_logic(self, options: 'AE3Options'):
+        if options.shoppingsanity.value < 1:
+            rules: list = [AccessRule.HERO, can_farm_boxes()]
+            if options.farm_logic_sneaky_borgs:
+                rules.append(can_farm_sneaky_borgs())
+
+            self.entrance_rules.get(Stage.entrance_asia_e1e2.value, Rulesets()).update(Rulesets(rules))
 
 class Normal(Hard):
     """

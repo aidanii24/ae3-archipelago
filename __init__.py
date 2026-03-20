@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import ClassVar, List, Optional, TextIO
+from typing import ClassVar, List, TextIO
 import logging
 
 from worlds.AutoWorld import World, WebWorld
@@ -216,12 +216,18 @@ class AE3World(World):
 
             self.options.blacklist_channel.value.update(bosses)
 
+        total_moved_channels: set = {*self.options.push_channel.value,
+                                     *self.options.post_channel.value,
+                                     *self.options.blacklist_channel.value}
+
+        if self.options.progression_mode.value == 4 and len(total_moved_channels) > 15:
+            raise OptionError("Too many channels have been assigned to Post/Push/Blacklist options for Open Progression to generate properly. "
+                              "Please reduce the amount of channels from these options!")
+
         ## If Progression Mode is set to Group or World, but there are too many bosses pushed, posted
         ## and or blacklisted, abort the generation
         if 0 < self.options.progression_mode.value < 3:
-            moved_bosses: set = {*self.options.push_channel.value,
-                                 *self.options.post_channel.value,
-                                 *self.options.blacklist_channel.value}.intersection(STAGES_BOSSES)
+            moved_bosses: set = total_moved_channels.intersection(STAGES_BOSSES)
 
             print(len(moved_bosses), moved_bosses)
 
@@ -392,6 +398,9 @@ class AE3World(World):
             self.options.consolation_effects_whitelist.value = sorted(current)
 
         self.exclude_locations = exclude_locations
+
+        # Once options are resolved, apply logic dependent on options
+        self.logic_preference.apply_option_logic(self.options)
 
         # self.log_debug()
 
@@ -722,6 +731,8 @@ class AE3World(World):
                     slot_data[APHelper.base_morph_duration.value],
                     bool(slot_data[APHelper.add_morph_extensions.value])
                 )
+
+            self.logic_preference.apply_option_logic(self.options)
 
             # Regenerate Progression, Goal Target, PGC and Rules
             ## Progression Mode
