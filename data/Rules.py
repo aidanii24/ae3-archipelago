@@ -846,7 +846,8 @@ class Expert(Hard):
                 [AccessRule.SHOOT, AccessRule.SWIM, AccessRule.KUNGFU],
                 [AccessRule.RCC, AccessRule.SWIM, AccessRule.KUNGFU],
                 AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
-            )
+            ),
+            Events.space_g_button.value: Rulesets(AccessRule.SWIM, AccessRule.HERO),
         })
 
         self.entrance_rules.update({
