@@ -428,7 +428,8 @@ class Hard(LogicPreference):
             Loc.woods_kreemon.value         : Rulesets(AccessRule.ATTACK),
 
             # Castle
-            Loc.castle_monga.value          : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE),
+            Loc.castle_monga.value          : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE,
+                                                       AccessRule.KUNGFU, AccessRule.MAGICIAN),
 
             # Studio
             Loc.studio_minoh.value          : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE, AccessRule.MAGICIAN),
@@ -778,18 +779,18 @@ class Expert(Hard):
         self.monkey_rules.update({
             Loc.seaside_morella.value:  Rulesets(
                 AccessRule.SHOOT, AccessRule.FLY, AccessRule.MAGICIAN,
-                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Loc.castle_monga.value: Rulesets(
-                AccessRule.SHOOT, AccessRule.GLIDE,
+                AccessRule.SHOOT, AccessRule.GLIDE, AccessRule.MAGICIAN, AccessRule.KUNGFU,
                 AccessRule.QJ, AccessRule.G_FLOAT_M,
             ),
             Loc.studio_minoh.value: Rulesets(
-                AccessRule.SHOOT, AccessRule.GLIDE,
+                AccessRule.SHOOT, AccessRule.GLIDE, AccessRule.MAGICIAN,
                 AccessRule.QJ, AccessRule.G_FLOAT_M,
             ),
             Loc.studio_monta.value: Rulesets(
-                AccessRule.SHOOT, AccessRule.GLIDE,
+                AccessRule.SHOOT, AccessRule.GLIDE, AccessRule.MAGICIAN,
                 AccessRule.QJ, AccessRule.G_FLOAT_M,
             ),
             Loc.toyhouse_monto.value: Rulesets(
