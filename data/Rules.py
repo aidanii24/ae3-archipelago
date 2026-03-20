@@ -435,14 +435,14 @@ class Hard(LogicPreference):
             Loc.studio_monta.value          : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE, AccessRule.MAGICIAN),
 
             # Onsen
-            Loc.onsen_chabimon.value        : Rulesets(AccessRule.RCC),
+            Loc.onsen_chabimon.value        : Rulesets(AccessRule.RCC, AccessRule.MONKEY),
 
             # Snowfesta
             Loc.snowfesta_kimisuke.value    : Rulesets(AccessRule.SHOOT),
             Loc.snowfesta_mitsuro.value     : Rulesets(AccessRule.SHOOT),
 
             # Heaven
-            Loc.heaven_chomon.value         : Rulesets(AccessRule.RCC),
+            Loc.heaven_chomon.value         : Rulesets(AccessRule.RCC, AccessRule.MONKEY),
 
             # Toyhouse
             Loc.toyhouse_monto.value        : Rulesets(AccessRule.SHOOT, AccessRule.FLY),
@@ -460,7 +460,7 @@ class Hard(LogicPreference):
             # Asia
             Loc.bay_kazuo.value             : Rulesets(AccessRule.NINJA, AccessRule.HERO,
                                                        [AccessRule.SHOOT, AccessRule.SWIM]),
-            Loc.asia_mohcha.value           : Rulesets(AccessRule.RCC),
+            Loc.asia_mohcha.value           : Rulesets(AccessRule.RCC, AccessRule.MONKEY),
             Loc.asia_takumon.value          : Rulesets(AccessRule.SWIM, AccessRule.CATCH_LONG,
                                                        [AccessRule.KUNGFU, AccessRule.RCC],
                                                        [AccessRule.KUNGFU, AccessRule.CLUB],
@@ -1234,6 +1234,7 @@ class Normal(Hard):
             Loc.western_golon_moe.value         : Rulesets(AccessRule.ATTACK),
 
             # Onsen
+            Loc.onsen_chabimon.value            : Rulesets(AccessRule.RCC),
             Loc.onsen_domobeh.value             : Rulesets(AccessRule.SWIM, AccessRule.CATCH_LONG),
             Loc.onsen_mujakin.value             : Rulesets(AccessRule.SWIM, AccessRule.CATCH_LONG),
             Loc.onsen_fuji_chan.value           : Rulesets(AccessRule.SHOOT, AccessRule.GLIDE),
@@ -1248,6 +1249,7 @@ class Normal(Hard):
             Loc.edotown_walter.value            : Rulesets(AccessRule.NINJA),
 
             # Heaven
+            Loc.heaven_chomon.value             : Rulesets(AccessRule.RCC),
             Loc.heaven_ukkido.value             : Rulesets(AccessRule.ATTACK),
             Loc.heaven_tami.value               : Rulesets(AccessRule.HIT),
             Loc.heaven_valuccha.value           : Rulesets(AccessRule.ATTACK),
@@ -1267,6 +1269,7 @@ class Normal(Hard):
             Loc.arabian_cup_o_mon.value         : Rulesets(AccessRule.HIT),
 
             # Asia
+            Loc.asia_mohcha.value               : Rulesets(AccessRule.RCC),
             Loc.asia_baku.value                 : Rulesets([AccessRule.SHOOT, AccessRule.SWIM], AccessRule.NINJA),
             Loc.asia_takumon.value              : Rulesets(AccessRule.SWIM, AccessRule.CATCH_LONG),
             Loc.asia_ukki_ether.value           : Rulesets(AccessRule.SWIM),
