@@ -1008,7 +1008,7 @@ class Expert(Hard):
             ),
             Stage.entrance_asia_bb2.value: Rulesets(
                 [event_invoked(Events.asia_b2_button.value)], AccessRule.HERO,
-                AccessRule.BOOST, AccessRule.KUNGFU, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+                AccessRule.BOOST_FLY, AccessRule.KUNGFU, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_asia_ee1.value: Rulesets(
                 [AccessRule.ATTACK, AccessRule.DASH],
@@ -1035,18 +1035,18 @@ class Expert(Hard):
             ),
             Stage.entrance_hong_aa1.value: Rulesets(
                 AccessRule.KUNGFU, AccessRule.HERO,
-                AccessRule.BOOST, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+                AccessRule.BOOST_FLY, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_hong_b1f.value: Rulesets(
                 AccessRule.MONKEY, AccessRule.KUNGFU
             ),
             Stage.entrance_hong_bb1.value: Rulesets(
                 AccessRule.KUNGFU,
-                AccessRule.BOOST, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+                AccessRule.BOOST_FLY, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_hong_b1c.value: Rulesets(
                 AccessRule.KUNGFU,
-                AccessRule.BOOST, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+                AccessRule.BOOST_FLY, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_hong_cc1.value: Rulesets(
                 AccessRule.GLIDE, AccessRule.KUNGFU,
@@ -1062,7 +1062,7 @@ class Expert(Hard):
             ),
             Stage.entrance_hong_ee1.value: Rulesets(
                 AccessRule.KUNGFU,
-                AccessRule.BOOST, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+                AccessRule.BOOST_FLY, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_hong_dg.value: Rulesets(
                 AccessRule.KUNGFU, [AccessRule.QJ, AccessRule.G_FLOAT], AccessRule.G_FLOAT_M
@@ -1083,7 +1083,7 @@ class Expert(Hard):
             ),
             Stage.entrance_bay_d1d.value: Rulesets(
                 AccessRule.KUNGFU,
-                AccessRule.BOOST, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+                AccessRule.BOOST_FLY, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_tomo_a1a.value: Rulesets(
                 AccessRule.GLIDE,
@@ -1100,7 +1100,7 @@ class Expert(Hard):
             Stage.entrance_tomo_f2f.value: Rulesets(AccessRule.FLY),
             Stage.entrance_tomo_gg1.value: Rulesets(
                 AccessRule.KUNGFU,
-                AccessRule.BOOST, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+                AccessRule.BOOST_FLY, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_tomo_hh1.value: Rulesets(
                 AccessRule.GLIDE,
