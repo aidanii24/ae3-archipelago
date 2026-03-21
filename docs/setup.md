@@ -30,12 +30,45 @@ This implementation interfaces with PCSX2 via its PINE connection to apply and e
 By default, PINE features are disabled in PCSX2. Please follow these steps to enable it:
 1. Under `Tools`, check `Show Advanced Settings`.
 2. Under `System`. open `Settings`
-3. In the `Advanced Tab`, under the `PINE Settings` section, check `Enabled` and ensure that the `slot` field is set to `28011`.
+3. In the `Advanced Tab`, under the `PINE Settings` section, check `Enabled`
+
+#### Slot (Windows)
+Under PINE Settings is also another field "Slot". By default, this is set to 28011. This is the default port number 
+the client will search for. This can be changed if a different port number is desired.
 
 ### Client
-Certain client behaviour, such as Gadget Auto-Equip, persists between game sessions rather than dependent on the world's `options.yaml`. These can be configured under `host.yaml` inside the Archipelago directory.
+Certain client behaviour, such as Gadget Auto-Equip and PINE Connect Offline persists between game sessions rather than 
+dependent on the world's `options.yaml`. These can be configured under `host.yaml` inside the Archipelago directory.
 
-Most Important to note is that the client saves data regarding the session in a file separate from the game save. These are stored under `Archipelago/data/saves` as json files prepended with `AE3_`. Handling of these files, and their automated deletions can be configured under the same `host.yaml` file.
+#### PINE Connections (Advanced)
+**Windows**
+
+By default, the client will search for PCSX2 with the port number 28011. This should also be the number set in the 
+PCSX2 settings under `Settings` > `Advanced` > `PINE Settings` > `Slot`. If it is desired to connect to a PCSX2 instance 
+set with a different port number, the client can be directed to look for a different port number by running the 
+client command `/pine_slot <slot>`, where `<slot>` is the new port number to search for. If the client is already 
+connected to a different instance of PCSX2 when changing port numbers, the command `/pine_connect` must also be run 
+afterward, where the client will disconnect with its current connection, and connect to the new port.
+
+If it is known ahead of time that the client should connect to a PCSX2 instance with a different Slot number, players 
+can set the `emulator_windows_preferred_port` option in their YAML options file, so that the client will automatically 
+use that port once the client connects to an Archipelago Room.
+
+**Linux**
+
+Under Linux, the client will search for PCSX2 connections in the XDG_RUNTIME_DIR directory. The slot number is only ever 
+used in Windows, and because of this, different instances of PCSX2 will always create the same socket with the same 
+filename in the same path. That is, except for the Flatpak version, which due to the containerization, will create 
+another socket in a deeper directory. By default, The client will look for both, first at the base of the 
+runtime directory, then the flatpak runtime directory, and will connect to the first one it finds a valid socket for. 
+However, if it is desired to only connect to a specific kind of instance of PCSX2, the client command 
+`/pine_platform <platform>` can be run, where `<platform>` can be either `auto`, `standard` (appimage, or other 
+non-containerized installations), and `flatpak`. When set to any option other than auto, the client 
+will ignore any other sockets if it is not from that platform, even if it is available.
+
+If it is known ahead of time that the client should only connect to a specific instance of PCSX2, players can set the 
+`emulator_linux_preferred_platform` option in their YAML options file, so that the client will automatically know which 
+instance is preferred to be connected to upon connection to an Archipelago room
 
 Game
 ----
@@ -69,6 +102,19 @@ During installation, generation, or launching of the client, please refer to the
 
 ### PCSX2
 When the client cannot find PCSX2, please make sure that PINE is enabled in the advanced settings of the application.
+
+Under Windows, ensure that the slot number the client is searching for (which can be checked with `/status` when 
+connected to an Archipelago Room) is the same as the slot number specified in the PCSX2 Settings under `Advanced` > 
+`PINE Settings` > `Slot`. If the slot the client is looking for and the slot in the PCSX2 settings, either change 
+the PCSX2 Settings to use the slot the client is looking for, or direct the client to search for the slot number PCSX2 
+is currently set to using the command `/pine_slot <slot>`. If the slot number under PCSX2 settings is changed during an 
+active game, the game must be relaunched, either by shutting down the game, or restarting the emulator.
+
+Under Linux, ensure that the platform the client is searching for is the version of PCSX2 being used. The platform the 
+client is currently searching for can be checked by using `/status` when connected to an Archipelago room. For example, 
+if the client PINE platform is set to `flatpak`, the client will only look for available connections of the flatpak 
+version of PCSX2, and will ignore available connections from the appimage version of PCSX2. If the client is set to 
+look for the wrong platform, this can be changed using the client command `/pine_platform`.
 
 ### Support
 For any questions or problems regarding Ape Escape 3 Archipelago that neither official Archipelago Guides, PCSX2 Guides nor this guide can answer, please contact the developers in the Archipelago Discord Server. The Ape Escape 3 thread can be found under the future-game-design forums of the server, or simply follow this [link](https://discord.com/channels/731205301247803413/1336332485788831825).
