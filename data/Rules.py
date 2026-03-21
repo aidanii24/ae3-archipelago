@@ -575,7 +575,8 @@ class Hard(LogicPreference):
             Stage.entrance_halloween_d1e.value  : Rulesets(AccessRule.MONKEY),
 
             # Western
-            Stage.entrance_western_ee1.value    : Rulesets(AccessRule.GLIDE, AccessRule.SHOOT, AccessRule.KUNGFU),
+            Stage.entrance_western_ee1.value    : Rulesets(AccessRule.GLIDE, AccessRule.SHOOT, AccessRule.KUNGFU,
+                                                           AccessRule.MAGICIAN),
             Stage.entrance_western_ec.value     : Rulesets(AccessRule.MONKEY),
 
             # Onsen
@@ -885,8 +886,8 @@ class Expert(Hard):
                 AccessRule.KUNGFU, AccessRule.MONKEY,
             ),
             Stage.entrance_western_ee1.value: Rulesets(
-                AccessRule.GLIDE, AccessRule.SHOOT, AccessRule.KUNGFU,
-                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+                AccessRule.GLIDE, AccessRule.SHOOT, AccessRule.KUNGFU, AccessRule.MAGICIAN,
+                AccessRule.BOOST_JUMP, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_onsen_b1b.value: Rulesets(
                 [AccessRule.RCC, AccessRule.SWIM], AccessRule.GLIDE, AccessRule.KUNGFU,
