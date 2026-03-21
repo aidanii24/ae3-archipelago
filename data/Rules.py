@@ -728,7 +728,7 @@ class Hard(LogicPreference):
             Stage.entrance_bay_e2e3.value       : Rulesets([AccessRule.FLY, AccessRule.KUNGFU]),
 
             # Tomo
-            Stage.entrance_tomo_a1a.value       : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_tomo_a1a.value       : Rulesets(AccessRule.GLIDE, AccessRule.MAGICIAN, AccessRule.KUNGUF),
             Stage.entrance_tomo_e1i.value       : Rulesets(AccessRule.MONKEY),
             Stage.entrance_tomo_e2e3.value      : Rulesets(AccessRule.KUNGFU),
             Stage.entrance_tomo_e3e2.value      : Rulesets(event_invoked(Events.tomo_e2_kungfu.value)),
@@ -1090,8 +1090,8 @@ class Expert(Hard):
                 AccessRule.BOOST_FLY, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_tomo_a1a.value: Rulesets(
-                AccessRule.GLIDE,
-                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+                AccessRule.GLIDE, AccessRule.MAGICIAN, AccessRule.KUNGFU,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_tomo_f1f2.value: Rulesets(
                 AccessRule.NINJA, AccessRule.HERO,
