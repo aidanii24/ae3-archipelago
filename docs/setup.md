@@ -116,5 +116,9 @@ if the client PINE platform is set to `flatpak`, the client will only look for a
 version of PCSX2, and will ignore available connections from the appimage version of PCSX2. If the client is set to 
 look for the wrong platform, this can be changed using the client command `/pine_platform`.
 
+Reference
+-----------------
+For a list of available Location Groups, please refer to [this file](./location_groups.txt).
+
 ### Support
 For any questions or problems regarding Ape Escape 3 Archipelago that neither official Archipelago Guides, PCSX2 Guides nor this guide can answer, please contact the developers in the Archipelago Discord Server. The Ape Escape 3 thread can be found under the future-game-design forums of the server, or simply follow this [link](https://discord.com/channels/731205301247803413/1336332485788831825).
