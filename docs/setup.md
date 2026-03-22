@@ -32,7 +32,7 @@ By default, PINE features are disabled in PCSX2. Please follow these steps to en
 2. Under `System`. open `Settings`
 3. In the `Advanced Tab`, under the `PINE Settings` section, check `Enabled`
 
-#### Slot (Windows)
+#### Slot
 Under PINE Settings is also another field "Slot". By default, this is set to 28011. This is the default port number 
 the client will search for. This can be changed if a different port number is desired.
 
@@ -41,7 +41,7 @@ Certain client behaviour, such as Gadget Auto-Equip and PINE Connect Offline per
 dependent on the world's `options.yaml`. These can be configured under `host.yaml` inside the Archipelago directory.
 
 #### PINE Connections (Advanced)
-**Windows**
+**Slot**
 
 By default, the client will search for PCSX2 with the port number 28011. This should also be the number set in the 
 PCSX2 settings under `Settings` > `Advanced` > `PINE Settings` > `Slot`. If it is desired to connect to a PCSX2 instance 
@@ -54,7 +54,7 @@ If it is known ahead of time that the client should connect to a PCSX2 instance 
 can set the `emulator_windows_preferred_port` option in their YAML options file, so that the client will automatically 
 use that port once the client connects to an Archipelago Room.
 
-**Linux**
+**Platform (Linux)**
 
 Under Linux, the client will search for PCSX2 connections in the XDG_RUNTIME_DIR directory. The slot number is only ever 
 used in Windows, and because of this, different instances of PCSX2 will always create the same socket with the same 
@@ -103,7 +103,7 @@ During installation, generation, or launching of the client, please refer to the
 ### PCSX2
 When the client cannot find PCSX2, please make sure that PINE is enabled in the advanced settings of the application.
 
-Under Windows, ensure that the slot number the client is searching for (which can be checked with `/status` when 
+Generally, ensure that the slot number the client is searching for (which can be checked with `/status` when 
 connected to an Archipelago Room) is the same as the slot number specified in the PCSX2 Settings under `Advanced` > 
 `PINE Settings` > `Slot`. If the slot the client is looking for and the slot in the PCSX2 settings, either change 
 the PCSX2 Settings to use the slot the client is looking for, or direct the client to search for the slot number PCSX2 

@@ -70,16 +70,18 @@ class Pine:
         self._sock_state: bool = False
 
         self.linux_platform = linux_platform
-        self.active_platform = "None"
+        self.active_platform = None
+        self.active_slot = None
 
         # self._init_socket()
 
     def _init_socket(self) -> None:
+        active_platform = "Unknown"
         if system() == "Windows":
             socket_family = socket.AF_INET
             socket_name = ("127.0.0.1", self._slot)
 
-            self.active_platform = "Windows"
+            active_platform = "Windows"
         elif system() == "Linux":
             socket_family = socket.AF_UNIX
 
@@ -89,38 +91,47 @@ class Pine:
             if os.access(socket_name + "/pcsx2.sock", os.R_OK) and self.linux_platform != "flatpak":
                 socket_name += "/pcsx2.sock"
 
-                self.active_platform = "Linux Standard"
+                active_platform = "Linux Standard"
             # Flatpak Socket Path
             elif self.linux_platform != "standard":
                 socket_name += "/.flatpak/net.pcsx2.PCSX2/xdg-run"
                 socket_name += "/pcsx2.sock"
 
-                self.active_platform = "Flatpak"
+                active_platform = "Flatpak"
 
         elif system() == "Darwin":
             socket_family = socket.AF_UNIX
             socket_name = os.environ.get("TMPDIR", "/tmp")
             socket_name += "/pcsx2.sock"
 
-            self.active_platform = "Darwin"
+            active_platform = "Darwin"
         else:
             socket_family = socket.AF_UNIX
             socket_name = "/tmp/pcsx2.sock"
 
-            self.active_platform = "Unknown"
+        if self.active_platform != "Windows" and self._slot != 28011:
+            socket_name += f".{self._slot}"
 
         try:
             self._sock = socket.socket(socket_family, socket.SOCK_STREAM)
             self._sock.settimeout(5.0)
             self._sock.connect(socket_name)
         except FileNotFoundError:
+            self.active_slot = None
+            self.active_platform = None
             return
         except socket.error:
             self._sock.close()
             self._sock_state = False
+
+            self.active_slot = None
+            self.active_platform = None
             return
 
         self._sock_state = True
+
+        self.active_slot = self._slot
+        self.active_platform = active_platform
 
     def connect(self,) -> None:
         if not self._sock_state:

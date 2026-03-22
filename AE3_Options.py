@@ -785,9 +785,8 @@ class AutoSaveStateSlot(NamedRange):
     }
 
 
-class EmulatorWindowsPreferredSlot(Range):
+class EmulatorPreferredSlot(Range):
     """
-    *For Windows Players only
     Specify the preferred slot to use when connecting the Archipelago Client with PCSX2
     upon connection to an Archipelago Room. This should be the same slot that is specified in PCSX2
     under Settings > Advanced > PINE Settings > Slot. More details about connecting the client to PCSX2
@@ -798,7 +797,7 @@ class EmulatorWindowsPreferredSlot(Range):
     To specify custom values, add it alongside the pre-existing options, copying their format.
     Format: value : weight
     """
-    display_name : str = "Emulator Windows Preferred Port"
+    display_name : str = "Emulator Preferred Port"
     default = 28011
 
     range_start = 0
@@ -876,7 +875,7 @@ ae3_option_groups : dict[str, list] = {
                                    ConsolationEffectsWhitelist],
     "Sync Options"              : [DeathLink],
     "Session Options"           : [AutoSaveStateSlot,
-                                   EmulatorWindowsPreferredSlot,
+                                   EmulatorPreferredSlot,
                                    EmulatorLinuxPreferredPlatform, ]
 }
 
@@ -935,7 +934,7 @@ class AE3Options(PerGameCommonOptions):
     death_link                              : DeathLink
 
     auto_save_state_slot                    : AutoSaveStateSlot
-    emulator_windows_preferred_slot         : EmulatorWindowsPreferredSlot
+    emulator_preferred_slot                 : EmulatorPreferredSlot
     emulator_linux_preferred_platform       : EmulatorLinuxPreferredPlatform
 
 def create_option_groups() -> list[OptionGroup]:
@@ -1002,6 +1001,6 @@ def slot_data_options() -> list[str]:
         APHelper.death_link.value,
 
         APHelper.auto_save_slot.value,
-        APHelper.emu_win_slot.value,
+        APHelper.emulator_slot.value,
         APHelper.emu_linux_platform.value,
     ]

@@ -37,6 +37,7 @@ class AEPS2Interface:
         self.logger = logger
         self.pine = Pine(slot, linux_platform)
 
+        self.active_slot = slot
         self.active_platform = self.pine.active_platform
 
     # { PINE Network }
@@ -47,10 +48,14 @@ class AEPS2Interface:
 
             if not self.pine.is_connected():
                 self.status = ConnectionStatus.DISCONNECTED
+
+                self.active_slot = None
+                self.active_platform = None
                 return
 
             self.logger.info(APConsole.Info.init.value)
 
+        self.active_slot = self.pine.active_slot
         self.active_platform = self.pine.active_platform
 
         # Check for Game running in PCSX2

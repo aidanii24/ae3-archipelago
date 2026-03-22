@@ -65,9 +65,8 @@ class AE3CommandProcessor(ClientCommandProcessor):
                 logger.info(f" [-v-] Universal Tracker Integrated")
 
             logger.info(f" [-o-] Game")
-            if platform.system() == "Windows":
-                logger.info(f"         > Slot/Port: {self.ctx.pine_slot}")
-            elif platform.system() == "Linux":
+            logger.info(f"         > Slot/Port: {self.ctx.ipc.active_slot}")
+            if platform.system() == "Linux":
                 is_auto = self.ctx.pine_linux_platform == "auto"
                 logger.info(f"        > Platform: {self.ctx.ipc.active_platform} {"(auto)" if is_auto else ""}")
 
@@ -315,7 +314,6 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
     def _cmd_pine_slot(self, slot: str):
         """
-        *Windows only
         Change the Slot/Port the client uses to connect to PCSX2.
         Provide any valid port between 0 and 65525.
         """
@@ -624,15 +622,17 @@ class AE3Context(SuperContext):
                 self.state_slot = data[APHelper.auto_save_slot.value]
 
             ### Emulator Connection Preferences
-            has_connection_options: bool = False
-            if APHelper.emu_win_slot.value in data and platform.system() == "Windows":
-                pine_slot = data[APHelper.emu_win_slot.value]
+            is_pine_slot_changed: bool = False
+            if APHelper.emulator_slot.value in data:
+                pine_slot = data[APHelper.emulator_slot.value]
                 if self.pine_slot != pine_slot:
                     self.pine_slot = pine_slot
                     self.ipc.set_slot(self.pine_slot)
 
-                    has_connection_options = True
-            elif APHelper.emu_linux_platform.value in data and platform.system() == "Linux":
+                    is_pine_slot_changed= True
+
+            is_pine_platform_changed: bool = False
+            if APHelper.emu_linux_platform.value in data and platform.system() == "Linux":
                 if data[APHelper.emu_linux_platform.value] == 1:
                     pine_linux_platform = "standard"
                 elif data[APHelper.emu_linux_platform.value] == 2:
@@ -644,7 +644,7 @@ class AE3Context(SuperContext):
                     self.pine_linux_platform = pine_linux_platform
                     self.ipc.set_linux_platform(self.pine_linux_platform)
 
-                    has_connection_options = True
+                    is_pine_platform_changed = True
 
             ## Progression Mode
             if not self.unlocked_channels and APHelper.progression_mode.value in data:
@@ -836,20 +836,20 @@ class AE3Context(SuperContext):
 
             # When connection details from options are different from defaults,
             # reconnect to the emulator with the new details
-            if has_connection_options:
+            if is_pine_slot_changed or is_pine_platform_changed:
                 logger.info("<!> Preferred Connection Details detected from Slot Data.")
-                if platform.system() == "Windows":
-                    logger.info(f"[-!-] PINE Slot is now set to {self.pine_slot}."
-                                "      Please make sure the PINE Slot set for the emulator is the same.")
-                elif platform.system() == "Linux":
-                    logger.info(f"[-!-] PINE Platform is now set to {self.pine_linux_platform}.")
-                    logger.info("      Please make sure you use the correct PCSX2 installation.")
+                if is_pine_slot_changed:
+                    logger.info(f"[-!-] PINE Slot is now set to {self.pine_slot}.\n"
+                                "      Please make sure the PINE Slot set for the emulator is the same.\n")
+                if is_pine_platform_changed:
+                    logger.info(f"[-!-] PINE Platform is now set to {self.pine_linux_platform}.\n")
+                    logger.info("      Please make sure you are using the correct PCSX2 instance.\n")
 
-                logger.info("[...] These settings can be changed at anytime in the client using the pine commands.")
+                logger.info("[...] These settings can be changed at anytime in the client using the pine commands.\n")
 
                 if self.ipc.status != ConnectionStatus.DISCONNECTED:
                     self.ipc.disconnect_game()
-                    logger.info("Re-establishing emulator connection with new details from the Slot Data.")
+                    logger.info("Re-establishing emulator connection with new details from the Slot Data.\n")
 
                 self.ipc.connect_game()
 
