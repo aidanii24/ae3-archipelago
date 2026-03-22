@@ -846,11 +846,14 @@ class AE3Context(SuperContext):
                     logger.info("      Please make sure you are using the correct PCSX2 instance.")
 
                 logger.info("[...] These settings can be changed at anytime in the client using the pine commands.")
+                logger.info("Re-establishing emulator connection with new details from the Slot Data.\n")
 
                 if self.ipc.status != ConnectionStatus.DISCONNECTED:
                     self.ipc.disconnect_game()
-                    logger.info("Re-establishing emulator connection with new details from the Slot Data.\n")
 
+                    self.ipc.connect_game()
+
+            if self.ipc.status == ConnectionStatus.DISCONNECTED:
                 self.ipc.connect_game()
 
             # Signify that the client has already made a connection to an Archipelago Room
