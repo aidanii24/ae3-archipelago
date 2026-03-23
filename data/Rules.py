@@ -843,7 +843,7 @@ class Expert(Hard):
         self.event_rules.update({
             Events.studio_b1_button.value: Rulesets(
                 AccessRule.SHOOT, AccessRule.GLIDE, AccessRule.MAGICIAN,
-                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+                AccessRule.BOOST_JUMP, AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Events.asia_e1_button.value: Rulesets(
                 [AccessRule.FLY, AccessRule.SHOOT], [AccessRule.FLY, AccessRule.RCC],
@@ -864,8 +864,8 @@ class Expert(Hard):
                 AccessRule.KUNGFU
             ),
             Stage.entrance_studio_b1b2.value: Rulesets(
-                event_invoked(Events.studio_b1_button.value),
-                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+                event_invoked(Events.studio_b1_button.value), AccessRule.MAGICIAN,
+                AccessRule.BOOST_JUMP, AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_halloween_c1c.value: Rulesets(
                 AccessRule.SWIM, AccessRule.HERO,
