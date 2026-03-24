@@ -804,6 +804,7 @@ class Expert(Hard):
                 AccessRule.RCC,
                 AccessRule.FLYER, AccessRule.NINJA
             ),
+            Loc.asia_mohcha.value: Rulesets(AccessRule.RCC, AccessRule.MONKEY, AccessRule.HERO),
             Loc.asia_baku.value: Rulesets(
                 [AccessRule.SHOOT, AccessRule.SWIM], AccessRule.NINJA, AccessRule.HERO,
                 AccessRule.KUNGFU
@@ -1112,6 +1113,14 @@ class Expert(Hard):
                 AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
         })
+
+        monkeys_to_reset: list = [
+            Loc.heaven_chomon.value
+        ]
+
+        for monkey in monkeys_to_reset:
+            if monkey in self.monkey_rules:
+                self.monkey_rules.pop(monkey)
 
         entrances_to_reset: list = [
             Stage.entrance_castle_ad.value,
