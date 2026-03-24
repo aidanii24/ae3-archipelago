@@ -1128,6 +1128,7 @@ class Expert(Hard):
             Stage.entrance_ciscocity_c1c.value,
             Stage.entrance_ciscocity_ce.value,
             Stage.entrance_heaven_ce.value,
+            Stage.entrance_edotown_df.value,
             Stage.entrance_iceland_ef.value,
             Stage.entrance_plane_cc1.value,
             Stage.entrance_bay_a1b.value,
