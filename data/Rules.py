@@ -1164,6 +1164,10 @@ class Expert(Hard):
         self.event_rules.get(Events.space_g_button.value, Rulesets()).update(Rulesets(AccessRule.KUNGFU))
 
     def apply_timed_morph_float(self, base_duration: int, morph_extensions_enabled: bool):
+        events: list = [
+            Events.iceland_e_button.value
+        ]
+
         entrances: list = [
             Stage.entrance_halloween_aa1.value,
             Stage.entrance_halloween_a1a.value,
@@ -1187,6 +1191,9 @@ class Expert(Hard):
         rules: list = [AccessRule.G_FLOAT_M]
         if base_duration < 30 and morph_extensions_enabled:
             rules.append(has_morph_extensions())
+
+        for e in events:
+            self.event_rules.get(e, Rulesets()).update(Rulesets(rules))
 
         for e in entrances:
             self.entrance_rules.get(e, Rulesets()).update(Rulesets(rules))
