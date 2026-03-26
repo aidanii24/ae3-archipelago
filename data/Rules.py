@@ -1128,6 +1128,7 @@ class Expert(Hard):
             Stage.entrance_edotown_df.value,
             Stage.entrance_iceland_ef.value,
             Stage.entrance_plane_cc1.value,
+            Stage.entrance_plane_cg.value,
             Stage.entrance_bay_a1b.value,
             Stage.entrance_space_eh.value,
             Stage.entrance_space_gg1.value,
