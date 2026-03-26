@@ -455,8 +455,7 @@ class Hard(LogicPreference):
             Loc.iceland_rammy.value         : Rulesets(AccessRule.SLING),
 
             # Arabian
-            Loc.arabian_minimon.value       : Rulesets(AccessRule.MAGICIAN, [AccessRule.DASH,
-                                                                             AccessRule.SHOOT_BOOM]),
+            Loc.arabian_minimon.value       : Rulesets(AccessRule.MAGICIAN, AccessRule.DASH),
 
             # Asia
             Loc.bay_kazuo.value             : Rulesets(AccessRule.NINJA, AccessRule.HERO,
@@ -1109,7 +1108,8 @@ class Expert(Hard):
         })
 
         monkeys_to_reset: list = [
-            Loc.heaven_chomon.value
+            Loc.heaven_chomon.value,
+            Loc.arabian_minimon.value
         ]
 
         for monkey in monkeys_to_reset:
