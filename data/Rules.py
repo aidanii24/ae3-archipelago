@@ -675,7 +675,6 @@ class Hard(LogicPreference):
             Stage.entrance_asia_b2b1.value      : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_d1a4.value      : Rulesets(AccessRule.SWIM),
             Stage.entrance_asia_dd1.value       : Rulesets(AccessRule.SWIM),
-            Stage.entrance_asia_ee1.value       : Rulesets([AccessRule.DASH, AccessRule.RCC]),
             Stage.entrance_asia_ef.value        : Rulesets(AccessRule.MONKEY),
             Stage.entrance_asia_e1e.value       : Rulesets(AccessRule.GLIDE),
             Stage.entrance_asia_e1e2.value      : Rulesets(AccessRule.SHOOT, [AccessRule.ATTACK, AccessRule.RCC],
@@ -1015,11 +1014,6 @@ class Expert(Hard):
             Stage.entrance_asia_bb2.value: Rulesets(
                 [event_invoked(Events.asia_b2_button.value)], AccessRule.HERO,
                 AccessRule.BOOST_FLY, AccessRule.KUNGFU, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
-            ),
-            Stage.entrance_asia_ee1.value: Rulesets(
-                [AccessRule.ATTACK, AccessRule.DASH],
-                [AccessRule.ATTACK, AccessRule.RCC],
-                AccessRule.KUNGFU
             ),
             Stage.entrance_asia_e1e2.value: Rulesets(
                 [AccessRule.SHOOT, AccessRule.FLY],
@@ -1452,6 +1446,7 @@ class Normal(Hard):
             Stage.entrance_asia_a4d1.value      : Rulesets(AccessRule.HIT),
             Stage.entrance_asia_bb2.value       : Rulesets(event_invoked(Events.asia_b2_button.value)),
             Stage.entrance_asia_b2b.value       : Rulesets(AccessRule.HIT),
+            Stage.entrance_asia_ee1.value       : Rulesets(AccessRule.DASH, AccessRule.RCC),
 
             # Plane
             Stage.entrance_plane_ac.value       : Rulesets(AccessRule.RCC, AccessRule.DASH),
@@ -1779,6 +1774,7 @@ class Casual(Normal):
             Stage.entrance_asia_a4d1.value      : Rulesets(AccessRule.ATTACK),
             Stage.entrance_asia_b2b.value       : Rulesets(AccessRule.ATTACK),
             Stage.entrance_asia_dd1.value       : Rulesets([AccessRule.SWIM, AccessRule.FLY]),
+            Stage.entrance_asia_ee1.value       : Rulesets([AccessRule.ATTACK, AccessRule.DASH, AccessRule.RCC]),
 
             # Plane
             Stage.entrance_plane_dd1.value      : Rulesets(AccessRule.FLY),
