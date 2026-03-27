@@ -1123,7 +1123,6 @@ class Expert(Hard):
             Stage.entrance_ciscocity_c1c.value,
             Stage.entrance_ciscocity_ce.value,
             Stage.entrance_studio_dg.value,
-            Stage.entrance_halloween_d1e.value,
             Stage.entrance_heaven_ce.value,
             Stage.entrance_edotown_df.value,
             Stage.entrance_iceland_ef.value,
