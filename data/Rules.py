@@ -1041,7 +1041,7 @@ class Expert(Hard):
                 AccessRule.BOOST_FLY, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_hong_b1f.value: Rulesets(
-                AccessRule.MONKEY, AccessRule.KUNGFU
+                AccessRule.MONKEY, AccessRule.KUNGFU, AccessRule.HERO
             ),
             Stage.entrance_hong_bb1.value: Rulesets(
                 AccessRule.KUNGFU,
