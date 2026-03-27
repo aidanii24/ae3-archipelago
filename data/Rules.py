@@ -815,6 +815,10 @@ class Expert(Hard):
                 AccessRule.SWIM, AccessRule.HERO,
                 AccessRule.KUNGFU
             ),
+            Loc.plane_mukita.value: Rulesets(
+                AccessRule.MAGICIAN,
+                [AccessRule.G_FLOAT, AccessRule.FLYER],
+            ),
             Loc.hong_uki_uki.value: Rulesets(
                 AccessRule.SHOOT, AccessRule.FLY,
                 AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M,
