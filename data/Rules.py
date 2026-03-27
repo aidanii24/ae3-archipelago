@@ -1121,6 +1121,7 @@ class Expert(Hard):
                 self.monkey_rules.pop(monkey)
 
         entrances_to_reset: list = [
+            Stage.entrance_seaside_ac.value,
             Stage.entrance_woods_ad.value,
             Stage.entrance_castle_ad.value,
             Stage.entrance_ciscocity_ad_2.value,
@@ -1133,6 +1134,7 @@ class Expert(Hard):
             Stage.entrance_plane_cc1.value,
             Stage.entrance_plane_cg.value,
             Stage.entrance_bay_a1b.value,
+            Stage.entrance_tomo_e1i.value,
             Stage.entrance_space_eh.value,
             Stage.entrance_space_gg1.value,
             Stage.entrance_space_f1f2.value
