@@ -906,7 +906,7 @@ class Expert(Hard):
                 AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_snowfesta_ag.value: Rulesets(
-                AccessRule.MONKEY, AccessRule.KUNGFU, AccessRule.HERO
+                AccessRule.MONKEY, AccessRule.KUNGFU, AccessRule.HERO, AccessRule.BOOST_FLY
             ),
             Stage.entrance_snowfesta_dg.value: Rulesets(
                 AccessRule.MONKEY,
