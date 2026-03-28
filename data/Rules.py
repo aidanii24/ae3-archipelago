@@ -802,6 +802,10 @@ class Expert(Hard):
                 AccessRule.RCC,
                 AccessRule.FLYER, AccessRule.NINJA
             ),
+            Loc.snowfesta_mitsuro.value: Rulesets(
+                AccessRule.SHOOT,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            ),
             Loc.asia_mohcha.value: Rulesets(AccessRule.RCC, AccessRule.MONKEY, AccessRule.HERO),
             Loc.asia_baku.value: Rulesets(
                 [AccessRule.SHOOT, AccessRule.SWIM], AccessRule.NINJA, AccessRule.HERO,
@@ -902,7 +906,7 @@ class Expert(Hard):
                 AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_snowfesta_ag.value: Rulesets(
-                AccessRule.MONKEY, AccessRule.KUNGFU
+                AccessRule.MONKEY, AccessRule.KUNGFU, AccessRule.HERO
             ),
             Stage.entrance_snowfesta_dg.value: Rulesets(
                 AccessRule.MONKEY,
@@ -1113,7 +1117,8 @@ class Expert(Hard):
 
         monkeys_to_reset: list = [
             Loc.heaven_chomon.value,
-            Loc.arabian_minimon.value
+            Loc.arabian_minimon.value,
+            Loc.snowfesta_kimisuke.value,
         ]
 
         for monkey in monkeys_to_reset:
@@ -1129,6 +1134,7 @@ class Expert(Hard):
             Stage.entrance_ciscocity_ce.value,
             Stage.entrance_studio_dg.value,
             Stage.entrance_heaven_ce.value,
+            Stage.entrance_snowfesta_ab.value,
             Stage.entrance_edotown_df.value,
             Stage.entrance_iceland_ef.value,
             Stage.entrance_plane_cc1.value,
