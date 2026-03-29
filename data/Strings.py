@@ -2110,10 +2110,10 @@ class Stage(BaseEnum):
     entrance_bay_dd1 =                  "Midnight Bay - Warehouse - Stone Room Exit"
     entrance_bay_ea2 =                  "Midnight Bay - Sewers - Exit Pipe"
     entrance_bay_ee1 =                  "Midnight Bay - Sewers - Escalator Up"
-    entrance_bay_ee2 =                  "Midnight Bay - Sewers - Sewer Drop"
+    entrance_bay_ee2 =                  "Midnight Bay - Sewers - Sewer Climb"
     entrance_bay_e1e2 =                 "Midnight Bay - Sewers - Escalator Down"
     entrance_bay_e1e3 =                 "Midnight Bay - Sewers - Aquarium Clip"
-    entrance_bay_e2e =                  "Midnight Bay - Sewers - Sewer Climb"
+    entrance_bay_e2e =                  "Midnight Bay - Sewers - Sewer Drop"
     entrance_bay_e2e3 =                 "Midnight Bay - Sewers - Aquarium Break"
     entrance_bay_fa6 =                  "Midnight Bay - Break Room - Exit Door"
 
