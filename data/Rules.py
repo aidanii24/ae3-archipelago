@@ -806,7 +806,6 @@ class Expert(Hard):
                 AccessRule.SHOOT,
                 AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
-            Loc.asia_mohcha.value: Rulesets(AccessRule.RCC, AccessRule.MONKEY, AccessRule.HERO),
             Loc.asia_baku.value: Rulesets(
                 [AccessRule.SHOOT, AccessRule.SWIM], AccessRule.NINJA, AccessRule.HERO,
                 AccessRule.KUNGFU
@@ -1131,6 +1130,7 @@ class Expert(Hard):
             Loc.heaven_chomon.value,
             Loc.arabian_minimon.value,
             Loc.snowfesta_kimisuke.value,
+            Loc.asia_mohcha.value,
         ]
 
         for monkey in monkeys_to_reset:
