@@ -746,7 +746,7 @@ class Hard(LogicPreference):
                                                             event_invoked(Events.space_d_button.value)]),
             Stage.entrance_space_e1e.value      : Rulesets(event_invoked(Events.space_e_button.value)),
             Stage.entrance_space_ee1_2.value    : Rulesets(event_invoked(Events.space_e_button.value)),
-            Stage.entrance_space_e1e_2.value    : Rulesets([AccessRule.RCC, AccessRule.MORPH_NO_MONKEY]),
+            Stage.entrance_space_e1e_2.value    : Rulesets([AccessRule.RCC, AccessRule.ATTACK]),
             Stage.entrance_space_ee1.value      : Rulesets(event_invoked(Events.space_e_button.value)),
             Stage.entrance_space_eh.value       : Rulesets(AccessRule.MONKEY),
             Stage.entrance_space_gg1.value      : Rulesets(event_invoked(Events.space_g1_button.value)),
@@ -1124,7 +1124,7 @@ class Expert(Hard):
                  event_invoked(Events.space_g1_button.value),
                  event_invoked(Events.space_d_button.value)],
                 AccessRule.HERO,
-            )
+            ),
         })
 
         monkeys_to_reset: list = [
@@ -1155,6 +1155,7 @@ class Expert(Hard):
             Stage.entrance_plane_cg.value,
             Stage.entrance_bay_a1b.value,
             Stage.entrance_tomo_e1i.value,
+            Stage.entrance_space_e1e_2.value,
             Stage.entrance_space_eh.value,
             Stage.entrance_space_gg1.value,
             Stage.entrance_space_f1f2.value
@@ -1500,6 +1501,7 @@ class Normal(Hard):
 
             # Space
             Stage.entrance_space_ab.value       : Rulesets(AccessRule.ATTACK)
+            Stage.entrance_space_e1e_2.value    : Rulesets([AccessRule.RCC, AccessRule.MORPH_NO_MONKEY),
         })
 
 class Casual(Normal):
