@@ -1125,6 +1125,10 @@ class Expert(Hard):
                  event_invoked(Events.space_d_button.value)],
                 AccessRule.HERO,
             ),
+            Stage.entrance_space_ff1.value: Rulesets(
+                AccessRule.GLIDE,
+                AccessRule.MORPH, AccessRule.BOOST_JUMP, AccessRule.QJ, AccessRule.G_FLOAT
+            )
         })
 
         monkeys_to_reset: list = [
