@@ -1608,6 +1608,7 @@ class Stage(BaseEnum):
     region_bay_e1 =             "Midnight Bay - Sewers - Observation Deck"
     region_bay_e2 =             "Midnight Bay - Sewers - Lower Sewers"
     region_bay_e3 =             "Midnight Bay - Sewers - Aquarium"
+    region_bay_e4 =             "Midnight Bay - Sewers - Observation Deck Monkey"
     region_bay_f =              "Midnight Bay - Break Room"
 
     channel_tomo =              "Tomoki City"
@@ -2113,8 +2114,10 @@ class Stage(BaseEnum):
     entrance_bay_ee2 =                  "Midnight Bay - Sewers - Sewer Climb"
     entrance_bay_e1e2 =                 "Midnight Bay - Sewers - Escalator Down"
     entrance_bay_e1e3 =                 "Midnight Bay - Sewers - Aquarium Clip"
+    entrance_bay_e1e4 =                 "Midnight Bay - Sewers - To Observation Deck Monkey"
     entrance_bay_e2e =                  "Midnight Bay - Sewers - Sewer Drop"
     entrance_bay_e2e3 =                 "Midnight Bay - Sewers - Aquarium Break"
+    entrance_bay_e3e4 =                  "Midnight Bay - Sewers - Observation Deck Clip"
     entrance_bay_fa6 =                  "Midnight Bay - Break Room - Exit Door"
 
     entrance_tomo_a1a =                 "Tomoki City - City Walls - Gap Flight to Wall"

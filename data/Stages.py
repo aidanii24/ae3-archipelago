@@ -402,6 +402,7 @@ STAGES_BAY : Sequence[str] = [
     Stage.region_bay_e1.value,
     Stage.region_bay_e2.value,
     Stage.region_bay_e3.value,
+    Stage.region_bay_e4.value,
     Stage.region_bay_f.value
 ]
 
@@ -1139,8 +1140,10 @@ ENTRANCES_SUBREGIONS : list[AE3EntranceMeta] = [
     AE3EntranceMeta(Stage.entrance_bay_ee2.value, Stage.region_bay_e.value, Stage.region_bay_e2.value),
     AE3EntranceMeta(Stage.entrance_bay_e1e2.value, Stage.region_bay_e1.value, Stage.region_bay_e2.value),
     AE3EntranceMeta(Stage.entrance_bay_e1e3.value, Stage.region_bay_e1.value, Stage.region_bay_e3.value),
+    AE3EntranceMeta(Stage.entrance_bay_e1e4.value, Stage.region_bay_e1.value, Stage.region_bay_e4.value),
     AE3EntranceMeta(Stage.entrance_bay_e2e3.value, Stage.region_bay_e2.value, Stage.region_bay_e3.value),
     AE3EntranceMeta(Stage.entrance_bay_e2e.value, Stage.region_bay_e2.value, Stage.region_bay_e.value),
+    AE3EntranceMeta(Stage.entrance_bay_e3e4.value, Stage.region_bay_e3.value, Stage.region_bay_e4.value),
 
     # Tomo
     AE3EntranceMeta(Stage.entrance_tomo_a1a.value, Stage.region_tomo_a1.value, Stage.region_tomo_a.value),
@@ -1725,8 +1728,10 @@ ENTRANCES_BAY : list[str] = [
     Stage.entrance_bay_ee2.value,
     Stage.entrance_bay_e1e2.value,
     Stage.entrance_bay_e1e3.value,
+    Stage.entrance_bay_e1e4.value,
     Stage.entrance_bay_e2e.value,
     Stage.entrance_bay_e2e3.value,
+    Stage.entrance_bay_e3e4.value,
     Stage.entrance_bay_fa6.value
 ]
 

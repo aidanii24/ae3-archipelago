@@ -417,6 +417,7 @@ class Hard(LogicPreference):
 
         self.blacklisted_entrances = [
             Stage.entrance_bay_e1e3.value,
+            Stage.entrance_bay_e3e4.value,
             Stage.entrance_tomo_f2f.value
         ]
 
@@ -1095,6 +1096,7 @@ class Expert(Hard):
                 AccessRule.FLYER, AccessRule.NINJA, AccessRule.QJ,
                 [AccessRule.G_FLOAT, AccessRule.CLUB], [AccessRule.MONKEY, AccessRule.CLUB]
             ),
+            Stage.entrance_bay_e3e4.value: Rulesets(AccessRule.SWIM),
             Stage.entrance_tomo_a1a.value: Rulesets(
                 AccessRule.GLIDE, AccessRule.MAGICIAN, AccessRule.KUNGFU,
                 AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
@@ -1236,6 +1238,7 @@ class Normal(Hard):
         self.blacklisted_entrances = [
             Stage.entrance_hong_cc2.value,
             Stage.entrance_bay_e1e3.value,
+            Stage.entrance_bay_e3e4.value,
             Stage.entrance_tomo_f2f.value
         ]
 
@@ -1509,6 +1512,7 @@ class Casual(Normal):
         self.blacklisted_entrances = [
             Stage.entrance_asia_a1a2.value,
             Stage.entrance_bay_e1e3.value,
+            Stage.entrance_bay_e3e4.value,
             Stage.entrance_tomo_f2f.value
         ]
 

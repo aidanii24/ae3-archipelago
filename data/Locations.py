@@ -859,10 +859,6 @@ MONKEYS_BAY_E : Sequence[str] = [
     Loc.bay_doemos.value
 ]
 
-MONKEYS_BAY_E1 : Sequence[str] = [
-    Loc.bay_kazuo.value
-]
-
 MONKEYS_BAY_E2 : Sequence[str] = [
     Loc.bay_gimi_gimi.value, Loc.bay_pokkini.value, Loc.bay_bokino.value
 ]
@@ -871,13 +867,17 @@ MONKEYS_BAY_E3 : Sequence[str] = [
     Loc.bay_jimo.value
 ]
 
+MONKEYS_BAY_E4 : Sequence[str] = [
+    Loc.bay_kazuo.value
+]
+
 MONKEYS_BAY_F : Sequence[str] = [
     Loc.bay_makidon.value, Loc.bay_dogy.value, Loc.bay_gibdon.value, Loc.bay_buligie.value
 ]
 
 MONKEYS_BAY : Sequence[str] = [
     *MONKEYS_BAY_A, *MONKEYS_BAY_A1, *MONKEYS_BAY_A6, *MONKEYS_BAY_B, *MONKEYS_BAY_C, *MONKEYS_BAY_C1,
-    *MONKEYS_BAY_D, *MONKEYS_BAY_D1, *MONKEYS_BAY_E, *MONKEYS_BAY_E1, *MONKEYS_BAY_E2, *MONKEYS_BAY_E3,
+    *MONKEYS_BAY_D, *MONKEYS_BAY_D1, *MONKEYS_BAY_E, *MONKEYS_BAY_E2, *MONKEYS_BAY_E3, *MONKEYS_BAY_E4,
     *MONKEYS_BAY_F,
 ]
 
@@ -1283,9 +1283,9 @@ MONKEYS_INDEX : dict[str, Sequence] = {
     Stage.region_bay_d.value            : MONKEYS_BAY_D,
     Stage.region_bay_d1.value           : MONKEYS_BAY_D1,
     Stage.region_bay_e.value            : MONKEYS_BAY_E,
-    Stage.region_bay_e1.value           : MONKEYS_BAY_E1,
     Stage.region_bay_e2.value           : MONKEYS_BAY_E2,
     Stage.region_bay_e3.value           : MONKEYS_BAY_E3,
+    Stage.region_bay_e4.value           : MONKEYS_BAY_E4,
     Stage.region_bay_f.value            : MONKEYS_BAY_F,
 
     # tomo
