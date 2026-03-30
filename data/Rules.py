@@ -1091,10 +1091,9 @@ class Expert(Hard):
                 AccessRule.KUNGFU,
                 AccessRule.BOOST_FLY, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
-            Stage.entrance_bay_e2e.value: Rulesets(
-                AccessRule.NINJA, AccessRule.QJ,
-                [AccessRule.FLYER, AccessRule.CLUB], [AccessRule.G_FLOAT, AccessRule.CLUB],
-                [AccessRule.MONKEY, AccessRule.CLUB]
+            Stage.entrance_bay_ee2.value: Rulesets(
+                AccessRule.FLYER, AccessRule.NINJA, AccessRule.QJ,
+                [AccessRule.G_FLOAT, AccessRule.CLUB], [AccessRule.MONKEY, AccessRule.CLUB]
             ),
             Stage.entrance_tomo_a1a.value: Rulesets(
                 AccessRule.GLIDE, AccessRule.MAGICIAN, AccessRule.KUNGFU,
