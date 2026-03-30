@@ -542,7 +542,7 @@ class Hard(LogicPreference):
             Stage.entrance_castle_be.value      : Rulesets(AccessRule.MONKEY),
 
             # Ciscocity
-            Stage.entrance_ciscocity_ad.value   : Rulesets(AccessRule.DASH, AccessRule.RCC),
+            Stage.entrance_ciscocity_ad.value   : Rulesets(AccessRule.DASH, AccessRule.RCC, AccessRule.KUNGFU),
             Stage.entrance_ciscocity_ad_2.value : Rulesets(event_invoked(Events.ciscocity_d_exit.value)),
             Stage.entrance_ciscocity_ce.value   : Rulesets(AccessRule.MONKEY),
             Stage.entrance_ciscocity_c1c.value  : Rulesets(event_invoked(Events.ciscocity_c_button.value)),
@@ -1421,6 +1421,9 @@ class Normal(Hard):
 
             # Castle
             Stage.entrance_castle_bb1.value     : Rulesets(AccessRule.HIT),
+
+            # Ciscocity
+            Stage.entrance_ciscocity_ad.value   : Rulesets(AccessRule.DASH, AccessRule.RCC),
 
             # Halloween
             Stage.entrance_halloween_d1d2.value : Rulesets(AccessRule.HIT),
