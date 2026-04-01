@@ -932,6 +932,10 @@ class Expert(Hard):
                 AccessRule.GLIDE, AccessRule.KUNGFU,
                 AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M,
             ),
+            Stage.entrance_arabian_e1e.value: Rulesets(
+                AccessRule.MAGICIAN,
+                AccessRule.FLY
+            ),
             Stage.entrance_asia_ab.value: Rulesets(
                 AccessRule.SWIM, AccessRule.HERO,
                 AccessRule.KUNGFU
