@@ -3547,11 +3547,3 @@ def generate_location_groups() -> dict[str, int]:
     groups[APHelper.racers.value] = copy.deepcopy(MONKEYS_RACERS)
 
     return groups
-
-# for k, v in generate_name_to_id().items():
-#     print(k, v)
-#
-# print("\n---------------------------------------------------------\n")
-#
-# for k, v in generate_location_groups().items():
-#     print(k, v)
