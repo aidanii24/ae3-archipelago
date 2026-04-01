@@ -736,8 +736,7 @@ class Hard(LogicPreference):
             Stage.entrance_tomo_f2f1.value      : Rulesets(AccessRule.NINJA, AccessRule.HERO),
             Stage.entrance_tomo_gg1.value       : Rulesets(AccessRule.KUNGFU),
             Stage.entrance_tomo_g1f.value       : Rulesets(event_invoked(Events.tomo_g_button.value)),
-            Stage.entrance_tomo_h1h.value       : Rulesets(AccessRule.GLIDE, AccessRule.KUNGFU,
-                                                           AccessRule.MAGICIAN),
+            Stage.entrance_tomo_h1h.value       : Rulesets(AccessRule.GLIDE, AccessRule.KUNGFU),
             Stage.entrance_tomo_ha.value        : Rulesets(AccessRule.SHOOT),
 
             # Space
