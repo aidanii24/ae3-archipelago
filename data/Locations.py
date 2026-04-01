@@ -3521,8 +3521,10 @@ def generate_location_groups() -> dict[str, int]:
             total.append(copy.deepcopy(CAMERAS_MASTER_ORDERED[i]))
 
         if CELLPHONES_MASTER_ORDERED[i]:
-            groups[f"{channel} Cellphones"] = [Cellphone_Name_to_ID[c] for c in CELLPHONES_MASTER_ORDERED[i]]
-            total.extend(copy.deepcopy(CELLPHONES_MASTER_ORDERED[i]))
+            as_names: list[str] = [Cellphone_Name_to_ID[c] for c in CELLPHONES_MASTER_ORDERED[i]]
+
+            groups[f"{channel} Cellphones"] = [*as_names]
+            total.extend([*as_names])
 
         groups[channel] = total
 
@@ -3545,3 +3547,11 @@ def generate_location_groups() -> dict[str, int]:
     groups[APHelper.racers.value] = copy.deepcopy(MONKEYS_RACERS)
 
     return groups
+
+# for k, v in generate_name_to_id().items():
+#     print(k, v)
+#
+# print("\n---------------------------------------------------------\n")
+#
+# for k, v in generate_location_groups().items():
+#     print(k, v)
