@@ -736,7 +736,8 @@ class Hard(LogicPreference):
             Stage.entrance_tomo_f2f1.value      : Rulesets(AccessRule.NINJA, AccessRule.HERO),
             Stage.entrance_tomo_gg1.value       : Rulesets(AccessRule.KUNGFU),
             Stage.entrance_tomo_g1f.value       : Rulesets(event_invoked(Events.tomo_g_button.value)),
-            Stage.entrance_tomo_h1h.value       : Rulesets(AccessRule.GLIDE),
+            Stage.entrance_tomo_h1h.value       : Rulesets(AccessRule.GLIDE, AccessRule.KUNGFU,
+                                                           AccessRule.MAGICIAN),
             Stage.entrance_tomo_ha.value        : Rulesets(AccessRule.SHOOT),
 
             # Space
@@ -1118,9 +1119,9 @@ class Expert(Hard):
                 AccessRule.KUNGFU,
                 AccessRule.BOOST_FLY, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
-            Stage.entrance_tomo_hh1.value: Rulesets(
-                AccessRule.GLIDE,
-                AccessRule.KUNGFU, AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
+            Stage.entrance_tomo_h1h.value: Rulesets(
+                AccessRule.GLIDE, AccessRule.KUNGFU, AccessRule.MAGICIAN,
+                AccessRule.QJ, AccessRule.G_FLOAT, AccessRule.G_FLOAT_M
             ),
             Stage.entrance_space_bi.value: Rulesets(
                 [event_invoked(Events.space_e_button.value),
@@ -1506,10 +1507,11 @@ class Normal(Hard):
             Stage.entrance_tomo_a1a.value       : Rulesets(AccessRule.HERO, AccessRule.NINJA),
             Stage.entrance_tomo_ee1.value       : Rulesets(AccessRule.KNIGHT),
             Stage.entrance_tomo_ee2.value       : Rulesets(AccessRule.RCC),
+            Stage.entrance_tomo_h1h.value       : Rulesets(AccessRule.GLIDE),
 
             # Space
-            Stage.entrance_space_ab.value       : Rulesets(AccessRule.ATTACK)
-            Stage.entrance_space_e1e_2.value    : Rulesets([AccessRule.RCC, AccessRule.MORPH_NO_MONKEY),
+            Stage.entrance_space_ab.value       : Rulesets(AccessRule.ATTACK),
+            Stage.entrance_space_e1e_2.value    : Rulesets([AccessRule.RCC, AccessRule.MORPH_NO_MONKEY]),
         })
 
 class Casual(Normal):
