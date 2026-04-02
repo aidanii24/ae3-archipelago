@@ -187,7 +187,7 @@ class GoalTargetOverride(NamedRange):
     Maximum possible counts for each category:
     (Use this as basis for what percentage value to enter for this option)
     Bosses (Triple Threat): 8
-    Pipo Monkeys (Play Spike/Play Jimmy): 334, 354 (No Break Room Monkeys)
+    Pipo Monkeys (Play Spike/Play Jimmy): 434, 354 (No Break Room Monkeys)
     Pipo Cameras (Director's Cut): 20
     Cellphones (Phone Check): 53
     Shop Items (Collector): 267
