@@ -109,7 +109,9 @@ class Pine:
             socket_family = socket.AF_UNIX
             socket_name = "/tmp/pcsx2.sock"
 
-        if self.active_platform != "Windows" and self._slot != 28011:
+            active_platform = "Unknown"
+
+        if active_platform != "Windows" and self._slot != 28011:
             socket_name += f".{self._slot}"
 
         try:
