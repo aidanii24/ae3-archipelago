@@ -840,13 +840,13 @@ class AE3Context(SuperContext):
                 logger.info("<!> Preferred Connection Details detected from Slot Data.")
                 if is_pine_slot_changed:
                     logger.info(f"[-!-] PINE Slot is now set to {self.pine_slot}."
-                                "      Please make sure the PINE Slot set for the emulator is the same.")
+                                f"\n{"":<5} Please make sure the PINE Slot set for the emulator is the same.")
                 if is_pine_platform_changed:
                     logger.info(f"[-!-] PINE Platform is now set to {self.pine_linux_platform}.")
-                    logger.info("      Please make sure you are using the correct PCSX2 instance.")
+                    logger.info("\n{"":<5} Please make sure you are using the correct PCSX2 instance.")
 
                 logger.info("[...] These settings can be changed at anytime in the client using the pine commands.")
-                logger.info("Re-establishing emulator connection with new details from the Slot Data.\n")
+                logger.info("\nRe-establishing emulator connection with new details from the Slot Data.\n")
 
                 if self.ipc.status != ConnectionStatus.DISCONNECTED:
                     self.ipc.disconnect_game()
