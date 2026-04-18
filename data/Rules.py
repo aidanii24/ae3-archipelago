@@ -1146,7 +1146,6 @@ class Expert(Hard):
         entrances_to_reset: list = [
             Stage.entrance_seaside_ac.value,
             Stage.entrance_woods_ad.value,
-            Stage.entrance_castle_ad.value,
             Stage.entrance_ciscocity_ad_2.value,
             Stage.entrance_ciscocity_c1c.value,
             Stage.entrance_ciscocity_ce.value,
