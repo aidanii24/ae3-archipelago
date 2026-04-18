@@ -106,7 +106,7 @@ def can_glide(state : CollectionState, player : int):
 
 ## Boost Jump
 def can_boost_jump(state : CollectionState, player : int):
-    return (state.has_any([Itm.gadget_net.value, Itm.gadget_club.value], player),
+    return (state.has_any([Itm.gadget_net.value, Itm.gadget_club.value], player) and
             state.has_from_list_unique([Itm.gadget_net.value, Itm.gadget_club.value,
                                         Itm.gadget_radar.value, Itm.gadget_hoop.value,
                                         Itm.gadget_sling.value, Itm.gadget_rcc.value,
