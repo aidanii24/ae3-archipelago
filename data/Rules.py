@@ -603,6 +603,8 @@ class Hard(LogicPreference):
             Stage.entrance_edotown_b1b2.value   : Rulesets(AccessRule.NINJA),
             Stage.entrance_edotown_b2b1.value   : Rulesets([event_invoked(Events.edotown_b1_button.value),
                                                             AccessRule.NINJA], AccessRule.SWIM, AccessRule.HERO),
+            Stage.entrance_edotown_c1c.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
+            Stage.entrance_edotown_cc1.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
             Stage.entrance_edotown_be.value     : Rulesets(event_invoked(Events.edotown_e_scroll.value)),
             Stage.entrance_edotown_df.value     : Rulesets(AccessRule.MONKEY),
             Stage.entrance_edotown_eb.value     : Rulesets(event_invoked(Events.edotown_e_scroll.value)),
@@ -1458,8 +1460,6 @@ class Normal(Hard):
             Stage.entrance_edotown_b2b.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
             Stage.entrance_edotown_bb2.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
             Stage.entrance_edotown_bc1.value    : Rulesets(AccessRule.HIT),
-            Stage.entrance_edotown_c1c.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
-            Stage.entrance_edotown_cc1.value    : Rulesets(AccessRule.NINJA, AccessRule.HERO),
             Stage.entrance_edotown_cc2.value    : Rulesets(AccessRule.HIT),
 
             # Heaven
