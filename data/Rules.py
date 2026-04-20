@@ -960,25 +960,13 @@ class Expert(Hard):
             ),
             Stage.entrance_asia_a1a3.value: Rulesets(
                 AccessRule.SWIM,
-                [event_invoked(Events.asia_a_block.value),
-                 event_invoked(Events.asia_a1_block.value),
-                 event_invoked(Events.asia_a2_block.value),
-                 AccessRule.HERO],
-                [event_invoked(Events.asia_a_block.value),
-                 event_invoked(Events.asia_a1_block.value),
-                 event_invoked(Events.asia_a2_block.value),
-                 AccessRule.KUNGFU]
+                [event_invoked(Events.asia_a2_block.value), AccessRule.HERO],
+                [event_invoked(Events.asia_a2_block.value), AccessRule.KUNGFU]
             ),
             Stage.entrance_asia_a3a1.value: Rulesets(
                 AccessRule.SWIM,
-                [event_invoked(Events.asia_a_block.value),
-                 event_invoked(Events.asia_a1_block.value),
-                 event_invoked(Events.asia_a2_block.value),
-                 AccessRule.HERO],
-                [event_invoked(Events.asia_a_block.value),
-                 event_invoked(Events.asia_a1_block.value),
-                 event_invoked(Events.asia_a2_block.value),
-                 AccessRule.KUNGFU]
+                [event_invoked(Events.asia_a2_block.value), AccessRule.HERO],
+                [event_invoked(Events.asia_a2_block.value), AccessRule.KUNGFU]
             ),
             Stage.entrance_asia_a2a3.value: Rulesets(
                 [event_invoked(Events.asia_a_block.value),
@@ -993,25 +981,13 @@ class Expert(Hard):
             ),
             Stage.entrance_asia_a3a4.value: Rulesets(
                 AccessRule.SWIM,
-                [event_invoked(Events.asia_a_block.value),
-                 event_invoked(Events.asia_a1_block.value),
-                 event_invoked(Events.asia_a2_block.value),
-                 AccessRule.HERO],
-                [event_invoked(Events.asia_a_block.value),
-                 event_invoked(Events.asia_a1_block.value),
-                 event_invoked(Events.asia_a2_block.value),
-                 AccessRule.KUNGFU]
+                [event_invoked(Events.asia_a2_block.value), AccessRule.HERO],
+                [event_invoked(Events.asia_a2_block.value), AccessRule.KUNGFU]
             ),
             Stage.entrance_asia_a4a3.value: Rulesets(
                 AccessRule.SWIM,
-                [event_invoked(Events.asia_a_block.value),
-                 event_invoked(Events.asia_a1_block.value),
-                 event_invoked(Events.asia_a2_block.value),
-                 AccessRule.HERO],
-                [event_invoked(Events.asia_a_block.value),
-                 event_invoked(Events.asia_a1_block.value),
-                 event_invoked(Events.asia_a2_block.value),
-                 AccessRule.KUNGFU]
+                [event_invoked(Events.asia_a2_block.value), AccessRule.HERO],
+                [event_invoked(Events.asia_a2_block.value), AccessRule.KUNGFU]
             ),
             Stage.entrance_asia_a3a2.value: Rulesets(
                 [event_invoked(Events.asia_a_block.value),
