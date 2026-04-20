@@ -1997,6 +1997,10 @@ EVENTS_EDOTOWN_E : Sequence[str] = [
     Events.edotown_e_scroll.value
 ]
 
+EVENTS_HEAVEN_B: Sequence[str] = [
+    Events.heaven_b_clapper.value
+]
+
 EVENTS_ICELAND_C : Sequence[str] = [
     Events.iceland_c_jumbo_robo.value
 ]
@@ -2118,6 +2122,7 @@ EVENTS_INDEX : dict[str, Sequence[str]] = {
     Stage.region_snowfesta_e.value      : EVENTS_SNOWFESTA_E,
     Stage.region_edotown_b1.value       : EVENTS_EDOTOWN_B1,
     Stage.region_edotown_e.value        : EVENTS_EDOTOWN_E,
+    Stage.region_heaven_b.value         : EVENTS_HEAVEN_B,
     Stage.region_iceland_c.value        : EVENTS_ICELAND_C,
     Stage.region_iceland_e.value        : EVENTS_ICELAND_E,
     Stage.region_arabian_c.value        : EVENTS_ARABIAN_C,
