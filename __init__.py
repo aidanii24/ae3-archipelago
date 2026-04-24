@@ -229,8 +229,6 @@ class AE3World(World):
         if 0 < self.options.progression_mode.value < 3:
             moved_bosses: set = total_moved_channels.intersection(STAGES_BOSSES)
 
-            print(len(moved_bosses), moved_bosses)
-
             if len(moved_bosses) > 6:
                 raise OptionError("Group/World Progression Mode relies on bosses for Channel Set splitting, "
                                   "but too many bosses have been moved using the Push/Post/Blacklist Channel options. "
