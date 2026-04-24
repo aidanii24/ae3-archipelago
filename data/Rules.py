@@ -1497,6 +1497,7 @@ class Casual(Normal):
         self.small_starting_channels = [6, 9, 11, 13, 15, 18, 20, 22, 23]
         self.blacklisted_entrances = [
             Stage.entrance_asia_a1a2.value,
+            Stage.entrance_hong_cc2.value,
             Stage.entrance_bay_e1e3.value,
             Stage.entrance_bay_e3e4.value,
             Stage.entrance_tomo_f2f.value
