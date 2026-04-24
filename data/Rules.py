@@ -459,7 +459,7 @@ class Hard(LogicPreference):
             Loc.arabian_minimon.value       : Rulesets(AccessRule.MAGICIAN, AccessRule.DASH),
 
             # Asia
-            Loc.bay_kazuo.value             : Rulesets(AccessRule.NINJA, AccessRule.HERO,
+            Loc.asia_baku.value             : Rulesets(AccessRule.NINJA, AccessRule.HERO,
                                                        [AccessRule.SHOOT, AccessRule.SWIM]),
             Loc.asia_mohcha.value           : Rulesets(AccessRule.RCC, AccessRule.MONKEY),
             Loc.asia_takumon.value          : Rulesets(AccessRule.SWIM, AccessRule.CATCH_LONG,
