@@ -14,7 +14,7 @@ from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, Cellphon
 from .Logic import Rulesets, AccessRule, has_keys, event_invoked, has_enough_keys, can_access_region, \
     has_shop_stock, has_morph_stocks, has_morph_extensions, can_farm_boxes, can_farm_sneaky_borgs
 from .Strings import Loc, Stage, Events, APHelper
-from .Stages import (STAGES_DIRECTORY, STAGES_DIRECTORY_LABEL, ENTRANCES_SHOP_PSEUDOREGIONS, AE3EntranceMeta,
+from .Stages import (ENTRANCES_INDEX, STAGES_DIRECTORY, STAGES_DIRECTORY_LABEL, ENTRANCES_SHOP_PSEUDOREGIONS, AE3EntranceMeta,
                      ENTRANCES_SHOP_PROGRESSION, STAGES_SHOP_PROGRESSION, STAGES_FARMABLE, STAGES_FARMABLE_SNEAKY_BORG,
                      LEVELS_BY_ORDER, ENTRANCES_INFINITE_GADGET_FLOAT_APPLICABLE)
 
@@ -353,16 +353,17 @@ class LogicPreference:
         self.edge_percentage : int = 0
 
     # Get all Access Rules within the channel
-    def get_channel_clear_rules(self, *regions : str) -> Rulesets:
+    def get_channel_clear_rules(self, channel : str) -> Rulesets:
         rules : Rulesets = Rulesets()
-        if not regions in STAGES_DIRECTORY:
+        if not channel in STAGES_DIRECTORY:
             return rules
 
-        for region in regions:
+        for entrance in ENTRANCES_INDEX[channel]:
             # Entrance Rules
-            if region in self.entrance_rules:
-                rules.update(self.entrance_rules[region])
+            if entrance in self.entrance_rules:
+                rules.update(self.entrance_rules[entrance])
 
+        for region in STAGES_DIRECTORY[channel]:
             # Monkey Rules
             rules.critical.update(self.default_critical_rule)
             if region in MONKEYS_INDEX:
