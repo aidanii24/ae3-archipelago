@@ -151,17 +151,16 @@ def create_regions(world : "AE3World"):
             # and they did not choose to have early Freeplay
             if world.options.camerasanity == 1 and not world.options.early_free_play:
                 ruleset : Rulesets = Rulesets()
-                channel_regions: list[str] = []
+                camera_channel: str = ""
                 for channel, regions in STAGES_DIRECTORY.items():
                     if not stage.name in regions:
                         continue
 
-                    channel_regions = [*regions]
+                    camera_channel = channel
                     break
 
-                if channel_regions:
-                    target_regions: list[Region] = [r for n, r in stages.items() if n in channel_regions]
-                    ruleset = world.logic_preference.get_channel_clear_rules(*target_regions)
+                if camera_channel:
+                    ruleset = world.logic_preference.get_channel_clear_rules(camera_channel)
 
                 loc.access_rule = ruleset.condense(world.player)
 
