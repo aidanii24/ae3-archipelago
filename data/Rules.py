@@ -242,7 +242,7 @@ class PostGameCondition:
             highest_scale = max(highest_scale, len(self.location_ids[APHelper.cellphone.value]) / 20)
 
         if APHelper.keys.value in self.amounts:
-            rules.add(has_keys((min_keys - 1) + self.amounts[APHelper.keys.value]))
+            rules.add(has_keys(min_keys + self.amounts[APHelper.keys.value]))
 
         # Check Rules that only yields small progress if required amount is high enough
         highest_scale *= 100
