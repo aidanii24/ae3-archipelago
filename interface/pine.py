@@ -156,19 +156,19 @@ class Pine:
         request = Pine._create_request(Pine.IPCCommand.READ8, address, 9)
         return Pine.from_bytes(self._send_request(request)[-1:])
 
-    def read_int16(self, address) -> int:
+    def read_int16(self, address: int) -> int:
         request = Pine._create_request(Pine.IPCCommand.READ16, address, 9)
         return Pine.from_bytes(self._send_request(request)[-2:])
 
-    def read_int32(self, address) -> int:
+    def read_int32(self, address: int) -> int:
         request = Pine._create_request(Pine.IPCCommand.READ32, address, 9)
         return Pine.from_bytes(self._send_request(request)[-4:])
 
-    def read_int64(self, address) -> int:
+    def read_int64(self, address: int) -> int:
         request = Pine._create_request(Pine.IPCCommand.READ64, address, 9)
         return Pine.from_bytes(self._send_request(request)[-8:])
 
-    def read_float(self, address) -> float:
+    def read_float(self, address: int) -> float:
         request = Pine._create_request(Pine.IPCCommand.READ32, address, 9)
         return struct.unpack("<f", self._send_request(request)[-4:])[0]
 
