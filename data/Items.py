@@ -228,16 +228,16 @@ ITEMS_MASTER : Sequence[AE3ItemMeta] = [
     *GADGETS, *MORPHS, *ACCESSORIES, *UPGRADEABLES, *COLLECTABLES, *ARCHIPELAGO
 ]
 
-ITEMS_INDEX : Sequence[Sequence] = [
+ITEMS_INDEX : Sequence[Sequence[EquipmentItem | UpgradeableItem | CollectableItem | ArchipelagoItem]] = [
     ITEMS_MASTER, GADGETS, MORPHS, EQUIPMENT, ACCESSORIES, UPGRADEABLES, COLLECTABLES, ARCHIPELAGO
 ]
 
 ### [< --- METHODS --- >]
 def from_id(item_id: int, category : int = 0):
     """Get Item by its ID"""
-    ref : Sequence = ITEMS_INDEX[category]
+    ref : Sequence[EquipmentItem | UpgradeableItem | CollectableItem | ArchipelagoItem] = ITEMS_INDEX[category]
 
-    i : AE3ItemMeta = next((i for i in ref if i.item_id == item_id), None)
+    i : AE3ItemMeta | None = next((i for i in ref if i.item_id == item_id), None)
     return i
 
 def generate_name_to_id() -> dict[str, int]:

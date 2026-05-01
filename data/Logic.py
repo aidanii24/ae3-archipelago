@@ -799,6 +799,6 @@ class Randomize(ProgressionMode):
         self.progression.append(0)
 
 
-ProgressionModeOptions : Sequence[Callable] = [
+ProgressionModeOptions : Sequence[Callable[['AE3World'], ProgressionMode]] = [
     Singles, Group, World, Quadruples, Open, Randomize
 ]

@@ -2108,6 +2108,6 @@ class PasswordHunt(DirectorsCut):
     locations = {*MONKEYS_PASSWORDS}
 
 
-GoalTargetOptions : list[Callable] = [
+GoalTargetOptions : list[Callable[[], GoalTarget]] = [
     Specter, SpecterFinal, TripleThreat, PlaySpike, PlayJimmy, DirectorsCut, PhoneCheck, ShopCollector
 ]
