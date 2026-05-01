@@ -262,11 +262,8 @@ class Rulesets:
     critical : Set[Rule] = set()
     rules : list[list[Rule]] = []
 
-    def __init__(self, *rules : Callable | list[Callable] | list[list[Callable]] | None,
-                 critical : Set[Callable] = None):
-        self.critical = set()
-        self.rules = []
-
+    def __init__(self, *rules : Rule | list[Rule] | list[list[Rule]] | None,
+                 critical : Set[Rule] | None = None):
         if critical:
             self.critical = critical
 
