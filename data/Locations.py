@@ -3504,51 +3504,51 @@ def generate_name_to_id() -> dict[str, int]:
 
     return name_to_id
 
-def generate_location_groups() -> dict[str, int]:
-    groups: dict[str: set[str]] = {}
+def generate_location_groups() -> dict[str, set[str]]:
+    groups: dict[str, set[str]] = {}
 
-    groups.update({f"{k} Monkeys" : v for k, v in MONKEYS_INDEX.items()})
-    groups.update({f"{k} Cellphones" : [Cellphone_Name_to_ID[c] for c in v]
+    groups.update({f"{k} Monkeys" : set(v) for k, v in MONKEYS_INDEX.items()})
+    groups.update({f"{k} Cellphones" : set([Cellphone_Name_to_ID[c] for c in v])
                    for k, v in CELLPHONES_INDEX.items()})
 
-    groups.update(copy.deepcopy(MONKEYS_INDEX))
+    groups.update({k: set(v) for k, v in MONKEYS_INDEX})
     for k, v in CAMERAS_INDEX.items():
-        groups.setdefault(k, []).append(v)
+        groups.setdefault(k, set()).update(v)
     for k, v in CELLPHONES_INDEX.items():
-        groups.setdefault(k, []).extend([Cellphone_Name_to_ID[c] for c in v])
+        groups.setdefault(k, set()).update([Cellphone_Name_to_ID[c] for c in v])
 
     for i, channel in enumerate(LEVELS_BY_ORDER):
-        total: list = [*copy.deepcopy(MONKEYS_MASTER_ORDERED[i])]
-        groups[f"{channel} Monkeys"] = copy.deepcopy(MONKEYS_MASTER_ORDERED[i])
+        total: list[str] = [*copy.deepcopy(MONKEYS_MASTER_ORDERED[i])]
+        groups[f"{channel} Monkeys"] = set(MONKEYS_MASTER_ORDERED[i])
 
         if CAMERAS_MASTER_ORDERED[i]:
-            groups[f"{channel} Cameras"] = [copy.deepcopy(CAMERAS_MASTER_ORDERED[i])]
+            groups[f"{channel} Cameras"] = set(CAMERAS_MASTER_ORDERED[i])
             total.append(copy.deepcopy(CAMERAS_MASTER_ORDERED[i]))
 
         if CELLPHONES_MASTER_ORDERED[i]:
             as_names: list[str] = [Cellphone_Name_to_ID[c] for c in CELLPHONES_MASTER_ORDERED[i]]
 
-            groups[f"{channel} Cellphones"] = [*as_names]
+            groups[f"{channel} Cellphones"] = set(as_names)
             total.extend([*as_names])
 
-        groups[channel] = total
+        groups[channel] = set(total)
 
-    groups.update(copy.deepcopy(SHOP_PROGRESSION_DIRECTORY))
-    groups.update(copy.deepcopy(SHOP_CATEGORIES_DIRECTORY))
+    groups.update({k: set(v) for k, v in SHOP_PROGRESSION_DIRECTORY})
+    groups.update({k: set(v) for k, v in SHOP_CATEGORIES_DIRECTORY})
 
-    groups[Loc.lucky_photo.value] = copy.deepcopy(SHOP_CATEGORIES_COLLECTION_DIRECTORY[Loc.lucky_photo.value])
+    groups[Loc.lucky_photo.value] = set(SHOP_CATEGORIES_COLLECTION_DIRECTORY[Loc.lucky_photo.value])
 
     for k, v in dict(list(SHOP_COLLECTION_DIRECTORY.items())[1:]).items():
-        groups.setdefault(k, []).extend(copy.deepcopy(v))
+        groups.setdefault(k, set()).update(v)
 
     for k, v in SHOP_GROUPINGS_DIRECTORY.items():
-        items: set = set()
+        items: set[str] = set()
         for g in v:
             items.update(copy.deepcopy(groups.get(g, [])))
 
-        groups[k] = [*items]
+        groups[k] = items
 
-    groups[APHelper.bosses.value] = copy.deepcopy(MONKEYS_BOSSES)
-    groups[APHelper.racers.value] = copy.deepcopy(MONKEYS_RACERS)
+    groups[APHelper.bosses.value] = set(MONKEYS_BOSSES)
+    groups[APHelper.racers.value] = set(MONKEYS_RACERS)
 
     return groups
