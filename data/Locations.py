@@ -127,899 +127,899 @@ class EventMeta(AE3LocationMeta):
 
 ## Monkeys
 # Zero
-MONKEYS_ZERO : Sequence[str] = [
+MONKEYS_ZERO : list[str] = [
     Loc.zero_ukki_pan.value
 ]
 
 # Seaside
-MONKEYS_SEASIDE_A : Sequence[str] = [
+MONKEYS_SEASIDE_A : list[str] = [
     Loc.seaside_nessal.value, Loc.seaside_ukki_pia.value, Loc.seaside_sarubo.value, Loc.seaside_salurin.value,
     Loc.seaside_ukkitan.value, Loc.seaside_morella.value
 ]
 
-MONKEYS_SEASIDE_B : Sequence[str] = [
+MONKEYS_SEASIDE_B : list[str] = [
     Loc.seaside_ukki_ben.value
 ]
 
-MONKEYS_SEASIDE_C : Sequence[str] = [
+MONKEYS_SEASIDE_C : list[str] = [
     Loc.seaside_kankichi.value, Loc.seaside_tomezo.value, Loc.seaside_kamayan.value, Loc.seaside_taizo.value
 ]
 
-MONKEYS_SEASIDE : Sequence[str] = [
+MONKEYS_SEASIDE : list[str] = [
     *MONKEYS_SEASIDE_A, *MONKEYS_SEASIDE_B, *MONKEYS_SEASIDE_C
 ]
 
 # Woods
-MONKEYS_WOODS_A : Sequence[str] = [
+MONKEYS_WOODS_A : list[str] = [
     Loc.woods_ukki_pon.value, Loc.woods_ukkian.value, Loc.woods_ukki_red.value, Loc.woods_rosalin.value
 ]
 
-MONKEYS_WOODS_B : Sequence[str] = [
+MONKEYS_WOODS_B : list[str] = [
     Loc.woods_salubon.value, Loc.woods_wolfmon.value, Loc.woods_ukiko.value
 ]
 
-MONKEYS_WOODS_C : Sequence[str] = [
+MONKEYS_WOODS_C : list[str] = [
     Loc.woods_lambymon.value, Loc.woods_kreemon.value, Loc.woods_ukkilei.value, Loc.woods_spork.value
 ]
 
-MONKEYS_WOODS_D : Sequence[str] = [
+MONKEYS_WOODS_D : list[str] = [
     Loc.woods_king_goat.value, Loc.woods_marukichi.value, Loc.woods_kikimon.value, Loc.woods_kominato.value
 ]
 
-MONKEYS_WOODS : Sequence[str] = [
+MONKEYS_WOODS : list[str] = [
     *MONKEYS_WOODS_A, *MONKEYS_WOODS_B, *MONKEYS_WOODS_C, *MONKEYS_WOODS_D
 ]
 
 # Castle
-MONKEYS_CASTLE_A1 : Sequence[str] = [
+MONKEYS_CASTLE_A1 : list[str] = [
     Loc.castle_ukkido.value
 ]
 
-MONKEYS_CASTLE_B : Sequence[str] = [
+MONKEYS_CASTLE_B : list[str] = [
     Loc.castle_pipo_guard.value, Loc.castle_ukkinee.value
 ]
 
-MONKEYS_CASTLE_B1 : Sequence[str] = [
+MONKEYS_CASTLE_B1 : list[str] = [
     Loc.castle_monderella.value, Loc.castle_ukki_ichi.value
 ]
 
-MONKEYS_CASTLE_C : Sequence[str] = [
+MONKEYS_CASTLE_C : list[str] = [
     Loc.castle_saru_mon.value, Loc.castle_monga.value, Loc.castle_ukkiton.value, Loc.castle_king_leo.value
 ]
 
-MONKEYS_CASTLE_D : Sequence[str] = [
+MONKEYS_CASTLE_D : list[str] = [
     Loc.castle_ukkii.value
 ]
 
-MONKEYS_CASTLE_D1 : Sequence[str] = [
+MONKEYS_CASTLE_D1 : list[str] = [
     Loc.castle_saluto.value
 ]
 
-MONKEYS_CASTLE_E : Sequence[str] = [
+MONKEYS_CASTLE_E : list[str] = [
     Loc.castle_kings_double.value, Loc.castle_mattsun.value, Loc.castle_miya.value, Loc.castle_mon_san.value
 ]
 
-MONKEYS_CASTLE_F : Sequence[str] = [
+MONKEYS_CASTLE_F : list[str] = [
     Loc.castle_sal_1000.value
 ]
 
-MONKEYS_CASTLE : Sequence[str] = [
+MONKEYS_CASTLE : list[str] = [
     *MONKEYS_CASTLE_A1, *MONKEYS_CASTLE_B, *MONKEYS_CASTLE_B1, *MONKEYS_CASTLE_C, *MONKEYS_CASTLE_D,
     *MONKEYS_CASTLE_D1, *MONKEYS_CASTLE_E, *MONKEYS_CASTLE_F
 ]
 
 # Boss1
-MONKEYS_BOSS1 : Sequence[str] = [ Loc.boss_monkey_white.value ]
+MONKEYS_BOSS1 : list[str] = [ Loc.boss_monkey_white.value ]
 
 # Ciscocity
-MONKEYS_CISCOCITY_A : Sequence[str] = [
+MONKEYS_CISCOCITY_A : list[str] = [
     Loc.ciscocity_ukima.value, Loc.ciscocity_monbolo.value, Loc.ciscocity_pipo_mondy.value,
     Loc.ciscocity_ukki_mattan.value, Loc.ciscocity_bemucho.value, Loc.ciscocity_ukki_nader.value
 ]
 
-MONKEYS_CISCOCITY_B : Sequence[str] = [
+MONKEYS_CISCOCITY_B : list[str] = [
     Loc.ciscocity_sabu_sabu.value, Loc.ciscocity_ginjiro.value, Loc.ciscocity_kichiemon.value
 ]
 
-MONKEYS_CISCOCITY_C : Sequence[str] = [
+MONKEYS_CISCOCITY_C : list[str] = [
     Loc.ciscocity_ukkilun.value
 ]
 
-MONKEYS_CISCOCITY_D : Sequence[str] = [
+MONKEYS_CISCOCITY_D : list[str] = [
     Loc.ciscocity_bully_mon.value, Loc.ciscocity_ukki_joe.value, Loc.ciscocity_tamaki.value,
     Loc.ciscocity_mickey_oou.value
 ]
 
-MONKEYS_CISCOCITY_E : Sequence[str] = [
+MONKEYS_CISCOCITY_E : list[str] = [
     Loc.ciscocity_sally_kokoroe.value, Loc.ciscocity_monkey_manager.value, Loc.ciscocity_supervisor_chimp.value,
     Loc.ciscocity_boss_ape.value
 ]
 
-MONKEYS_CISCOCITY : Sequence[str] = [
+MONKEYS_CISCOCITY : list[str] = [
     *MONKEYS_CISCOCITY_A, *MONKEYS_CISCOCITY_B, *MONKEYS_CISCOCITY_C, *MONKEYS_CISCOCITY_D, *MONKEYS_CISCOCITY_E,
 ]
 
 # Studio
-MONKEYS_STUDIO_A : Sequence[str] = [
+MONKEYS_STUDIO_A : list[str] = [
     Loc.studio_ukki_yan.value
 ]
 
-MONKEYS_STUDIO_B : Sequence[str] = [
+MONKEYS_STUDIO_B : list[str] = [
     Loc.studio_ukkipuss.value, Loc.studio_minoh.value, Loc.studio_monta.value
 ]
 
-MONKEYS_STUDIO_C : Sequence[str] = [
+MONKEYS_STUDIO_C : list[str] = [
     Loc.studio_pipopam.value, Loc.studio_monpii_ukkichi.value, Loc.studio_gabimon.value
 ]
 
-MONKEYS_STUDIO_D : Sequence[str] = [
+MONKEYS_STUDIO_D : list[str] = [
     Loc.studio_bananamon.value
 ]
 
-MONKEYS_STUDIO_D1 : Sequence[str] = [
+MONKEYS_STUDIO_D1 : list[str] = [
     Loc.studio_mokinza.value
 ]
 
-MONKEYS_STUDIO_E : Sequence[str] = [
+MONKEYS_STUDIO_E : list[str] = [
     Loc.studio_ukki_lee_ukki.value, Loc.studio_ukkida_jiro.value, Loc.studio_sal_ukindo.value
 ]
 
-MONKEYS_STUDIO_F1 : Sequence[str] = [
+MONKEYS_STUDIO_F1 : list[str] = [
     Loc.studio_gimminey.value, Loc.studio_hant.value
 ]
 
-MONKEYS_STUDIO_F : Sequence[str] = [
+MONKEYS_STUDIO_F : list[str] = [
     Loc.studio_chippino.value
 ]
 
-MONKEYS_STUDIO_G : Sequence[str] = [
+MONKEYS_STUDIO_G : list[str] = [
     Loc.studio_ukki_paul.value, Loc.studio_sally_mon.value, Loc.studio_bonly.value, Loc.studio_monly.value
 ]
 
-MONKEYS_STUDIO : Sequence[str] = [
+MONKEYS_STUDIO : list[str] = [
     *MONKEYS_STUDIO_A, *MONKEYS_STUDIO_B, *MONKEYS_STUDIO_C, *MONKEYS_STUDIO_D, *MONKEYS_STUDIO_D1,
     *MONKEYS_STUDIO_E, *MONKEYS_STUDIO_F, *MONKEYS_STUDIO_F1, *MONKEYS_STUDIO_G,
 ]
 
 # Halloween
-MONKEYS_HALLOWEEN_A1 : Sequence[str] = [
+MONKEYS_HALLOWEEN_A1 : list[str] = [
     Loc.halloween_monkichiro.value
 ]
 
-MONKEYS_HALLOWEEN_A : Sequence[str] = [
+MONKEYS_HALLOWEEN_A : list[str] = [
     Loc.halloween_leomon.value, Loc.halloween_uikkun.value, Loc.halloween_take_ukita.value
 ]
 
-MONKEYS_HALLOWEEN_B : Sequence[str] = [
+MONKEYS_HALLOWEEN_B : list[str] = [
     Loc.halloween_bonbon.value, Loc.halloween_chichi.value
 ]
 
-MONKEYS_HALLOWEEN_C : Sequence[str] = [
+MONKEYS_HALLOWEEN_C : list[str] = [
     Loc.halloween_ukkisuke.value, Loc.halloween_chibi_sally.value
 ]
 
-MONKEYS_HALLOWEEN_C2 : Sequence[str] = [
+MONKEYS_HALLOWEEN_C2 : list[str] = [
     Loc.halloween_ukkison.value
 ]
 
-MONKEYS_HALLOWEEN_D : Sequence[str] = [
+MONKEYS_HALLOWEEN_D : list[str] = [
     Loc.halloween_saruhotep.value
 ]
 
-MONKEYS_HALLOWEEN_D1 : Sequence[str] = [
+MONKEYS_HALLOWEEN_D1 : list[str] = [
     Loc.halloween_ukkito.value
 ]
 
-MONKEYS_HALLOWEEN_D2 : Sequence[str] = [
+MONKEYS_HALLOWEEN_D2 : list[str] = [
     Loc.halloween_monzally.value, Loc.halloween_ukkiami.value
 ]
 
-MONKEYS_HALLOWEEN_E : Sequence[str] = [
+MONKEYS_HALLOWEEN_E : list[str] = [
     Loc.halloween_monjan.value, Loc.halloween_nattchan.value, Loc.halloween_kabochin.value,
     Loc.halloween_ukki_mon.value
 ]
 
-MONKEYS_HALLOWEEN_F : Sequence[str] = [
+MONKEYS_HALLOWEEN_F : list[str] = [
     Loc.halloween_mumpkin.value
 ]
 
-MONKEYS_HALLOWEEN : Sequence[str] = [
+MONKEYS_HALLOWEEN : list[str] = [
     *MONKEYS_HALLOWEEN_A1, *MONKEYS_HALLOWEEN_A, *MONKEYS_HALLOWEEN_B, *MONKEYS_HALLOWEEN_C, *MONKEYS_HALLOWEEN_C2,
     *MONKEYS_HALLOWEEN_D, *MONKEYS_HALLOWEEN_D1, *MONKEYS_HALLOWEEN_D2, *MONKEYS_HALLOWEEN_E,  *MONKEYS_HALLOWEEN_F
 ]
 
 # Western
-MONKEYS_WESTERN_A : Sequence[str] = [
+MONKEYS_WESTERN_A : list[str] = [
     Loc.western_morrey.value, Loc.western_jomi.value, Loc.western_tammy.value
 ]
 
-MONKEYS_WESTERN_B : Sequence[str] = [
+MONKEYS_WESTERN_B : list[str] = [
     Loc.western_ukki_gigolo.value, Loc.western_monboron.value, Loc.western_west_ukki.value
 ]
 
-MONKEYS_WESTERN_C : Sequence[str] = [
+MONKEYS_WESTERN_C : list[str] = [
     Loc.western_lucky_woo.value, Loc.western_pamela.value, Loc.western_ukki_monber.value, Loc.western_gaukichi.value
 ]
 
-MONKEYS_WESTERN_D2 : Sequence[str] = [
+MONKEYS_WESTERN_D2 : list[str] = [
     Loc.western_shaluron.value,
 ]
 
-MONKEYS_WESTERN_D3 : Sequence[str] = [
+MONKEYS_WESTERN_D3 : list[str] = [
     Loc.western_jay_mohn.value, Loc.western_munkee_joe.value, Loc.western_saru_chison.value, Loc.western_jaja_jamo.value
 ]
 
-MONKEYS_WESTERN_E : Sequence[str] = [
+MONKEYS_WESTERN_E : list[str] = [
     Loc.western_chammy_mo.value, Loc.western_golozo.value
 ]
 
-MONKEYS_WESTERN_E1 : Sequence[str] = [
+MONKEYS_WESTERN_E1 : list[str] = [
     Loc.western_golon_moe.value,
 ]
 
-MONKEYS_WESTERN_F : Sequence[str] = [
+MONKEYS_WESTERN_F : list[str] = [
     Loc.western_ukkia_munbo.value, Loc.western_mon_johny.value
 ]
 
-MONKEYS_WESTERN : Sequence[str] = [
+MONKEYS_WESTERN : list[str] = [
     *MONKEYS_WESTERN_A, *MONKEYS_WESTERN_B, *MONKEYS_WESTERN_C, *MONKEYS_WESTERN_D2, *MONKEYS_WESTERN_D3,
     *MONKEYS_WESTERN_E, *MONKEYS_WESTERN_E1, *MONKEYS_WESTERN_F,
 ]
 
 # Boss2
-MONKEYS_BOSS2 : Sequence[str] = [
+MONKEYS_BOSS2 : list[str] = [
     Loc.boss_monkey_blue.value
 ]
 
 # Onsen
-MONKEYS_ONSEN_A : Sequence[str] = [
+MONKEYS_ONSEN_A : list[str] = [
     Loc.onsen_chabimon.value, Loc.onsen_ukki_ichiro.value
 ]
 
-MONKEYS_ONSEN_A1M : Sequence[str] = [
+MONKEYS_ONSEN_A1M : list[str] = [
     Loc.onsen_kiichiro.value, Loc.onsen_saru_sam.value
 ]
 
-MONKEYS_ONSEN_A2M : Sequence[str] = [
+MONKEYS_ONSEN_A2M : list[str] = [
     Loc.onsen_michiyan.value, Loc.onsen_tome_san.value
 ]
 
-MONKEYS_ONSEN_B : Sequence[str] = [
+MONKEYS_ONSEN_B : list[str] = [
     Loc.onsen_ukki_emon.value, Loc.onsen_moki.value, Loc.onsen_ukimi.value, Loc.onsen_domobeh.value
 ]
 
-MONKEYS_ONSEN_C : Sequence[str] = [
+MONKEYS_ONSEN_C : list[str] = [
     Loc.onsen_sam_san.value, Loc.onsen_donkichi.value, Loc.onsen_minokichi.value, Loc.onsen_tatabo.value
 ]
 
-MONKEYS_ONSEN_D : Sequence[str] = [
+MONKEYS_ONSEN_D : list[str] = [
     Loc.onsen_michiro.value, Loc.onsen_gen_san.value
 ]
 
-MONKEYS_ONSEN_D1 : Sequence[str] = [
+MONKEYS_ONSEN_D1 : list[str] = [
     Loc.onsen_kimi_san.value
 ]
 
-MONKEYS_ONSEN_E : Sequence[str] = [
+MONKEYS_ONSEN_E : list[str] = [
     Loc.onsen_mujakin.value, Loc.onsen_mihachin.value, Loc.onsen_fuji_chan.value
 ]
 
-MONKEYS_ONSEN : Sequence[str] = [
+MONKEYS_ONSEN : list[str] = [
     *MONKEYS_ONSEN_A, *MONKEYS_ONSEN_A1M, *MONKEYS_ONSEN_A2M, *MONKEYS_ONSEN_B, *MONKEYS_ONSEN_C, *MONKEYS_ONSEN_D,
     *MONKEYS_ONSEN_D1, *MONKEYS_ONSEN_E
 ]
 
 # Snowfesta
-MONKEYS_SNOWFESTA_A : Sequence[str] = [
+MONKEYS_SNOWFESTA_A : list[str] = [
     Loc.snowfesta_kimisuke.value, Loc.snowfesta_konzo.value, Loc.snowfesta_saburota.value, Loc.snowfesta_mitsuro.value,
     Loc.snowfesta_takuo.value, Loc.snowfesta_konkichi.value
 ]
 
-MONKEYS_SNOWFESTA_B : Sequence[str] = [
+MONKEYS_SNOWFESTA_B : list[str] = [
     Loc.snowfesta_fumikichi.value, Loc.snowfesta_pipotron_yellow.value
 ]
 
-MONKEYS_SNOWFESTA_C : Sequence[str] = [
+MONKEYS_SNOWFESTA_C : list[str] = [
     Loc.snowfesta_tamubeh.value, Loc.snowfesta_kimikichi.value, Loc.snowfesta_gonbeh.value
 ]
 
-MONKEYS_SNOWFESTA_D : Sequence[str] = [
+MONKEYS_SNOWFESTA_D : list[str] = [
     Loc.snowfesta_shimmy.value
 ]
 
-MONKEYS_SNOWFESTA_E : Sequence[str] = [
+MONKEYS_SNOWFESTA_E : list[str] = [
     Loc.snowfesta_mako.value, Loc.snowfesta_miko.value, Loc.snowfesta_tamio.value, Loc.snowfesta_jeitan.value,
     Loc.snowfesta_ukki_jii.value
 ]
 
-MONKEYS_SNOWFESTA_F : Sequence[str] = [
+MONKEYS_SNOWFESTA_F : list[str] = [
     Loc.snowfesta_akki_bon.value
 ]
 
-MONKEYS_SNOWFESTA_G : Sequence[str] = [
+MONKEYS_SNOWFESTA_G : list[str] = [
     Loc.snowfesta_kimi_chan.value, Loc.snowfesta_sae_chan.value, Loc.snowfesta_tassan.value,
     Loc.snowfesta_tomokun.value
 ]
 
-MONKEYS_SNOWFESTA : Sequence[str] = [
+MONKEYS_SNOWFESTA : list[str] = [
     *MONKEYS_SNOWFESTA_A, *MONKEYS_SNOWFESTA_B, *MONKEYS_SNOWFESTA_C, *MONKEYS_SNOWFESTA_D, *MONKEYS_SNOWFESTA_E,
     *MONKEYS_SNOWFESTA_F, *MONKEYS_SNOWFESTA_G,
 ]
 
 # Edotown
-MONKEYS_EDOTOWN_A : Sequence[str] = [
+MONKEYS_EDOTOWN_A : list[str] = [
     Loc.edotown_pipo_tobi.value, Loc.edotown_masan.value, Loc.edotown_mohachi.value
 ]
 
-MONKEYS_EDOTOWN_B : Sequence[str] = [
+MONKEYS_EDOTOWN_B : list[str] = [
     Loc.edotown_mon_ninpo.value, Loc.edotown_yosio.value, Loc.edotown_fatty_mcfats.value
 ]
 
-MONKEYS_EDOTOWN_C : Sequence[str] = [
+MONKEYS_EDOTOWN_C : list[str] = [
     Loc.edotown_tomoku_chan.value,
 ]
 
-MONKEYS_EDOTOWN_C1 : Sequence[str] = [
+MONKEYS_EDOTOWN_C1 : list[str] = [
     Loc.edotown_kikimaru.value
 ]
 
-MONKEYS_EDOTOWN_C2 : Sequence[str] = [
+MONKEYS_EDOTOWN_C2 : list[str] = [
     Loc.edotown_uziko.value, Loc.edotown_gp.value
 ]
 
-MONKEYS_EDOTOWN_D : Sequence[str] = [
+MONKEYS_EDOTOWN_D : list[str] = [
     Loc.edotown_walter.value, Loc.edotown_monkibeth.value, Loc.edotown_babuzo.value, Loc.edotown_fishy_feet.value,
     Loc.edotown_pipo_torin.value
 ]
 
-MONKEYS_EDOTOWN_E : Sequence[str] = [
+MONKEYS_EDOTOWN_E : list[str] = [
     Loc.edotown_tomi.value, Loc.edotown_master_pan.value
 ]
 
-MONKEYS_EDOTOWN_F : Sequence[str] = [
+MONKEYS_EDOTOWN_F : list[str] = [
     Loc.edotown_monchin_chi.value, Loc.edotown_masachi.value, Loc.edotown_golota.value, Loc.edotown_kinsuke.value
 ]
 
-MONKEYS_EDOTOWN : Sequence[str] = [
+MONKEYS_EDOTOWN : list[str] = [
     *MONKEYS_EDOTOWN_A, *MONKEYS_EDOTOWN_B, *MONKEYS_EDOTOWN_C, *MONKEYS_EDOTOWN_C1, *MONKEYS_EDOTOWN_C2,
     *MONKEYS_EDOTOWN_D, *MONKEYS_EDOTOWN_E, *MONKEYS_EDOTOWN_F
 ]
 
 # Boss3
-MONKEYS_BOSS3 : Sequence[str] = [
+MONKEYS_BOSS3 : list[str] = [
     Loc.boss_monkey_yellow.value
 ]
 
 # Heaven
-MONKEYS_HEAVEN_A : Sequence[str] = [
+MONKEYS_HEAVEN_A : list[str] = [
     Loc.heaven_ukkichi.value, Loc.heaven_chomon.value, Loc.heaven_ukkido.value
 ]
 
-MONKEYS_HEAVEN_B : Sequence[str] = [
+MONKEYS_HEAVEN_B : list[str] = [
     Loc.heaven_kyamio.value, Loc.heaven_talupon.value, Loc.heaven_bokitan.value, Loc.heaven_tami.value,
     Loc.heaven_micchino.value
 ]
 
-MONKEYS_HEAVEN_C : Sequence[str] = [
+MONKEYS_HEAVEN_C : list[str] = [
     Loc.heaven_talurin.value, Loc.heaven_occhimon.value, Loc.heaven_mikkurin.value, Loc.heaven_kicchino.value,
     Loc.heaven_kimurin.value, Loc.heaven_sakkano.value
 ]
 
-MONKEYS_HEAVEN_D : Sequence[str] = [
+MONKEYS_HEAVEN_D : list[str] = [
     Loc.heaven_camino.value, Loc.heaven_valuccha.value
 ]
 
-MONKEYS_HEAVEN_E : Sequence[str] = [
+MONKEYS_HEAVEN_E : list[str] = [
     Loc.heaven_pisuke.value, Loc.heaven_kansuke.value, Loc.heaven_pohta.value, Loc.heaven_keisuke.value
 ]
 
-MONKEYS_HEAVEN : Sequence[str] = [
+MONKEYS_HEAVEN : list[str] = [
     *MONKEYS_HEAVEN_A, *MONKEYS_HEAVEN_B, *MONKEYS_HEAVEN_C, *MONKEYS_HEAVEN_D, *MONKEYS_HEAVEN_E
 ]
 
 # Toyhouse
-MONKEYS_TOYHOUSE_A : Sequence[str] = [
+MONKEYS_TOYHOUSE_A : list[str] = [
     Loc.toyhouse_pikkori.value, Loc.toyhouse_talukki.value, Loc.toyhouse_pinkino.value
 ]
 
-MONKEYS_TOYHOUSE_B : Sequence[str] = [
+MONKEYS_TOYHOUSE_B : list[str] = [
     Loc.toyhouse_bon_mota.value, Loc.toyhouse_bon_verna.value, Loc.toyhouse_bon_papa.value, Loc.toyhouse_bon_mama.value
 ]
 
-MONKEYS_TOYHOUSE_B1 : Sequence[str] = [
+MONKEYS_TOYHOUSE_B1 : list[str] = [
     Loc.toyhouse_kalkin.value
 ]
 
-MONKEYS_TOYHOUSE_C : Sequence[str] = [
+MONKEYS_TOYHOUSE_C : list[str] = [
     Loc.toyhouse_pakun.value, Loc.toyhouse_ukki_x.value, Loc.toyhouse_mon_gareji.value, Loc.toyhouse_shouji.value,
     Loc.toyhouse_woo_makka.value
 ]
 
-MONKEYS_TOYHOUSE_D : Sequence[str] = [
+MONKEYS_TOYHOUSE_D : list[str] = [
     Loc.toyhouse_monto.value, Loc.toyhouse_mokitani.value, Loc.toyhouse_namigo.value, Loc.toyhouse_pipotron_red.value
 ]
 
-MONKEYS_TOYHOUSE_E : Sequence[str] = [
+MONKEYS_TOYHOUSE_E : list[str] = [
     Loc.toyhouse_master_loafy.value
 ]
 
-MONKEYS_TOYHOUSE_F : Sequence[str] = [
+MONKEYS_TOYHOUSE_F : list[str] = [
     Loc.toyhouse_golonero.value
 ]
 
-MONKEYS_TOYHOUSE_G : Sequence[str] = [
+MONKEYS_TOYHOUSE_G : list[str] = [
     Loc.toyhouse_kocho.value
 ]
 
-MONKEYS_TOYHOUSE_H : Sequence[str] = [
+MONKEYS_TOYHOUSE_H : list[str] = [
     Loc.toyhouse_tam_konta.value, Loc.toyhouse_tam_mimiko.value, Loc.toyhouse_tam_papa.value,
     Loc.toyhouse_tam_mama.value
 ]
 
-MONKEYS_TOYHOUSE : Sequence[str] = [
+MONKEYS_TOYHOUSE : list[str] = [
     *MONKEYS_TOYHOUSE_A, *MONKEYS_TOYHOUSE_B, *MONKEYS_TOYHOUSE_B1, *MONKEYS_TOYHOUSE_C, *MONKEYS_TOYHOUSE_D,
     *MONKEYS_TOYHOUSE_E, *MONKEYS_TOYHOUSE_F, *MONKEYS_TOYHOUSE_G, *MONKEYS_TOYHOUSE_H,
 ]
 
 # Iceland
-MONKEYS_ICELAND_A : Sequence[str] = [
+MONKEYS_ICELAND_A : list[str] = [
     Loc.iceland_bikupuri.value, Loc.iceland_ukkisu.value
 ]
 
-MONKEYS_ICELAND_A1 : Sequence[str] = [
+MONKEYS_ICELAND_A1 : list[str] = [
     Loc.iceland_ukki_ami.value,
 ]
 
-MONKEYS_ICELAND_A2 : Sequence[str] = [
+MONKEYS_ICELAND_A2 : list[str] = [
     Loc.iceland_balio.value
 ]
 
-MONKEYS_ICELAND_B : Sequence[str] = [
+MONKEYS_ICELAND_B : list[str] = [
     Loc.iceland_kimkon.value, Loc.iceland_ukkina.value, Loc.iceland_kushachin.value
 ]
 
-MONKEYS_ICELAND_C : Sequence[str] = [
+MONKEYS_ICELAND_C : list[str] = [
     Loc.iceland_malikko.value, Loc.iceland_bolikko.value
 ]
 
-MONKEYS_ICELAND_D : Sequence[str] = [
+MONKEYS_ICELAND_D : list[str] = [
     Loc.iceland_iceymon.value, Loc.iceland_mokkidon.value
 ]
 
-MONKEYS_ICELAND_E : Sequence[str] = [
+MONKEYS_ICELAND_E : list[str] = [
     Loc.iceland_jolly_mon.value, Loc.iceland_hikkori.value, Loc.iceland_rammy.value
 ]
 
-MONKEYS_ICELAND_F : Sequence[str] = [
+MONKEYS_ICELAND_F : list[str] = [
     Loc.iceland_monkino.value, Loc.iceland_kyam.value, Loc.iceland_kappino.value, Loc.iceland_kris_krimon.value
 ]
 
-MONKEYS_ICELAND : Sequence[str] = [
+MONKEYS_ICELAND : list[str] = [
     *MONKEYS_ICELAND_A, *MONKEYS_ICELAND_A1, *MONKEYS_ICELAND_A2, *MONKEYS_ICELAND_B, *MONKEYS_ICELAND_C,
     *MONKEYS_ICELAND_D, *MONKEYS_ICELAND_E, *MONKEYS_ICELAND_F
 ]
 
 # Arabian
-MONKEYS_ARABIAN_A : Sequence[str] = [
+MONKEYS_ARABIAN_A : list[str] = [
     Loc.arabian_scorpi_mon.value, Loc.arabian_minimon.value, Loc.arabian_moontero.value
 ]
 
-MONKEYS_ARABIAN_B : Sequence[str] = [
+MONKEYS_ARABIAN_B : list[str] = [
     Loc.arabian_ukki_son.value, Loc.arabian_ukki_jeff.value, Loc.arabian_saru_maru.value, Loc.arabian_genghis_mon.value,
     Loc.arabian_cup_o_mon.value
 ]
 
-MONKEYS_ARABIAN_C : Sequence[str] = [
+MONKEYS_ARABIAN_C : list[str] = [
     Loc.arabian_nijal.value, Loc.arabian_apey_jones.value, Loc.arabian_golden_mon.value
 ]
 
-MONKEYS_ARABIAN_C1 : Sequence[str] = [
+MONKEYS_ARABIAN_C1 : list[str] = [
     Loc.arabian_ukki_mamba.value, Loc.arabian_crazy_ol_mon.value
 ]
 
-MONKEYS_ARABIAN_E : Sequence[str] = [
+MONKEYS_ARABIAN_E : list[str] = [
     Loc.arabian_shamila.value, Loc.arabian_tamiyanya.value, Loc.arabian_salteenz.value,
     Loc.arabian_dancing_mia.value
 ]
 
-MONKEYS_ARABIAN_F : Sequence[str] = [
+MONKEYS_ARABIAN_F : list[str] = [
     Loc.arabian_miccho.value, Loc.arabian_kisha.value, Loc.arabian_gimuccho.value, Loc.arabian_wojin.value
 ]
 
-MONKEYS_ARABIAN_G : Sequence[str] = [
+MONKEYS_ARABIAN_G : list[str] = [
     Loc.arabian_princess_judy.value
 ]
 
-MONKEYS_ARABIAN : Sequence[str] = [
+MONKEYS_ARABIAN : list[str] = [
     *MONKEYS_ARABIAN_A, *MONKEYS_ARABIAN_B, *MONKEYS_ARABIAN_C, *MONKEYS_ARABIAN_C1, *MONKEYS_ARABIAN_E,
     *MONKEYS_ARABIAN_F, *MONKEYS_ARABIAN_G
 ]
 
 # Boss4
-MONKEYS_BOSS4 : Sequence[str] = [
+MONKEYS_BOSS4 : list[str] = [
     Loc.boss_monkey_pink.value
 ]
 
 # Asia
-MONKEYS_ASIA_A : Sequence[str] = [
+MONKEYS_ASIA_A : list[str] = [
     Loc.asia_pincher_mon.value
 ]
 
-MONKEYS_ASIA_A1 : Sequence[str] = [
+MONKEYS_ASIA_A1 : list[str] = [
     Loc.asia_salumani.value, Loc.asia_salulu.value
 ]
 
-MONKEYS_ASIA_A4 : Sequence[str] = [
+MONKEYS_ASIA_A4 : list[str] = [
     Loc.asia_baku.value
 ]
 
-MONKEYS_ASIA_A6 : Sequence[str] = [
+MONKEYS_ASIA_A6 : list[str] = [
     Loc.asia_ukki_mat.value, Loc.asia_salunch.value
 ]
 
-MONKEYS_ASIA_B : Sequence[str] = [
+MONKEYS_ASIA_B : list[str] = [
     Loc.asia_mong_popo.value, Loc.asia_mohcha.value, Loc.asia_kamcha.value
 ]
 
-MONKEYS_ASIA_B1 : Sequence[str] = [
+MONKEYS_ASIA_B1 : list[str] = [
     Loc.asia_bimocha.value, Loc.asia_gimchin.value
 ]
 
-MONKEYS_ASIA_B2 : Sequence[str] = [
+MONKEYS_ASIA_B2 : list[str] = [
     Loc.asia_kamaccha.value
 ]
 
-MONKEYS_ASIA_D : Sequence[str] = [
+MONKEYS_ASIA_D : list[str] = [
     Loc.asia_gyamu.value, Loc.asia_tartan.value
 ]
 
-MONKEYS_ASIA_D2 : Sequence[str] = [
+MONKEYS_ASIA_D2 : list[str] = [
     Loc.asia_takumon.value, Loc.asia_ukki_ether.value
 ]
 
-MONKEYS_ASIA_E : Sequence[str] = [
+MONKEYS_ASIA_E : list[str] = [
     Loc.asia_molzone.value
 ]
 
-MONKEYS_ASIA_E2 : Sequence[str] = [
+MONKEYS_ASIA_E2 : list[str] = [
     Loc.asia_chappio.value, Loc.asia_pomoah.value
 ]
 
-MONKEYS_ASIA_F : Sequence[str] = [
+MONKEYS_ASIA_F : list[str] = [
     Loc.asia_gucchai.value, Loc.asia_makaccho.value, Loc.asia_gamaran.value, Loc.asia_larry.value
 ]
 
-MONKEYS_ASIA : Sequence[str] = [
+MONKEYS_ASIA : list[str] = [
     *MONKEYS_ASIA_A, *MONKEYS_ASIA_A1, *MONKEYS_ASIA_A4, *MONKEYS_ASIA_A6, *MONKEYS_ASIA_B, *MONKEYS_ASIA_B1,
     *MONKEYS_ASIA_B2, *MONKEYS_ASIA_D, *MONKEYS_ASIA_D2, *MONKEYS_ASIA_E, *MONKEYS_ASIA_E2, *MONKEYS_ASIA_F
 ]
 
 # Plane
-MONKEYS_PLANE_A : Sequence[str] = [
+MONKEYS_PLANE_A : list[str] = [
     Loc.plane_romo.value, Loc.plane_temko.value
 ]
 
-MONKEYS_PLANE_A1 : Sequence[str] = [
+MONKEYS_PLANE_A1 : list[str] = [
     Loc.plane_ukkigawa.value
 ]
 
-MONKEYS_PLANE_B : Sequence[str] = [
+MONKEYS_PLANE_B : list[str] = [
     Loc.plane_mokkido.value
 ]
 
-MONKEYS_PLANE_B1 : Sequence[str] = [
+MONKEYS_PLANE_B1 : list[str] = [
     Loc.plane_pont.value
 ]
 
-MONKEYS_PLANE_B2 : Sequence[str] = [
+MONKEYS_PLANE_B2 : list[str] = [
     Loc.plane_gamish.value
 ]
 
-MONKEYS_PLANE_C : Sequence[str] = [
+MONKEYS_PLANE_C : list[str] = [
     Loc.plane_takmon.value, Loc.plane_mukita.value
 ]
 
-MONKEYS_PLANE_C1 : Sequence[str] = [
+MONKEYS_PLANE_C1 : list[str] = [
     Loc.plane_prince_bertus.value, Loc.plane_chai_bunny.value
 ]
 
-MONKEYS_PLANE_D : Sequence[str] = [
+MONKEYS_PLANE_D : list[str] = [
     Loc.plane_tamrai.value, Loc.plane_pipotron_blue.value
 ]
 
-MONKEYS_PLANE_D1 : Sequence[str] = [
+MONKEYS_PLANE_D1 : list[str] = [
     Loc.plane_kemunpa.value
 ]
 
-MONKEYS_PLANE_E : Sequence[str] = [
+MONKEYS_PLANE_E : list[str] = [
     Loc.plane_mabaras.value, Loc.plane_tamoos.value, Loc.plane_kimoto.value
 ]
 
-MONKEYS_PLANE_F1 : Sequence[str] = [
+MONKEYS_PLANE_F1 : list[str] = [
     Loc.plane_octavian.value
 ]
 
-MONKEYS_PLANE_G : Sequence[str] = [
+MONKEYS_PLANE_G : list[str] = [
     Loc.plane_samuel.value, Loc.plane_coril.value, Loc.plane_bont.value, Loc.plane_delly.value
 ]
 
-MONKEYS_PLANE_H : Sequence[str] = [
+MONKEYS_PLANE_H : list[str] = [
     Loc.plane_jeloh.value, Loc.plane_bongo.value
 ]
 
-MONKEYS_PLANE : Sequence[str] = [
+MONKEYS_PLANE : list[str] = [
     *MONKEYS_PLANE_A, *MONKEYS_PLANE_A1, *MONKEYS_PLANE_B, *MONKEYS_PLANE_B1, *MONKEYS_PLANE_B2, *MONKEYS_PLANE_C,
     *MONKEYS_PLANE_C1, *MONKEYS_PLANE_D, *MONKEYS_PLANE_D1, *MONKEYS_PLANE_E, *MONKEYS_PLANE_F1, *MONKEYS_PLANE_G,
     *MONKEYS_PLANE_H
 ]
 
 # Hong
-MONKEYS_HONG_A : Sequence[str] = [
+MONKEYS_HONG_A : list[str] = [
     Loc.hong_nak_nayo.value,
 ]
 
-MONKEYS_HONG_A1 : Sequence[str] = [
+MONKEYS_HONG_A1 : list[str] = [
     Loc.hong_donto_koi.value, Loc.hong_po_kin_ki.value
 ]
 
-MONKEYS_HONG_A2 : Sequence[str] = [
+MONKEYS_HONG_A2 : list[str] = [
     Loc.hong_dally.value,
 ]
 
-MONKEYS_HONG_B : Sequence[str] = [
+MONKEYS_HONG_B : list[str] = [
     Loc.hong_shinchi.value, Loc.hong_doh_tsuitaro.value
 ]
 
-MONKEYS_HONG_B1 : Sequence[str] = [
+MONKEYS_HONG_B1 : list[str] = [
     Loc.hong_ukki_chan.value, Loc.hong_uki_uki.value, Loc.hong_muki_muki.value, Loc.hong_hi_uchi_ishi.value
 ]
 
-MONKEYS_HONG_C : Sequence[str] = [
+MONKEYS_HONG_C : list[str] = [
     Loc.hong_bassili_ukki.value, Loc.hong_pikon.value, Loc.hong_bankan.value, Loc.hong_sukei.value,
     Loc.hong_giyan.value
 ]
 
-MONKEYS_HONG_C1 : Sequence[str] = [
+MONKEYS_HONG_C1 : list[str] = [
     Loc.hong_danchi.value
 ]
 
-MONKEYS_HONG_C2 : Sequence[str] = [
+MONKEYS_HONG_C2 : list[str] = [
     Loc.hong_gala_waruo.value
 ]
 
-MONKEYS_HONG_D : Sequence[str] = [
+MONKEYS_HONG_D : list[str] = [
     Loc.hong_muchaki.value
 ]
 
-MONKEYS_HONG_E : Sequence[str] = [
+MONKEYS_HONG_E : list[str] = [
     Loc.hong_yoh_kitana.value, Loc.hong_goshi_andos.value, Loc.hong_pukuman.value
 ]
 
-MONKEYS_HONG_E1 : Sequence[str] = [
+MONKEYS_HONG_E1 : list[str] = [
     Loc.hong_block_master.value
 ]
 
-MONKEYS_HONG_F : Sequence[str] = [
+MONKEYS_HONG_F : list[str] = [
     Loc.hong_tompo.value, Loc.hong_wootan.value, Loc.hong_chechin.value, Loc.hong_hapcho.value
 ]
 
-MONKEYS_HONG_G : Sequence[str] = [
+MONKEYS_HONG_G : list[str] = [
     Loc.hong_bonmos.value, Loc.hong_dark_master.value
 ]
 
-MONKEYS_HONG_H : Sequence[str] = [
+MONKEYS_HONG_H : list[str] = [
     Loc.hong_teh_isu.value, Loc.hong_ponja.value
 ]
 
-MONKEYS_HONG : Sequence[str] = [
+MONKEYS_HONG : list[str] = [
     *MONKEYS_HONG_A, *MONKEYS_HONG_A1, *MONKEYS_HONG_A2, *MONKEYS_HONG_B, *MONKEYS_HONG_B1, *MONKEYS_HONG_C,
     *MONKEYS_HONG_C1, *MONKEYS_HONG_C2, *MONKEYS_HONG_D, *MONKEYS_HONG_E, *MONKEYS_HONG_E1, *MONKEYS_HONG_F,
     *MONKEYS_HONG_G, *MONKEYS_HONG_H
 ]
 
 # boss5
-MONKEYS_BOSS5 : Sequence[str] = [
+MONKEYS_BOSS5 : list[str] = [
     Loc.boss_monkey_red.value
 ]
 
 # Bay
-MONKEYS_BAY_A : Sequence[str] = [
+MONKEYS_BAY_A : list[str] = [
     Loc.bay_nadamon.value, Loc.bay_patoya.value
 ]
 
-MONKEYS_BAY_A1 : Sequence[str] = [
+MONKEYS_BAY_A1 : list[str] = [
     Loc.bay_gumbo.value, Loc.bay_pehyan.value
 ]
 
-MONKEYS_BAY_A6 : Sequence[str] = [
+MONKEYS_BAY_A6 : list[str] = [
     Loc.bay_mokito.value
 ]
 
-MONKEYS_BAY_B : Sequence[str] = [
+MONKEYS_BAY_B : list[str] = [
     Loc.bay_pipo_kate.value, Loc.bay_samtan.value, Loc.bay_pokkine.value, Loc.bay_daban.value
 ]
 
-MONKEYS_BAY_C : Sequence[str] = [
+MONKEYS_BAY_C : list[str] = [
     Loc.bay_keiichi.value, Loc.bay_mcbreezy.value,
 ]
 
-MONKEYS_BAY_C1 : Sequence[str] = [
+MONKEYS_BAY_C1 : list[str] = [
     Loc.bay_shiny_pete.value, Loc.bay_landon.value, Loc.bay_ronson.value, Loc.bay_gimo.value
 ]
 
-MONKEYS_BAY_D : Sequence[str] = [
+MONKEYS_BAY_D : list[str] = [
     Loc.bay_hiroshi.value, Loc.bay_mibon.value, Loc.bay_bololon.value
 ]
 
-MONKEYS_BAY_D1 : Sequence[str] = [
+MONKEYS_BAY_D1 : list[str] = [
     Loc.bay_nakabi.value
 ]
 
-MONKEYS_BAY_E : Sequence[str] = [
+MONKEYS_BAY_E : list[str] = [
     Loc.bay_doemos.value
 ]
 
-MONKEYS_BAY_E2 : Sequence[str] = [
+MONKEYS_BAY_E2 : list[str] = [
     Loc.bay_gimi_gimi.value, Loc.bay_pokkini.value, Loc.bay_bokino.value
 ]
 
-MONKEYS_BAY_E3 : Sequence[str] = [
+MONKEYS_BAY_E3 : list[str] = [
     Loc.bay_jimo.value
 ]
 
-MONKEYS_BAY_E4 : Sequence[str] = [
+MONKEYS_BAY_E4 : list[str] = [
     Loc.bay_kazuo.value
 ]
 
-MONKEYS_BAY_F : Sequence[str] = [
+MONKEYS_BAY_F : list[str] = [
     Loc.bay_makidon.value, Loc.bay_dogy.value, Loc.bay_gibdon.value, Loc.bay_buligie.value
 ]
 
-MONKEYS_BAY : Sequence[str] = [
+MONKEYS_BAY : list[str] = [
     *MONKEYS_BAY_A, *MONKEYS_BAY_A1, *MONKEYS_BAY_A6, *MONKEYS_BAY_B, *MONKEYS_BAY_C, *MONKEYS_BAY_C1,
     *MONKEYS_BAY_D, *MONKEYS_BAY_D1, *MONKEYS_BAY_E, *MONKEYS_BAY_E2, *MONKEYS_BAY_E3, *MONKEYS_BAY_E4,
     *MONKEYS_BAY_F,
 ]
 
 # Tomo
-MONKEYS_TOMO_A : Sequence[str] = [
+MONKEYS_TOMO_A : list[str] = [
     Loc.tomo_kichibeh.value, Loc.tomo_bonchicchi.value, Loc.tomo_mikibon.value
 ]
 
-MONKEYS_TOMO_B : Sequence[str] = [
+MONKEYS_TOMO_B : list[str] = [
     Loc.tomo_dj_tamo.value, Loc.tomo_ukkinaka.value, Loc.tomo_ukkine.value, Loc.tomo_pon_jiro.value
 ]
 
-MONKEYS_TOMO_C : Sequence[str] = [
+MONKEYS_TOMO_C : list[str] = [
     Loc.tomo_chimpy.value, Loc.tomo_kajitan.value, Loc.tomo_uka_uka.value, Loc.tomo_mil_mil.value
 ]
 
-MONKEYS_TOMO_E : Sequence[str] = [
+MONKEYS_TOMO_E : list[str] = [
     Loc.tomo_taimon.value
 ]
 
-MONKEYS_TOMO_E1 : Sequence[str] = [
+MONKEYS_TOMO_E1 : list[str] = [
     Loc.tomo_goro_san.value
 ]
 
-MONKEYS_TOMO_E2 : Sequence[str] = [
+MONKEYS_TOMO_E2 : list[str] = [
     Loc.tomo_reiji.value
 ]
 
-MONKEYS_TOMO_E3 : Sequence[str] = [
+MONKEYS_TOMO_E3 : list[str] = [
     Loc.tomo_ponta.value, Loc.tomo_tomio.value, Loc.tomo_gario.value
 ]
 
-MONKEYS_TOMO_F2 : Sequence[str] = [
+MONKEYS_TOMO_F2 : list[str] = [
     Loc.tomo_dj_pari.value
 ]
 
-MONKEYS_TOMO_F : Sequence[str] = [
+MONKEYS_TOMO_F : list[str] = [
     Loc.tomo_mitsuo.value
 ]
 
-MONKEYS_TOMO_G : Sequence[str] = [
+MONKEYS_TOMO_G : list[str] = [
     Loc.tomo_pipo_ron.value, Loc.tomo_mikita.value, Loc.tomo_riley.value
 ]
 
-MONKEYS_TOMO_H : Sequence[str] = [
+MONKEYS_TOMO_H : list[str] = [
     Loc.tomo_sal_13.value, Loc.tomo_sal_12.value
 ]
 
-MONKEYS_TOMO_I : Sequence[str] = [
+MONKEYS_TOMO_I : list[str] = [
     Loc.tomo_tomu.value, Loc.tomo_breadacus.value, Loc.tomo_ukkigoro.value, Loc.tomo_ukiji.value
 ]
 
-MONKEYS_TOMO_J : Sequence[str] = [
+MONKEYS_TOMO_J : list[str] = [
     Loc.tomo_tomimon.value
 ]
 
-MONKEYS_TOMO : Sequence[str] = [
+MONKEYS_TOMO : list[str] = [
     *MONKEYS_TOMO_A,*MONKEYS_TOMO_B, *MONKEYS_TOMO_C, *MONKEYS_TOMO_E, *MONKEYS_TOMO_E1, *MONKEYS_TOMO_E2,
     *MONKEYS_TOMO_E3, *MONKEYS_TOMO_F, *MONKEYS_TOMO_F2, *MONKEYS_TOMO_G, *MONKEYS_TOMO_H,
     *MONKEYS_TOMO_I, *MONKEYS_TOMO_J
 ]
 
 # boss6
-MONKEYS_BOSS6 : Sequence[str] = [
+MONKEYS_BOSS6 : list[str] = [
     Loc.boss_tomoki.value
 ]
 
 # Space
-MONKEYS_SPACE_A : Sequence[str] = [
+MONKEYS_SPACE_A : list[str] = [
     Loc.space_poko.value, Loc.space_gamuo.value, Loc.space_mukikko.value
 ]
 
-MONKEYS_SPACE_B : Sequence[str] = [
+MONKEYS_SPACE_B : list[str] = [
     Loc.space_moto_ukki.value, Loc.space_jimi_jami.value, Loc.space_genbo.value, Loc.space_twin_mitty.value
 ]
 
-MONKEYS_SPACE_D : Sequence[str] = [
+MONKEYS_SPACE_D : list[str] = [
     Loc.space_uttey.value, Loc.space_emma.value, Loc.space_dokicchi.value, Loc.space_kamicchi.value,
     Loc.space_ukki_monda.value, Loc.space_porokko.value, Loc.space_zonelin.value
 ]
 
-MONKEYS_SPACE_E : Sequence[str] = [
+MONKEYS_SPACE_E : list[str] = [
     Loc.space_tamano.value, Loc.space_nelson.value, Loc.space_koloneh.value, Loc.space_miluchy.value,
     Loc.space_robert.value, Loc.space_fronson.value, Loc.space_demekin.value
 ]
 
-MONKEYS_SPACE_F : Sequence[str] = [
+MONKEYS_SPACE_F : list[str] = [
     Loc.space_kikuyoshi.value, Loc.space_freet.value, Loc.space_chico.value
 ]
 
-MONKEYS_SPACE_F1 : Sequence[str] = [
+MONKEYS_SPACE_F1 : list[str] = [
     Loc.space_gamurin.value
 ]
 
-MONKEYS_SPACE_F2 : Sequence[str] = [
+MONKEYS_SPACE_F2 : list[str] = [
     Loc.space_pipo_mon.value, Loc.space_gam_gam.value, Loc.space_doronbo.value, Loc.space_benja.value
 ]
-MONKEYS_SPACE_G : Sequence[str] = [
+MONKEYS_SPACE_G : list[str] = [
     Loc.space_macchan.value, Loc.space_rokkun.value
 ]
 
-MONKEYS_SPACE_G1 : Sequence[str] = [
+MONKEYS_SPACE_G1 : list[str] = [
     Loc.space_ukki_love.value, Loc.space_momongo.value, Loc.space_moepi.value, Loc.space_pumon.value,
     Loc.space_makiban.value
 ]
 
-MONKEYS_SPACE_H : Sequence[str] = [
+MONKEYS_SPACE_H : list[str] = [
     Loc.space_upis.value, Loc.space_mondatta.value, Loc.space_gicchom.value, Loc.space_barire.value
 ]
 
-MONKEYS_SPACE_I : Sequence[str] = [
+MONKEYS_SPACE_I : list[str] = [
     Loc.space_sal_10.value, Loc.space_sal_11.value
 ]
-MONKEYS_SPACE_K : Sequence[str] = [
+MONKEYS_SPACE_K : list[str] = [
     Loc.space_sal_3000.value
 ]
 
-MONKEYS_SPACE : Sequence[str] = [
+MONKEYS_SPACE : list[str] = [
     *MONKEYS_SPACE_A, *MONKEYS_SPACE_B, *MONKEYS_SPACE_D, *MONKEYS_SPACE_E, *MONKEYS_SPACE_F, *MONKEYS_SPACE_F1,
     *MONKEYS_SPACE_F2, *MONKEYS_SPACE_G, *MONKEYS_SPACE_G1, *MONKEYS_SPACE_H, *MONKEYS_SPACE_I, *MONKEYS_SPACE_K
 ]
 
-MONKEYS_SPECTER : Sequence[str] = [
+MONKEYS_SPECTER : list[str] = [
     Loc.boss_specter.value
 ]
 
-MONKEYS_SPECTER_FINALE : Sequence[str] = [
+MONKEYS_SPECTER_FINALE : list[str] = [
     Loc.boss_specter_final.value
 ]
 
-MONKEYS_BOSSES : Sequence[str] = [
+MONKEYS_BOSSES : list[str] = [
     *MONKEYS_BOSS1, *MONKEYS_BOSS2, *MONKEYS_BOSS3, *MONKEYS_BOSS4, *MONKEYS_BOSS5, *MONKEYS_BOSS6, *MONKEYS_SPECTER,
     *MONKEYS_SPECTER_FINALE
 ]
 
-MONKEYS_PASSWORDS : Sequence[str] = [
+MONKEYS_PASSWORDS : list[str] = [
     Loc.woods_spork.value, Loc.castle_sal_1000.value, Loc.snowfesta_shimmy.value, Loc.snowfesta_pipotron_yellow.value,
     Loc.toyhouse_pipotron_red.value, Loc.plane_pipotron_blue.value, Loc.hong_dark_master.value,
     Loc.space_sal_3000.value
 ]
 
-MONKEYS_RACERS : Sequence[str] = [
+MONKEYS_RACERS : list[str] = [
     Loc.ciscocity_ukki_mattan.value, Loc.ciscocity_bemucho.value,
     Loc.toyhouse_ukki_x.value, Loc.toyhouse_mon_gareji.value, Loc.toyhouse_woo_makka.value,
     Loc.bay_pipo_kate.value, Loc.bay_samtan.value, Loc.bay_pokkine.value
@@ -1059,21 +1059,21 @@ MONKEYS_INFINITE_GADGET_FLOAT_APPLICABLE: list[str] = [
     Loc.hong_sukei.value,
 ]
 
-MONKEYS_BREAK_ROOMS : Sequence[str] = [
+MONKEYS_BREAK_ROOMS : list[str] = [
     *MONKEYS_SEASIDE_C, *MONKEYS_WOODS_D, *MONKEYS_CASTLE_E, *MONKEYS_CISCOCITY_E, *MONKEYS_STUDIO_G,
     *MONKEYS_HALLOWEEN_E, *MONKEYS_WESTERN_C, *MONKEYS_ONSEN_C, *MONKEYS_SNOWFESTA_G, *MONKEYS_EDOTOWN_F,
     *MONKEYS_HEAVEN_E, *MONKEYS_TOYHOUSE_H, *MONKEYS_ICELAND_F, *MONKEYS_ARABIAN_F, *MONKEYS_ASIA_F, *MONKEYS_PLANE_G,
     *MONKEYS_HONG_F, *MONKEYS_BAY_F, *MONKEYS_TOMO_I, *MONKEYS_SPACE_H
 ]
 
-MONKEYS_MASTER : Sequence[str] = [
+MONKEYS_MASTER : list[str] = [
     *MONKEYS_ZERO, *MONKEYS_SEASIDE, *MONKEYS_WOODS, *MONKEYS_CASTLE, *MONKEYS_CISCOCITY, *MONKEYS_STUDIO,
     *MONKEYS_HALLOWEEN, *MONKEYS_WESTERN, *MONKEYS_ONSEN, *MONKEYS_SNOWFESTA, *MONKEYS_EDOTOWN, *MONKEYS_HEAVEN,
     *MONKEYS_TOYHOUSE, *MONKEYS_ICELAND, *MONKEYS_ARABIAN, *MONKEYS_ASIA, *MONKEYS_PLANE, *MONKEYS_HONG,
     *MONKEYS_BAY, *MONKEYS_TOMO, *MONKEYS_SPACE, *MONKEYS_BOSSES
 ]
 
-MONKEYS_MASTER_ORDERED : Sequence[list] = [
+MONKEYS_MASTER_ORDERED : Sequence[list[str]] = [
     MONKEYS_SEASIDE, MONKEYS_WOODS, MONKEYS_CASTLE, [Loc.boss_monkey_white.value], MONKEYS_CISCOCITY, MONKEYS_STUDIO,
     MONKEYS_HALLOWEEN, MONKEYS_WESTERN, [Loc.boss_monkey_blue.value], MONKEYS_ONSEN, MONKEYS_SNOWFESTA,
     MONKEYS_EDOTOWN, [Loc.boss_monkey_yellow.value], MONKEYS_HEAVEN, MONKEYS_TOYHOUSE, MONKEYS_ICELAND,
@@ -1082,7 +1082,7 @@ MONKEYS_MASTER_ORDERED : Sequence[list] = [
     [Loc.boss_specter.value], [Loc.boss_specter_final.value]
 ]
 
-MONKEYS_INDEX : dict[str, Sequence] = {
+MONKEYS_INDEX : dict[str, list[str]] = {
     # Zero
     Stage.zero.value                    : MONKEYS_ZERO,
 
@@ -1336,7 +1336,7 @@ LOCATIONS_ALTERNATIVE : dict[str, str] = {
     Loc.boss_specter_final.value        : Loc.boss_alt_specter_final.value,
 }
 
-MONKEYS_DIRECTORY : dict[str, Sequence[str]] = {
+MONKEYS_DIRECTORY : dict[str, list[str]] = {
     APHelper.zero.value                 : MONKEYS_ZERO,
     APHelper.seaside.value              : MONKEYS_SEASIDE,
     APHelper.woods.value                : MONKEYS_WOODS,
@@ -1378,7 +1378,7 @@ MONKEYS_DIRECTORY : dict[str, Sequence[str]] = {
 }
 
 ## Cameras
-CAMERAS_MASTER : Sequence[str] = [
+CAMERAS_MASTER : list[str] = [
     Loc.seaside_cam.value, Loc.woods_cam.value, Loc.castle_cam.value, Loc.ciscocity_cam.value, Loc.studio_cam.value,
     Loc.halloween_cam.value, Loc.western_cam.value, Loc.onsen_cam.value, Loc.snowfesta_cam.value, Loc.edotown_cam.value,
     Loc.heaven_cam.value, Loc.toyhouse_cam.value, Loc.iceland_cam.value, Loc.arabian_cam.value,
@@ -1386,7 +1386,7 @@ CAMERAS_MASTER : Sequence[str] = [
     Loc.space_cam.value
 ]
 
-CAMERAS_MASTER_ORDERED : Sequence[str] = [
+CAMERAS_MASTER_ORDERED : list[str] = [
     Loc.seaside_cam.value, Loc.woods_cam.value, Loc.castle_cam.value, "", Loc.ciscocity_cam.value, Loc.studio_cam.value,
     Loc.halloween_cam.value, Loc.western_cam.value, "", Loc.onsen_cam.value, Loc.snowfesta_cam.value,
     Loc.edotown_cam.value, "", Loc.heaven_cam.value, Loc.toyhouse_cam.value, Loc.iceland_cam.value,
@@ -1466,298 +1466,298 @@ ACTORS_INDEX : dict[str, list[str]] = {
 
 ## Cellphones
 # Seaside
-CELLPHONES_SEASIDE_A : Sequence[str] = [
+CELLPHONES_SEASIDE_A : list[str] = [
     Loc.tele_000.value, Loc.tele_002.value, Loc.tele_003.value
 ]
 
-CELLPHONES_SEASIDE_B : Sequence[str] = [
+CELLPHONES_SEASIDE_B : list[str] = [
     Loc.tele_004ss.value
 ]
 
-CELLPHONES_SEASIDE : Sequence[str] = [
+CELLPHONES_SEASIDE : list[str] = [
     *CELLPHONES_SEASIDE_A, *CELLPHONES_SEASIDE_B
 ]
 
 # Woods
-CELLPHONES_WOODS_A : Sequence[str] = [
+CELLPHONES_WOODS_A : list[str] = [
     Loc.tele_001.value, Loc.tele_006.value, Loc.tele_007.value, Loc.tele_004wo.value
 ]
 
-CELLPHONES_WOODS_B : Sequence[str] = [
+CELLPHONES_WOODS_B : list[str] = [
     Loc.tele_008.value
 ]
 
-CELLPHONES_WOODS : Sequence[str] = [
+CELLPHONES_WOODS : list[str] = [
     *CELLPHONES_WOODS_A, *CELLPHONES_WOODS_B
 ]
 
 # Castle
-CELLPHONES_CASTLE_A : Sequence[str] = [
+CELLPHONES_CASTLE_A : list[str] = [
     Loc.tele_029.value
 ]
 
-CELLPHONES_CASTLE_A1 : Sequence[str] = [
+CELLPHONES_CASTLE_A1 : list[str] = [
     Loc.tele_010.value, Loc.tele_009.value
 ]
 
-CELLPHONES_CASTLE_A_ALL : Sequence[str] = [
+CELLPHONES_CASTLE_A_ALL : list[str] = [
     *CELLPHONES_CASTLE_A, *CELLPHONES_CASTLE_A1
 ]
 
-CELLPHONES_CASTLE_D : Sequence[str] = [
+CELLPHONES_CASTLE_D : list[str] = [
     Loc.tele_011.value
 ]
 
-CELLPHONES_CASTLE : Sequence[str] = [
+CELLPHONES_CASTLE : list[str] = [
     *CELLPHONES_CASTLE_A, *CELLPHONES_CASTLE_A1, *CELLPHONES_CASTLE_D
 ]
 
-CELLPHONES_CISCOCITY_A : Sequence[str] = [
+CELLPHONES_CISCOCITY_A : list[str] = [
     Loc.tele_013.value, Loc.tele_012cc.value
 ]
 
-CELLPHONES_CISCOCITY : Sequence[str] = [
+CELLPHONES_CISCOCITY : list[str] = [
     *CELLPHONES_CISCOCITY_A
 ]
 
-CELLPHONES_STUDIO_A : Sequence[str] = [
+CELLPHONES_STUDIO_A : list[str] = [
     Loc.tele_062.value
 ]
 
-CELLPHONES_STUDIO_B1 : Sequence[str] = [
+CELLPHONES_STUDIO_B1 : list[str] = [
     Loc.tele_014.value
 ]
 
-CELLPHONES_STUDIO_F : Sequence[str] = [
+CELLPHONES_STUDIO_F : list[str] = [
     Loc.tele_030tv.value
 ]
 
-CELLPHONES_STUDIO : Sequence[str] = [
+CELLPHONES_STUDIO : list[str] = [
     *CELLPHONES_STUDIO_A, *CELLPHONES_STUDIO_B1, *CELLPHONES_STUDIO_F
 ]
 
-CELLPHONES_HALLOWEEN_A : Sequence[str] = [
+CELLPHONES_HALLOWEEN_A : list[str] = [
     Loc.tele_052.value
 ]
 
-CELLPHONES_HALLOWEEN_A1 : Sequence[str] = [
+CELLPHONES_HALLOWEEN_A1 : list[str] = [
     Loc.tele_035.value
 ]
 
-CELLPHONES_HALLOWEEN_C1 : Sequence[str] = [
+CELLPHONES_HALLOWEEN_C1 : list[str] = [
     Loc.tele_016.value
 ]
 
-CELLPHONES_HALLOWEEN_D : Sequence[str] = [
+CELLPHONES_HALLOWEEN_D : list[str] = [
     Loc.tele_017.value
 ]
 
-CELLPHONES_HALLOWEEN_A_ALL : Sequence[str] = [
+CELLPHONES_HALLOWEEN_A_ALL : list[str] = [
     *CELLPHONES_HALLOWEEN_A, *CELLPHONES_HALLOWEEN_A1,
 ]
 
-CELLPHONES_HALLOWEEN : Sequence[str] = [
+CELLPHONES_HALLOWEEN : list[str] = [
     *CELLPHONES_HALLOWEEN_A, *CELLPHONES_HALLOWEEN_A1, *CELLPHONES_HALLOWEEN_C1, *CELLPHONES_HALLOWEEN_D
 ]
 
-CELLPHONES_WESTERN_A : Sequence[str] = [
+CELLPHONES_WESTERN_A : list[str] = [
     Loc.tele_018.value
 ]
 
-CELLPHONES_WESTERN_F : Sequence[str] = [
+CELLPHONES_WESTERN_F : list[str] = [
     Loc.tele_051.value
 ]
 
-CELLPHONES_WESTERN_E : Sequence[str] = [
+CELLPHONES_WESTERN_E : list[str] = [
     Loc.tele_019.value
 ]
 
-CELLPHONES_WESTERN : Sequence[str] = [
+CELLPHONES_WESTERN : list[str] = [
     *CELLPHONES_WESTERN_A, *CELLPHONES_WESTERN_F, *CELLPHONES_WESTERN_E
 ]
 
-CELLPHONES_ONSEN_A : Sequence[str] = [
+CELLPHONES_ONSEN_A : list[str] = [
     Loc.tele_020.value, Loc.tele_063.value
 ]
 
-CELLPHONES_ONSEN_D1 : Sequence[str] = [
+CELLPHONES_ONSEN_D1 : list[str] = [
     Loc.tele_021on.value
 ]
 
-CELLPHONES_ONSEN : Sequence[str] = [
+CELLPHONES_ONSEN : list[str] = [
     *CELLPHONES_ONSEN_A, *CELLPHONES_ONSEN_D1
 ]
 
-CELLPHONES_SNOWFESTA_F : Sequence[str] = [
+CELLPHONES_SNOWFESTA_F : list[str] = [
     Loc.tele_022sf.value
 ]
 
-CELLPHONES_SNOWFESTA : Sequence[str] = [
+CELLPHONES_SNOWFESTA : list[str] = [
     *CELLPHONES_SNOWFESTA_F
 ]
 
-CELLPHONES_EDOTOWN_A1 : Sequence[str] = [
+CELLPHONES_EDOTOWN_A1 : list[str] = [
     Loc.tele_023.value
 ]
 
-CELLPHONES_EDOTOWN_B1 : Sequence[str] = [
+CELLPHONES_EDOTOWN_B1 : list[str] = [
     Loc.tele_025.value
 ]
 
-CELLPHONES_EDOTOWN_C1 : Sequence[str] = [
+CELLPHONES_EDOTOWN_C1 : list[str] = [
     Loc.tele_024.value
 ]
 
-CELLPHONES_EDOTOWN_C2 : Sequence[str] = [
+CELLPHONES_EDOTOWN_C2 : list[str] = [
     Loc.tele_026.value
 ]
 
-CELLPHONES_EDOTOWN_C_ALL : Sequence[str] = [
+CELLPHONES_EDOTOWN_C_ALL : list[str] = [
     *CELLPHONES_EDOTOWN_C1, *CELLPHONES_EDOTOWN_C2
 ]
 
-CELLPHONES_EDOTOWN : Sequence[str] = [
+CELLPHONES_EDOTOWN : list[str] = [
     *CELLPHONES_EDOTOWN_A1, *CELLPHONES_EDOTOWN_B1, *CELLPHONES_EDOTOWN_C1, *CELLPHONES_EDOTOWN_C2
 ]
 
-CELLPHONES_HEAVEN_A1 : Sequence[str] = [
+CELLPHONES_HEAVEN_A1 : list[str] = [
     Loc.tele_028.value
 ]
 
-CELLPHONES_HEAVEN : Sequence[str] = [
+CELLPHONES_HEAVEN : list[str] = [
     *CELLPHONES_HEAVEN_A1
 ]
 
-CELLPHONES_TOYHOUSE_C : Sequence[str] = [
+CELLPHONES_TOYHOUSE_C : list[str] = [
     Loc.tele_012tv.value
 ]
 
-CELLPHONES_TOYHOUSE_G : Sequence[str] = [
+CELLPHONES_TOYHOUSE_G : list[str] = [
     Loc.tele_030ty.value
 ]
 
-CELLPHONES_TOYHOUSE : Sequence[str] = [
+CELLPHONES_TOYHOUSE : list[str] = [
     *CELLPHONES_TOYHOUSE_C, *CELLPHONES_TOYHOUSE_G
 ]
 
-CELLPHONES_ICELAND_A1 : Sequence[str] = [
+CELLPHONES_ICELAND_A1 : list[str] = [
     Loc.tele_031.value
 ]
 
-CELLPHONES_ICELAND_D : Sequence[str] = [
+CELLPHONES_ICELAND_D : list[str] = [
     Loc.tele_021ic.value
 ]
 
-CELLPHONES_ICELAND : Sequence[str] = [
+CELLPHONES_ICELAND : list[str] = [
     *CELLPHONES_ICELAND_A1, *CELLPHONES_ICELAND_D
 ]
 
-CELLPHONES_ARABIAN_A : Sequence[str] = [
+CELLPHONES_ARABIAN_A : list[str] = [
     Loc.tele_032.value, Loc.tele_033.value
 ]
 
-CELLPHONES_ARABIAN_B : Sequence[str] = [
+CELLPHONES_ARABIAN_B : list[str] = [
     Loc.tele_042ar.value
 ]
 
-CELLPHONES_ARABIAN_E1 : Sequence[str] = [
+CELLPHONES_ARABIAN_E1 : list[str] = [
     Loc.tele_034.value
 ]
 
-CELLPHONES_ARABIAN : Sequence[str] = [
+CELLPHONES_ARABIAN : list[str] = [
     *CELLPHONES_ARABIAN_A, *CELLPHONES_ARABIAN_B, *CELLPHONES_ARABIAN_E1
 ]
 
-CELLPHONES_ASIA_B : Sequence[str] = [
+CELLPHONES_ASIA_B : list[str] = [
     Loc.tele_037.value
 ]
 
-CELLPHONES_ASIA_D1 : Sequence[str] = [
+CELLPHONES_ASIA_D1 : list[str] = [
     Loc.tele_015.value
 ]
 
-CELLPHONES_ASIA : Sequence[str] = [
+CELLPHONES_ASIA : list[str] = [
     *CELLPHONES_ASIA_B, *CELLPHONES_ASIA_D1
 ]
 
-CELLPHONES_PLANE_E : Sequence[str] = [
+CELLPHONES_PLANE_E : list[str] = [
     Loc.tele_022pl.value
 ]
 
-CELLPHONES_PLANE : Sequence[str] = [
+CELLPHONES_PLANE : list[str] = [
     *CELLPHONES_PLANE_E
 ]
 
-CELLPHONES_HONG_A : Sequence[str] = [
+CELLPHONES_HONG_A : list[str] = [
     Loc.tele_039.value, Loc.tele_040h_a.value
 ]
 
-CELLPHONES_HONG_B1 : Sequence[str] = [
+CELLPHONES_HONG_B1 : list[str] = [
     Loc.tele_040h_b.value
 ]
 
-CELLPHONES_HONG_D : Sequence[str] = [
+CELLPHONES_HONG_D : list[str] = [
     Loc.tele_042ho.value
 ]
 
-CELLPHONES_HONG : Sequence[str] = [
+CELLPHONES_HONG : list[str] = [
     *CELLPHONES_HONG_A, *CELLPHONES_HONG_B1, *CELLPHONES_HONG_D
 ]
 
-CELLPHONES_BAY_C : Sequence[str] = [
+CELLPHONES_BAY_C : list[str] = [
     Loc.tele_044.value
 ]
 
-CELLPHONES_BAY : Sequence[str] = [
+CELLPHONES_BAY : list[str] = [
     *CELLPHONES_BAY_C
 ]
 
-CELLPHONES_TOMO_A1 : Sequence[str] = [
+CELLPHONES_TOMO_A1 : list[str] = [
     Loc.tele_045.value
 ]
 
-CELLPHONES_TOMO : Sequence[str] = [
+CELLPHONES_TOMO : list[str] = [
     *CELLPHONES_TOMO_A1
 ]
 
-CELLPHONES_SPACE_A : Sequence[str] = [
+CELLPHONES_SPACE_A : list[str] = [
     Loc.tele_047.value
 ]
 
-CELLPHONES_SPACE_B : Sequence[str] = [
+CELLPHONES_SPACE_B : list[str] = [
     Loc.tele_048.value
 ]
 
-CELLPHONES_SPACE : Sequence[str] = [
+CELLPHONES_SPACE : list[str] = [
     *CELLPHONES_SPACE_A, *CELLPHONES_SPACE_B
 ]
 
 # Lists all first known instances of a duplicate phone call in vanilla progression
-CELLPHONES_ID_DUPLICATES : Sequence[str] = [
+CELLPHONES_ID_DUPLICATES : list[str] = [
     Loc.tele_004ss.value, Loc.tele_012cc.value, Loc.tele_021on.value, Loc.tele_022sf.value, Loc.tele_030tv.value,
     Loc.tele_040h_a.value, Loc.tele_042ar.value
 ]
 
-CELLPHONES_STAGE_DUPLICATES : Sequence[str] = [
+CELLPHONES_STAGE_DUPLICATES : list[str] = [
     Stage.woods_a.value, Stage.toyhouse_c.value, Stage.iceland_d.value, Stage.plane_e.value, Stage.toyhouse_g.value,
     Stage.hong_b.value, Stage.hong_d.value
 ]
 
-CELLPHONES_MASTER : Sequence[str] = [
+CELLPHONES_MASTER : list[str] = [
     *CELLPHONES_SEASIDE, *CELLPHONES_WOODS, *CELLPHONES_CASTLE, *CELLPHONES_CISCOCITY, *CELLPHONES_STUDIO,
     *CELLPHONES_HALLOWEEN, *CELLPHONES_WESTERN, *CELLPHONES_ONSEN, *CELLPHONES_SNOWFESTA, *CELLPHONES_EDOTOWN,
     *CELLPHONES_HEAVEN, *CELLPHONES_TOYHOUSE, *CELLPHONES_ICELAND, *CELLPHONES_ARABIAN, *CELLPHONES_ASIA,
     *CELLPHONES_PLANE, *CELLPHONES_HONG, *CELLPHONES_BAY, *CELLPHONES_TOMO, *CELLPHONES_SPACE
 ]
 
-CELLPHONES_MASTER_ORDERED : Sequence[list] = [
+CELLPHONES_MASTER_ORDERED : Sequence[list[str]] = [
     CELLPHONES_SEASIDE, CELLPHONES_WOODS, CELLPHONES_CASTLE, [], CELLPHONES_CISCOCITY, CELLPHONES_STUDIO,
     CELLPHONES_HALLOWEEN, CELLPHONES_WESTERN, [], CELLPHONES_ONSEN, CELLPHONES_SNOWFESTA, CELLPHONES_EDOTOWN, [],
     CELLPHONES_HEAVEN, CELLPHONES_TOYHOUSE, CELLPHONES_ICELAND, CELLPHONES_ARABIAN, [], CELLPHONES_ASIA,
     CELLPHONES_PLANE, CELLPHONES_HONG, [], CELLPHONES_BAY, CELLPHONES_TOMO, [], CELLPHONES_SPACE, [], []
 ]
 
-CELLPHONES_INDEX : dict[str, Sequence[str]] = {
+CELLPHONES_INDEX : dict[str, list[str]] = {
     Stage.region_seaside_a.value                : CELLPHONES_SEASIDE_A,
     Stage.region_seaside_b.value                : CELLPHONES_SEASIDE_B,
 
@@ -1822,7 +1822,7 @@ CELLPHONES_INDEX : dict[str, Sequence[str]] = {
     Stage.region_space_b.value                  : CELLPHONES_SPACE_B,
 }
 
-CELLPHONES_STAGE_INDEX : dict[str, Sequence[str]] = {
+CELLPHONES_STAGE_INDEX : dict[str, list[str]] = {
     Stage.seaside_a.value               : CELLPHONES_SEASIDE_A,
     Stage.seaside_b.value               : CELLPHONES_SEASIDE_B,
 
@@ -1941,173 +1941,173 @@ Cellphone_Name_to_ID : dict[str, str] = {
 }
 
 ### [< --- EVENT GROUPS --- >]
-EVENTS_CASTLE_B : Sequence[str] = [
+EVENTS_CASTLE_B : list[str] = [
     Events.castle_b_clapper.value
 ]
 
-EVENTS_CASTLE_A2 : Sequence[str] = [
+EVENTS_CASTLE_A2 : list[str] = [
     Events.castle_a2_button.value
 ]
 
-EVENTS_CISCOCITY_D : Sequence[str] = [
+EVENTS_CISCOCITY_D : list[str] = [
     Events.ciscocity_d_exit.value
 ]
 
-EVENTS_CISCOCITY_C : Sequence[str] = [
+EVENTS_CISCOCITY_C : list[str] = [
     Events.ciscocity_c_button.value
 ]
 
-EVENTS_STUDIO_A1 : Sequence[str] = [
+EVENTS_STUDIO_A1 : list[str] = [
     Events.studio_a1_button.value
 ]
 
-EVENTS_STUDIO_A2 : Sequence[str] = [
+EVENTS_STUDIO_A2 : list[str] = [
     Events.studio_a2_button.value
 ]
 
-EVENTS_STUDIO_B1 : Sequence[str] = [
+EVENTS_STUDIO_B1 : list[str] = [
     Events.studio_b1_button.value
 ]
 
-EVENTS_STUDIO_F : Sequence[str] = [
+EVENTS_STUDIO_F : list[str] = [
     Events.studio_f_tele_robo.value
 ]
 
-EVENTS_HALLOWEEN_B : Sequence[str] = [
+EVENTS_HALLOWEEN_B : list[str] = [
     Events.halloween_b_jumbo_robo.value
 ]
 
-EVENTS_HALLOWEEN_B1 : Sequence[str] = [
+EVENTS_HALLOWEEN_B1 : list[str] = [
     Events.halloween_b1_jumbo_robo_shoot.value
 ]
 
-EVENTS_ONSEN_A : Sequence[str] = [
+EVENTS_ONSEN_A : list[str] = [
     Events.onsen_a_button.value
 ]
 
-EVENTS_SNOWFESTA_E : Sequence[str] = [
+EVENTS_SNOWFESTA_E : list[str] = [
     Events.snowfesta_e_bell.value
 ]
 
-EVENTS_EDOTOWN_B1 : Sequence[str] = [
+EVENTS_EDOTOWN_B1 : list[str] = [
     Events.edotown_b1_button.value
 ]
 
-EVENTS_EDOTOWN_E : Sequence[str] = [
+EVENTS_EDOTOWN_E : list[str] = [
     Events.edotown_e_scroll.value
 ]
 
-EVENTS_HEAVEN_B: Sequence[str] = [
+EVENTS_HEAVEN_B: list[str] = [
     Events.heaven_b_clapper.value
 ]
 
-EVENTS_ICELAND_C : Sequence[str] = [
+EVENTS_ICELAND_C : list[str] = [
     Events.iceland_c_jumbo_robo.value
 ]
 
-EVENTS_ICELAND_E : Sequence[str] = [
+EVENTS_ICELAND_E : list[str] = [
     Events.iceland_e_button.value
 ]
 
-EVENTS_ARABIAN_C : Sequence[str] = [
+EVENTS_ARABIAN_C : list[str] = [
     Events.arabian_c_golden_mon.value
 ]
 
-EVENTS_ARABIAN_C1 : Sequence[str] = [
+EVENTS_ARABIAN_C1 : list[str] = [
     Events.arabian_c1_exit.value
 ]
 
-EVENTS_ARABIAN_G : Sequence[str] = [
+EVENTS_ARABIAN_G : list[str] = [
     Events.arabian_g_exit.value
 ]
 
-EVENTS_ASIA_A : Sequence[str] = [
+EVENTS_ASIA_A : list[str] = [
     Events.asia_a_block.value
 ]
 
-EVENTS_ASIA_A1 : Sequence[str] = [
+EVENTS_ASIA_A1 : list[str] = [
     Events.asia_a1_block.value
 ]
 
-EVENTS_ASIA_A2 : Sequence[str] = [
+EVENTS_ASIA_A2 : list[str] = [
     Events.asia_a2_block.value
 ]
 
-EVENTS_ASIA_B2 : Sequence[str] = [
+EVENTS_ASIA_B2 : list[str] = [
     Events.asia_b2_button.value
 ]
 
-EVENTS_ASIA_E1 : Sequence[str] = [
+EVENTS_ASIA_E1 : list[str] = [
     Events.asia_e1_button.value
 ]
 
-EVENTS_PLANE_D1 : Sequence[str] = [
+EVENTS_PLANE_D1 : list[str] = [
     Events.plane_d1_clapper.value
 ]
 
-EVENTS_HONG_B : Sequence[str] = [
+EVENTS_HONG_B : list[str] = [
     Events.hong_b_kungfu.value
 ]
 
-EVENTS_HONG_B2 : Sequence[str] = [
+EVENTS_HONG_B2 : list[str] = [
     Events.hong_b2_button.value
 ]
 
-EVENTS_BAY_A7 : Sequence[str] = [
+EVENTS_BAY_A7 : list[str] = [
     Events.bay_a7_button.value
 ]
 
-EVENTS_BAY_A5 : Sequence[str] = [
+EVENTS_BAY_A5 : list[str] = [
     Events.bay_a5_button.value
 ]
 
-EVENTS_BAY_E1 : Sequence[str] = [
+EVENTS_BAY_E1 : list[str] = [
     Events.bay_e1_button.value
 ]
 
-EVENTS_TOMO_E2 : Sequence[str] = [
+EVENTS_TOMO_E2 : list[str] = [
     Events.tomo_e2_kungfu.value
 ]
 
-EVENTS_TOMO_G : Sequence[str] = [
+EVENTS_TOMO_G : list[str] = [
     Events.tomo_g_button.value
 ]
 
-EVENTS_TOMO_H : Sequence[str] = [
+EVENTS_TOMO_H : list[str] = [
     Events.tomo_h_button.value
 ]
 
-EVENTS_SPACE_E : Sequence[str] = [
+EVENTS_SPACE_E : list[str] = [
     Events.space_e_button.value
 ]
 
-EVENTS_SPACE_G : Sequence[str] = [
+EVENTS_SPACE_G : list[str] = [
     Events.space_g_button.value
 ]
 
-EVENTS_SPACE_G1 : Sequence[str] = [
+EVENTS_SPACE_G1 : list[str] = [
     Events.space_g1_button.value
 ]
 
-EVENTS_SPACE_F1 : Sequence[str] = [
+EVENTS_SPACE_F1 : list[str] = [
     Events.space_f1_kungfu.value
 ]
 
-EVENTS_SPACE_F2 : Sequence[str] = [
+EVENTS_SPACE_F2 : list[str] = [
     Events.space_f2_button.value
 ]
 
-EVENTS_SPACE_D : Sequence[str] = [
+EVENTS_SPACE_D : list[str] = [
     Events.space_d_button.value
 ]
 
-EVENTS_INFINITE_GADGET_FLOAT_APPLICABLE : Sequence[str] = [
+EVENTS_INFINITE_GADGET_FLOAT_APPLICABLE : list[str] = [
     Events.studio_b1_button.value,
     Events.iceland_e_button.value,
     Events.asia_e1_button.value,
 ]
 
-EVENTS_INDEX : dict[str, Sequence[str]] = {
+EVENTS_INDEX : dict[str, list[str]] = {
     Stage.region_castle_b.value         : EVENTS_CASTLE_B,
     Stage.region_castle_a2.value        : EVENTS_CASTLE_A2,
     Stage.region_ciscocity_d.value      : EVENTS_CISCOCITY_D,
@@ -2152,7 +2152,7 @@ EVENTS_INDEX : dict[str, Sequence[str]] = {
 
 ## Shopping Area
 # Progression Groupings
-SHOP_PROGRESSION_SEASIDE : Sequence[str] = [
+SHOP_PROGRESSION_SEASIDE : list[str] = [
     Loc.channel_guide_1.value,
 
     Loc.concept_art_1.value,
@@ -2166,7 +2166,7 @@ SHOP_PROGRESSION_SEASIDE : Sequence[str] = [
     Loc.movie_tape_3.value,
 ]
 
-SHOP_PROGRESSION_WOODS : Sequence[str] = [
+SHOP_PROGRESSION_WOODS : list[str] = [
     Loc.hint_book_7.value,
 
     Loc.channel_guide_2.value,
@@ -2183,7 +2183,7 @@ SHOP_PROGRESSION_WOODS : Sequence[str] = [
     Loc.music_disc_1.value,
 ]
 
-SHOP_PROGRESSION_CASTLE : Sequence[str] = [
+SHOP_PROGRESSION_CASTLE : list[str] = [
     Loc.hint_book_2.value,
 
     Loc.mon_fiction_1.value,
@@ -2204,7 +2204,7 @@ SHOP_PROGRESSION_CASTLE : Sequence[str] = [
     Loc.music_disc_2.value,
 ]
 
-SHOP_PROGRESSION_BOSS1 : Sequence[str] = [
+SHOP_PROGRESSION_BOSS1 : list[str] = [
     Loc.hint_book_4.value,
 
     Loc.mon_fiction_2.value,
@@ -2223,7 +2223,7 @@ SHOP_PROGRESSION_BOSS1 : Sequence[str] = [
     Loc.music_disc_42.value,
 ]
 
-SHOP_PROGRESSION_CISCOCITY : Sequence[str] = [
+SHOP_PROGRESSION_CISCOCITY : list[str] = [
     Loc.mon_fiction_3.value,
 
     Loc.channel_guide_4.value,
@@ -2235,7 +2235,7 @@ SHOP_PROGRESSION_CISCOCITY : Sequence[str] = [
     Loc.music_disc_35.value,
 ]
 
-SHOP_PROGRESSION_STUDIO : Sequence[str] = [
+SHOP_PROGRESSION_STUDIO : list[str] = [
     Loc.hint_book_1.value,
     Loc.hint_book_8.value,
 
@@ -2251,7 +2251,7 @@ SHOP_PROGRESSION_STUDIO : Sequence[str] = [
     Loc.music_disc_5.value,
 ]
 
-SHOP_PROGRESSION_HALLOWEEN : Sequence[str] = [
+SHOP_PROGRESSION_HALLOWEEN : list[str] = [
     Loc.hint_book_3.value,
 
     Loc.mon_fiction_5.value,
@@ -2269,7 +2269,7 @@ SHOP_PROGRESSION_HALLOWEEN : Sequence[str] = [
     Loc.music_disc_7.value,
 ]
 
-SHOP_PROGRESSION_WESTERN : Sequence[str] = [
+SHOP_PROGRESSION_WESTERN : list[str] = [
     Loc.mon_fiction_6.value,
 
     Loc.channel_guide_7.value,
@@ -2283,7 +2283,7 @@ SHOP_PROGRESSION_WESTERN : Sequence[str] = [
     Loc.music_disc_9.value,
 ]
 
-SHOP_PROGRESSION_BOSS2 : Sequence[str] = [
+SHOP_PROGRESSION_BOSS2 : list[str] = [
     Loc.secret_photos_11.value,
     Loc.secret_photos_12.value,
 
@@ -2299,7 +2299,7 @@ SHOP_PROGRESSION_BOSS2 : Sequence[str] = [
     Loc.music_disc_43.value,
 ]
 
-SHOP_PROGRESSION_ONSEN : Sequence[str] = [
+SHOP_PROGRESSION_ONSEN : list[str] = [
     Loc.mon_fiction_7.value,
 
     Loc.channel_guide_8.value,
@@ -2314,7 +2314,7 @@ SHOP_PROGRESSION_ONSEN : Sequence[str] = [
     Loc.music_disc_36.value,
 ]
 
-SHOP_PROGRESSION_SNOWFESTA : Sequence[str] = [
+SHOP_PROGRESSION_SNOWFESTA : list[str] = [
     Loc.mon_fiction_8.value,
 
     Loc.channel_guide_9.value,
@@ -2327,7 +2327,7 @@ SHOP_PROGRESSION_SNOWFESTA : Sequence[str] = [
     Loc.music_disc_13.value,
 ]
 
-SHOP_PROGRESSION_EDOTOWN : Sequence[str] = [
+SHOP_PROGRESSION_EDOTOWN : list[str] = [
     Loc.channel_guide_10.value,
 
     Loc.concept_art_20.value,
@@ -2338,7 +2338,7 @@ SHOP_PROGRESSION_EDOTOWN : Sequence[str] = [
     Loc.music_disc_15.value,
 ]
 
-SHOP_PROGRESSION_BOSS3 : Sequence[str] = [
+SHOP_PROGRESSION_BOSS3 : list[str] = [
     Loc.mon_fiction_9.value,
 
     Loc.secret_photos_15.value,
@@ -2355,7 +2355,7 @@ SHOP_PROGRESSION_BOSS3 : Sequence[str] = [
     Loc.music_disc_44.value,
 ]
 
-SHOP_PROGRESSION_HEAVEN : Sequence[str] = [
+SHOP_PROGRESSION_HEAVEN : list[str] = [
     Loc.channel_guide_11.value,
 
     Loc.movie_tape_10.value,
@@ -2364,7 +2364,7 @@ SHOP_PROGRESSION_HEAVEN : Sequence[str] = [
     Loc.music_disc_37.value,
 ]
 
-SHOP_PROGRESSION_TOYHOUSE : Sequence[str] = [
+SHOP_PROGRESSION_TOYHOUSE : list[str] = [
     Loc.mon_fiction_10.value,
 
     Loc.channel_guide_12.value,
@@ -2381,7 +2381,7 @@ SHOP_PROGRESSION_TOYHOUSE : Sequence[str] = [
     Loc.music_disc_19.value,
 ]
 
-SHOP_PROGRESSION_ICELAND : Sequence[str] = [
+SHOP_PROGRESSION_ICELAND : list[str] = [
     Loc.mon_fiction_11.value,
     Loc.mon_fiction_12.value,
 
@@ -2395,7 +2395,7 @@ SHOP_PROGRESSION_ICELAND : Sequence[str] = [
     Loc.music_disc_21.value,
 ]
 
-SHOP_PROGRESSION_ARABIAN : Sequence[str] = [
+SHOP_PROGRESSION_ARABIAN : list[str] = [
     Loc.mon_fiction_13.value,
 
     Loc.channel_guide_14.value,
@@ -2406,7 +2406,7 @@ SHOP_PROGRESSION_ARABIAN : Sequence[str] = [
     Loc.music_disc_23.value,
 ]
 
-SHOP_PROGRESSION_BOSS4 : Sequence[str] = [
+SHOP_PROGRESSION_BOSS4 : list[str] = [
     Loc.mon_fiction_14.value,
 
     Loc.secret_photos_19.value,
@@ -2421,7 +2421,7 @@ SHOP_PROGRESSION_BOSS4 : Sequence[str] = [
     Loc.music_disc_45.value,
 ]
 
-SHOP_PROGRESSION_ASIA : Sequence[str] = [
+SHOP_PROGRESSION_ASIA : list[str] = [
     Loc.channel_guide_15.value,
 
     Loc.secret_photos_20.value,
@@ -2433,7 +2433,7 @@ SHOP_PROGRESSION_ASIA : Sequence[str] = [
     Loc.music_disc_50.value,
 ]
 
-SHOP_PROGRESSION_PLANE : Sequence[str] = [
+SHOP_PROGRESSION_PLANE : list[str] = [
     Loc.hint_book_5.value,
 
     Loc.mon_fiction_15.value,
@@ -2448,7 +2448,7 @@ SHOP_PROGRESSION_PLANE : Sequence[str] = [
     Loc.music_disc_26.value,
 ]
 
-SHOP_PROGRESSION_HONG : Sequence[str] = [
+SHOP_PROGRESSION_HONG : list[str] = [
     Loc.mon_fiction_16.value,
 
     Loc.channel_guide_17.value,
@@ -2464,7 +2464,7 @@ SHOP_PROGRESSION_HONG : Sequence[str] = [
     Loc.genie_dance_music_blues.value,
 ]
 
-SHOP_PROGRESSION_BOSS5 : Sequence[str] = [
+SHOP_PROGRESSION_BOSS5 : list[str] = [
     Loc.mon_fiction_17.value,
 
     Loc.secret_photos_23.value,
@@ -2481,7 +2481,7 @@ SHOP_PROGRESSION_BOSS5 : Sequence[str] = [
     Loc.music_disc_46.value,
 ]
 
-SHOP_PROGRESSION_BAY : Sequence[str] = [
+SHOP_PROGRESSION_BAY : list[str] = [
     Loc.channel_guide_18.value,
 
     Loc.bonus_rc_cars_3.value,
@@ -2492,7 +2492,7 @@ SHOP_PROGRESSION_BAY : Sequence[str] = [
     Loc.music_disc_38.value,
 ]
 
-SHOP_PROGRESSION_TOMO : Sequence[str] = [
+SHOP_PROGRESSION_TOMO : list[str] = [
     Loc.channel_guide_19.value,
 
     Loc.secret_photos_25.value,
@@ -2502,7 +2502,7 @@ SHOP_PROGRESSION_TOMO : Sequence[str] = [
     Loc.genie_dance_music_slowdance.value,
 ]
 
-SHOP_PROGRESSION_BOSS6 : Sequence[str] = [
+SHOP_PROGRESSION_BOSS6 : list[str] = [
     Loc.mon_fiction_18.value,
 
     Loc.concept_art_7.value,
@@ -2521,7 +2521,7 @@ SHOP_PROGRESSION_BOSS6 : Sequence[str] = [
     Loc.genie_dance_music_waltz.value,
 ]
 
-SHOP_PROGRESSION_SPACE : Sequence[str] = [
+SHOP_PROGRESSION_SPACE : list[str] = [
     Loc.channel_guide_20.value,
 
     Loc.concept_art_24.value,
@@ -2532,7 +2532,7 @@ SHOP_PROGRESSION_SPACE : Sequence[str] = [
     Loc.music_disc_39.value,
 ]
 
-SHOP_PROGRESSION_SPECTER1 : Sequence[str] = [
+SHOP_PROGRESSION_SPECTER1 : list[str] = [
     Loc.mon_fiction_19.value,
 
     Loc.secret_photos_26.value,
@@ -2548,7 +2548,7 @@ SHOP_PROGRESSION_SPECTER1 : Sequence[str] = [
     Loc.music_disc_34.value,
 ]
 
-SHOP_PROGRESSION_ROUND2 : Sequence[str] = [
+SHOP_PROGRESSION_ROUND2 : list[str] = [
     Loc.hint_book_6.value,
     Loc.hint_book_10.value,
     Loc.hint_book_11.value,
@@ -2600,7 +2600,7 @@ SHOP_PROGRESSION_ROUND2 : Sequence[str] = [
     Loc.music_disc_49.value,
 ]
 
-SHOP_PROGRESSION_MORPH : Sequence[str] = [
+SHOP_PROGRESSION_MORPH : list[str] = [
     Loc.shop_morph_stock_1.value,
     Loc.shop_morph_stock_2.value,
     Loc.shop_morph_stock_3.value,
@@ -2613,58 +2613,58 @@ SHOP_PROGRESSION_MORPH : Sequence[str] = [
     Loc.shop_morph_stock_10.value,
 ]
 
-SHOP_PROGRESSION_BOSS1_ACCESS : Sequence[str] = [
+SHOP_PROGRESSION_BOSS1_ACCESS : list[str] = [
     Loc.hint_book_14.value,
 ]
 
-SHOP_PROGRESSION_BOSS2_ACCESS : Sequence[str] = [
+SHOP_PROGRESSION_BOSS2_ACCESS : list[str] = [
     Loc.hint_book_15.value,
 ]
 
-SHOP_PROGRESSION_BOSS3_ACCESS : Sequence[str] = [
+SHOP_PROGRESSION_BOSS3_ACCESS : list[str] = [
     Loc.hint_book_16.value,
 ]
 
-SHOP_PROGRESSION_HEAVEN_ACCESS : Sequence[str] = [
+SHOP_PROGRESSION_HEAVEN_ACCESS : list[str] = [
     Loc.hint_book_9.value,
 ]
 
-SHOP_PROGRESSION_BOSS4_ACCESS : Sequence[str] = [
+SHOP_PROGRESSION_BOSS4_ACCESS : list[str] = [
     Loc.hint_book_17.value,
 ]
 
-SHOP_PROGRESSION_BOSS5_ACCESS : Sequence[str] = [
+SHOP_PROGRESSION_BOSS5_ACCESS : list[str] = [
     Loc.hint_book_18.value,
 ]
 
-SHOP_PROGRESSION_TOMO_ACCESS : Sequence[str] = [
+SHOP_PROGRESSION_TOMO_ACCESS : list[str] = [
     Loc.movie_tape_17.value
 ]
 
-SHOP_PROGRESSION_BOSS6_ACCESS : Sequence[str] = [
+SHOP_PROGRESSION_BOSS6_ACCESS : list[str] = [
     Loc.hint_book_19.value,
 ]
 
-SHOP_PROGRESSION_SPECTER1_ACCESS : Sequence[str] = [
+SHOP_PROGRESSION_SPECTER1_ACCESS : list[str] = [
     Loc.hint_book_20.value,
 ]
 
-SHOP_PROGRESSION_SPECTER2_CAPTURE : Sequence[str] = [
+SHOP_PROGRESSION_SPECTER2_CAPTURE : list[str] = [
     Loc.movie_tape_26.value,
     Loc.movie_tape_27.value,
 
     Loc.music_disc_41.value,
 ]
 
-SHOP_PROGRESSION_75COMPLETION : Sequence[str] = [
+SHOP_PROGRESSION_75COMPLETION : list[str] = [
     Loc.shop_ultim_ape_fighter.value,
 ]
 
-SHOP_PROGRESSION_MGS : Sequence[str] = [
+SHOP_PROGRESSION_MGS : list[str] = [
     Loc.movie_tape_28.value,
 ]
 
-SHOP_HINT_BOOK : Sequence[str] = [
+SHOP_HINT_BOOK : list[str] = [
     Loc.hint_book_1.value,
     Loc.hint_book_2.value,
     Loc.hint_book_3.value,
@@ -2687,7 +2687,7 @@ SHOP_HINT_BOOK : Sequence[str] = [
     Loc.hint_book_20.value,
 ]
 
-SHOP_MON_FICTION : Sequence[str] = [
+SHOP_MON_FICTION : list[str] = [
     Loc.mon_fiction_1.value,
     Loc.mon_fiction_2.value,
     Loc.mon_fiction_3.value,
@@ -2710,7 +2710,7 @@ SHOP_MON_FICTION : Sequence[str] = [
     Loc.mon_fiction_20.value,
 ]
 
-SHOP_CHANNEL_GUIDE : Sequence[str] = [
+SHOP_CHANNEL_GUIDE : list[str] = [
     Loc.channel_guide_1.value,
     Loc.channel_guide_2.value,
     Loc.channel_guide_3.value,
@@ -2733,19 +2733,19 @@ SHOP_CHANNEL_GUIDE : Sequence[str] = [
     Loc.channel_guide_20.value,
 ]
 
-SHOP_BONUS_RC_CARS : Sequence[str] = [
+SHOP_BONUS_RC_CARS : list[str] = [
     Loc.bonus_rc_cars_1.value,
     Loc.bonus_rc_cars_2.value,
     Loc.bonus_rc_cars_3.value,
 ]
 
-SHOP_MINIGAMES : Sequence[str] = [
+SHOP_MINIGAMES : list[str] = [
     Loc.shop_super_monkey_throw_stadium.value,
     Loc.shop_mesal_gear_solid.value,
     Loc.shop_ultim_ape_fighter.value,
 ]
 
-SHOP_WEIRD_PHOTOS : Sequence[str] = [
+SHOP_WEIRD_PHOTOS : list[str] = [
     Loc.weird_photos_1.value,
     Loc.weird_photos_2.value,
     Loc.weird_photos_3.value,
@@ -2769,7 +2769,7 @@ SHOP_WEIRD_PHOTOS : Sequence[str] = [
 
 ]
 
-SHOP_SECRET_PHOTOS : Sequence[str] = [
+SHOP_SECRET_PHOTOS : list[str] = [
     Loc.secret_photos_1.value,
     Loc.secret_photos_2.value,
     Loc.secret_photos_3.value,
@@ -2802,7 +2802,7 @@ SHOP_SECRET_PHOTOS : Sequence[str] = [
     Loc.secret_photos_30.value,
 ]
 
-SHOP_CONCEPT_ART : Sequence[str] = [
+SHOP_CONCEPT_ART : list[str] = [
     Loc.concept_art_1.value,
     Loc.concept_art_2.value,
     Loc.concept_art_3.value,
@@ -2836,7 +2836,7 @@ SHOP_CONCEPT_ART : Sequence[str] = [
 
 ]
 
-SHOP_TELEBORG_CARDS : Sequence[str] = [
+SHOP_TELEBORG_CARDS : list[str] = [
     Loc.teleborg_cards_1.value,
     Loc.teleborg_cards_2.value,
     Loc.teleborg_cards_3.value,
@@ -2869,7 +2869,7 @@ SHOP_TELEBORG_CARDS : Sequence[str] = [
     Loc.teleborg_cards_30.value,
 ]
 
-SHOP_MOVIE_TAPE : Sequence[str] = [
+SHOP_MOVIE_TAPE : list[str] = [
     Loc.movie_tape_1.value,
     Loc.movie_tape_2.value,
     Loc.movie_tape_3.value,
@@ -2901,7 +2901,7 @@ SHOP_MOVIE_TAPE : Sequence[str] = [
     Loc.movie_tape_29.value,
 ]
 
-SHOP_MUSIC_DISC : Sequence[str] = [
+SHOP_MUSIC_DISC : list[str] = [
     Loc.music_disc_1.value,
     Loc.music_disc_2.value,
     Loc.music_disc_3.value,
@@ -2954,13 +2954,13 @@ SHOP_MUSIC_DISC : Sequence[str] = [
     Loc.music_disc_50.value,
 ]
 
-SHOP_GENIE_DANCE_MUSIC : Sequence[str] = [
+SHOP_GENIE_DANCE_MUSIC : list[str] = [
     Loc.genie_dance_music_blues.value,
     Loc.genie_dance_music_slowdance.value,
     Loc.genie_dance_music_waltz.value,
 ]
 
-SHOP_COLLECTION_HINT_BOOK : Sequence[str] = [
+SHOP_COLLECTION_HINT_BOOK : list[str] = [
     Loc.hint_book_collection_1.value,
     Loc.hint_book_collection_2.value,
     Loc.hint_book_collection_3.value,
@@ -2985,7 +2985,7 @@ SHOP_COLLECTION_HINT_BOOK : Sequence[str] = [
     # Loc.hint_book_collection_20.value,
 ]
 
-SHOP_COLLECTION_MON_FICTION : Sequence[str] = [
+SHOP_COLLECTION_MON_FICTION : list[str] = [
     Loc.mon_fiction_collection_1.value,
     Loc.mon_fiction_collection_2.value,
     Loc.mon_fiction_collection_3.value,
@@ -3008,7 +3008,7 @@ SHOP_COLLECTION_MON_FICTION : Sequence[str] = [
     Loc.mon_fiction_collection_20.value,
 ]
 
-SHOP_COLLECTION_CHANNEL_GUIDE : Sequence[str] = [
+SHOP_COLLECTION_CHANNEL_GUIDE : list[str] = [
     Loc.channel_guide_collection_1.value,
     Loc.channel_guide_collection_2.value,
     Loc.channel_guide_collection_3.value,
@@ -3031,13 +3031,13 @@ SHOP_COLLECTION_CHANNEL_GUIDE : Sequence[str] = [
     Loc.channel_guide_collection_20.value,
 ]
 
-SHOP_COLLECTION_BONUS_RC_CARS : Sequence[str] = [
+SHOP_COLLECTION_BONUS_RC_CARS : list[str] = [
     Loc.bonus_rc_cars_collection_1.value,
     Loc.bonus_rc_cars_collection_2.value,
     Loc.bonus_rc_cars_collection_3.value,
 ]
 
-SHOP_COLLECTION_MINIGAMES : Sequence[str] = [
+SHOP_COLLECTION_MINIGAMES : list[str] = [
     Loc.shop_super_monkey_throw_stadium.value,
     Loc.shop_mesal_gear_solid.value,
 
@@ -3045,7 +3045,7 @@ SHOP_COLLECTION_MINIGAMES : Sequence[str] = [
     # Loc.shop_ultim_ape_fighter.value
 ]
 
-SHOP_COLLECTION_LUCKY_PHOTO : Sequence[str] = [
+SHOP_COLLECTION_LUCKY_PHOTO : list[str] = [
     Loc.lucky_photo_collection_1.value,
     Loc.lucky_photo_collection_2.value,
     Loc.lucky_photo_collection_3.value,
@@ -3158,7 +3158,7 @@ SHOP_COLLECTION_LUCKY_PHOTO : Sequence[str] = [
     Loc.lucky_photo_collection_110.value,
 ]
 
-SHOP_COLLECTION_MOVIE_TAPE : Sequence[str] = [
+SHOP_COLLECTION_MOVIE_TAPE : list[str] = [
     Loc.movie_tape_collection_1.value,
     Loc.movie_tape_collection_2.value,
     Loc.movie_tape_collection_3.value,
@@ -3194,7 +3194,7 @@ SHOP_COLLECTION_MOVIE_TAPE : Sequence[str] = [
     # Loc.movie_tape_collection_29.value,
 ]
 
-SHOP_COLLECTION_MUSIC_DISC : Sequence[str] = [
+SHOP_COLLECTION_MUSIC_DISC : list[str] = [
     Loc.music_disc_collection_1.value,
     Loc.music_disc_collection_2.value,
     Loc.music_disc_collection_3.value,
@@ -3249,13 +3249,13 @@ SHOP_COLLECTION_MUSIC_DISC : Sequence[str] = [
     # Loc.music_disc_collection_50.value,
 ]
 
-SHOP_COLLECTION_GENIE_DANCE_MUSIC : Sequence[str] = [
+SHOP_COLLECTION_GENIE_DANCE_MUSIC : list[str] = [
     Loc.genie_dance_music_collection_1.value,
     Loc.genie_dance_music_collection_2.value,
     Loc.genie_dance_music_collection_3.value,
 ]
 
-SHOP_CATEGORIES_INDEX: Sequence[str] = [
+SHOP_CATEGORIES_INDEX: list[str] = [
     Loc.shop_morph_stock.value, Loc.hint_book.value, Loc.mon_fiction.value, Loc.channel_guide.value,
     Loc.bonus_rc_cars.value, Loc.minigames.value, Loc.lucky_photo.value, Loc.movie_tape.value, Loc.music_disc.value,
     Loc.genie_dance_music.value
@@ -3263,7 +3263,7 @@ SHOP_CATEGORIES_INDEX: Sequence[str] = [
 
 ### Shop Items that unlock when reaching certain game progress.
 ### This will be driven by either Channel Keys or Shop Stocks if not allowed to all be available at once
-SHOP_PROGRESSION_INDEX : Sequence[Sequence[str]] = [
+SHOP_PROGRESSION_INDEX : list[list[str]] = [
     SHOP_PROGRESSION_SEASIDE, SHOP_PROGRESSION_WOODS, SHOP_PROGRESSION_CASTLE, SHOP_PROGRESSION_BOSS1,
     SHOP_PROGRESSION_CISCOCITY, SHOP_PROGRESSION_STUDIO, SHOP_PROGRESSION_HALLOWEEN, SHOP_PROGRESSION_WESTERN,
     SHOP_PROGRESSION_BOSS2, SHOP_PROGRESSION_ONSEN, SHOP_PROGRESSION_SNOWFESTA, SHOP_PROGRESSION_EDOTOWN,
@@ -3273,7 +3273,7 @@ SHOP_PROGRESSION_INDEX : Sequence[Sequence[str]] = [
     SHOP_PROGRESSION_BOSS6, SHOP_PROGRESSION_SPACE, SHOP_PROGRESSION_SPECTER1, SHOP_PROGRESSION_ROUND2
 ]
 
-SHOP_PROGRESSION_MASTER : Sequence[str] = [
+SHOP_PROGRESSION_MASTER : list[str] = [
     *SHOP_PROGRESSION_SEASIDE, *SHOP_PROGRESSION_WOODS, *SHOP_PROGRESSION_CASTLE, *SHOP_PROGRESSION_BOSS1,
     *SHOP_PROGRESSION_CISCOCITY, *SHOP_PROGRESSION_STUDIO, *SHOP_PROGRESSION_HALLOWEEN, *SHOP_PROGRESSION_WESTERN,
     *SHOP_PROGRESSION_BOSS2, *SHOP_PROGRESSION_ONSEN, *SHOP_PROGRESSION_SNOWFESTA, *SHOP_PROGRESSION_EDOTOWN,
@@ -3283,49 +3283,49 @@ SHOP_PROGRESSION_MASTER : Sequence[str] = [
     *SHOP_PROGRESSION_BOSS6, *SHOP_PROGRESSION_SPACE, *SHOP_PROGRESSION_SPECTER1, *SHOP_PROGRESSION_ROUND2,
 ]
 
-SHOP_UNIQUE_MASTER : Sequence[str] = [
+SHOP_UNIQUE_MASTER : list[str] = [
     *SHOP_HINT_BOOK, *SHOP_MON_FICTION, *SHOP_CHANNEL_GUIDE, *SHOP_BONUS_RC_CARS, *SHOP_MINIGAMES, *SHOP_WEIRD_PHOTOS,
     *SHOP_SECRET_PHOTOS, *SHOP_CONCEPT_ART, *SHOP_TELEBORG_CARDS, *SHOP_MOVIE_TAPE, *SHOP_MUSIC_DISC,
     *SHOP_GENIE_DANCE_MUSIC
 ]
 
 ### Collection version of Shop Items to reference category amount obtained instead of specific shop items obtained
-SHOP_COLLECTION_INDEX : Sequence[Sequence[str]] = [
+SHOP_COLLECTION_INDEX : list[list[str]] = [
     SHOP_PROGRESSION_MORPH, SHOP_COLLECTION_HINT_BOOK, SHOP_COLLECTION_MON_FICTION, SHOP_COLLECTION_CHANNEL_GUIDE,
     SHOP_COLLECTION_BONUS_RC_CARS, SHOP_COLLECTION_MINIGAMES, SHOP_COLLECTION_LUCKY_PHOTO, SHOP_COLLECTION_MOVIE_TAPE,
     SHOP_COLLECTION_MUSIC_DISC, SHOP_COLLECTION_GENIE_DANCE_MUSIC
 ]
 
-SHOP_COLLECTION_MASTER : Sequence[str] = [
+SHOP_COLLECTION_MASTER : list[str] = [
     *SHOP_PROGRESSION_MORPH, *SHOP_COLLECTION_HINT_BOOK, *SHOP_COLLECTION_MON_FICTION, *SHOP_COLLECTION_CHANNEL_GUIDE,
     *SHOP_COLLECTION_BONUS_RC_CARS, *SHOP_COLLECTION_LUCKY_PHOTO, *SHOP_COLLECTION_MOVIE_TAPE,
     *SHOP_COLLECTION_MUSIC_DISC, *SHOP_COLLECTION_GENIE_DANCE_MUSIC
 ]
 
-SHOP_EVENT_ACCESS_MASTER : Sequence[str] = [
+SHOP_EVENT_ACCESS_MASTER : list[str] = [
     *SHOP_PROGRESSION_BOSS1_ACCESS, *SHOP_PROGRESSION_BOSS2_ACCESS, *SHOP_PROGRESSION_BOSS3_ACCESS,
     *SHOP_PROGRESSION_HEAVEN_ACCESS, *SHOP_PROGRESSION_BOSS4_ACCESS, *SHOP_PROGRESSION_BOSS5_ACCESS,
     *SHOP_PROGRESSION_TOMO_ACCESS, *SHOP_PROGRESSION_BOSS6_ACCESS, *SHOP_PROGRESSION_SPECTER1_ACCESS,
     *SHOP_PROGRESSION_SPECTER2_CAPTURE, *SHOP_PROGRESSION_75COMPLETION
 ]
 
-SHOP_CHEAP_MASTER : Sequence[str] = [
+SHOP_CHEAP_MASTER : list[str] = [
     *SHOP_HINT_BOOK, *SHOP_MON_FICTION, *SHOP_CHANNEL_GUIDE, *SHOP_WEIRD_PHOTOS, *SHOP_SECRET_PHOTOS, *SHOP_CONCEPT_ART,
     *SHOP_TELEBORG_CARDS
 ]
 
-SHOP_CHEAP_COLLECTION_INDEX : Sequence[Sequence[str]] = [
+SHOP_CHEAP_COLLECTION_INDEX : list[list[str]] = [
     SHOP_COLLECTION_HINT_BOOK, SHOP_COLLECTION_MON_FICTION, SHOP_COLLECTION_CHANNEL_GUIDE,
     SHOP_COLLECTION_LUCKY_PHOTO
 ]
 
-SHOP_CHEAP_COLLECTION_MASTER : Sequence[str] = [
+SHOP_CHEAP_COLLECTION_MASTER : list[str] = [
     *SHOP_COLLECTION_HINT_BOOK, *SHOP_COLLECTION_MON_FICTION, *SHOP_COLLECTION_CHANNEL_GUIDE,
     *SHOP_COLLECTION_LUCKY_PHOTO
 ]
 
 # Shop Items that are always present regardless of Shoppingsanity Option
-SHOP_PERSISTENT_MASTER : Sequence[str] = [
+SHOP_PERSISTENT_MASTER : list[str] = [
     *SHOP_PROGRESSION_MORPH,
     *SHOP_MINIGAMES,
     *SHOP_PROGRESSION_BOSS1_ACCESS,
@@ -3340,7 +3340,7 @@ SHOP_PERSISTENT_MASTER : Sequence[str] = [
     *SHOP_PROGRESSION_SPECTER2_CAPTURE,
 ]
 
-SHOP_PERSISTENT_HINT_BOOK: Sequence[str] = [
+SHOP_PERSISTENT_HINT_BOOK: list[str] = [
     Loc.hint_book_9.value,
     Loc.hint_book_14.value,
     Loc.hint_book_15.value,
@@ -3351,7 +3351,7 @@ SHOP_PERSISTENT_HINT_BOOK: Sequence[str] = [
     Loc.hint_book_20.value,
 ]
 
-SHOP_PROGRESSION_DIRECTORY : dict[str, Sequence[str]] = {
+SHOP_PROGRESSION_DIRECTORY : dict[str, list[str]] = {
     Stage.region_shop_seaside.value     :   SHOP_PROGRESSION_SEASIDE,
     Stage.region_shop_woods.value       :   SHOP_PROGRESSION_WOODS,
     Stage.region_shop_castle.value      :   SHOP_PROGRESSION_CASTLE,
@@ -3383,7 +3383,7 @@ SHOP_PROGRESSION_DIRECTORY : dict[str, Sequence[str]] = {
 }
 
 ### Shop Items that unlock when entering certain channels/stages
-SHOP_EVENT_ACCESS_DIRECTORY : dict[str, Sequence[str]] = {
+SHOP_EVENT_ACCESS_DIRECTORY : dict[str, list[str]] = {
     Stage.region_boss1.value    : SHOP_PROGRESSION_BOSS1_ACCESS,
     Stage.region_boss2.value    : SHOP_PROGRESSION_BOSS2_ACCESS,
     Stage.region_boss3.value    : SHOP_PROGRESSION_BOSS3_ACCESS,
@@ -3398,7 +3398,7 @@ SHOP_EVENT_ACCESS_DIRECTORY : dict[str, Sequence[str]] = {
 
 ### Checking Groupings
 ## Grouped per Item Group In-game
-SHOP_CATEGORIES_DIRECTORY : dict[str, Sequence[str]] = {
+SHOP_CATEGORIES_DIRECTORY : dict[str, list[str]] = {
     Loc.shop_morph_stock.value  : SHOP_PROGRESSION_MORPH,
 
     Loc.hint_book.value         : SHOP_HINT_BOOK,
@@ -3417,7 +3417,7 @@ SHOP_CATEGORIES_DIRECTORY : dict[str, Sequence[str]] = {
     Loc.genie_dance_music.value : SHOP_GENIE_DANCE_MUSIC
 }
 
-SHOP_CATEGORIES_COLLECTION_DIRECTORY : dict[str, Sequence[str]] = {
+SHOP_CATEGORIES_COLLECTION_DIRECTORY : dict[str, list[str]] = {
     Loc.shop_morph_stock.value  : SHOP_PROGRESSION_MORPH,
 
     Loc.hint_book.value         : SHOP_HINT_BOOK,
@@ -3435,7 +3435,7 @@ SHOP_CATEGORIES_COLLECTION_DIRECTORY : dict[str, Sequence[str]] = {
     Loc.genie_dance_music.value : SHOP_GENIE_DANCE_MUSIC,
 }
 
-SHOP_COLLECTION_DIRECTORY : dict[str, Sequence[str]] = {
+SHOP_COLLECTION_DIRECTORY : dict[str, list[str]] = {
     Loc.shop_morph_stock.value  : SHOP_PROGRESSION_MORPH,
 
     Loc.hint_book.value         : SHOP_COLLECTION_HINT_BOOK,
@@ -3450,7 +3450,7 @@ SHOP_COLLECTION_DIRECTORY : dict[str, Sequence[str]] = {
 }
 
 ## Grouped per physical shop location in the Shopping Area in-game
-SHOP_GROUPINGS_DIRECTORY : dict[str, Sequence[str]] = {
+SHOP_GROUPINGS_DIRECTORY : dict[str, list[str]] = {
     Loc.monkey_mart.value       : [Loc.shop_morph_stock.value],
     Loc.book_shop.value         : [Loc.hint_book.value,
                                    Loc.mon_fiction.value,
@@ -3464,9 +3464,9 @@ SHOP_GROUPINGS_DIRECTORY : dict[str, Sequence[str]] = {
 }
 
 
-LOCATIONS_INDEX : dict[str, Sequence[str]] = {
+LOCATIONS_INDEX : dict[str, list[str]] = {
     key : [loc for loc in [*MONKEYS_INDEX.get(key, []),
-                           CAMERAS_INDEX.get(key, []),
+                           *CAMERAS_INDEX.get(key, []),
                            *CELLPHONES_INDEX.get(key, []),
                            *SHOP_CATEGORIES_DIRECTORY.get(key, [])]
            if loc]
@@ -3474,7 +3474,7 @@ LOCATIONS_INDEX : dict[str, Sequence[str]] = {
                   *SHOP_CATEGORIES_DIRECTORY.keys()}]
 }
 
-LOCATIONS_DIRECTORY : dict[str, Sequence[str]] = {
+LOCATIONS_DIRECTORY : dict[str, list[str]] = {
     APHelper.monkey.value : MONKEYS_MASTER,
     APHelper.bosses.value : MONKEYS_BOSSES,
     APHelper.camera.value : CAMERAS_MASTER,

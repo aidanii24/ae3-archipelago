@@ -12,6 +12,8 @@ from .Strings import Itm, Stage, APHelper
 if TYPE_CHECKING:
     from .. import AE3World
 
+Rule = Callable[[CollectionState, int], bool]
+
 ### [< --- ACCESS RULES --- >]
 ## Check if Player can Catch Monkeys
 def can_catch(state : CollectionState, player : int):
@@ -143,37 +145,37 @@ def can_glitch_float_morph(state: CollectionState, player : int):
 def can_reach_region(state : CollectionState, player : int, region : str):
     return state.can_reach_region(region, player)
 
-def can_access_region(region : str):
+def can_access_region(region : str) -> Rule:
     return lambda state, player : can_reach_region(state, player, region)
 
-def can_farm_boxes():
+def can_farm_boxes() -> Rule:
     return lambda state, player : any(can_reach_region(state, player, region) for region in STAGES_FARMABLE)
 
-def can_farm_sneaky_borgs():
+def can_farm_sneaky_borgs() -> Rule:
     return lambda state, player : any(can_reach_region(state, player, region) for region in STAGES_FARMABLE_SNEAKY_BORG)
 
 def has_enough_morph_stocks(state : CollectionState, player : int, stocks : int = 1):
     return state.has(Itm.acc_morph_stock.value, player, stocks)
 
-def has_morph_stocks(stocks : int = 1):
+def has_morph_stocks(stocks : int = 1) -> Rule:
     return lambda state, player : has_enough_morph_stocks(state, player, stocks)
 
 def has_enough_morph_extensions(state : CollectionState, player : int, extensions : int = 10):
     return state.has(Itm.acc_morph_ext.value, player, extensions)
 
-def has_morph_extensions(extensions: int = 10):
+def has_morph_extensions(extensions: int = 10) -> Rule:
     return lambda state, player : has_enough_morph_extensions(state, player, extensions)
 
 def has_enough_keys(state : CollectionState, player : int, keys : int):
     return state.has(APHelper.channel_key.value, player, keys)
 
-def has_keys(keys : int):
+def has_keys(keys : int) -> Rule:
     return lambda state, player : has_enough_keys(state, player, keys=keys)
 
 def has_enough_shop_stock(state : CollectionState, player : int, stock : int):
     return state.has(APHelper.shop_stock.value, player, stock)
 
-def has_shop_stock(stock : int):
+def has_shop_stock(stock : int) -> Rule:
     return lambda state, player : has_enough_shop_stock(state, player, stock)
 
 # Event Checks
@@ -183,13 +185,13 @@ def is_event_invoked(state : CollectionState, player : int, event_name : str):
 def is_event_not_invoked(state : CollectionState, player : int, event_name : str):
     return not state.has(event_name, player)
 
-def event_invoked(event_name : str):
+def event_invoked(event_name : str) -> Rule:
     return lambda state, player : is_event_invoked(state, player, event_name)
 
 def is_goal_achieved(state : CollectionState, player : int, count : int = 1):
     return state.has(APHelper.victory.value, player, count)
 
-def are_goals_achieved(goal_count : int):
+def are_goals_achieved(goal_count : int) -> Rule:
     return lambda state, player : is_goal_achieved(state, player, goal_count)
 
 ### [< --- WRAPPER SHORTHAND --- >]
@@ -235,7 +237,7 @@ class AccessRule:
     FARM_DUPE = can_farm_sneaky_borgs()
 
     # NULL
-    NULL = (lambda state, player : False)
+    NULL: Rule = (lambda state, player : False)
 
     # Glitches
     BOOST_JUMP = can_boost_jump                 # Can Boost Jump
@@ -257,8 +259,8 @@ class Rulesets:
         rules : Normal Sets of AccessRules. In addition to adhering to AccessRules set in Critical,
         at least one set of AccessRules must also be adhered to.
     """
-    critical : Set[Callable] = None
-    rules : list[list[Callable]] = None
+    critical : Set[Rule] = set()
+    rules : list[list[Rule]] = []
 
     def __init__(self, *rules : Callable | list[Callable] | list[list[Callable]] | None,
                  critical : Set[Callable] = None):
@@ -317,15 +319,15 @@ class Rulesets:
 
         return reachable
 
-    def condense(self, player) -> Callable[[CollectionState], bool]:
+    def condense(self, player: int) -> Callable[[CollectionState], bool]:
         return lambda state : self.check(state, player)
 
 
 class ProgressionMode:
     name : str = "Generic Progression Mode"
-    progression : list[int] = None
-    order : list[int] = None
-    level_select_entrances : list[AE3EntranceMeta] = None
+    progression : list[int] = []
+    order : list[int] = []
+    level_select_entrances : list[AE3EntranceMeta] = []
 
     boss_indices : Sequence[int] = [ 3, 8, 12, 17, 21, 24, 26, 27 ]
     small_starting_channels : Sequence[int] = [ 6, 9, 11, 13, 15, 18, 20, 22, 23 ]
@@ -551,13 +553,13 @@ class ProgressionMode:
 
         self.level_select_entrances = [*new_entrances]
 
-    def set_progression(self, progression : list[int] = None):
+    def set_progression(self, progression : list[int] | None = None):
         if progression is None or not progression:
             return
 
         self.progression = progression
 
-    def set_order(self, order : list[int] = None):
+    def set_order(self, order : list[int] | None = None):
         if order is None or not order:
             return
 
