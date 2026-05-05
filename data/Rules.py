@@ -339,7 +339,7 @@ class LogicPreference:
 
     blacklisted_entrances : list[str] = []
 
-    default_critical_rule : Set[Callable] = [AccessRule.CATCH]
+    default_critical_rule : Set[Rule] = [AccessRule.CATCH]
     small_starting_channels : list[int]
 
     def __init__(self):
@@ -377,7 +377,7 @@ class LogicPreference:
         if not hds and not mqj:
             return
 
-        rules: list = []
+        rules: list[Rule] = []
         if hds:
             rules.append(AccessRule.G_FLOAT)
         if mqj:
