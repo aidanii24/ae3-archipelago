@@ -3466,7 +3466,7 @@ SHOP_GROUPINGS_DIRECTORY : dict[str, list[str]] = {
 
 LOCATIONS_INDEX : dict[str, list[str]] = {
     key : [loc for loc in [*MONKEYS_INDEX.get(key, []),
-                           *CAMERAS_INDEX.get(key, []),
+                           CAMERAS_INDEX.get(key, ""),
                            *CELLPHONES_INDEX.get(key, []),
                            *SHOP_CATEGORIES_DIRECTORY.get(key, [])]
            if loc]
@@ -3511,7 +3511,7 @@ def generate_location_groups() -> dict[str, set[str]]:
     groups.update({f"{k} Cellphones" : set([Cellphone_Name_to_ID[c] for c in v])
                    for k, v in CELLPHONES_INDEX.items()})
 
-    groups.update({k: set(v) for k, v in MONKEYS_INDEX})
+    groups.update({k: set(v) for k, v in MONKEYS_INDEX.items()})
     for k, v in CAMERAS_INDEX.items():
         groups.setdefault(k, set()).update(v)
     for k, v in CELLPHONES_INDEX.items():
@@ -3533,8 +3533,8 @@ def generate_location_groups() -> dict[str, set[str]]:
 
         groups[channel] = set(total)
 
-    groups.update({k: set(v) for k, v in SHOP_PROGRESSION_DIRECTORY})
-    groups.update({k: set(v) for k, v in SHOP_CATEGORIES_DIRECTORY})
+    groups.update({k: set(v) for k, v in SHOP_PROGRESSION_DIRECTORY.items()})
+    groups.update({k: set(v) for k, v in SHOP_CATEGORIES_DIRECTORY.items()})
 
     groups[Loc.lucky_photo.value] = set(SHOP_CATEGORIES_COLLECTION_DIRECTORY[Loc.lucky_photo.value])
 

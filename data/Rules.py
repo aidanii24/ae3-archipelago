@@ -1168,11 +1168,11 @@ class Expert(Hard):
         self.event_rules.get(Events.space_g_button.value, Rulesets()).update(Rulesets(AccessRule.KUNGFU))
 
     def apply_timed_morph_float(self, base_duration: int, morph_extensions_enabled: bool):
-        events: list = [
+        events: list[str] = [
             Events.iceland_e_button.value
         ]
 
-        entrances: list = [
+        entrances: list[str] = [
             Stage.entrance_halloween_aa1.value,
             Stage.entrance_halloween_a1a.value,
             Stage.entrance_halloween_c1c.value,
@@ -1192,7 +1192,7 @@ class Expert(Hard):
             Stage.entrance_hong_cc2.value,
         ]
 
-        rules: list = [AccessRule.G_FLOAT_M]
+        rules: list[Rule] = [AccessRule.G_FLOAT_M]
         if base_duration < 30 and morph_extensions_enabled:
             rules.append(has_morph_extensions())
 
@@ -1204,7 +1204,7 @@ class Expert(Hard):
 
     def apply_option_logic(self, options: 'AE3Options'):
         if options.shoppingsanity.value < 1:
-            rules: list = [AccessRule.HERO, can_farm_boxes()]
+            rules: list[Rule] = [AccessRule.HERO, can_farm_boxes()]
             if options.farm_logic_sneaky_borgs:
                 rules.append(can_farm_sneaky_borgs())
 
