@@ -11,7 +11,7 @@ from .Locations import CAMERAS_INDEX, CAMERAS_MASTER, CELLPHONES_INDEX, Cellphon
     LOCATIONS_DIRECTORY, SHOP_CHEAP_COLLECTION_INDEX, SHOP_CHEAP_MASTER, SHOP_PROGRESSION_DIRECTORY, SHOP_UNIQUE_MASTER, \
     SHOP_COLLECTION_MASTER, SHOP_PERSISTENT_MASTER, SHOP_CHEAP_COLLECTION_MASTER, SHOP_EVENT_ACCESS_DIRECTORY, \
     MONKEYS_INFINITE_GADGET_FLOAT_APPLICABLE, EVENTS_INFINITE_GADGET_FLOAT_APPLICABLE
-from .Logic import Rulesets, AccessRule, has_keys, event_invoked, has_enough_keys, can_access_region, \
+from .Logic import Rule, Rulesets, AccessRule, has_keys, event_invoked, has_enough_keys, can_access_region, \
     has_shop_stock, has_morph_stocks, has_morph_extensions, can_farm_boxes, can_farm_sneaky_borgs
 from .Strings import Loc, Stage, Events, APHelper
 from .Stages import (ENTRANCES_INDEX, STAGES_DIRECTORY, STAGES_DIRECTORY_LABEL, ENTRANCES_SHOP_PSEUDOREGIONS, AE3EntranceMeta,
@@ -27,12 +27,12 @@ class GoalTarget:
     name : str = "Empty Goal"
     description : str = "A Generic Goal Target"
 
-    locations : set[str] = {}
-    location_ids : set[int] = {}
+    locations : set[str] = set()
+    location_ids : set[int] = set()
 
     amount : int = 0
 
-    def __init__(self, amount : int = 0, excluded_stages : list[str] = None, excluded_locations : list[str] = None,
+    def __init__(self, amount : int = 0, excluded_stages : list[str] | None = None, excluded_locations : list[str] | None = None,
                  shop_mode : int = 1):
         if not self.locations:
             return
@@ -101,7 +101,7 @@ class GoalTarget:
     def __str__(self):
         return self.name + "\n         [ " + self.description + " ]"
 
-    def exclude(self, locations : list[str] = None):
+    def exclude(self, locations : list[str] | None = None):
         if locations is None or not locations:
             self.locations = { location for location in self.locations if location not in locations }
             self.location_ids = {generate_name_to_id()[location] for location in self.locations}
@@ -161,8 +161,8 @@ class PostGameCondition:
                                                  APHelper.cellphone.value,
                                                  APHelper.shop.value]
 
-    def __init__(self, amounts : dict[str, int], excluded_regions : list[str] = None,
-                 excluded_locations : list[str] = None, shop_mode : int = 1):
+    def __init__(self, amounts : dict[str, int], excluded_regions : list[str] | None = None,
+                 excluded_locations : list[str] | None = None, shop_mode : int = 1):
         # Check if at least one Post Game Condition is enabled
         if not amounts or all(_ <= 0 for _ in [*amounts.values()]):
             raise OptionError("AE3 > PostGameCondition: At least one Post-Game Condition must be enabled!")
@@ -220,7 +220,7 @@ class PostGameCondition:
         if not has_enough_keys(state, player, min_keys):
             return False
 
-        rules : set[Callable] = set()
+        rules : set[Rule] = set()
         if any(category in self.amounts for category in self.location_categories[:3]):
             rules.update({AccessRule.CATCH, AccessRule.FLY, AccessRule.DASH, AccessRule.SHOOT})
         highest_scale : float = 0.0
@@ -339,7 +339,7 @@ class LogicPreference:
 
     blacklisted_entrances : list[str] = []
 
-    default_critical_rule : Set[Callable] = [AccessRule.CATCH]
+    default_critical_rule : Set[Rule] = [AccessRule.CATCH]
     small_starting_channels : list[int]
 
     def __init__(self):
@@ -377,7 +377,7 @@ class LogicPreference:
         if not hds and not mqj:
             return
 
-        rules: list = []
+        rules: list[Rule] = []
         if hds:
             rules.append(AccessRule.G_FLOAT)
         if mqj:
@@ -1168,11 +1168,11 @@ class Expert(Hard):
         self.event_rules.get(Events.space_g_button.value, Rulesets()).update(Rulesets(AccessRule.KUNGFU))
 
     def apply_timed_morph_float(self, base_duration: int, morph_extensions_enabled: bool):
-        events: list = [
+        events: list[str] = [
             Events.iceland_e_button.value
         ]
 
-        entrances: list = [
+        entrances: list[str] = [
             Stage.entrance_halloween_aa1.value,
             Stage.entrance_halloween_a1a.value,
             Stage.entrance_halloween_c1c.value,
@@ -1192,7 +1192,7 @@ class Expert(Hard):
             Stage.entrance_hong_cc2.value,
         ]
 
-        rules: list = [AccessRule.G_FLOAT_M]
+        rules: list[Rule] = [AccessRule.G_FLOAT_M]
         if base_duration < 30 and morph_extensions_enabled:
             rules.append(has_morph_extensions())
 
@@ -1204,7 +1204,7 @@ class Expert(Hard):
 
     def apply_option_logic(self, options: 'AE3Options'):
         if options.shoppingsanity.value < 1:
-            rules: list = [AccessRule.HERO, can_farm_boxes()]
+            rules: list[Rule] = [AccessRule.HERO, can_farm_boxes()]
             if options.farm_logic_sneaky_borgs:
                 rules.append(can_farm_sneaky_borgs())
 
@@ -2061,7 +2061,7 @@ class PlaySpike(GoalTarget):
     amount = 204
 
     def verify(self, state: CollectionState, player: int) -> bool:
-        minimum_equipment : list[Callable] = [AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC,
+        minimum_equipment : list[Rule] = [AccessRule.DASH, AccessRule.SWIM, AccessRule.SLING, AccessRule.RCC,
                                               AccessRule.MAGICIAN, AccessRule.KUNGFU, AccessRule.HERO]
 
         if any(monkey in MONKEYS_BREAK_ROOMS for monkey in self.locations):
@@ -2108,6 +2108,6 @@ class PasswordHunt(DirectorsCut):
     locations = {*MONKEYS_PASSWORDS}
 
 
-GoalTargetOptions : list[Callable] = [
+GoalTargetOptions : list[Callable[[], GoalTarget]] = [
     Specter, SpecterFinal, TripleThreat, PlaySpike, PlayJimmy, DirectorsCut, PhoneCheck, ShopCollector
 ]

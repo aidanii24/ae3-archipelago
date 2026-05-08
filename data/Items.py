@@ -228,26 +228,26 @@ ITEMS_MASTER : Sequence[AE3ItemMeta] = [
     *GADGETS, *MORPHS, *ACCESSORIES, *UPGRADEABLES, *COLLECTABLES, *ARCHIPELAGO
 ]
 
-ITEMS_INDEX : Sequence[Sequence] = [
+ITEMS_INDEX : Sequence[Sequence[EquipmentItem | UpgradeableItem | CollectableItem | ArchipelagoItem]] = [
     ITEMS_MASTER, GADGETS, MORPHS, EQUIPMENT, ACCESSORIES, UPGRADEABLES, COLLECTABLES, ARCHIPELAGO
 ]
 
 ### [< --- METHODS --- >]
-def from_id(item_id = int, category : int = 0):
+def from_id(item_id: int, category : int = 0):
     """Get Item by its ID"""
-    ref : Sequence = ITEMS_INDEX[category]
+    ref : Sequence[EquipmentItem | UpgradeableItem | CollectableItem | ArchipelagoItem] = ITEMS_INDEX[category]
 
-    i : AE3ItemMeta = next((i for i in ref if i.item_id == item_id), None)
+    i : AE3ItemMeta | None = next((i for i in ref if i.item_id == item_id), None)
     return i
 
-def generate_name_to_id() -> dict[str : int]:
+def generate_name_to_id() -> dict[str, int]:
     """Get a Dictionary of all Items in Name-ID pairs"""
     i : AE3ItemMeta
     return {i.name : i.item_id for i in ITEMS_MASTER}
 
-def generate_item_groups() -> dict[str : set[str]]:
+def generate_item_groups() -> dict[str, set[str]]:
     """Get a Dictionary of Item Groups"""
-    groups : dict[str : set[str]] = {}
+    groups : dict[str, set[str]] = {}
 
     i : AE3ItemMeta
     # Gadgets
@@ -313,7 +313,7 @@ def generate_item_groups() -> dict[str : set[str]]:
 
     return groups
 
-def generate_collectables(rand : random, player : int, amt : int) -> list[AE3Item]:
+def generate_collectables(rand : random.Random, player : int, amt : int) -> list[AE3Item]:
     """Get a list of Items of the specified Archipelago"""
     weights : list[int] = [w.weight for w in COLLECTABLES]
 

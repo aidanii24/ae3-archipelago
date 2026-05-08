@@ -28,7 +28,7 @@ class AEPS2Interface:
     status : ConnectionStatus = ConnectionStatus.DISCONNECTED
 
     loaded_game : Optional[str] = None
-    addresses : VersionAddresses = None
+    addresses : VersionAddresses | None = None
 
     sync_task = None
     logger : Logger
