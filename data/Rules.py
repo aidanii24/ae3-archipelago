@@ -1995,7 +1995,7 @@ class ShopItemRules:
 
         required_keys:int = len(world.progression.progression) - 3
         post_game_condition_rule:Callable[[CollectionState, int], bool] = world.post_game_condition.enact(
-            required_keys - 1, world.options.monkeysanity_break_rooms.value)
+            required_keys, world.options.monkeysanity_break_rooms.value)
 
         self.item_rules[Loc.shop_ultim_ape_fighter.value] = Rulesets(post_game_condition_rule)
 
