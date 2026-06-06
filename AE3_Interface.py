@@ -759,7 +759,14 @@ class AEPS2Interface:
 
         ## self.send_command(Game.kill_player.value) has a transition delay that takes too long
         ## changeArea is more instantaneous, but introduces a buggy respawn when all cookies are depleted
-        self.change_area(self.get_stage())
+        area: str = self.get_stage()
+
+        # When in bay_e (Sewers), respawn at level start instead
+        if area == "bay_e":
+            self.clear_spawn()
+            area = "bay_a"
+
+        self.change_area(area)
 
     def enter_norma(self, destination : str):
         self.set_enter_norma_destination(destination)
