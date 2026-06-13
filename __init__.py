@@ -846,3 +846,7 @@ class AE3World(World):
                 self.exclude_locations = excluded_locations
 
         return is_in_ut
+
+    # Makes it so UT uses the region name before location name when sorting, functionally sorting by level
+    def custom_ut_sort(self, region_label: str, location_label: str) -> str | int:
+        return f"{region_label} {location_label}"
