@@ -1109,6 +1109,12 @@ async def check_game(ctx : AE3Context):
         if ctx.character < 0:
             ctx.character = ctx.ipc.get_character()
 
+            ds_handler: Protocol.DataStorageHandler = ctx.protocol.DataStorageHandler(
+                ctx.protocol,
+                APHelper.data_char.value,
+                -1
+            )
+            ds_handler.end()
 
         # Get Cached PGC Status on connect
         if ctx.has_just_connected:

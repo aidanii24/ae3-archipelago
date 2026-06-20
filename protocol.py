@@ -212,6 +212,7 @@ class Protocol:
         })
 
     async def send(self):
+        if not self.msgs: return
         if not self.ctx.server: raise ServerUnavailableError()
         await self.ctx.send_msgs(self.msgs)
 
