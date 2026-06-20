@@ -909,7 +909,7 @@ async def set_last_save_status(ctx : 'AE3Context'):
 
     await ctx.send_msgs([{
         "cmd": "Set",
-        "key": f"{APHelper.last_save_type.value}_{ctx.team}_{ctx.slot}",
+        "key": ctx.protocol.generate_key_name(APHelper.data_save.value),
         "default": True,
         "operations": [{"operation": "replace", "value": is_last_save_normal}]
     }])
@@ -917,7 +917,7 @@ async def set_last_save_status(ctx : 'AE3Context'):
 async def get_last_save_status(ctx : 'AE3Context'):
     await ctx.send_msgs([{
         "cmd": "Get",
-        "keys": [f"{APHelper.last_save_type.value}_{ctx.team}_{ctx.slot}"]
+        "keys": [ctx.protocol.generate_key_name(APHelper.data_save.value)]
     }])
 
 async def roll_consolation(ctx : 'AE3Context', rate_type: int):

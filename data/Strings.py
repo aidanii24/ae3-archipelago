@@ -2736,7 +2736,11 @@ class APHelper(BaseEnum):
     arg_seed =                  "seed_name"
     arg_tags =                  "tags"
 
-    last_save_type =            "AE3_Is_Last_Save_Normal"
+    data_id =                        "AE3"
+    data_save =                      "save"
+    data_char =                      "char"
+    data_pgc =                       "pgc"
+    data_gt =                        "gt"
 
     ## Lucky Ticket Prizes
     nothing =                   "Nothing"

@@ -11,6 +11,8 @@ from CommonClient import ClientStatus, logger, handle_url_arg
 from settings import get_settings
 import Utils
 
+from . import AE3Settings
+from .data import Items, Locations
 from .data.Strings import Meta, APConsole
 from .data.Logic import ProgressionMode, ProgressionModeOptions
 from .data.Locations import MONKEYS_MASTER, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED, \
@@ -18,9 +20,8 @@ from .data.Locations import MONKEYS_MASTER, MONKEYS_MASTER_ORDERED, CAMERAS_MAST
 from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER
 from .data.Rules import GoalTarget, GoalTargetOptions, PostGameCondition
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
-from . import AE3Settings
 from .Checker import *
-from .data import Items, Locations
+from .protocol import Protocol
 
 # Try importing gui_enabled in Utils first before trying to import them from CommonClient
 # Core AP will be officially moving it to Utils in the future, so this is in accommodation for that
@@ -579,6 +580,11 @@ class AE3Context(SuperContext):
             if lists not in self.monkeys_index:
                 self.monkeys_index.append(lists)
 
+        self.last_pgc_status = {}
+
+        # Initialize AP Server Comms
+        self.protocol = Protocol(self)
+
         # Load Settings
         self.settings = get_settings().get("ape_escape_3_options", False)
         assert self.settings, " [!!!] Cannot find Ape Escape 3 Settings!"
@@ -608,6 +614,7 @@ class AE3Context(SuperContext):
             data = args[APHelper.arg_sl_dt.value]
 
             ## Reset Variables
+            self.check_break_rooms = False
             self.check_break_rooms = False
 
             ## Check Generation Version if the client is compatible
@@ -928,7 +935,7 @@ class AE3Context(SuperContext):
 
         elif cmd == APHelper.cmd_rtrv.value:
             # Get Latest Last Save Type Status
-            last_save_string: str = f"{APHelper.last_save_type.value}_{self.team}_{self.slot}"
+            last_save_string: str = self.protocol.generate_key_name(APHelper.data_save.value)
             if last_save_string in self.stored_data:
                 if self.stored_data[last_save_string] is None:
                     self.is_last_save_normal = True
@@ -963,6 +970,18 @@ class AE3Context(SuperContext):
         return ui
 
     async def check_pgc(self) -> bool:
+        current: dict = self.post_game_condition.get_progress(self)
+        if current != self.last_pgc_status:
+            ds_handler: Protocol.DataStorageHandler = self.protocol.DataStorageHandler(
+                self.protocol,
+                APHelper.data_pgc.value,
+                {},
+            )
+            ds_handler.update(current)
+            ds_handler.end()
+
+            self.last_pgc_status = current
+
         if self.post_game_condition.passed:
             return True
         if self.post_game_condition.check(self):
@@ -1089,6 +1108,7 @@ async def check_game(ctx : AE3Context):
         # Get Character
         if ctx.character < 0:
             ctx.character = ctx.ipc.get_character()
+
 
         # Get Cached PGC Status on connect
         if ctx.has_just_connected:
