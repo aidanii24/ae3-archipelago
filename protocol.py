@@ -188,6 +188,8 @@ class Protocol:
             })
 
         def end(self):
+            if not self.operations: return
+
             self.protocol.msgs.append(self.cmd)
             self.done = True
 

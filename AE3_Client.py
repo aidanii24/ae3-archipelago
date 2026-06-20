@@ -1114,6 +1114,7 @@ async def check_game(ctx : AE3Context):
                 APHelper.data_char.value,
                 -1
             )
+            ds_handler.replace(ctx.character)
             ds_handler.end()
 
         # Get Cached PGC Status on connect
@@ -1190,6 +1191,9 @@ async def check_game(ctx : AE3Context):
             if ctx.load_state_on_connect and (ctx.is_last_save_normal or ctx.is_last_save_normal is None):
                 ctx.is_last_save_normal = False
                 await set_last_save_status(ctx)
+
+        # Send Pending Packets
+        await ctx.protocol.send()
 
         # Sleep functions keep the client from being unresponsive
         await asyncio.sleep(0.5)
