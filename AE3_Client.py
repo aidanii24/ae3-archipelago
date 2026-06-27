@@ -1072,14 +1072,13 @@ async def check_game(ctx : AE3Context):
         if ctx.ipc.is_in_control():
             ctx.player_control = True
 
-            await asyncio.sleep(1)
-
         # Run maintenance game checks when not in player control
         if not ctx.suppress_progress_correction:
             await correct_progress(ctx)
-        await check_background_states(ctx)
 
-        await asyncio.sleep(0.5)
+        await check_background_states(ctx)
+        await asyncio.sleep(1)
+
         return
     elif not ctx.ipc.is_in_control():
         ctx.player_control = False
@@ -1194,7 +1193,7 @@ async def check_game(ctx : AE3Context):
         await ctx.protocol.send()
 
         # Sleep functions keep the client from being unresponsive
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(0.1)
 
     else:
         message : str = APConsole.Info.p_init_sre.value
