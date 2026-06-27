@@ -109,11 +109,11 @@ class GoalTarget:
     def append(self, *locations : str):
         self.locations = { * self.locations, *locations }
 
-    async def check(self, ctx : 'AE3Context'):
+    def check(self, ctx : 'AE3Context'):
         checked: set[int] = ctx.locations_checked.copy()
 
         if len(self.location_ids.intersection(checked)) >= self.amount and not ctx.game_goaled:
-            await ctx.goal()
+            ctx.goal()
 
     def get_progress(self, ctx : 'AE3Context') -> int:
         checked: set[int] = ctx.locations_checked

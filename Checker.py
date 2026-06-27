@@ -16,6 +16,7 @@ from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_
     SHOP_BONUS_RC_CARS, SHOP_COLLECTION_BONUS_RC_CARS
 from .data import Items
 from .data.Distribution import CONSOLATION_RATES
+from .protocol import DataStorageHandler
 
 if TYPE_CHECKING:
     from .AE3_Client import AE3Context
@@ -108,8 +109,8 @@ async def build_checked_cache(ctx : 'AE3Context'):
 
         return
 
-    await ctx.check_pgc()
-    await ctx.goal_target.check(ctx)
+    ctx.check_pgc()
+    ctx.goal_target.check(ctx)
 
 # Ensure game is always set to "round2"
 async def correct_progress(ctx : 'AE3Context'):
@@ -118,7 +119,7 @@ async def correct_progress(ctx : 'AE3Context'):
 async def setup_level_select(ctx : 'AE3Context'):
     is_on_warp_gate: bool = ctx.ipc.is_on_warp_gate()
     is_a_level_confirmed: bool = ctx.ipc.is_a_level_confirmed()
-    post_game_state : bool = await ctx.check_pgc()
+    post_game_state : bool = ctx.check_pgc()
 
     # Force Unlocked Stages to be in sync with the player's chosen option,
     # maxing out at 0x1B as supported by the game
@@ -193,7 +194,7 @@ async def setup_level_select(ctx : 'AE3Context'):
             ctx.is_last_save_normal = True
             await set_last_save_status(ctx)
 
-        await ctx.check_pgc()
+        ctx.check_pgc()
 
     # If Super Monkey isn't properly unlocked yet, temporarily do so during level select to prevent Aki from
     # introducing and giving it to the player. Lock them while on the Pause Menu as well to prevent equipping them
@@ -258,7 +259,7 @@ async def setup_shopping_area(ctx : 'AE3Context'):
         progress = ctx.shop_progress
         if ctx.shoppingsanity == 3:
             progress = ctx.keys * ctx.shop_progression + ctx.shop_progression - 1
-            if progress >= 27 and not await ctx.check_pgc():
+            if progress >= 27 and not ctx.check_pgc():
                 progress = math.floor((28 - ctx.shop_progression) / ctx.shop_progression) * ctx.shop_progression - 1
 
         ctx.ipc.set_progress(PROGRESS_ID_BY_ORDER[min(progress, 27)])
@@ -483,7 +484,7 @@ async def check_states(ctx : 'AE3Context'):
             ctx.command_state = 1
 
 async def receive_items(ctx : 'AE3Context'):
-    pgc_checked : bool = await ctx.check_pgc()
+    pgc_checked : bool = ctx.check_pgc()
 
     # Check if there are items missed from since the client was open; Refuse to take items until this index is confirmed
     if ctx.last_item_processed_index < 0:
@@ -618,15 +619,15 @@ async def receive_items(ctx : 'AE3Context'):
         ctx.ipc.set_last_item_index(ctx.last_item_processed_index)
 
         # Recheck Locations when receiving items for cases when locations are checked manually by the server/host
-        await ctx.goal_target.check(ctx)
-        await ctx.check_pgc()
+        ctx.goal_target.check(ctx)
+        ctx.check_pgc()
 
 async def resync_important_items(ctx : 'AE3Context'):
     # Do not resync if no items have been processed at all yet
     if ctx.last_item_processed_index < 1:
         return
 
-    pgc_checked: bool = await ctx.check_pgc()
+    pgc_checked: bool = ctx.check_pgc()
 
     equipment : list[EquipmentItem] = [ *EQUIPMENT, *ACCESSORIES ]
     received_id : list[int] = [ item[0] for item in ctx.items_received ]
@@ -685,7 +686,7 @@ async def resync_important_items(ctx : 'AE3Context'):
             if ctx.in_shopping_area:
                 await setup_shopping_area(ctx)
 
-    await ctx.goal_target.check(ctx)
+    ctx.goal_target.check(ctx)
 
 async def check_locations(ctx : 'AE3Context'):
     cleared : Set[int] = set()
@@ -797,9 +798,9 @@ async def check_locations(ctx : 'AE3Context'):
 
         if ctx.server:
             await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
-            await ctx.goal_target.check(ctx)
+            ctx.goal_target.check(ctx)
 
-            if await ctx.check_pgc():
+            if ctx.check_pgc():
                 new_unlocked : int = ctx.progression.get_progress(ctx.keys, True)
                 if ctx.unlocked_channels < new_unlocked:
                     ctx.unlocked_channels = new_unlocked
@@ -866,16 +867,16 @@ async def handle_collection_shop_item_recheck(ctx: 'AE3Context'):
         await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
         await check_progression(ctx)
 
-        await ctx.check_pgc()
-        await ctx.goal_target.check(ctx)
+        ctx.check_pgc()
+        ctx.goal_target.check(ctx)
 
     if not ctx.is_cache_built:
         ctx.is_cache_built = True
 
 async def check_progression(ctx : 'AE3Context'):
-    await ctx.goal_target.check(ctx)
+    ctx.goal_target.check(ctx)
 
-    if await ctx.check_pgc():
+    if ctx.check_pgc():
         new_unlocked: int = ctx.progression.get_progress(ctx.keys, True)
         if ctx.unlocked_channels < new_unlocked:
             ctx.unlocked_channels = new_unlocked
@@ -907,18 +908,15 @@ def set_freeplay_mode(ctx : 'AE3Context'):
 async def set_last_save_status(ctx : 'AE3Context'):
     is_last_save_normal : bool = True if ctx.is_last_save_normal is None else ctx.is_last_save_normal
 
-    await ctx.send_msgs([{
-        "cmd": "Set",
-        "key": ctx.protocol.generate_key_name(APHelper.data_save.value),
-        "default": True,
-        "operations": [{"operation": "replace", "value": is_last_save_normal}]
-    }])
+    ds_handler: DataStorageHandler = ctx.protocol.create_datastorage_setter(
+        APHelper.data_save.value,
+        True
+    )
+    ds_handler.replace(is_last_save_normal)
+    ds_handler.end()
 
 async def get_last_save_status(ctx : 'AE3Context'):
-    await ctx.send_msgs([{
-        "cmd": "Get",
-        "keys": [ctx.protocol.generate_key_name(APHelper.data_save.value)]
-    }])
+    ctx.protocol.get_datastorage_key(APHelper.data_save.value)
 
 async def roll_consolation(ctx : 'AE3Context', rate_type: int):
     rates: dict[str, float] = {}
@@ -1010,8 +1008,8 @@ async def bypass_pgc(ctx : 'AE3Context'):
     ctx.ipc.set_pgc_cache()
     ctx.post_game_condition.bypass()
 
-async def instant_goal(ctx : 'AE3Context'):
-    await ctx.goal()
+def instant_goal(ctx : 'AE3Context'):
+    ctx.goal()
 
 async def get_hint_book_hint(ctx : 'AE3Context', hint_book_loc_id: int):
     if not ctx.pre_hinted:

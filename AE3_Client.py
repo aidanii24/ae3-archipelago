@@ -12,7 +12,7 @@ from settings import get_settings
 import Utils
 
 from . import AE3Settings
-from .data import Items, Locations
+from .data import Locations
 from .data.Strings import Meta, APConsole
 from .data.Logic import ProgressionMode, ProgressionModeOptions
 from .data.Locations import MONKEYS_MASTER, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED, \
@@ -21,7 +21,7 @@ from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER
 from .data.Rules import GoalTarget, GoalTargetOptions, PostGameCondition
 from .AE3_Interface import ConnectionStatus, AEPS2Interface
 from .Checker import *
-from .protocol import Protocol
+from .protocol import Protocol, DataStorageHandler
 
 # Try importing gui_enabled in Utils first before trying to import them from CommonClient
 # Core AP will be officially moving it to Utils in the future, so this is in accommodation for that
@@ -969,11 +969,10 @@ class AE3Context(SuperContext):
 
         return ui
 
-    async def check_pgc(self) -> bool:
+    def check_pgc(self) -> bool:
         current: dict = self.post_game_condition.get_progress(self)
-        if current != self.last_pgc_status:
-            ds_handler: Protocol.DataStorageHandler = self.protocol.DataStorageHandler(
-                self.protocol,
+        if current != self.last_pgc_status and self.is_cache_built:
+            ds_handler: DataStorageHandler = self.protocol.create_datastorage_setter(
                 APHelper.data_pgc.value,
                 {},
             )
@@ -990,11 +989,11 @@ class AE3Context(SuperContext):
 
         return False
 
-    async def goal(self):
+    def goal(self):
         if self.game_goaled:
             return
 
-        await self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
+        self.protocol.update_status(ClientStatus.CLIENT_GOAL)
         self.game_goaled = True
 
 
@@ -1109,8 +1108,7 @@ async def check_game(ctx : AE3Context):
         if ctx.character < 0:
             ctx.character = ctx.ipc.get_character()
 
-            ds_handler: Protocol.DataStorageHandler = ctx.protocol.DataStorageHandler(
-                ctx.protocol,
+            ds_handler: DataStorageHandler = ctx.protocol.create_datastorage_setter(
                 APHelper.data_char.value,
                 -1
             )
