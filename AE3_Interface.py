@@ -1,13 +1,13 @@
-from typing import Optional, Sequence
-from logging import Logger
+from collections.abc import Sequence
 from enum import Enum
+from logging import Logger
 from math import ceil
 
 from .data.Addresses import VersionAddresses, get_version_addresses
 from .data.Items import HUD_OFFSETS
 from .data.Locations import CELLPHONES_ID_DUPLICATES, CELLPHONES_STAGE_DUPLICATES, LOCATIONS_ALTERNATIVE
 from .data.Stages import LEVELS_ID_BY_ORDER
-from .data.Strings import Itm, Loc, Meta, Game, APHelper, APConsole
+from .data.Strings import APConsole, APHelper, Game, Itm, Loc, Meta
 from .interface.pine import Pine
 
 
@@ -24,21 +24,24 @@ class ConnectionStatus(Enum):
 
 ### [< --- INTERFACE --- >]
 class AEPS2Interface:
-    pine : Pine = Pine()
-    status : ConnectionStatus = ConnectionStatus.DISCONNECTED
+    pine: Pine = Pine()
+    status: ConnectionStatus = ConnectionStatus.DISCONNECTED
 
-    loaded_game : Optional[str] = None
-    addresses : VersionAddresses = None
+    loaded_game: str | None = None
+    addresses: VersionAddresses = None
 
     sync_task = None
-    logger : Logger
+    logger: Logger
 
-    def __init__(self, logger : Logger, slot: int = 28011, linux_platform: str = "auto"):
+    def __init__(self, logger: Logger, slot: int = 28011, linux_platform: str = "auto"):
         self.logger = logger
         self.pine = Pine(slot, linux_platform)
 
         self.active_slot = slot
         self.active_platform = self.pine.active_platform
+
+        self.notify_callbacks_connections: list = []
+        self.notify_callbacks_port: list = []
 
     # { PINE Network }
     def connect_game(self):
@@ -47,7 +50,7 @@ class AEPS2Interface:
             self.pine.connect()
 
             if not self.pine.is_connected():
-                self.status = ConnectionStatus.DISCONNECTED
+                self.update_connection_status(ConnectionStatus.DISCONNECTED)
 
                 self.active_slot = None
                 self.active_platform = None
@@ -63,24 +66,23 @@ class AEPS2Interface:
             if self.status is ConnectionStatus.CONNECTED:
                 self.logger.info(APConsole.Info.p_init_g.value)
 
-            game_id : str = self.pine.get_game_id()
+            game_id: str = self.pine.get_game_id()
 
             self.loaded_game = None
 
             if game_id in Meta.supported_versions:
                 self.loaded_game = game_id
                 self.addresses = get_version_addresses(self.loaded_game)
-                self.status =  ConnectionStatus.IN_GAME
-            elif not self.status is ConnectionStatus.WRONG_GAME:
+                self.update_connection_status(ConnectionStatus.IN_GAME)
+            elif self.status is not ConnectionStatus.WRONG_GAME:
                 self.logger.warning(APConsole.Err.game_wrong.value)
-                self.status = ConnectionStatus.WRONG_GAME
+                self.update_connection_status(ConnectionStatus.WRONG_GAME)
         except RuntimeError:
             return
         except ConnectionError:
             return
 
-        if self.status is ConnectionStatus.DISCONNECTED:
-            self.status = ConnectionStatus.CONNECTED
+        self.update_connection_status(ConnectionStatus.CONNECTED)
 
     def disconnect_game(self, status: int = 0):
         self.pine.disconnect()
@@ -93,30 +95,68 @@ class AEPS2Interface:
 
     def get_connection_state(self) -> bool:
         try:
-            connected : bool = self.pine.is_connected()
+            connected: bool = self.pine.is_connected()
 
+            if not connected:
+                self.update_connection_status(ConnectionStatus.DISCONNECTED)
+                return False
+
+            if self.loaded_game is None:
+                self.update_connection_status(ConnectionStatus.CONNECTED)
+                return False
+
+            if self.loaded_game not in Meta.supported_versions:
+                self.update_connection_status(ConnectionStatus.WRONG_GAME)
+                return False
+
+            self.update_connection_status(ConnectionStatus.IN_GAME)
             return not (not connected or self.loaded_game is None)
         except RuntimeError:
             return False
 
     def set_slot(self, slot: int) -> None:
+        self.notify_port_change(slot)
         self.pine.set_slot(slot)
 
     def set_linux_platform(self, linux_platform: str = "auto") -> None:
         self.pine.set_linux_platform(linux_platform)
 
+    def subscribe_on_connection_change(self, callback):
+        self.notify_callbacks_connections.append(callback)
+
+    def unsubscribe_on_connection_change(self, callback):
+        self.notify_callbacks_connections.remove(callback)
+
+    def subscribe_on_port_change(self, callback):
+        self.notify_callbacks_port.append(callback)
+
+    def unsubscribe_on_port_change(self, callback):
+        self.notify_callbacks_port.remove(callback)
+
+    def notify_port_change(self, port: int):
+        if self.pine.active_slot != port:
+            for callback in self.notify_callbacks_port:
+                callback(port)
+
+    def update_connection_status(self, status: ConnectionStatus):
+        if self.status != status:
+            for callbacks in self.notify_callbacks_connections:
+                callbacks(status)
+
+        self.status = status
+
     # { Generic }
-    def follow_pointer_chain(self, start_address : int, pointer_chain : str) -> int:
+    def follow_pointer_chain(self, start_address: int, pointer_chain: str) -> int:
         # Get first pointer
-        addr : int = self.pine.read_int32(start_address)
+        addr: int = self.pine.read_int32(start_address)
 
         # If pointer is 0, return immediately
         if addr <= 0x0:
             return 0x0
 
         # Loop through remaining pointers and adding the offsets
-        ptrs : Sequence = self.addresses.Pointers[pointer_chain]
-        amt : int = len(ptrs) - 1
+        ptrs: Sequence = self.addresses.Pointers[pointer_chain]
+        amt: int = len(ptrs) - 1
         for i, offset in enumerate(self.addresses.Pointers[pointer_chain]):
             addr += offset
 
@@ -134,7 +174,7 @@ class AEPS2Interface:
 
     # { Game Check }
     def get_progress(self) -> str:
-        addr : int = self.addresses.GameStates[Game.progress.value]
+        addr: int = self.addresses.GameStates[Game.progress.value]
         addr = self.follow_pointer_chain(addr, Game.progress.value)
 
         if addr == 0:
@@ -151,8 +191,9 @@ class AEPS2Interface:
         return self.pine.read_int32(self.addresses.GameStates[Game.channel_selected.value])
 
     def get_next_channel_choice(self) -> str:
-        addr: int = self.follow_pointer_chain(self.addresses.GameStates[Game.progress.value],
-                                              Game.channel_next_choice.value)
+        addr: int = self.follow_pointer_chain(
+            self.addresses.GameStates[Game.progress.value], Game.channel_next_choice.value
+        )
 
         if addr == 0x0:
             return ""
@@ -161,34 +202,34 @@ class AEPS2Interface:
 
         # Check length of string in multiples of 4
         for _ in range(2):
-            if self.pine.read_bytes(addr + (4 * (_ + 1)), 1) == b'\x00':
+            if self.pine.read_bytes(addr + (4 * (_ + 1)), 1) == b"\x00":
                 break
 
             length = max(length + 4, 12)
 
-        id_as_bytes : bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_channel.value], length)
+        id_as_bytes: bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_channel.value], length)
 
         # Convert to String
         return id_as_bytes.decode("utf-8").replace("\x00", "")
 
     def get_channel(self) -> str:
-        channel_as_bytes : bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_channel.value], 4)
+        channel_as_bytes: bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_channel.value], 4)
         # Decode to String and remove null bytes if present
         return channel_as_bytes.decode("utf-8").replace("\x00", "")
 
     def get_stage(self) -> str:
-        address : int = self.addresses.GameStates[Game.current_room.value]
-        length : int = 4
+        address: int = self.addresses.GameStates[Game.current_room.value]
+        length: int = 4
 
         # Check length of string in multiples of 4
         for _ in range(2):
-            if self.pine.read_bytes(address + (4 * (_ + 1)), 1) == b'\x00':
+            if self.pine.read_bytes(address + (4 * (_ + 1)), 1) == b"\x00":
                 break
 
             length = max(length + 4, 12)
 
         # Decode to string and remove null bytes
-        room_as_bytes : bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_room.value], length)
+        room_as_bytes: bytes = self.pine.read_bytes(self.addresses.GameStates[Game.current_room.value], length)
         return room_as_bytes.decode("utf-8").replace("\x00", "")
 
     def get_activated_game_mode(self) -> int:
@@ -204,11 +245,11 @@ class AEPS2Interface:
         return self.pine.read_int32(address)
 
     def check_in_stage(self) -> bool:
-        value : int = self.pine.read_int8(self.addresses.GameStates[Game.current_channel.value])
+        value: int = self.pine.read_int8(self.addresses.GameStates[Game.current_channel.value])
         return value > 0
 
     def is_on_warp_gate(self) -> bool:
-        value : int = self.pine.read_int8(self.addresses.GameStates[Game.on_warp_gate.value])
+        value: int = self.pine.read_int8(self.addresses.GameStates[Game.on_warp_gate.value])
         return value != 0
 
     def is_a_level_confirmed(self) -> bool:
@@ -233,7 +274,7 @@ class AEPS2Interface:
     def get_coins(self):
         return int(self.pine.read_int32(self.addresses.GameStates[Game.chips.value]))
 
-    def is_equipment_unlocked(self, address_name : str) -> bool:
+    def is_equipment_unlocked(self, address_name: str) -> bool:
         # Redirect address to RC Car if the unlocked equipment is an RC Car Chassis
         if "Chassis" in address_name:
             is_variant_unlocked = self.is_chassis_unlocked(address_name)
@@ -243,13 +284,13 @@ class AEPS2Interface:
 
         return self.pine.read_int32(self.addresses.Items[address_name]) == 0x2 and is_variant_unlocked
 
-    def is_chassis_unlocked(self, chassis_name : str) -> bool:
+    def is_chassis_unlocked(self, chassis_name: str) -> bool:
         if chassis_name not in Itm.get_chassis_by_id():
             return False
 
         return self.pine.read_int8(self.addresses.Items[chassis_name]) == 0x1
 
-    def is_real_chassis_unlocked(self, chassis_name : str) -> bool:
+    def is_real_chassis_unlocked(self, chassis_name: str) -> bool:
         if chassis_name not in Itm.get_real_chassis_by_id():
             return False
 
@@ -258,15 +299,16 @@ class AEPS2Interface:
     def get_current_morph(self):
         return self.pine.read_int8(self.addresses.GameStates[Game.current_morph.value])
 
-    def get_morph_duration(self, character : int = 0) -> float:
+    def get_morph_duration(self, character: int = 0) -> float:
         return self.pine.read_int32(self.addresses.get_morph_duration_addresses(character)[0])
 
     def get_player_state(self) -> int:
         return self.pine.read_int32(self.addresses.GameStates[Game.state.value])
 
     def get_current_gadget(self) -> int:
-        address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.equip_current.value],
-                                                  Game.equip_current.value)
+        address: int = self.follow_pointer_chain(
+            self.addresses.GameStates[Game.equip_current.value], Game.equip_current.value
+        )
 
         if address == 0x0:
             return -1
@@ -277,7 +319,7 @@ class AEPS2Interface:
         return self.get_current_gadget() == 0xB
 
     def is_in_control(self) -> bool:
-        state : int = self.get_player_state()
+        state: int = self.get_player_state()
 
         return state != 0x00 and state != 0x02
 
@@ -296,31 +338,32 @@ class AEPS2Interface:
     def get_gui_status(self) -> int:
         return self.pine.read_int8(self.addresses.GameStates[Game.gui_status.value])
 
-    def is_location_checked(self, name : str) -> bool:
-        address : int = self.addresses.Locations[name]
-        alt_address : int = address
-        alt_checked : bool = False
+    def is_location_checked(self, name: str) -> bool:
+        address: int = self.addresses.Locations[name]
+        alt_address: int = address
+        alt_checked: bool = False
 
         # Check Permanent State Storage Addresses as well for locations that use it
-        has_alt : bool = name in LOCATIONS_ALTERNATIVE.keys()
+        has_alt: bool = name in LOCATIONS_ALTERNATIVE.keys()
         if has_alt:
             alt_address = self.addresses.Locations[LOCATIONS_ALTERNATIVE[name]]
             alt_checked = self.pine.read_int8(alt_address) == 0x01
 
         if not alt_checked:
-            checked : bool = self.pine.read_int8(address) == 0x01
+            checked: bool = self.pine.read_int8(address) == 0x01
 
             # Mark the Permanent Address as well if the original address is checked
             if has_alt and checked:
                 self.pine.write_int8(alt_address, 0x01)
         else:
-            checked : bool = True
+            checked: bool = True
 
         return checked
 
     def is_data_desk_interacted(self):
-        address: int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
-                                                 Game.interact_data.value)
+        address: int = self.follow_pointer_chain(
+            self.addresses.GameStates[Game.interact_data.value], Game.interact_data.value
+        )
         address += self.addresses.GameStates[Game.data_desk.value]
 
         # Return False when the address is invalid
@@ -336,8 +379,9 @@ class AEPS2Interface:
         return as_string == Game.save.value
 
     def is_in_monkey_mart(self):
-        address: int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
-                                                 Game.interact_data.value)
+        address: int = self.follow_pointer_chain(
+            self.addresses.GameStates[Game.interact_data.value], Game.interact_data.value
+        )
         address += self.addresses.GameStates[Game.shop.value]
 
         # Return False when the address is invalid
@@ -353,15 +397,16 @@ class AEPS2Interface:
         return as_string == Game.shop_super.value
 
     def is_camera_interacted(self) -> bool:
-        address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
-                                                  Game.interact_data.value)
+        address: int = self.follow_pointer_chain(
+            self.addresses.GameStates[Game.interact_data.value], Game.interact_data.value
+        )
         address += self.addresses.GameStates[Game.pipo_camera.value]
 
         # Return False when the address is invalid
         if address <= 0x0:
             return False
 
-        as_bytes : bytes = self.pine.read_bytes(address, 5)
+        as_bytes: bytes = self.pine.read_bytes(address, 5)
         # Try to decode to string, and immediately return if it cannot be decoded
         try:
             as_string: str = as_bytes.decode().replace("\x00", "")
@@ -370,10 +415,11 @@ class AEPS2Interface:
 
         return as_string == Game.conte.value
 
-    def get_cellphone_interacted(self, stage : str = "") -> str:
-        base_address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
-                                                  Game.interact_data.value)
-        address : int = base_address + self.addresses.GameStates[Game.cellphone.value]
+    def get_cellphone_interacted(self, stage: str = "") -> str:
+        base_address: int = self.follow_pointer_chain(
+            self.addresses.GameStates[Game.interact_data.value], Game.interact_data.value
+        )
+        address: int = base_address + self.addresses.GameStates[Game.cellphone.value]
 
         # Return an empty string if either addresses return 0
         if not address <= 0x0:
@@ -381,7 +427,7 @@ class AEPS2Interface:
 
             # Try to decode to string, and immediately return if it cannot be decoded
             try:
-                as_string : str = as_bytes.decode().replace("\x00", "")
+                as_string: str = as_bytes.decode().replace("\x00", "")
             except UnicodeDecodeError:
                 as_string = ""
 
@@ -399,7 +445,7 @@ class AEPS2Interface:
         as_bytes: bytes = self.pine.read_bytes(address, 3)
 
         try:
-            as_string : str = as_bytes.decode().replace("\x00", "")
+            as_string: str = as_bytes.decode().replace("\x00", "")
         except UnicodeDecodeError:
             as_string = ""
 
@@ -407,20 +453,18 @@ class AEPS2Interface:
             if as_string in CELLPHONES_ID_DUPLICATES and stage in CELLPHONES_STAGE_DUPLICATES:
                 as_string = as_string.replace("0", "1", 1)
             return as_string
-        else:
-            return ""
+        return ""
 
     def is_saving(self) -> bool:
-        address : int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value],
-                                                  Game.save.value)
-        value : bytes = self.pine.read_bytes(address, 4)
+        address: int = self.follow_pointer_chain(self.addresses.GameStates[Game.interact_data.value], Game.save.value)
+        value: bytes = self.pine.read_bytes(address, 4)
 
         try:
-            decoded : str = bytes.decode(value).replace("\x00", "")
+            decoded: str = bytes.decode(value).replace("\x00", "")
         except UnicodeDecodeError:
             return False
 
-        boolean : bool = decoded == Game.save.value
+        boolean: bool = decoded == Game.save.value
         return boolean
 
     def is_in_pink_boss(self) -> bool:
@@ -428,19 +472,18 @@ class AEPS2Interface:
 
     def is_tomoki_defeated(self) -> bool:
         # Check Permanent Address first
-        permanent_checked : bool = self.is_location_checked(Loc.boss_alt_tomoki.value)
+        permanent_checked: bool = self.is_location_checked(Loc.boss_alt_tomoki.value)
 
         if permanent_checked:
             return True
 
-        address : int = self.follow_pointer_chain(self.addresses.Locations[Loc.boss_tomoki.value],
-                                                  Loc.boss_tomoki.value)
+        address: int = self.follow_pointer_chain(self.addresses.Locations[Loc.boss_tomoki.value], Loc.boss_tomoki.value)
 
         # Return false if pointer is still not initialized
         if address <= 0x0:
             return False
 
-        value : float = self.pine.read_float(address)
+        value: float = self.pine.read_float(address)
 
         # Change the State value in Dr. Tomoki's Permanent State Address
         if value <= 0.0:
@@ -464,8 +507,8 @@ class AEPS2Interface:
         return self.pine.read_int8(self.addresses.GameStates[Game.shop_morph_stock.value])
 
     # { Game Manipulation }
-    def set_progress(self, progress : str = APHelper.pr_round2.value):
-        addr : int = self.addresses.GameStates[Game.progress.value]
+    def set_progress(self, progress: str = APHelper.pr_round2.value):
+        addr: int = self.addresses.GameStates[Game.progress.value]
         addr = self.follow_pointer_chain(addr, Game.progress.value)
 
         if addr == 0x0:
@@ -478,21 +521,22 @@ class AEPS2Interface:
             self.pine.write_int32(clearing_address, 0x0)
             clearing_address += 4
 
-        as_bytes : bytes = progress.encode() + b'\x00'
+        as_bytes: bytes = progress.encode() + b"\x00"
         self.pine.write_bytes(addr, as_bytes)
 
-    def set_unlocked_stages(self, index : int):
+    def set_unlocked_stages(self, index: int):
         self.pine.write_int32(self.addresses.GameStates[Game.channels_unlocked.value], index)
 
-    def set_selected_channel(self, index : int):
+    def set_selected_channel(self, index: int):
         self.pine.write_int32(self.addresses.GameStates[Game.channel_selected.value], index)
 
-    def set_next_channel_choice(self, index : int):
+    def set_next_channel_choice(self, index: int):
         if index > len(LEVELS_ID_BY_ORDER):
             index = 0
 
-        addr: int = self.follow_pointer_chain(self.addresses.GameStates[Game.progress.value],
-                                              Game.channel_next_choice.value)
+        addr: int = self.follow_pointer_chain(
+            self.addresses.GameStates[Game.progress.value], Game.channel_next_choice.value
+        )
 
         if addr == 0x0:
             return
@@ -505,7 +549,7 @@ class AEPS2Interface:
             clearing_address += 4
 
         # Convert ID to bytes
-        id_as_bytes : bytes = LEVELS_ID_BY_ORDER[index].encode() + b'\x00'
+        id_as_bytes: bytes = LEVELS_ID_BY_ORDER[index].encode() + b"\x00"
 
         # Write new value
         self.pine.write_bytes(addr, id_as_bytes)
@@ -513,17 +557,17 @@ class AEPS2Interface:
     def reset_level_confirm_status(self):
         self.pine.write_int8(self.addresses.GameStates[Game.channel_confirmed.value], 0x0)
 
-    def set_change_area_destination(self, area : str):
-        as_bytes : bytes = area.encode() + b'\x00'
+    def set_change_area_destination(self, area: str):
+        as_bytes: bytes = area.encode() + b"\x00"
         self.pine.write_bytes(self.addresses.GameStates[Game.area_dest.value], as_bytes)
 
-    def set_enter_norma_destination(self, area : str):
-        as_bytes : bytes = area.encode() + b'\x00'
+    def set_enter_norma_destination(self, area: str):
+        as_bytes: bytes = area.encode() + b"\x00"
         self.pine.write_bytes(self.addresses.GameStates[Game.enter_norma.value], as_bytes)
 
     def clear_spawn(self):
-        spawn_address : int = self.addresses.GameStates[Game.spawn.value]
-        dest_address : int = self.addresses.GameStates[Game.area_dest.value]
+        spawn_address: int = self.addresses.GameStates[Game.spawn.value]
+        dest_address: int = self.addresses.GameStates[Game.area_dest.value]
         for _ in range(6):
             self.pine.write_int32(spawn_address, 0x0)
             self.pine.write_int32(dest_address, 0x0)
@@ -531,12 +575,12 @@ class AEPS2Interface:
             dest_address += 4
 
     def clear_norma(self):
-        norma_address : int = self.addresses.GameStates[Game.enter_norma.value]
+        norma_address: int = self.addresses.GameStates[Game.enter_norma.value]
         for _ in range(6):
             self.pine.write_int32(norma_address, 0x0)
             norma_address += 4
 
-    def set_game_mode(self, mode : int = 0x100, restart : bool = True):
+    def set_game_mode(self, mode: int = 0x100, restart: bool = True):
         address = self.addresses.GameStates[Game.game_mode.value]
 
         self.pine.write_int32(address, mode)
@@ -544,65 +588,65 @@ class AEPS2Interface:
         if restart:
             self.send_command(Game.restart_stage.value)
 
-    def set_cookies(self, amount : float):
+    def set_cookies(self, amount: float):
         self.pine.write_float(self.addresses.GameStates[Game.cookies.value], amount)
 
-    def set_morph_gauge_recharge(self, amount : float):
+    def set_morph_gauge_recharge(self, amount: float):
         self.pine.write_float(self.addresses.GameStates[Game.morph_gauge_recharge.value], amount)
 
     def clear_equipment(self):
         for button in self.addresses.BUTTONS_BY_INTERNAL:
             self.pine.write_int32(button, 0x0)
 
-    def unlock_equipment(self, address_name : str, auto_equip : bool = False, is_in_shop : bool = False):
-        is_equipped : int = False
+    def unlock_equipment(self, address_name: str, auto_equip: bool = False, is_in_shop: bool = False):
+        is_equipped: int = False
 
         # Redirect address to RC Car if the unlocked equipment is an RC Car Chassis
         if "Chassis" in address_name:
             is_equipped = self.unlock_chassis(address_name, is_in_shop)
-            address : int = self.addresses.Items[Itm.gadget_rcc.value]
+            address: int = self.addresses.Items[Itm.gadget_rcc.value]
             address_name = Itm.gadget_rcc.value
         else:
-            address : int = self.addresses.Items[address_name]
+            address: int = self.addresses.Items[address_name]
 
         self.pine.write_int32(self.addresses.Items[address_name], 0x2)
 
         if auto_equip and not is_equipped and address_name in Itm.get_gadgets_ordered():
             self.auto_equip(self.addresses.get_gadget_id(address))
 
-    def unlock_chassis(self, address_name : str, is_in_shop : bool = False) -> bool:
+    def unlock_chassis(self, address_name: str, is_in_shop: bool = False) -> bool:
         if address_name in Itm.get_chassis_by_id(True):
-            id : int = Itm.get_chassis_by_id(True).index(address_name)
+            id: int = Itm.get_chassis_by_id(True).index(address_name)
             self.pine.write_int8(self.addresses.Items[address_name], 0x1)
 
             if not is_in_shop:
                 self.pine.write_int8(self.addresses.Items[Itm.get_real_chassis_by_id()[id]], 0x0)
 
-        is_rcc_unlocked : bool = self.pine.read_int32(self.addresses.Items[Itm.gadget_rcc.value]) == 0x2
+        is_rcc_unlocked: bool = self.pine.read_int32(self.addresses.Items[Itm.gadget_rcc.value]) == 0x2
 
         return is_rcc_unlocked
 
     def unlock_chassis_direct(self, chassis_idx):
-        chassis : str = Itm.get_real_chassis_by_id()[chassis_idx]
+        chassis: str = Itm.get_real_chassis_by_id()[chassis_idx]
         self.pine.write_int8(self.addresses.Items[chassis], 0x1)
 
     def lock_chassis_direct(self, chassis_idx):
-        chassis : str = Itm.get_real_chassis_by_id()[chassis_idx]
+        chassis: str = Itm.get_real_chassis_by_id()[chassis_idx]
 
         if chassis:
             self.pine.write_int8(self.addresses.Items[chassis], 0x0)
 
-    def set_chassis_direct(self, chassis_idx : int):
+    def set_chassis_direct(self, chassis_idx: int):
         self.pine.write_int32(self.addresses.GameStates[Game.equip_chassis_active.value], chassis_idx)
 
-    def lock_equipment(self, address_name : str):
+    def lock_equipment(self, address_name: str):
         self.pine.write_int32(self.addresses.Items[address_name], 0x1)
 
     def auto_equip(self, gadget_id: int):
         if gadget_id <= 0:
             return
 
-        target : int = -1
+        target: int = -1
         for button in self.addresses.BUTTONS_BY_INTUIT:
             value = self.pine.read_int32(button)
 
@@ -626,30 +670,37 @@ class AEPS2Interface:
     def set_pgc_cache(self):
         self.pine.write_int8(self.addresses.GameStates[Game.pgc_cache.value], 0x1)
 
-    def set_morph_duration(self, character : int, duration : float, dummy : str = ""):
+    def set_morph_duration(self, character: int, duration: float, dummy: str = ""):
         if character < 0:
             return
 
-        durations : Sequence[int] = self.addresses.get_morph_duration_addresses(character)
+        durations: Sequence[int] = self.addresses.get_morph_duration_addresses(character)
         if not durations:
             return
 
-        dummy_index : int = Itm.get_morphs_ordered().index(dummy) if dummy else - 1
+        dummy_index: int = Itm.get_morphs_ordered().index(dummy) if dummy else -1
 
         for idx, morph in enumerate(durations):
-            duration_to_set : float = duration
+            duration_to_set: float = duration
             # Set duration to 0 if not specified in morphs and exclusive is false
             if dummy and idx == dummy_index:
                 duration_to_set = 0.0
 
             self.pine.write_float(morph, duration_to_set)
 
-    def set_morph_stock(self, stocks : int):
-        self.pine.write_float(self.addresses.GameStates[Game.morph_stocks.value],stocks * 100)
+    def set_morph_stock(self, stocks: int):
+        self.pine.write_float(self.addresses.GameStates[Game.morph_stocks.value], stocks * 100)
 
-    def give_collectable(self, address_name : str, amount : int | float = 0x1, maximum : int | float = 0x0,
-                         is_in_shop : bool = False, stocks_shuffled: bool = False, monkey_mart:bool = True):
-        address : int = self.addresses.GameStates[address_name]
+    def give_collectable(
+        self,
+        address_name: str,
+        amount: int | float = 0x1,
+        maximum: int | float = 0x0,
+        is_in_shop: bool = False,
+        stocks_shuffled: bool = False,
+        monkey_mart: bool = True,
+    ):
+        address: int = self.addresses.GameStates[address_name]
 
         use_main: bool = True
         if is_in_shop and address_name in [Game.morph_stocks.value, Game.cookies.value]:
@@ -680,7 +731,7 @@ class AEPS2Interface:
 
             self.update_hud(address_name, value)
 
-    def update_hud(self, address_name : str, value : int):
+    def update_hud(self, address_name: str, value: int):
         if address_name not in HUD_OFFSETS:
             return
 
@@ -692,7 +743,7 @@ class AEPS2Interface:
         address += HUD_OFFSETS[address_name]
 
         # Get byte length of data and use the correct write function accordingly
-        size : int = ceil(value.bit_length() / 8)
+        size: int = ceil(value.bit_length() / 8)
 
         if size <= 1:
             self.pine.write_int8(address, value)
@@ -701,10 +752,10 @@ class AEPS2Interface:
         elif size > 2:
             self.pine.write_int32(address, value)
 
-    def give_morph_energy(self, amount : float = 3.0):
+    def give_morph_energy(self, amount: float = 3.0):
         # Check recharge state first
-        address : int = self.addresses.GameStates[Game.morph_gauge_recharge.value]
-        current : float = self.pine.read_float(address)
+        address: int = self.addresses.GameStates[Game.morph_gauge_recharge.value]
+        current: float = self.pine.read_float(address)
 
         if current != 0x0:
             # Ranges from 0 to 100 for every Morph Stock, with a maximum of 1100 for all 10 Stocks filled.
@@ -712,8 +763,9 @@ class AEPS2Interface:
             return
 
         # If recharge state is 0, we check the active gauge, following its pointer chain
-        address = self.follow_pointer_chain(self.addresses.GameStates[Game.morph_gauge_active.value],
-                                            Game.morph_gauge_active.value)
+        address = self.follow_pointer_chain(
+            self.addresses.GameStates[Game.morph_gauge_active.value], Game.morph_gauge_active.value
+        )
 
         if address == 0x0:
             return
@@ -722,39 +774,41 @@ class AEPS2Interface:
         # Ranges from 0 to 30 in vanilla game.
         self.pine.write_float(address, current + amount)
 
-    def set_morph_gauge_charge(self, amount : float = 0.0):
+    def set_morph_gauge_charge(self, amount: float = 0.0):
         # Check recharge state first
         address: int = self.addresses.GameStates[Game.morph_gauge_recharge.value]
 
         # Ranges from 0 to 100 for every Morph Stock, with a maximum of 1100 for all 10 Stocks filled.
         self.pine.write_float(address, amount)
 
-    def set_morph_gauge_timer(self, amount : float = 0.0):
-        address = self.follow_pointer_chain(self.addresses.GameStates[Game.morph_gauge_active.value],
-                                            Game.morph_gauge_active.value)
+    def set_morph_gauge_timer(self, amount: float = 0.0):
+        address = self.follow_pointer_chain(
+            self.addresses.GameStates[Game.morph_gauge_active.value], Game.morph_gauge_active.value
+        )
 
         if address == 0x0:
             return
 
         self.pine.write_float(address, amount)
 
-    def mark_location(self, name : str):
-        if name not in self.addresses.Locations: return
+    def mark_location(self, name: str):
+        if name not in self.addresses.Locations:
+            return
 
-        address : int = self.addresses.Locations[name]
+        address: int = self.addresses.Locations[name]
         self.pine.write_int8(address, 0x01)
 
-    def unmark_location(self, name : str):
-        address : int = self.addresses.Locations[name]
+    def unmark_location(self, name: str):
+        address: int = self.addresses.Locations[name]
         self.pine.write_int8(address, 0x00)
 
-    def send_command(self, command : str):
-        as_bytes : bytes = command.encode() + b'\x00'
+    def send_command(self, command: str):
+        as_bytes: bytes = command.encode() + b"\x00"
         self.pine.write_bytes(self.addresses.GameStates[Game.command.value], as_bytes)
 
-    def kill_player(self, cookies_lost : float = 0.0):
+    def kill_player(self, cookies_lost: float = 0.0):
         if cookies_lost != 0.0:
-            cookies : float = self.get_cookies()
+            cookies: float = self.get_cookies()
             self.set_cookies(max(0.0, cookies - cookies_lost))
 
         ## self.send_command(Game.kill_player.value) has a transition delay that takes too long
@@ -768,31 +822,31 @@ class AEPS2Interface:
 
         self.change_area(area)
 
-    def enter_norma(self, destination : str):
+    def enter_norma(self, destination: str):
         self.set_enter_norma_destination(destination)
         self.send_command(Game.enter_norma.value)
 
-    def change_area(self, destination : str):
+    def change_area(self, destination: str):
         self.set_change_area_destination(destination)
         self.send_command(Game.change_area.value)
 
-    def set_last_item_index(self, value : int):
+    def set_last_item_index(self, value: int):
         self.pine.write_int32(self.addresses.GameStates[Game.last_item_index.value], value)
 
-    def set_persistent_cookie_value(self, value : int):
+    def set_persistent_cookie_value(self, value: int):
         self.pine.write_int8(self.addresses.GameStates[Game.last_cookies.value], value)
 
-    def set_persistent_morph_energy_value(self, value : int):
+    def set_persistent_morph_energy_value(self, value: int):
         self.pine.write_int8(self.addresses.GameStates[Game.last_morph_energy.value], value)
 
-    def set_persistent_morph_stock_value(self, value : int):
+    def set_persistent_morph_stock_value(self, value: int):
         self.pine.write_int8(self.addresses.GameStates[Game.last_morph_stock.value], value)
 
-    def set_shop_morph_stock_checked(self, value : int):
+    def set_shop_morph_stock_checked(self, value: int):
         self.pine.write_int8(self.addresses.GameStates[Game.shop_morph_stock.value], value)
 
-    def save_state(self, slot : int):
+    def save_state(self, slot: int):
         self.pine.save_state(slot)
 
-    def load_state(self, slot : int):
+    def load_state(self, slot: int):
         self.pine.load_state(slot)

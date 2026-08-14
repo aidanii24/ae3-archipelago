@@ -1,33 +1,48 @@
-from argparse import ArgumentParser, Namespace
-from typing import Optional, Sequence
-import typing
-import multiprocessing
-import traceback
-import platform
 import asyncio
+import math
+import multiprocessing
+import platform
 import sys
+import traceback
+import typing
+from argparse import ArgumentParser, Namespace
+from collections.abc import Sequence
 
-from CommonClient import ClientStatus, logger, handle_url_arg
-from settings import get_settings
 import Utils
+from CommonClient import ClientStatus, handle_url_arg, logger
+from settings import get_settings
 
-from . import AE3Settings
-from .data import Locations
-from .data.Strings import Meta, APConsole
+from . import AE3Settings, Checker
+from .AE3_Interface import AEPS2Interface, ConnectionStatus
+from .data import Items, Locations
+from .data.Locations import (
+    CAMERAS_MASTER_ORDERED,
+    CELLPHONES_MASTER_ORDERED,
+    LOCATIONS_INDEX,
+    MONKEYS_BREAK_ROOMS,
+    MONKEYS_DIRECTORY,
+    MONKEYS_MASTER,
+    MONKEYS_MASTER_ORDERED,
+    MONKEYS_PASSWORDS,
+    SHOP_COLLECTION_MASTER,
+    SHOP_EVENT_ACCESS_DIRECTORY,
+    SHOP_PERSISTENT_MASTER,
+    SHOP_PROGRESSION_75COMPLETION,
+    SHOP_UNIQUE_MASTER,
+    Cellphone_Name_to_ID,
+)
 from .data.Logic import ProgressionMode, ProgressionModeOptions
-from .data.Locations import MONKEYS_MASTER, MONKEYS_MASTER_ORDERED, CAMERAS_MASTER_ORDERED, CELLPHONES_MASTER_ORDERED, \
-    SHOP_PROGRESSION_75COMPLETION, SHOP_EVENT_ACCESS_DIRECTORY, SHOP_COLLECTION_MASTER, SHOP_UNIQUE_MASTER
-from .data.Stages import STAGES_BREAK_ROOMS, LEVELS_BY_ORDER
 from .data.Rules import GoalTarget, GoalTargetOptions, PostGameCondition
-from .AE3_Interface import ConnectionStatus, AEPS2Interface
-from .Checker import *
-from .protocol import Protocol, DataStorageHandler
+from .data.Stages import LEVELS_BY_ORDER, STAGES_BREAK_ROOMS
+from .data.Strings import APConsole, APHelper, Itm, Meta
+from .protocol import DataStorageHandler, Protocol
 
 # Try importing gui_enabled in Utils first before trying to import them from CommonClient
 # Core AP will be officially moving it to Utils in the future, so this is in accommodation for that
 gui_loaded_from_utils: bool = False
 try:
     from Utils import gui_enabled
+
     gui_loaded_from_utils = True
 except ImportError:
     pass
@@ -35,14 +50,19 @@ except ImportError:
 # Try to load Universal Tracker if present
 tracker_loaded: bool = False
 try:
-    from worlds.tracker.TrackerClient import (ClientCommandProcessor, TrackerGameContext as SuperContext,
-                                              get_base_parser, server_loop)
+    from worlds.tracker.TrackerClient import ClientCommandProcessor, get_base_parser, server_loop
+    from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext
+
     tracker_loaded = True
 
-    if not gui_loaded_from_utils: from worlds.tracker.TrackerClient import gui_enabled
+    if not gui_loaded_from_utils:
+        from worlds.tracker.TrackerClient import gui_enabled
 except ImportError:
-    from CommonClient import (ClientCommandProcessor, CommonContext as SuperContext, get_base_parser, server_loop)
-    if not gui_loaded_from_utils: from CommonClient import gui_enabled
+    from CommonClient import ClientCommandProcessor, get_base_parser, server_loop
+    from CommonClient import CommonContext as SuperContext
+
+    if not gui_loaded_from_utils:
+        from CommonClient import gui_enabled
 
 
 class AE3CommandProcessor(ClientCommandProcessor):
@@ -60,48 +80,50 @@ class AE3CommandProcessor(ClientCommandProcessor):
     def _cmd_status(self):
         """Display current status of the game and session, along with a summary of the current progress."""
         if isinstance(self.ctx, AE3Context):
-            logger.info(f" [-^-] Client Status")
+            logger.info(" [-^-] Client Status")
 
             if tracker_loaded:
-                logger.info(f" [-v-] Universal Tracker Integrated")
+                logger.info(" [-v-] Universal Tracker Integrated")
 
-            logger.info(f" [-o-] Game")
+            logger.info(" [-o-] Game")
             logger.info(f"         > Slot/Port: {self.ctx.ipc.active_slot}")
             if platform.system() == "Linux":
                 is_auto = self.ctx.pine_linux_platform == "auto"
-                logger.info(f"        > Platform: {self.ctx.ipc.active_platform} {"(auto)" if is_auto else ""}")
+                logger.info(f"        > Platform: {self.ctx.ipc.active_platform} {'(auto)' if is_auto else ''}")
 
             if self.ctx.server:
-                game_status : int = self.ctx.ipc.status.value
+                game_status: int = self.ctx.ipc.status.value
                 pgc_complete: bool = False
                 if game_status < 0:
-                    logger.info(f"{"         Connected but playing a different game"}")
+                    logger.info(f"{'         Connected but playing a different game'}")
                     return
-                elif game_status == 0:
-                    logger.info(f"{"         Not Connected to PCSX2"}")
+                if game_status == 0:
+                    logger.info(f"{'         Not Connected to PCSX2'}")
                     return
-                else:
-                    logger.info(f"{"         Playing Ape Escape 3"}")
+                logger.info(f"{'         Playing Ape Escape 3'}")
 
-                logger.info(f"\n         Goal Target is " 
-                            f"{self.ctx.goal_target}")
+                logger.info(f"\n         Goal Target is {self.ctx.goal_target}")
 
                 if game_status > 0:
-                    logger.info(f"         > Progress: "
-                                f"{str(self.ctx.goal_target.get_progress(self.ctx))} / "
-                                f"{self.ctx.goal_target.amount}")
+                    logger.info(
+                        f"         > Progress: "
+                        f"{self.ctx.goal_target.get_progress(self.ctx)!s} / "
+                        f"{self.ctx.goal_target.amount}"
+                    )
 
                 # Display required Channel Keys to unlock the End Game for Open Progression
                 if self.ctx.progression.name == "Open":
-                    logger.info(f"\n        Open Progression requires Channel Keys")
-                    open_requirements_met : bool = self.ctx.keys >= len(self.ctx.progression.progression[1:-2])
-                    logger.info(f"        > Progress: "
-                                f"{self.ctx.keys} / "
-                                f"{len(self.ctx.progression.progression[1:-2])}"
-                                f"{'    [ COMPLETED! ]' if open_requirements_met else ''}")
+                    logger.info("\n        Open Progression requires Channel Keys")
+                    open_requirements_met: bool = self.ctx.keys >= len(self.ctx.progression.progression[1:-2])
+                    logger.info(
+                        f"        > Progress: "
+                        f"{self.ctx.keys} / "
+                        f"{len(self.ctx.progression.progression[1:-2])}"
+                        f"{'    [ COMPLETED! ]' if open_requirements_met else ''}"
+                    )
 
                 if self.ctx.post_game_condition.amounts:
-                    post_game_conditions : str = ""
+                    post_game_conditions: str = ""
                     for i, category in enumerate(self.ctx.post_game_condition.amounts.keys()):
                         post_game_conditions += f" {category}"
 
@@ -113,39 +135,44 @@ class AE3CommandProcessor(ClientCommandProcessor):
                     logger.info(f"\n         Post-Game requires{post_game_conditions}")
 
                     if game_status > 0:
-                        logger.info(f"         > Progress: ")
+                        logger.info("         > Progress: ")
 
-                        pgc_progress : dict[str, list[int]] = self.ctx.post_game_condition.get_progress(self.ctx)
+                        pgc_progress: dict[str, list[int]] = self.ctx.post_game_condition.get_progress(self.ctx)
 
                         if all(v[0] >= v[1] for v in [*pgc_progress.values()]):
                             pgc_complete = True
-                            logger.info(f"         Post-Game Condition(s) are Complete! ")
+                            logger.info("         Post-Game Condition(s) are Complete! ")
 
                         if pgc_progress:
                             for key, value in pgc_progress.items():
-                                prog : str = f"{value[0]} / {value[1]}"
+                                prog: str = f"{value[0]} / {value[1]}"
                                 if value[0] >= value[1]:
-                                    prog += f"    [ COMPLETE! ]"
+                                    prog += "    [ COMPLETE! ]"
 
                                 logger.info(f"                > {key}: {prog}")
 
                 if game_status > 0:
-                    required_keys : int = (len(self.ctx.progression.progression) - 3)
+                    required_keys: int = len(self.ctx.progression.progression) - 3
                     if APHelper.keys.value in self.ctx.post_game_condition.amounts:
                         required_keys += self.ctx.post_game_condition.amounts[APHelper.keys.value]
-                    all_keys : int = required_keys + self.ctx.extra_keys
+                    all_keys: int = required_keys + self.ctx.extra_keys
 
                     logger.info(f"\n         Progression: {self.ctx.progression}")
-                    logger.info(f"         Channel Keys: {self.ctx.keys} / {required_keys} "
-                                f"{f"+ {self.ctx.extra_keys} ({all_keys})" if self.ctx.extra_keys else ""}")
+                    logger.info(
+                        f"         Channel Keys: {self.ctx.keys} / {required_keys} "
+                        f"{f'+ {self.ctx.extra_keys} ({all_keys})' if self.ctx.extra_keys else ''}"
+                    )
 
                     if self.ctx.shoppingsanity > 2:
                         if self.ctx.shoppingsanity == 3:
                             initial: int = self.ctx.shop_progression - 1
                             progress: int = self.ctx.keys * self.ctx.shop_progression + initial
                             if progress >= 27 and not pgc_complete:
-                                progress = (math.floor((28 - self.ctx.shop_progression) / self.ctx.shop_progression)
-                                            * self.ctx.shop_progression - 1)
+                                progress = (
+                                    math.floor((28 - self.ctx.shop_progression) / self.ctx.shop_progression)
+                                    * self.ctx.shop_progression
+                                    - 1
+                                )
 
                             percent: float = min(progress, 27) / 27 * 100
                             logger.info(f"         Shop Availability: {percent:.2f}%")
@@ -154,32 +181,50 @@ class AE3CommandProcessor(ClientCommandProcessor):
                             stocks: int = int((progress + 1) / self.ctx.shop_progression) - 1
                             target: int = math.ceil(28 / self.ctx.shop_progression) - 1
                             all_stocks: int = self.ctx.restock_progression + self.ctx.extra_shop_stocks
-                            logger.info(f"         Shop Stocks: {stocks} / {target} "
-                                        f"{f" ({self.ctx.restock_progression})" 
-                                        if self.ctx.restock_progression - 1 == stocks 
-                                        else ""}"
-                                        f"{f"+ {self.ctx.extra_shop_stocks}({all_stocks})" 
-                                        if self.ctx.extra_shop_stocks
-                                        else ""}")
+                            logger.info(
+                                f"         Shop Stocks: {stocks} / {target} "
+                                f"""{
+                                    f" ({self.ctx.restock_progression})"
+                                    if self.ctx.restock_progression - 1 == stocks
+                                    else ""
+                                }"""
+                                f"""{
+                                    f"+ {self.ctx.extra_shop_stocks}({all_stocks})"
+                                    if self.ctx.extra_shop_stocks
+                                    else ""
+                                }"""
+                            )
+                            logger.info(
+                                f"         Shop Stocks: {stocks} / {target} "
+                                f"""{
+                                    f" ({self.ctx.restock_progression})"
+                                    if self.ctx.restock_progression - 1 == stocks
+                                    else ""
+                                }"""
+                                f"""{
+                                    f"+ {self.ctx.extra_shop_stocks}({all_stocks})"
+                                    if self.ctx.extra_shop_stocks
+                                    else ""
+                                }"""
+                            )
 
-                    logger.info(f"         Available Channels: {self.ctx.unlocked_channels + 1} / "
-                                f"{sum(self.ctx.progression.progression[:-1]) + 1}")
+                    logger.info(
+                        f"         Available Channels: {self.ctx.unlocked_channels + 1} / "
+                        f"{sum(self.ctx.progression.progression[:-1]) + 1}"
+                    )
 
             else:
-                logger.info(f"         Disconnected from Server")
+                logger.info("         Disconnected from Server")
 
-            logger.info(f"\n [-=-] Settings")
-            logger.info(f"         Auto-Equip is " 
-                        f"{"ENABLED" if self.ctx.auto_equip else "DISABLED"}")
+            logger.info("\n [-=-] Settings")
+            logger.info(f"         Auto-Equip is {'ENABLED' if self.ctx.auto_equip else 'DISABLED'}")
 
             if self.ctx.early_free_play:
-                logger.info(f"         Freeplay Toggle is " 
-                            f"{"ENABLED" if self.ctx.alt_freeplay else "DISABLED"}")
+                logger.info(f"         Freeplay Toggle is {'ENABLED' if self.ctx.alt_freeplay else 'DISABLED'}")
             else:
-                logger.info(f"         Early Freeplay is DISABLED and Freeplay Toggle cannot be toggled.")
+                logger.info("         Early Freeplay is DISABLED and Freeplay Toggle cannot be toggled.")
 
-            logger.info(f"         DeathLink is " 
-                        f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
+            logger.info(f"         DeathLink is {'ENABLED' if self.ctx.death_link else 'DISABLED'}")
 
     def _cmd_channels(self):
         """List the true order of the channels"""
@@ -187,11 +232,13 @@ class AE3CommandProcessor(ClientCommandProcessor):
             return
 
         if not self.ctx.server or not self.ctx.progression:
-            logger.info(f" [!!!] Please connect to an Archipelago Server first!")
+            logger.info(" [!!!] Please connect to an Archipelago Server first!")
             return
 
-        logger.info(f" [-#-] Available Channels: {self.ctx.unlocked_channels + 1} / "
-                    f"{sum(self.ctx.progression.progression[:-1]) + 1}")
+        logger.info(
+            f" [-#-] Available Channels: {self.ctx.unlocked_channels + 1} / "
+            f"{sum(self.ctx.progression.progression[:-1]) + 1}"
+        )
 
         group_set: list[list[int]] = []
         count: int = 0
@@ -201,7 +248,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
                 offset = 1
 
             target: int = count + channel_set + offset
-            group_set.append([_ for _ in self.ctx.progression.order[count: target]])
+            group_set.append(list(self.ctx.progression.order[count:target]))
             count = target
 
         count: int = 0
@@ -218,8 +265,9 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
                 if APHelper.keys.value in self.ctx.post_game_condition.amounts:
                     tag += f"{self.ctx.post_game_condition.amounts[APHelper.keys.value] + i - 1}"
-                not_key_condition : list[str] = [k for k in self.ctx.post_game_condition.amounts.keys()
-                                                 if k != APHelper.keys.value]
+                not_key_condition: list[str] = [
+                    k for k in self.ctx.post_game_condition.amounts.keys() if k != APHelper.keys.value
+                ]
                 if not_key_condition:
                     tag += "!"
 
@@ -238,21 +286,23 @@ class AE3CommandProcessor(ClientCommandProcessor):
             return
 
         if not self.ctx.server or not self.ctx.goal_target:
-            logger.info(f" [!!!] Please connect to an Archipelago Server first!")
+            logger.info(" [!!!] Please connect to an Archipelago Server first!")
             return
-        elif self.ctx.game_goaled:
-            logger.info(f" [-!-] You have already Goaled! You have no more remaining checks!")
+        if self.ctx.game_goaled:
+            logger.info(" [-!-] You have already Goaled! You have no more remaining checks!")
             return
 
-        logger.info(f" [-^-] Goal Target Progress: "
-                    f"{str(self.ctx.goal_target.get_progress(self.ctx))} / "
-                    f"{self.ctx.goal_target.amount}")
+        logger.info(
+            f" [-^-] Goal Target Progress: "
+            f"{self.ctx.goal_target.get_progress(self.ctx)!s} / "
+            f"{self.ctx.goal_target.amount}"
+        )
 
-        logger.info(f" Remaining Potential Goal Target Locations:")
-        remaining : list[str] = self.ctx.goal_target.get_remaining(self.ctx)
+        logger.info(" Remaining Potential Goal Target Locations:")
+        remaining: list[str] = self.ctx.goal_target.get_remaining(self.ctx)
 
         for location in remaining:
-            logger.info(f"         > " f"{location}")
+            logger.info(f"         > {location}")
 
     def _cmd_remaining_post_game(self):
         """List remaining locations to check to unlock Post-Game."""
@@ -260,58 +310,56 @@ class AE3CommandProcessor(ClientCommandProcessor):
             return
 
         if not self.ctx.server or not self.ctx.post_game_condition:
-            logger.info(f" [!!!] Please connect to an Archipelago Server first!")
+            logger.info(" [!!!] Please connect to an Archipelago Server first!")
             return
-        elif self.ctx.game_goaled:
-            logger.info(f" [-!-] You have already Goaled! You have no more remaining checks!")
+        if self.ctx.game_goaled:
+            logger.info(" [-!-] You have already Goaled! You have no more remaining checks!")
             return
 
         progress: dict[str, list[int]] = self.ctx.post_game_condition.get_progress(self.ctx)
         remaining: dict[str, list[str]] = self.ctx.post_game_condition.get_remaining(self.ctx)
 
         if not remaining:
-            logger.info(f" [-!-] You have already unlocked Post-Game!")
+            logger.info(" [-!-] You have already unlocked Post-Game!")
             return
 
-        logger.info(f" [->-] Post Game Condition Progress: ")
+        logger.info(" [->-] Post Game Condition Progress: ")
 
         if all(v[0] >= v[1] for v in [*progress.values()]):
-            logger.info(f"         Post-Game Condition(s) are Complete! ")
+            logger.info("         Post-Game Condition(s) are Complete! ")
 
         if progress:
             for key, value in progress.items():
                 prog: str = f"{value[0]} / {value[1]}"
                 if value[0] >= value[1]:
-                    prog += f"    [ COMPLETE! ]"
+                    prog += "    [ COMPLETE! ]"
 
                 logger.info(f"                > {key}: {prog}")
 
-        logger.info(f"\n Remaining Potential Post Game Condition Locations:")
+        logger.info("\n Remaining Potential Post Game Condition Locations:")
 
         for category, remains in remaining.items():
-            logger.info(f"         " f"[-/-] {category}")
+            logger.info(f"         [-/-] {category}")
             for location in remains:
-                logger.info(f"                  > " f"{location}")
+                logger.info(f"                  > {location}")
 
     def _cmd_auto_equip(self):
         """Toggle if Gadgets should automatically be assigned to a free face button when received."""
         if isinstance(self.ctx, AE3Context):
             self.ctx.auto_equip = not self.ctx.auto_equip
 
-            logger.info(f" [-!-] Auto Equip is now " f"{"ENABLED" if self.ctx.auto_equip else "DISABLED"}")
-
+            logger.info(f" [-!-] Auto Equip is now {'ENABLED' if self.ctx.auto_equip else 'DISABLED'}")
 
     def _cmd_freeplay(self):
-        """Toggle if Free Play mode should be accessible early by holding L1 or L2 after selecting a channel.
-        """
+        """Toggle if Free Play mode should be accessible early by holding L1 or L2 after selecting a channel."""
         if isinstance(self.ctx, AE3Context):
             if not self.ctx.early_free_play:
-                logger.info(f" [!!!] Early Free Play was set to DISABLED. You cannot toggle Freeplay Toggle.")
+                logger.info(" [!!!] Early Free Play was set to DISABLED. You cannot toggle Freeplay Toggle.")
                 return
 
             self.ctx.alt_freeplay = not self.ctx.alt_freeplay
 
-            logger.info(f" [-!-] Freeplay Toggle is now " f"{"ENABLED" if self.ctx.alt_freeplay else "DISABLED"}")
+            logger.info(f" [-!-] Freeplay Toggle is now {'ENABLED' if self.ctx.alt_freeplay else 'DISABLED'}")
 
     def _cmd_pine_slot(self, slot: str):
         """
@@ -326,7 +374,9 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
             if self.ctx.pine_slot != slot_as_int:
                 if slot_as_int < 0 or slot_as_int > 65535:
-                    logger.info(f" [-!-] Port {slot_as_int} is out of range. Please specify a port between 0 and 65535.")
+                    logger.info(
+                        f" [-!-] Port {slot_as_int} is out of range. Please specify a port between 0 and 65535."
+                    )
                     return
 
                 self.ctx.pine_slot = slot_as_int
@@ -374,9 +424,9 @@ class AE3CommandProcessor(ClientCommandProcessor):
                 self.ctx.death_link = not self.ctx.death_link
                 self.ctx.should_deathlink_tag_update = True
 
-                logger.info(f" [-!-] DeathLink is now " f"{"ENABLED" if self.ctx.death_link else "DISABLED"}")
+                logger.info(f" [-!-] DeathLink is now {'ENABLED' if self.ctx.death_link else 'DISABLED'}")
             else:
-                logger.info(f"[...] A DeathLink toggle has already been requested. Please try again in a few seconds.")
+                logger.info("[...] A DeathLink toggle has already been requested. Please try again in a few seconds.")
 
     def _cmd_save_state(self):
         """Save State to the slot specified in the options."""
@@ -384,8 +434,10 @@ class AE3CommandProcessor(ClientCommandProcessor):
             return
 
         if (not (11 <= self.ctx.state_slot <= 255)) and self.ctx.state_slot != 0:
-            logger.info(" [-!-] The server has not given the state lot for this session. "
-                        "Have you connected to the server at least once?")
+            logger.info(
+                " [-!-] The server has not given the state lot for this session. "
+                "Have you connected to the server at least once?"
+            )
             return
 
         self.ctx.ipc.save_state(self.ctx.state_slot)
@@ -396,14 +448,16 @@ class AE3CommandProcessor(ClientCommandProcessor):
             return
 
         if (not (11 <= self.ctx.state_slot <= 255)) and self.ctx.state_slot != 0:
-            logger.info(" [-!-] The server has not given the state lot for this session. "
-                        "Have you connected to the server at least once?")
+            logger.info(
+                " [-!-] The server has not given the state lot for this session. "
+                "Have you connected to the server at least once?"
+            )
             return
 
         self.ctx.ipc.load_state(self.ctx.state_slot)
 
     # Debug commands
-    def _cmd_unlock(self, unlocks : str = "28"):
+    def _cmd_unlock(self, unlocks: str = "28"):
         """<!> DEBUG | Unlock amount of levels given"""
         if not unlocks.isdigit():
             logger.info(" [-!-] Please enter a number.")
@@ -413,7 +467,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
             amount: int = int(unlocks)
             self.ctx.unlocked_channels = max(min(amount, 28), 0)
 
-    def _cmd_receive_death(self, count : str = "1"):
+    def _cmd_receive_death(self, count: str = "1"):
         """<!> DEBUG | Simulate receiving a death link"""
         if not count.isdigit():
             logger.info("Please enter a number.")
@@ -426,146 +480,138 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
             self.ctx.pending_deathlinks = int(count)
 
+
 class AE3Context(SuperContext):
     # Archipelago Meta
     client_version: str = APConsole.Info.client_ver.value
-    world_version : str = APConsole.Info.world_ver.value
+    world_version: str = APConsole.Info.world_ver.value
 
     # Game Details
     game: str = Meta.game
     platform: str = Meta.platform
 
     # Client Properties
-    command_processor : ClientCommandProcessor = AE3CommandProcessor
-    tags: set[str] = {"AP"}
-    items_handling : int = 0b111
+    command_processor: ClientCommandProcessor = AE3CommandProcessor
+    items_handling: int = 0b111
 
     # Interface Properties
-    ipc : AEPS2Interface = AEPS2Interface
-    is_game_connected : bool = ConnectionStatus.DISCONNECTED
+    ipc: AEPS2Interface
+    is_game_connected: bool = bool(ConnectionStatus.DISCONNECTED.value)
     has_archipelago_package: bool = False
-    has_just_connected : bool = False
-    interface_sync_task : asyncio.tasks = None
-    last_message : Optional[str] = None
+    has_just_connected: bool = False
+    interface_sync_task = None
+    last_message: str | None = None
 
     # Server Properties and Cache
-    next_item_slot : int = -1
-    pending_auto_save : bool = False
-    is_last_save_normal : bool = None
-    pending_last_save_status : bool = False
-    has_saved_on_transition : bool = True
-    has_attempted_auto_load : bool = False
-    pending_deathlinks : int = 0
-    pending_resync : bool = False
-    cached_locations_checked : Set[int]
-    offline_locations_checked : Set[int] = set()
-    monkeys_index : list[Sequence[str]] = []
+    next_item_slot: int = -1
+    pending_auto_save: bool = False
+    is_last_save_normal: bool = False
+    pending_last_save_status: bool = False
+    has_saved_on_transition: bool = True
+    has_attempted_auto_load: bool = False
+    pending_deathlinks: int = 0
+    pending_resync: bool = False
+    cached_locations_checked: set[int]
+    offline_locations_checked: set[int]
+    monkeys_index: list[Sequence[str]]
 
-    should_deathlink_tag_update : bool = False
+    should_deathlink_tag_update: bool = False
 
     # APWorld Properties
-    locations_name_to_id : dict[str, int] = Locations.generate_name_to_id()
+    locations_name_to_id: dict[str, int] = Locations.generate_name_to_id()
     active_locations: set[str] = set(locations_name_to_id.keys()).difference(MONKEYS_PASSWORDS)
-    items_name_to_id : dict[str, int] = Items.generate_name_to_id()
-    location_groups : list[list[str]] = [[*locations] for locations in LOCATIONS_INDEX.values()]
-    group_check_index : int = 0
+    items_name_to_id: dict[str, int] = Items.generate_name_to_id()
+    location_groups: list[list[str]]
+    group_check_index: int = 0
 
-    cache_missing : list[list[str]] = location_groups.copy()
-    is_cache_built : bool = False
-    monkeys_checklist : Sequence[str] = MONKEYS_MASTER
-    monkeys_checklist_count : int = 0
-    pre_hinted: dict = {}
+    cache_missing: list[list[str]]
+    is_cache_built: bool = False
+    monkeys_checklist: Sequence[str] = MONKEYS_MASTER
+    monkeys_checklist_count: int = 0
+    pre_hinted: dict
 
     # Session Properties
-    keys : int = 0
-    unlocked_channels : int = 0
-    current_channel: str = None
-    current_stage : str = None
-    current_game_mode : int = 0x0
+    keys: int = 0
+    unlocked_channels: int = 0
+    current_channel: str = ""
+    current_stage: str = ""
+    current_game_mode: int = 0x0
     current_coins: int = 0
-    current_jackets : int = 0
-    in_travel_station : bool = False
+    current_jackets: int = 0
+    in_travel_station: bool = False
     is_using_data_desk: bool = False
-    in_shopping_area : bool = False
+    in_shopping_area: bool = False
     is_shop_ready: bool = False
     has_bought_ticket: bool = False
-    last_selected_channel_index : int = -1
-    suppress_progress_correction : bool = False
-    character : int = -1
-    player_control : bool = False
+    last_selected_channel_index: int = -1
+    suppress_progress_correction: bool = False
+    character: int = -1
+    player_control: bool = False
 
-    alt_freeplay : bool = False
-    is_mode_swapped : bool = False
-    is_channel_swapped : bool = False
+    alt_freeplay: bool = False
+    is_mode_swapped: bool = False
+    is_channel_swapped: bool = False
 
     ## Command State can be in either of 3 stages:
     ##  0 - No Exclusive Command Sent
     ##  1 - Command has been sent, awaiting confirmation of execution
     ##  2 - Command Executed, awaiting confirmation to reset
-    command_state : int = 0
-    sending_death : bool = False
-    receiving_death : bool = True
-    are_item_status_synced : bool = False
+    command_state: int = 0
+    sending_death: bool = False
+    receiving_death: bool = True
+    are_item_status_synced: bool = False
 
-    rcc_unlocked : bool = False
-    swim_unlocked : bool = False
-    dummy_morph_needed : bool = True
-    dummy_morph_monkey_needed : bool = True
+    rcc_unlocked: bool = False
+    swim_unlocked: bool = False
+    dummy_morph_needed: bool = True
+    dummy_morph_monkey_needed: bool = True
 
-    game_goaled : bool = False
+    game_goaled: bool = False
 
     # Local Session Save Properties
-    last_item_processed_index : int = -1
+    last_item_processed_index: int = -1
 
     # Player Set Settings
-    settings : AE3Settings
+    settings: AE3Settings
 
-    save_state_on_room_transition : bool = False
-    save_state_on_item_received : bool = False
-    save_state_on_location_check : bool = False
-    load_state_on_connect : bool = False
+    save_state_on_room_transition: bool = False
+    save_state_on_item_received: bool = False
+    save_state_on_location_check: bool = False
+    load_state_on_connect: bool = False
 
     pine_slot: int = 28011
     pine_linux_platform: str = "auto"
 
-    auto_equip : bool = False
+    auto_equip: bool = False
 
     # Player Set Options
-    progression : ProgressionMode = ProgressionModeOptions[0]
-    goal_target : GoalTarget = GoalTarget()
-    post_game_access_rule_option : int = 0
-    post_game_condition : PostGameCondition = None
-    shuffle_channel : bool = False
-    dummy_morph : str = Itm.morph_monkey.value
-    check_break_rooms : bool = False
-    camerasanity : int = None
-    cellphonesanity : bool = None
-    shoppingsanity : int = None
-    restock_progression : int = 28
-    shop_progress : int = 27
-    shop_progression : int = 0
-    extra_keys : int = 0
-    extra_shop_stocks : int = 0
+    progression: ProgressionMode
+    goal_target: GoalTarget = GoalTarget()
+    post_game_access_rule_option: int = 0
+    post_game_condition: PostGameCondition
+    shuffle_channel: bool = False
+    dummy_morph: str = Itm.morph_monkey.value
+    check_break_rooms: bool = False
+    camerasanity: int = 0
+    cellphonesanity: bool = False
+    shoppingsanity: int = 0
+    restock_progression: int = 28
+    shop_progress: int = 27
+    shop_progression: int = 0
+    extra_keys: int = 0
+    extra_shop_stocks: int = 0
 
-    morph_duration : float = 0.0
+    morph_duration: float = 0.0
     shuffle_chassis: bool = False
     shuffle_morph_stock: bool = False
 
-    early_free_play : bool = False
-    monkey_mart : bool = True
+    early_free_play: bool = False
+    monkey_mart: bool = True
     ticket_consolation: bool = True
-    consolation_whitelist: list[str] = [
-        APHelper.nothing.value,
-        APHelper.hint_filler.value,
-        APHelper.hint_progressive.value,
-        APHelper.check_filler.value,
-        APHelper.check_progressive.value,
-        APHelper.check_pgc.value,
-        APHelper.check_gt.value,
-    ]
+    consolation_whitelist: list[str]
 
-    state_slot : int = -1
-    death_link : bool = False
+    state_slot: int = -1
+    death_link: bool = False
 
     def __init__(self, address, password):
         super().__init__(address, password)
@@ -573,12 +619,11 @@ class AE3Context(SuperContext):
         # Initialize Variables
         Utils.init_logging(APConsole.Info.client_name.value + self.client_version)
 
-        self.ipc = AEPS2Interface(logger)
+        self.tags: set[str] = {"AP"}
+        self.location_groups: list[list[str]] = [[*locations] for locations in LOCATIONS_INDEX.values()]
+        self.cache_missing = self.location_groups.copy()
 
-        self.cached_locations_checked = set()
-        for lists in [*MONKEYS_DIRECTORY.values()]:
-            if lists not in self.monkeys_index:
-                self.monkeys_index.append(lists)
+        self.ipc = AEPS2Interface(logger)
 
         self.last_pgc_status = {}
 
@@ -589,26 +634,46 @@ class AE3Context(SuperContext):
         self.settings = get_settings().get("ape_escape_3_options", False)
         assert self.settings, " [!!!] Cannot find Ape Escape 3 Settings!"
 
-        self.save_state_on_room_transition = self.settings.save_state_on_room_transition
-        self.save_state_on_item_received = self.settings.save_state_on_item_received
-        self.save_state_on_location_check = self.settings.save_state_on_location_check
-        self.load_state_on_connect = self.settings.load_state_on_connect
+        self.save_state_on_room_transition = bool(self.settings.save_state_on_room_transition)
+        self.save_state_on_item_received = bool(self.settings.save_state_on_item_received)
+        self.save_state_on_location_check = bool(self.settings.save_state_on_location_check)
+        self.load_state_on_connect = bool(self.settings.load_state_on_connect)
         self.pine_connect_offline = self.settings.pine_connect_offline
 
-        self.auto_equip = self.settings.auto_equip
+        self.auto_equip = bool(self.settings.auto_equip)
+
+        self.offline_locations_checked: set[int] = set()
+        self.monkeys_index: list[Sequence[str]] = []
+
+        self.pre_hinted = {}
+
+        self.consolation_whitelist: list[str] = [
+            APHelper.nothing.value,
+            APHelper.hint_filler.value,
+            APHelper.hint_progressive.value,
+            APHelper.check_filler.value,
+            APHelper.check_progressive.value,
+            APHelper.check_pgc.value,
+            APHelper.check_gt.value,
+        ]
+
+        self.cached_locations_checked = set()
+        for lists in [*MONKEYS_DIRECTORY.values()]:
+            if lists not in self.monkeys_index:
+                self.monkeys_index.append(lists)
 
     # Archipelago Server Authentication
-    async def server_auth(self, password_requested : bool = False):
+    async def server_auth(self, password_requested: bool = False):
         # Ask for Password if Requested so
         if password_requested and not self.password:
-            await super(AE3Context, self).server_auth(password_requested)
+            await super().server_auth(password_requested)
 
         await self.get_username()
         await self.send_connect()
 
     def on_package(self, cmd: str, args: dict):
         super().on_package(cmd, args)
-        
+
         # First Connection Check
         if cmd == APHelper.cmd_conn.value:
             data = args[APHelper.arg_sl_dt.value]
@@ -636,7 +701,7 @@ class AE3Context(SuperContext):
                     self.pine_slot = pine_slot
                     self.ipc.set_slot(self.pine_slot)
 
-                    is_pine_slot_changed= True
+                    is_pine_slot_changed = True
 
             is_pine_platform_changed: bool = False
             if APHelper.emu_linux_platform.value in data and platform.system() == "Linux":
@@ -668,10 +733,10 @@ class AE3Context(SuperContext):
                 self.unlocked_channels = self.progression.get_progress(0)
 
             ## Check Break Room Monkeys and Password Monkeys options to use with Goal Target
-            self.check_break_rooms : bool = self.check_break_rooms or self.post_game_access_rule_option == 0
+            self.check_break_rooms: bool = self.check_break_rooms or self.post_game_access_rule_option == 0
 
-            excluded_stages : list[str] = []
-            excluded_locations : list[str] = [*MONKEYS_PASSWORDS]
+            excluded_stages: list[str] = []
+            excluded_locations: list[str] = [*MONKEYS_PASSWORDS]
 
             # Exclude Shop Items based on Shoppingsanity Type and Blacklisted Channels
             if data[APHelper.blacklist_channel.value] and data[APHelper.shoppingsanity.value] > 0:
@@ -695,55 +760,54 @@ class AE3Context(SuperContext):
 
             ### Exclude Blacklisted Channels from Goal Target and Post Game Condition
             if self.progression.progression[-1]:
-                for channel in self.progression.order[-self.progression.progression[-1]:]:
+                for channel in self.progression.order[-self.progression.progression[-1] :]:
                     excluded_locations.extend(MONKEYS_MASTER_ORDERED[channel])
                     excluded_locations.append(CAMERAS_MASTER_ORDERED[channel])
 
                     excluded_phones_id: list[str] = CELLPHONES_MASTER_ORDERED[channel]
                     excluded_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
 
-            goal_amount : int = 0
+            goal_amount: int = 0
             if APHelper.goal_target_ovr.value in data:
-                goal_amount : int = data[APHelper.goal_target_ovr.value]
+                goal_amount: int = data[APHelper.goal_target_ovr.value]
 
             ## Goal Target
             if not self.goal_target.locations and APHelper.goal_target.value in data:
                 goal_target = data[APHelper.goal_target.value]
-                self.goal_target = GoalTargetOptions[goal_target](goal_amount,
-                                                                  excluded_stages,
-                                                                  excluded_locations)
+                self.goal_target = GoalTargetOptions[goal_target](goal_amount, excluded_stages, excluded_locations)
 
             ## Get Post Game Conditions
-            amounts : dict[str, int] = {}
+            amounts: dict[str, int] = {}
 
-            if APHelper.pgc_monkeys.value in data and data[APHelper.pgc_monkeys.value]:
-                amount : int = 441 if data[APHelper.pgc_monkeys.value] < 0 else data[APHelper.pgc_monkeys.value]
+            if data.get(APHelper.pgc_monkeys.value):
+                amount: int = 441 if data[APHelper.pgc_monkeys.value] < 0 else data[APHelper.pgc_monkeys.value]
                 amounts[APHelper.monkey.value] = amount
 
-            if APHelper.pgc_bosses.value in data and data[APHelper.pgc_bosses.value]:
+            if data.get(APHelper.pgc_bosses.value):
                 amounts[APHelper.bosses.value] = data[APHelper.pgc_bosses.value]
 
-            if APHelper.pgc_cameras.value in data and data[APHelper.pgc_cameras.value]:
+            if data.get(APHelper.pgc_cameras.value):
                 amounts[APHelper.camera.value] = data[APHelper.pgc_cameras.value]
 
-            if APHelper.pgc_cellphones.value in data and data[APHelper.pgc_cellphones.value]:
+            if data.get(APHelper.pgc_cellphones.value):
                 amounts[APHelper.cellphone.value] = data[APHelper.pgc_cellphones.value]
 
-            if APHelper.pgc_shop.value in data and data[APHelper.pgc_shop.value]:
+            if data.get(APHelper.pgc_shop.value):
                 amounts[APHelper.shop.value] = data[APHelper.pgc_shop.value]
 
-            if APHelper.pgc_keys.value in data and data[APHelper.pgc_keys.value]:
+            if data.get(APHelper.pgc_keys.value):
                 amounts[APHelper.keys.value] = data[APHelper.pgc_keys.value]
 
             # Exclude Channels in Post Game from being required for Post Game to be unlocked
             post_game_start_index = sum(self.progression.progression[:-2]) + 1
-            for channel in (self.progression.order[post_game_start_index:
-                post_game_start_index + self.progression.progression[-2]]):
-                    excluded_locations.extend(MONKEYS_MASTER_ORDERED[channel])
-                    excluded_locations.append(CAMERAS_MASTER_ORDERED[channel])
+            for channel in self.progression.order[
+                post_game_start_index : post_game_start_index + self.progression.progression[-2]
+            ]:
+                excluded_locations.extend(MONKEYS_MASTER_ORDERED[channel])
+                excluded_locations.append(CAMERAS_MASTER_ORDERED[channel])
 
-                    excluded_phones_id: list[str] = CELLPHONES_MASTER_ORDERED[channel]
-                    excluded_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
+                excluded_phones_id: list[str] = CELLPHONES_MASTER_ORDERED[channel]
+                excluded_locations.extend(Cellphone_Name_to_ID[cell_id] for cell_id in excluded_phones_id)
 
             # Exclude Ultim-ape Fighter from being a PGC requirement, as it requires as many monkeys as possible
             excluded_locations.extend(SHOP_PROGRESSION_75COMPLETION)
@@ -757,7 +821,7 @@ class AE3Context(SuperContext):
 
             ## Camerasanity
             if self.camerasanity is None and APHelper.camerasanity.value in data:
-                self.camerasanity = (data[APHelper.camerasanity.value])
+                self.camerasanity = data[APHelper.camerasanity.value]
 
             ## Cellphonesanity
             if self.cellphonesanity is None and APHelper.cellphonesanity.value in data:
@@ -772,9 +836,8 @@ class AE3Context(SuperContext):
                     self.shop_progress = self.shop_progression - 1
 
                 ## Restock Progression
-                if self. shoppingsanity == 4 and APHelper.restock_progression.value in data:
+                if self.shoppingsanity == 4 and APHelper.restock_progression.value in data:
                     self.restock_progression = data[APHelper.restock_progression.value]
-
 
             ## Morph Duration
             if self.morph_duration == 0 and APHelper.base_morph_duration.value in data:
@@ -819,7 +882,7 @@ class AE3Context(SuperContext):
 
             ## Pre-scouted
             if APHelper.hints.value in data:
-                self.pre_hinted = {int(key) : value for key, value in data[APHelper.hints.value].items()}
+                self.pre_hinted = {int(key): value for key, value in data[APHelper.hints.value].items()}
 
             # Initiate Checked Locations Cache Rebuilding if necessary:
             if not self.locations_checked and not self.cache_missing:
@@ -839,18 +902,21 @@ class AE3Context(SuperContext):
                     self.active_locations.difference_update(set(SHOP_UNIQUE_MASTER).difference(SHOP_PERSISTENT_MASTER))
                 else:
                     self.active_locations.difference_update(
-                        set(SHOP_COLLECTION_MASTER).difference(SHOP_PERSISTENT_MASTER))
+                        set(SHOP_COLLECTION_MASTER).difference(SHOP_PERSISTENT_MASTER)
+                    )
 
             # When connection details from options are different from defaults,
             # reconnect to the emulator with the new details
             if is_pine_slot_changed or is_pine_platform_changed:
                 logger.info("<!> Preferred Connection Details detected from Slot Data.")
                 if is_pine_slot_changed:
-                    logger.info(f"[-!-] PINE Slot is now set to {self.pine_slot}."
-                                f"\n{"":<5} Please make sure the PINE Slot set for the emulator is the same.")
+                    logger.info(
+                        f"[-!-] PINE Slot is now set to {self.pine_slot}."
+                        f"\n{'':<5} Please make sure the PINE Slot set for the emulator is the same."
+                    )
                 if is_pine_platform_changed:
                     logger.info(f"[-!-] PINE Platform is now set to {self.pine_linux_platform}.")
-                    logger.info("\n{"":<5} Please make sure you are using the correct PCSX2 instance.")
+                    logger.info("\n{:<5} Please make sure you are using the correct PCSX2 instance.")
 
                 logger.info("[...] These settings can be changed at anytime in the client using the pine commands.")
                 logger.info("\nRe-establishing emulator connection with new details from the Slot Data.\n")
@@ -886,7 +952,7 @@ class AE3Context(SuperContext):
             if self.character < 0 and self.current_stage:
                 self.character = self.ipc.get_character()
 
-            received_as_id : list[int] = [ i.item for i in self.items_received]
+            received_as_id: list[int] = [i.item for i in self.items_received]
 
             # Rebuild Progress
             ## Get Keys
@@ -899,13 +965,15 @@ class AE3Context(SuperContext):
                     self.shop_progress = (self.keys + 1) * self.shop_progression - 1
 
                     if self.shop_progress >= 27:
-                        self.shop_progress = (math.floor((28 - self.shop_progression) / self.shop_progression)
-                                              * self.shop_progression - 1)
+                        self.shop_progress = (
+                            math.floor((28 - self.shop_progression) / self.shop_progression) * self.shop_progression - 1
+                        )
 
             ## Get Shop Stock
             if self.shoppingsanity == 4 and 0 >= self.shop_progress >= 27:
-                self.shop_progress =( (received_as_id.count(self.items_name_to_id[APHelper.shop_stock.value]) + 1) *
-                                      self.shop_progression - 1 )
+                self.shop_progress = (
+                    received_as_id.count(self.items_name_to_id[APHelper.shop_stock.value]) + 1
+                ) * self.shop_progression - 1
 
             # Check if dummy morph is needed
             self.dummy_morph_monkey_needed = self.items_name_to_id[Itm.morph_monkey.value] not in received_as_id
@@ -913,13 +981,13 @@ class AE3Context(SuperContext):
             if self.dummy_morph == Itm.morph_monkey.value:
                 self.dummy_morph_needed = self.dummy_morph_monkey_needed
             else:
-                morph_ids : list[int] = [ self.items_name_to_id[morph] for morph in Itm.get_morphs_ordered() ]
+                morph_ids: list[int] = [self.items_name_to_id[morph] for morph in Itm.get_morphs_ordered()]
                 self.dummy_morph_needed = not any(item in morph_ids for item in received_as_id)
 
             # Retrace Morph Duration
             if self.morph_duration != 0:
                 self.morph_duration += received_as_id.count(self.items_name_to_id[Itm.acc_morph_ext.value]) * 2
-                dummy : str = self.dummy_morph if self.dummy_morph_needed else ""
+                dummy: str = self.dummy_morph if self.dummy_morph_needed else ""
                 self.ipc.set_morph_duration(self.character, self.morph_duration, dummy)
 
             # Check RC Car Unlock
@@ -953,7 +1021,7 @@ class AE3Context(SuperContext):
 
                 self.seed_name = seed
 
-    def on_deathlink(self, data: typing.Dict[str, typing.Any]) -> None:
+    def on_deathlink(self, data: dict[str, typing.Any]) -> None:
         if not self.death_link:
             return
 
@@ -968,6 +1036,24 @@ class AE3Context(SuperContext):
         ui.logging_pairs = [("Client", "Archipelago")]
 
         return ui
+
+    def run_gui(self):
+        super().run_gui()
+
+    def inject_quick_status_panel(self):
+        if "Archipelago" in self.ui.log_panels:
+            from . import gui
+
+            screen = self.ui.screens.get_screen("Archipelago")
+
+            if not screen:
+                return
+
+            self.quick_status_panel = gui.create_quick_status_panel()
+            screen.add_widget(self.quick_status_panel)
+
+            self.ipc.subscribe_on_connection_change(self.quick_status_panel.update_game_status)
+            self.ipc.subscribe_on_port_change(self.quick_status_panel.update_game_port)
 
     def check_pgc(self) -> bool:
         current: dict = self.post_game_condition.get_progress(self)
@@ -997,7 +1083,7 @@ class AE3Context(SuperContext):
         self.game_goaled = True
 
 
-def update_connection_status(ctx : AE3Context, status : bool):
+def update_connection_status(ctx: AE3Context, status: bool):
     if bool(ctx.is_game_connected) == status:
         return
 
@@ -1007,16 +1093,22 @@ def update_connection_status(ctx : AE3Context, status : bool):
     else:
         logger.info(APConsole.Err.sock_fail.value + APConsole.Err.sock_re.value)
 
+    ctx.quick_status_panel.update_game_status(ctx.ipc.status)
+    ctx.quick_status_panel.update_game_port(ctx.pine_slot)
+
     ctx.is_game_connected = status
 
+
 # Main Client Loop
-async def main_sync_task(ctx : AE3Context):
+async def main_sync_task(ctx: AE3Context):
     # Greetings
     logger.info(APConsole.Info.decor.value)
     logger.info("    " + APConsole.Info.greet.value)
     logger.info("    World v" + APConsole.Info.world_ver.value + "    Client v" + APConsole.Info.client_ver.value)
     logger.info(APConsole.Info.decor.value)
     logger.info("\n")
+
+    ctx.inject_quick_status_panel()
 
     if ctx.pine_connect_offline:
         logger.info(APConsole.Info.p_init.value)
@@ -1025,7 +1117,7 @@ async def main_sync_task(ctx : AE3Context):
     while not ctx.exit_event.is_set():
         try:
             # Check connection to PCSX2 first
-            is_game_connected : bool = ctx.ipc.get_connection_state()
+            is_game_connected: bool = ctx.ipc.get_connection_state()
             update_connection_status(ctx, is_game_connected)
 
             # Check Progress if connection is good
@@ -1053,10 +1145,11 @@ async def main_sync_task(ctx : AE3Context):
             await asyncio.sleep(3)
             continue
 
-async def check_game(ctx : AE3Context):
+
+async def check_game(ctx: AE3Context):
     if ctx.server:
         if ctx.pending_last_save_status:
-            await get_last_save_status(ctx)
+            await Checker.get_last_save_status(ctx)
             ctx.pending_last_save_status = False
 
     # Check if Game State is safe for Further Checking
@@ -1074,13 +1167,13 @@ async def check_game(ctx : AE3Context):
 
         # Run maintenance game checks when not in player control
         if not ctx.suppress_progress_correction:
-            await correct_progress(ctx)
+            await Checker.correct_progress(ctx)
 
-        await check_background_states(ctx)
+        await Checker.check_background_states(ctx)
         await asyncio.sleep(1)
 
         return
-    elif not ctx.ipc.is_in_control():
+    if not ctx.ipc.is_in_control():
         ctx.player_control = False
         return
 
@@ -1101,16 +1194,13 @@ async def check_game(ctx : AE3Context):
 
         # If there are offline locations to send, do so
         if ctx.offline_locations_checked:
-            await update_offline_checked(ctx)
+            await Checker.update_offline_checked(ctx)
 
         # Get Character
         if ctx.character < 0:
             ctx.character = ctx.ipc.get_character()
 
-            ds_handler: DataStorageHandler = ctx.protocol.create_datastorage_setter(
-                APHelper.data_char.value,
-                -1
-            )
+            ds_handler: DataStorageHandler = ctx.protocol.create_datastorage_setter(APHelper.data_char.value, -1)
             ds_handler.replace(ctx.character)
             ds_handler.end()
 
@@ -1126,13 +1216,13 @@ async def check_game(ctx : AE3Context):
 
                 if ctx.current_channel == APHelper.shopping_area.value:
                     ctx.in_shopping_area = True
-                    await set_persistent_values(ctx)
+                    await Checker.set_persistent_values(ctx)
         elif ctx.in_shopping_area:
             if ctx.current_channel != APHelper.shopping_area.value:
                 ctx.in_shopping_area = False
 
                 if ctx.current_channel == APHelper.travel_station.value:
-                    await reapply_persistent_values(ctx)
+                    await Checker.reapply_persistent_values(ctx)
                     ctx.in_travel_station = True
         else:
             if ctx.current_channel == APHelper.travel_station.value:
@@ -1140,40 +1230,40 @@ async def check_game(ctx : AE3Context):
             elif ctx.current_channel == APHelper.shopping_area.value:
                 ctx.in_shopping_area = True
                 ctx.is_using_data_desk = False
-                await rebuild_persistent_values(ctx)
+                await Checker.rebuild_persistent_values(ctx)
             else:
                 ctx.is_using_data_desk = False
 
         if ctx.in_travel_station:
-            await setup_level_select(ctx)
+            await Checker.setup_level_select(ctx)
         elif ctx.in_shopping_area:
-            await setup_shopping_area(ctx)
+            await Checker.setup_shopping_area(ctx)
 
         # Build Checked Location Cache
         if not ctx.is_cache_built and not ctx.is_using_data_desk:
             if ctx.cache_missing:
-                await build_checked_cache(ctx)
+                await Checker.build_checked_cache(ctx)
             else:
                 if ctx.shoppingsanity == 2:
-                    await handle_collection_shop_item_recheck(ctx)
+                    await Checker.handle_collection_shop_item_recheck(ctx)
 
                 ctx.is_cache_built = True
 
-        await setup_area(ctx)
-        await check_states(ctx)
+        await Checker.setup_area(ctx)
+        await Checker.check_states(ctx)
 
         # Check Progression
-        await receive_items(ctx)
+        await Checker.receive_items(ctx)
 
         if not ctx.is_using_data_desk:
             if not ctx.in_travel_station:
-                await check_locations(ctx)
+                await Checker.check_locations(ctx)
             elif ctx.is_cache_built:
-                await sweep_recheck_locations(ctx)
+                await Checker.sweep_recheck_locations(ctx)
 
         # Revoke has just connected (of Game) status once the first checks are done
         if ctx.has_just_connected or ctx.pending_resync:
-            await resync_important_items(ctx)
+            await Checker.resync_important_items(ctx)
             ctx.has_just_connected = False
 
             if ctx.pending_resync:
@@ -1187,7 +1277,7 @@ async def check_game(ctx : AE3Context):
 
             if ctx.load_state_on_connect and (ctx.is_last_save_normal or ctx.is_last_save_normal is None):
                 ctx.is_last_save_normal = False
-                await set_last_save_status(ctx)
+                await Checker.set_last_save_status(ctx)
 
         # Send Pending Packets
         await ctx.protocol.send()
@@ -1196,16 +1286,18 @@ async def check_game(ctx : AE3Context):
         await asyncio.sleep(0.1)
 
     else:
-        message : str = APConsole.Info.p_init_sre.value
+        message: str = APConsole.Info.p_init_sre.value
         if ctx.last_message is not message:
             logger.info(APConsole.Info.p_init_sre.value)
             ctx.last_message = message
 
         await asyncio.sleep(1)
 
-async def reconnect_game(ctx : AE3Context):
+
+async def reconnect_game(ctx: AE3Context):
     ctx.ipc.connect_game()
     await asyncio.sleep(3)
+
 
 def parse_version(version: str) -> list[str]:
     """
@@ -1233,6 +1325,7 @@ def parse_version(version: str) -> list[str]:
 
     return ext
 
+
 def compare_versions(subject: list[str], base: list[str]) -> int:
     if len(subject) < 3 or len(base) < 3 or len(subject) != len(base):
         return -2
@@ -1251,6 +1344,7 @@ def compare_versions(subject: list[str], base: list[str]) -> int:
 
     return 0
 
+
 def assert_version_compatibility(subject: str, base: str):
     subject_ver: list[str] = parse_version(subject)
     base_ver: list[str] = parse_version(base)
@@ -1261,13 +1355,18 @@ def assert_version_compatibility(subject: str, base: str):
         return
 
     if error == -2:
-        raise AssertionError(f"The world being connected to has been generated with an incompatible version of "
-                             f"Ape Escape 3 Archipelago. Connection Aborted.")
+        raise AssertionError(
+            "The world being connected to has been generated with an incompatible version of "
+            "Ape Escape 3 Archipelago. Connection Aborted."
+        )
 
-    elif error == -1:
-        raise AssertionError(f"The world being connected to has been generated with an Ape Escape 3 Archipelago "
-                             f"version that this client is not compatible with. Connection Aborted."
-                             f"\nWorld version: {subject}\nClient version: {base}")
+    if error == -1:
+        raise AssertionError(
+            f"The world being connected to has been generated with an Ape Escape 3 Archipelago "
+            f"version that this client is not compatible with. Connection Aborted."
+            f"\nWorld version: {subject}\nClient version: {base}"
+        )
+
 
 # Starting point of function
 async def main(args: Namespace):
@@ -1300,8 +1399,10 @@ async def main(args: Namespace):
         await asyncio.sleep(3)
         await ctx.interface_sync_task
 
+
 def launch(*args: str):
     launch_init(*args)
+
 
 def launch_init(*args: Sequence[str]) -> None:
     # Run Client
@@ -1309,17 +1410,16 @@ def launch_init(*args: Sequence[str]) -> None:
 
     # Parse Command Line
     parser: ArgumentParser = get_base_parser()
-    parser.add_argument("--patch", default="", type=str, nargs="?",
-                        help="Path to an Archipelago Patch File")
+    parser.add_argument("--patch", default="", type=str, nargs="?", help="Path to an Archipelago Patch File")
     parser.add_argument("--name", default="", type=str, nargs="?", help="Slot Name to connect as")
-    parser.add_argument("url", default="", type=str, nargs="?",
-                        help="URL of Archipelago Room to connect to")
+    parser.add_argument("url", default="", type=str, nargs="?", help="URL of Archipelago Room to connect to")
     launch_args: Namespace = handle_url_arg(parser.parse_args(args))
 
     colorama.init()
     asyncio.run(main(launch_args))
     colorama.deinit()
 
+
 # Ensures file will only run as the main file
-if __name__ == '__main__':
+if __name__ == "__main__":
     launch(*sys.argv[1:])
