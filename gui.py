@@ -1,7 +1,9 @@
+import enum
 from textwrap import dedent
 from typing import Any
 
-from kivy.properties import ColorProperty, DictProperty, NumericProperty, StringProperty
+from kivy.properties import ColorProperty, DictProperty, NumericProperty, ObjectProperty, StringProperty
+from kivy.uix.widget import Widget
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.list.list import MDGridLayout
 from kivymd.uix.recycleview import MDRecycleView
@@ -13,6 +15,8 @@ from .AE3_Interface import ConnectionStatus
 BASE_WIDGETS: str = dedent(
     """\
     <StatusPanel@MDBoxLayout>:
+        qsp_index_hint: 0
+        qsp_modes: []
         orientation: 'vertical'
         size_hint_x: 0.98
         size_hint_y: None
@@ -121,21 +125,26 @@ QUICK_STATUS_PANEL_KV: str = dedent(
         spacing: 7
         orientation: 'vertical'
         StatusPanel:
+            id: StatusPanel
             StatusLabelComplete:
-                id: StatusDisplay
+                id: StatusLabel
                 label_text: 'Game Status'
                 value_text: 'Waiting for PCSX2'
                 status_text: 'Port: 28011'
                 value_color: app.theme_cls.onSurfaceColor
         StatusPanel:
+            id: GoalPanel
+            qsp_modes: [1]
             padding: 0
             IndicatedStatusLabelComplete:
-                id: GoalDisplay
+                id: GoalLabel
                 label_text: 'Goal Target'
                 value_text: 'Goal Unknown'
                 status_text: '0/0'
                 value_color: app.theme_cls.onSurfaceColor
         StatusPanel:
+            id: PostGameConditionPanel
+            qsp_modes: [1]
             size_hint_y: None
             height: self.minimum_height
             padding: 20, 20, 20, 0
@@ -145,7 +154,7 @@ QUICK_STATUS_PANEL_KV: str = dedent(
                 color: self.theme_cls.onSurfaceColor
                 bold: True
             PGCView:
-                id: PostGameConditionDisplay
+                id: PostGameConditionView
                 viewclass: 'IndicatedPairedLabelComplete'
                 size_hint_y: None
                 MDRecycleGridLayout:
@@ -158,25 +167,115 @@ QUICK_STATUS_PANEL_KV: str = dedent(
 )
 
 
+class QSPDisplayMode(enum.IntEnum):
+    MINIMAL = 0
+    GENERAL = 1
+    CHANNEL_SELECT = 2
+    CHANNEL_OVERVIEW = 3
+
+
 class QuickStatusPanel(MDBoxLayout):
     ids: DictProperty
+    displays: dict[str, Widget]
+    hidden: set[str]
+
+    display_mode: QSPDisplayMode = ObjectProperty()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def update_game_port(self, port: int):
-        if "StatusDisplay" not in self.ids:
-            return
+        self.hidden = set()
+        self.displays = {}
 
-        status_display: StatusLabel = self.ids.get("StatusDisplay")
+    def _get_widget_and_cache(self, wid: str) -> Widget | None:
+        if wid not in self.displays:
+            widget: Widget = self.ids.get(wid, None)
+            if not widget:
+                return None
+
+            self.displays[wid] = widget
+            return widget
+
+        return self.displays.get(wid)
+
+    def _hide_children(self, *wids):
+        """
+        Removes immediate children by id.
+        Children removed using this function are not deleted, only orphaned.
+        :param: *wids: Widget Ids of children to show
+        """
+        for wid in wids:
+            if wid in self.hidden:
+                continue
+
+            widget: Widget | None = self._get_widget_and_cache(wid)
+            if not widget:
+                continue
+
+            if widget not in self.children:
+                continue
+
+            self.remove_widget(widget)
+            self.hidden.add(wid)
+
+    def _show_children(self, *wids, indexes: list[int] | None = None):
+        """
+        Adds widgets as immediate children by id.
+        :param: *wids: Widget Ids of children to show
+        :param: index: Indexes that correspond to the index the child will be added back as if possible.
+        """
+        if not indexes:
+            indexes = []
+
+        for i, wid in enumerate(wids):
+            widget: Widget | None = self._get_widget_and_cache(wid)
+            if not widget:
+                continue
+
+            index: int = indexes[i] if i < len(indexes) else 0
+
+            self.add_widget(widget, index=index)
+            self.hidden.remove(wid)
+
+    def set_display_mode(self, mode: QSPDisplayMode | int):
+        if type(int) is int:
+            self.display_mode = QSPDisplayMode(int)
+        else:
+            self.display_mode = mode
+
+    def on_display_mode(self, instance, mode):
+        to_show: list[Widget] = []
+        to_show_indexes: list[int] = []
+        to_hide: list[Widget] = []
+
+        for i, (wid, widget) in enumerate(self.ids.items()):
+            if widget.__class__.__name__ != "StatusPanel":
+                continue
+
+            if not widget.qsp_modes:
+                continue
+
+            if mode in widget.qsp_modes:
+                to_show.append(wid)
+                index: int = getattr(widget, "qsp_index_hint", len(self.children) + i)
+                to_show_indexes.append(index)
+            else:
+                to_hide.append(wid)
+
+        self._hide_children(*to_hide)
+        self._show_children(*to_show, indexes=to_show_indexes)
+
+    def update_game_port(self, port: int):
+        status_display: StatusLabel | None = self._get_widget_and_cache("StatusLabel")
+        if not status_display:
+            return
 
         status_display.set_status_text(f"Port: {port}")
 
     def update_game_status(self, status: ConnectionStatus):
-        if "StatusDisplay" not in self.ids:
+        status_display: StatusLabel | None = self._get_widget_and_cache("StatusLabel")
+        if not status_display:
             return
-
-        status_display: StatusLabel = self.ids.get("StatusDisplay")
 
         match status:
             case ConnectionStatus.DISCONNECTED:
@@ -189,26 +288,26 @@ class QuickStatusPanel(MDBoxLayout):
                 status_display.set_value_text("In Game", self.theme_cls.primaryColor)
 
     def set_goal_target_status(self, goal_target: str, current_amount: int = 0, target_amount: int = 0):
-        if "GoalDisplay" not in self.ids:
+        goal_display: StatusLabel | None = self._get_widget_and_cache("GoalLabel")
+        if not goal_display:
             return
-        goal_display: StatusLabel = self.ids.get("GoalDisplay")
 
         goal_display.set_status_text(f"{current_amount}/{target_amount}")
         goal_display.set_value_text(goal_target)
 
     def update_goal_target_status(self, current_amount: int, target_amount: int):
-        if "GoalDisplay" not in self.ids:
+        goal_display: StatusLabel | None = self._get_widget_and_cache("GoalLabel")
+        if not goal_display:
             return
-        goal_display: StatusLabel = self.ids.get("GoalDisplay")
 
         goal_display.set_status_text(f"{current_amount}/{target_amount}")
 
     def update_pgc_status(self, data: list[dict]):
-        if "PostGameConditionDisplay" not in self.ids:
+        pgc_view: PGCView | None = self._get_widget_and_cache("PostGameConditionView")
+        if not pgc_view:
             return
-        goal_display: PGCView = self.ids.get("PostGameConditionDisplay")
 
-        goal_display.set_data(data)
+        pgc_view.set_data(data)
 
 
 class PGCView(MDRecycleView):

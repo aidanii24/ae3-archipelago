@@ -1,21 +1,42 @@
-from typing import TYPE_CHECKING, Set, List
-import random
-import math
 import enum
+import math
+import random
+from typing import TYPE_CHECKING
 
 from NetUtils import NetworkItem
 
-from .data.Items import ACCESSORIES, ArchipelagoItem, EquipmentItem, CollectableItem, UpgradeableItem, Capacities, AP, \
-    EQUIPMENT
-from .data.Stages import PROGRESS_ID_BY_ORDER
-from .data.Strings import Game, Loc, Itm, APHelper, Stage
-from .data.Addresses import NTSCU
-from .data.Locations import ACTORS_INDEX, CELLPHONES_STAGE_INDEX, CAMERAS_STAGE_INDEX, MONKEYS_BREAK_ROOMS, \
-    MONKEYS_PASSWORDS, MONKEYS_BOSSES, MONKEYS_DIRECTORY, Cellphone_Name_to_ID, LOCATIONS_INDEX, \
-    SHOP_CATEGORIES_COLLECTION_DIRECTORY, SHOP_COLLECTION_DIRECTORY, SHOP_PERSISTENT_MASTER, SHOP_PROGRESSION_MORPH, \
-    SHOP_BONUS_RC_CARS, SHOP_COLLECTION_BONUS_RC_CARS
 from .data import Items
+from .data.Addresses import NTSCU
 from .data.Distribution import CONSOLATION_RATES
+from .data.Items import (
+    ACCESSORIES,
+    AP,
+    EQUIPMENT,
+    ArchipelagoItem,
+    Capacities,
+    CollectableItem,
+    EquipmentItem,
+    UpgradeableItem,
+)
+from .data.Locations import (
+    ACTORS_INDEX,
+    CAMERAS_STAGE_INDEX,
+    CELLPHONES_STAGE_INDEX,
+    LOCATIONS_INDEX,
+    MONKEYS_BOSSES,
+    MONKEYS_BREAK_ROOMS,
+    MONKEYS_DIRECTORY,
+    MONKEYS_PASSWORDS,
+    SHOP_BONUS_RC_CARS,
+    SHOP_CATEGORIES_COLLECTION_DIRECTORY,
+    SHOP_COLLECTION_BONUS_RC_CARS,
+    SHOP_COLLECTION_DIRECTORY,
+    SHOP_PERSISTENT_MASTER,
+    SHOP_PROGRESSION_MORPH,
+    Cellphone_Name_to_ID,
+)
+from .data.Stages import PROGRESS_ID_BY_ORDER
+from .data.Strings import APHelper, Game, Itm, Loc, Stage
 from .protocol import DataStorageHandler
 
 if TYPE_CHECKING:
@@ -29,8 +50,9 @@ class HintStatus(enum.IntEnum):
     HINT_PRIORITY = 30
     HINT_FOUND = 40
 
+
 ### [< --- CHECKS --- >]
-async def check_background_states(ctx : 'AE3Context'):
+async def check_background_states(ctx: "AE3Context"):
     # Get current stage
     new_channel = ctx.ipc.get_channel()
     ctx.current_stage = ctx.ipc.get_stage()
@@ -46,7 +68,7 @@ async def check_background_states(ctx : 'AE3Context'):
 
     # Enforce Morph Duration
     if ctx.character >= 0:
-        current_morph_duration : float = ctx.ipc.get_morph_duration(ctx.character)
+        current_morph_duration: float = ctx.ipc.get_morph_duration(ctx.character)
         dummy: str = ctx.dummy_morph if ctx.dummy_morph_needed else ""
 
         if current_morph_duration != ctx.morph_duration or current_morph_duration != 0.0:
@@ -59,7 +81,7 @@ async def check_background_states(ctx : 'AE3Context'):
             ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration, dummy)
 
     # Get which Monkey Group to actively check at the moment based on the stage
-    if not new_channel or new_channel is None and not ctx.current_channel:
+    if not new_channel or (new_channel is None and not ctx.current_channel):
         # Special Check for Monkey Pink as her boss stage does not provide a Stage ID
         if ctx.ipc.is_in_pink_boss():
             ctx.monkeys_checklist = MONKEYS_BOSSES
@@ -91,8 +113,9 @@ async def check_background_states(ctx : 'AE3Context'):
         if ctx.dummy_morph_monkey_needed:
             ctx.ipc.lock_equipment(Itm.morph_monkey.value)
 
-async def sweep_recheck_locations(ctx : 'AE3Context'):
-    batch: list[str] = [*ctx.location_groups[ctx.group_check_index * 20:ctx.group_check_index * 20 + 20]]
+
+async def sweep_recheck_locations(ctx: "AE3Context"):
+    batch: list[str] = [*ctx.location_groups[ctx.group_check_index * 20 : ctx.group_check_index * 20 + 20]]
 
     await sweep_locations(ctx, [x for y in batch for x in y])
 
@@ -101,25 +124,31 @@ async def sweep_recheck_locations(ctx : 'AE3Context'):
     else:
         ctx.group_check_index += 1
 
-async def build_checked_cache(ctx : 'AE3Context'):
+
+async def build_checked_cache(ctx: "AE3Context"):
     # Build Checked Locations cache if needed
     if ctx.cache_missing:
         await sweep_locations(ctx, [x for y in [*ctx.cache_missing[:20]] for x in y])
         del ctx.cache_missing[:20]
+
+        ctx.quick_status_panel.update_goal_target_status(ctx.goal_target.get_progress(ctx), ctx.goal_target.amount)
+        ctx.quick_status_panel.update_pgc_status(ctx.get_formatted_pgc_progress())
 
         return
 
     ctx.check_pgc()
     ctx.goal_target.check(ctx)
 
+
 # Ensure game is always set to "round2"
-async def correct_progress(ctx : 'AE3Context'):
+async def correct_progress(ctx: "AE3Context"):
     ctx.ipc.set_progress()
 
-async def setup_level_select(ctx : 'AE3Context'):
+
+async def setup_level_select(ctx: "AE3Context"):
     is_on_warp_gate: bool = ctx.ipc.is_on_warp_gate()
     is_a_level_confirmed: bool = ctx.ipc.is_a_level_confirmed()
-    post_game_state : bool = ctx.check_pgc()
+    post_game_state: bool = ctx.check_pgc()
 
     # Force Unlocked Stages to be in sync with the player's chosen option,
     # maxing out at 0x1B as supported by the game
@@ -131,7 +160,7 @@ async def setup_level_select(ctx : 'AE3Context'):
     if ctx.ipc.get_unlocked_channels() != max(0, min(ctx.unlocked_channels, 0x1B)):
         ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
-    progress : str = ctx.ipc.get_progress()
+    progress: str = ctx.ipc.get_progress()
     selected_channel: int = ctx.ipc.get_selected_channel()
 
     # In case player scrolls beyond intended levels before unlocked stages are enforced,
@@ -156,7 +185,7 @@ async def setup_level_select(ctx : 'AE3Context'):
 
         # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
         if selected_channel == 0x18 or selected_channel == 0x1A:
-            target_progress : str = APHelper.pr_boss6.value if selected_channel == 0x18 else APHelper.pr_specter1.value
+            target_progress: str = APHelper.pr_boss6.value if selected_channel == 0x18 else APHelper.pr_specter1.value
 
             if progress != target_progress:
                 ctx.ipc.set_progress(target_progress)
@@ -164,10 +193,10 @@ async def setup_level_select(ctx : 'AE3Context'):
             ctx.ipc.set_progress()
 
         # Release Bosses as needed to enter the level normally
-        bosses_indexes : list[int] = [0x03, 0x08, 0xC, 0x11, 0x15, -1, 0x1A, 0x1B]
+        bosses_indexes: list[int] = [0x03, 0x08, 0xC, 0x11, 0x15, -1, 0x1A, 0x1B]
         if selected_channel in bosses_indexes:
-            boss : str = MONKEYS_BOSSES[bosses_indexes.index(selected_channel)]
-            boss_captured : bool = ctx.ipc.is_location_checked(boss)
+            boss: str = MONKEYS_BOSSES[bosses_indexes.index(selected_channel)]
+            boss_captured: bool = ctx.ipc.is_location_checked(boss)
 
             if boss_captured:
                 ctx.ipc.unmark_location(boss)
@@ -215,13 +244,16 @@ async def setup_level_select(ctx : 'AE3Context'):
     if is_a_level_confirmed and is_on_warp_gate:
         ctx.ipc.clear_spawn()
 
-        if ctx.ipc.get_button_pressed() == 0x07:    # L1/L2 Buttons
+        if ctx.ipc.get_button_pressed() == 0x07:  # L1/L2 Buttons
             set_freeplay_mode(ctx)
         else:
-            mode : int = ctx.ipc.get_activated_game_mode()
-            if mode == 0x100: ctx.current_game_mode = 0x4
-            elif mode == 0x001: ctx.current_game_mode = 0x3
-            else: ctx.current_game_mode = 0x0
+            mode: int = ctx.ipc.get_activated_game_mode()
+            if mode == 0x100:
+                ctx.current_game_mode = 0x4
+            elif mode == 0x001:
+                ctx.current_game_mode = 0x3
+            else:
+                ctx.current_game_mode = 0x0
 
         # If Channel Shuffle is enabled, force switch the game to load the randomized channel
         if not ctx.is_channel_swapped:
@@ -229,7 +261,7 @@ async def setup_level_select(ctx : 'AE3Context'):
             if ctx.last_selected_channel_index < 0:
                 ctx.last_selected_channel_index = selected_channel
 
-            new_channel_selected : int = min(ctx.progression.order[selected_channel], 0x1B)
+            new_channel_selected: int = min(ctx.progression.order[selected_channel], 0x1B)
 
             ctx.ipc.set_selected_channel(new_channel_selected)
             # ctx.ipc.clear_norma()
@@ -248,7 +280,8 @@ async def setup_level_select(ctx : 'AE3Context'):
         if ctx.is_channel_swapped:
             ctx.is_channel_swapped = False
 
-async def setup_shopping_area(ctx : 'AE3Context'):
+
+async def setup_shopping_area(ctx: "AE3Context"):
     # Recapture Specter2 if already caught, as certain items only appear when he is captured
     if ctx.ipc.is_location_checked(Loc.boss_specter_final.value):
         ctx.ipc.mark_location(Loc.boss_specter_final.value)
@@ -293,7 +326,8 @@ async def setup_shopping_area(ctx : 'AE3Context'):
     else:
         ctx.current_coins = ctx.ipc.get_coins()
 
-async def set_persistent_values(ctx : 'AE3Context'):
+
+async def set_persistent_values(ctx: "AE3Context"):
     stocks: int = ctx.ipc.get_morph_stock()
     ctx.ipc.set_persistent_morph_stock_value(stocks)
 
@@ -324,7 +358,8 @@ async def set_persistent_values(ctx : 'AE3Context'):
     ctx.current_jackets = ctx.ipc.get_jackets()
     ctx.is_shop_ready = True
 
-async def reapply_persistent_values(ctx : 'AE3Context'):
+
+async def reapply_persistent_values(ctx: "AE3Context"):
     ctx.is_shop_ready = False
     if ctx.shoppingsanity:
         if ctx.shuffle_chassis:
@@ -348,8 +383,9 @@ async def reapply_persistent_values(ctx : 'AE3Context'):
         ctx.ipc.set_cookies(cookies)
         ctx.ipc.set_morph_gauge_recharge(energy)
 
-async def rebuild_persistent_values(ctx: 'AE3Context'):
-    received_as_id : list[int] = [ i.item for i in ctx.items_received ]
+
+async def rebuild_persistent_values(ctx: "AE3Context"):
+    received_as_id: list[int] = [i.item for i in ctx.items_received]
 
     stocks: int = received_as_id.count(ctx.items_name_to_id[Itm.acc_morph_stock.value])
 
@@ -378,12 +414,13 @@ async def rebuild_persistent_values(ctx: 'AE3Context'):
         ctx.ipc.set_cookies(100.0)
         ctx.ipc.set_morph_gauge_recharge((stocks + 1) * 100.0)
 
-async def setup_area(ctx : 'AE3Context'):
+
+async def setup_area(ctx: "AE3Context"):
     # MORPH LOCK ENFORCEMENT
     ## In case the Player uses a Morph they are not yet allowed, immediately unmorph them
-    current_morph_id : int = ctx.ipc.get_current_morph()
+    current_morph_id: int = ctx.ipc.get_current_morph()
     if current_morph_id:
-        is_reset : bool = False
+        is_reset: bool = False
 
         ## Lock in case of false unlocks when unlocking/relocking morphs
         if ctx.dummy_morph_needed:
@@ -449,7 +486,7 @@ async def setup_area(ctx : 'AE3Context'):
             ctx.pending_auto_save = True
 
 
-async def check_states(ctx : 'AE3Context'):
+async def check_states(ctx: "AE3Context"):
     if not ctx.command_state:
         cookies: float = ctx.ipc.get_cookies()
 
@@ -475,16 +512,19 @@ async def check_states(ctx : 'AE3Context'):
                 elif ctx.sending_death and cookies > 0.0:
                     ctx.sending_death = False
         else:
-            if ctx.receiving_death: ctx.receiving_death = False
-            if ctx.sending_death: ctx.sending_death = False
+            if ctx.receiving_death:
+                ctx.receiving_death = False
+            if ctx.sending_death:
+                ctx.sending_death = False
 
         # Check Swimming State
         if not ctx.swim_unlocked and ctx.ipc.is_on_water():
             ctx.ipc.kill_player(20.0)
             ctx.command_state = 1
 
-async def receive_items(ctx : 'AE3Context'):
-    pgc_checked : bool = ctx.check_pgc()
+
+async def receive_items(ctx: "AE3Context"):
+    pgc_checked: bool = ctx.check_pgc()
 
     # Check if there are items missed from since the client was open; Refuse to take items until this index is confirmed
     if ctx.last_item_processed_index < 0:
@@ -496,7 +536,6 @@ async def receive_items(ctx : 'AE3Context'):
         else:
             ctx.next_item_slot = max(min(ctx.last_item_processed_index, ctx.next_item_slot), 0)
 
-
     # Resync Next Item Slot if empty and locations have been checked
     if not ctx.next_item_slot and ctx.items_received and ctx.checked_locations:
         ctx.next_item_slot = len(ctx.items_received)
@@ -505,7 +544,7 @@ async def receive_items(ctx : 'AE3Context'):
     auto_equip: bool = ctx.auto_equip or not ctx.last_item_processed_index
 
     # Get Difference to get only new items
-    received : List[NetworkItem] = ctx.items_received[ctx.next_item_slot:]
+    received: list[NetworkItem] = ctx.items_received[ctx.next_item_slot :]
     ctx.next_item_slot += len(received)
     ctx.last_item_processed_index = ctx.next_item_slot
     for server_item in received:
@@ -577,7 +616,7 @@ async def receive_items(ctx : 'AE3Context'):
         ## Handle Collectables
         elif isinstance(item, CollectableItem) or isinstance(item, UpgradeableItem):
             i = item
-            maximum : int | float = 0x0
+            maximum: int | float = 0x0
 
             # Get Maximum Values
             if item.resource in Capacities:
@@ -588,7 +627,7 @@ async def receive_items(ctx : 'AE3Context'):
                 continue
 
             ### Handle Morph Energy
-            elif item.resource == Game.morph_gauge_active.value:
+            if item.resource == Game.morph_gauge_active.value:
                 if ctx.in_shopping_area and not ctx.monkey_mart:
                     current: int = ctx.ipc.get_persistent_morph_energy_value()
                     current = min(int(current + i.amount / 10), 110)
@@ -605,8 +644,9 @@ async def receive_items(ctx : 'AE3Context'):
 
             ### Handle Generic Items
             else:
-                ctx.ipc.give_collectable(item.resource, i.amount, maximum, ctx.in_shopping_area,
-                                         ctx.shuffle_morph_stock, ctx.monkey_mart)
+                ctx.ipc.give_collectable(
+                    item.resource, i.amount, maximum, ctx.in_shopping_area, ctx.shuffle_morph_stock, ctx.monkey_mart
+                )
 
                 ## Update Locally Tracked Items if so
                 if item.resource == Game.chips.value:
@@ -622,15 +662,16 @@ async def receive_items(ctx : 'AE3Context'):
         ctx.goal_target.check(ctx)
         ctx.check_pgc()
 
-async def resync_important_items(ctx : 'AE3Context'):
+
+async def resync_important_items(ctx: "AE3Context"):
     # Do not resync if no items have been processed at all yet
     if ctx.last_item_processed_index < 1:
         return
 
     pgc_checked: bool = ctx.check_pgc()
 
-    equipment : list[EquipmentItem] = [ *EQUIPMENT, *ACCESSORIES ]
-    received_id : list[int] = [ item[0] for item in ctx.items_received ]
+    equipment: list[EquipmentItem] = [*EQUIPMENT, *ACCESSORIES]
+    received_id: list[int] = [item[0] for item in ctx.items_received]
     for equip in equipment:
         if equip.item_id in received_id:
             if not ctx.ipc.is_equipment_unlocked(equip.name):
@@ -655,14 +696,17 @@ async def resync_important_items(ctx : 'AE3Context'):
                     ctx.dummy_morph_needed = False
 
     # Lock Fantasy Knight when it should not be available in case it remains open after dummy_morph_needed has changed
-    knight_id : int = ctx.items_name_to_id[Itm.morph_knight.value]
-    if knight_id not in received_id and not ctx.dummy_morph_needed and ctx.ipc.is_equipment_unlocked(
-            Itm.morph_knight.value):
+    knight_id: int = ctx.items_name_to_id[Itm.morph_knight.value]
+    if (
+        knight_id not in received_id
+        and not ctx.dummy_morph_needed
+        and ctx.ipc.is_equipment_unlocked(Itm.morph_knight.value)
+    ):
         ctx.ipc.lock_equipment(Itm.morph_knight.value)
 
     # Resync Channel Keys
-    keys : int = received_id.count(ctx.items_name_to_id[APHelper.channel_key.value])
-    unlocked : int = ctx.progression.get_progress(keys, pgc_checked)
+    keys: int = received_id.count(ctx.items_name_to_id[APHelper.channel_key.value])
+    unlocked: int = ctx.progression.get_progress(keys, pgc_checked)
     if ctx.keys != keys or ctx.unlocked_channels != unlocked:
         ctx.keys = keys
         ctx.unlocked_channels = unlocked
@@ -688,10 +732,11 @@ async def resync_important_items(ctx : 'AE3Context'):
 
     ctx.goal_target.check(ctx)
 
-async def check_locations(ctx : 'AE3Context'):
-    cleared : Set[int] = set()
 
-    is_in_normal_game_mode : bool = ctx.current_game_mode == 0x0
+async def check_locations(ctx: "AE3Context"):
+    cleared: set[int] = set()
+
+    is_in_normal_game_mode: bool = ctx.current_game_mode == 0x0
 
     # Monkey Check
     if is_in_normal_game_mode:
@@ -708,7 +753,7 @@ async def check_locations(ctx : 'AE3Context'):
                     cleared.add(ctx.locations_name_to_id[Loc.boss_tomoki.value])
                     ctx.ipc.mark_location(Loc.boss_alt_tomoki.value)
             elif ctx.ipc.is_location_checked(monkey):
-                location_id : int = ctx.locations_name_to_id[monkey]
+                location_id: int = ctx.locations_name_to_id[monkey]
                 cleared.add(location_id)
 
                 if monkey == Loc.boss_specter_final.value and ctx.current_channel == APHelper.specter2.value:
@@ -722,16 +767,16 @@ async def check_locations(ctx : 'AE3Context'):
                 location_id: int = ctx.locations_name_to_id[CAMERAS_STAGE_INDEX[ctx.current_stage]]
                 cleared.add(location_id)
             elif ctx.ipc.is_camera_interacted():
-                camera_name : str = CAMERAS_STAGE_INDEX[ctx.current_stage]
+                camera_name: str = CAMERAS_STAGE_INDEX[ctx.current_stage]
 
                 if not ctx.ipc.is_location_checked(camera_name):
-                    are_actors_ready : bool = True
+                    are_actors_ready: bool = True
                     if ctx.camerasanity == 1:
                         for actor in ACTORS_INDEX[camera_name]:
                             are_actors_ready = are_actors_ready and not ctx.ipc.is_location_checked(actor)
 
                     if are_actors_ready:
-                        location_id : int = ctx.locations_name_to_id[camera_name]
+                        location_id: int = ctx.locations_name_to_id[camera_name]
                         cleared.add(location_id)
                         ctx.ipc.mark_location(camera_name)
 
@@ -739,15 +784,21 @@ async def check_locations(ctx : 'AE3Context'):
         cleared = cleared.difference(ctx.checked_locations)
 
         # Cellphone Check
-        gui_status : int = ctx.ipc.get_gui_status()
-        interacting_with_phone : bool = gui_status > 1 or (gui_status and not cleared)
-        if (is_in_normal_game_mode and ctx.cellphonesanity and interacting_with_phone and
-                ctx.current_stage in CELLPHONES_STAGE_INDEX):
-            tele_text_id : str = ctx.ipc.get_cellphone_interacted(ctx.current_stage)
-            if (tele_text_id in CELLPHONES_STAGE_INDEX[ctx.current_stage] and
-                    tele_text_id in Cellphone_Name_to_ID and
-                    not ctx.ipc.is_location_checked(tele_text_id)):
-                location_id : int = ctx.locations_name_to_id[Cellphone_Name_to_ID[tele_text_id]]
+        gui_status: int = ctx.ipc.get_gui_status()
+        interacting_with_phone: bool = gui_status > 1 or (gui_status and not cleared)
+        if (
+            is_in_normal_game_mode
+            and ctx.cellphonesanity
+            and interacting_with_phone
+            and ctx.current_stage in CELLPHONES_STAGE_INDEX
+        ):
+            tele_text_id: str = ctx.ipc.get_cellphone_interacted(ctx.current_stage)
+            if (
+                tele_text_id in CELLPHONES_STAGE_INDEX[ctx.current_stage]
+                and tele_text_id in Cellphone_Name_to_ID
+                and not ctx.ipc.is_location_checked(tele_text_id)
+            ):
+                location_id: int = ctx.locations_name_to_id[Cellphone_Name_to_ID[tele_text_id]]
                 ctx.ipc.mark_location(tele_text_id)
                 cleared.add(location_id)
 
@@ -755,7 +806,7 @@ async def check_locations(ctx : 'AE3Context'):
     if ctx.in_shopping_area and ctx.shoppingsanity and ctx.is_shop_ready:
         stocks: int = ctx.ipc.get_morph_stock()
         if stocks > 1:
-            stocks_checked : list[str] = [*SHOP_PROGRESSION_MORPH[:ctx.ipc.get_morph_stock() - 1]]
+            stocks_checked: list[str] = [*SHOP_PROGRESSION_MORPH[: ctx.ipc.get_morph_stock() - 1]]
 
             ctx.ipc.set_shop_morph_stock_checked(len(stocks_checked))
             cleared.update(ctx.locations_name_to_id[stock] for stock in stocks_checked)
@@ -771,8 +822,11 @@ async def check_locations(ctx : 'AE3Context'):
                     cleared.add(ctx.locations_name_to_id[chassis])
         cleared.update(ctx.locations_name_to_id[item] for item in SHOP_COLLECTION_BONUS_RC_CARS[:chassis_count])
 
-        for category in [category for category in [*SHOP_CATEGORIES_COLLECTION_DIRECTORY.keys()]
-                         if category not in [Loc.shop_morph_stock.value, Loc.bonus_rc_cars.value]]:
+        for category in [
+            category
+            for category in [*SHOP_CATEGORIES_COLLECTION_DIRECTORY.keys()]
+            if category not in [Loc.shop_morph_stock.value, Loc.bonus_rc_cars.value]
+        ]:
             category_count: int = 0
             for item in SHOP_CATEGORIES_COLLECTION_DIRECTORY[category]:
                 if ctx.ipc.is_location_checked(item):
@@ -783,8 +837,9 @@ async def check_locations(ctx : 'AE3Context'):
 
             # Count Collection Type
             if ctx.shoppingsanity == 2 and category_count and category in SHOP_COLLECTION_DIRECTORY:
-                cleared.update(ctx.locations_name_to_id[item]
-                               for item in SHOP_COLLECTION_DIRECTORY[category][:category_count])
+                cleared.update(
+                    ctx.locations_name_to_id[item] for item in SHOP_COLLECTION_DIRECTORY[category][:category_count]
+                )
 
     # Get newly checked locations
     cleared = cleared.difference(ctx.checked_locations)
@@ -801,36 +856,47 @@ async def check_locations(ctx : 'AE3Context'):
             ctx.goal_target.check(ctx)
 
             if ctx.check_pgc():
-                new_unlocked : int = ctx.progression.get_progress(ctx.keys, True)
+                new_unlocked: int = ctx.progression.get_progress(ctx.keys, True)
                 if ctx.unlocked_channels < new_unlocked:
                     ctx.unlocked_channels = new_unlocked
                     ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
+
+            ctx.quick_status_panel.update_goal_target_status(ctx.goal_target.get_progress(ctx), ctx.goal_target.amount)
         else:
             ctx.offline_locations_checked.update(cleared)
 
-async def update_offline_checked(ctx : 'AE3Context'):
+
+async def update_offline_checked(ctx: "AE3Context"):
     if not ctx.offline_locations_checked:
         return
 
     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": ctx.offline_locations_checked}])
     ctx.offline_locations_checked.clear()
 
+
 # Used to check the in-game status of locations as stored in their permanent addresses
-async def sweep_locations(ctx : 'AE3Context', batch : list[str]):
-    cleared : set[int] = set()
+async def sweep_locations(ctx: "AE3Context", batch: list[str]):
+    cleared: set[int] = set()
 
     if any(stock_shop_item in batch for stock_shop_item in SHOP_PROGRESSION_MORPH):
-        cleared.update([ctx.locations_name_to_id[stock] for stock in
-                        SHOP_PROGRESSION_MORPH[:ctx.ipc.get_shop_morph_stock_checked()]])
+        cleared.update(
+            [
+                ctx.locations_name_to_id[stock]
+                for stock in SHOP_PROGRESSION_MORPH[: ctx.ipc.get_shop_morph_stock_checked()]
+            ]
+        )
 
     for location in batch:
         if location in SHOP_PROGRESSION_MORPH:
             continue
 
-        name : str = location if location not in Cellphone_Name_to_ID.keys() else Cellphone_Name_to_ID[location]
+        name: str = location if location not in Cellphone_Name_to_ID.keys() else Cellphone_Name_to_ID[location]
 
-        if (ctx.current_game_mode == 0x100 and ctx.current_stage in LOCATIONS_INDEX and
-                location in LOCATIONS_INDEX[ctx.current_stage]):
+        if (
+            ctx.current_game_mode == 0x100
+            and ctx.current_stage in LOCATIONS_INDEX
+            and location in LOCATIONS_INDEX[ctx.current_stage]
+        ):
             continue
 
         if ctx.ipc.is_location_checked(location):
@@ -844,21 +910,26 @@ async def sweep_locations(ctx : 'AE3Context', batch : list[str]):
         await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
         await check_progression(ctx)
 
-# Handle Re-checking of Shop Items in Collection Type
-async def handle_collection_shop_item_recheck(ctx: 'AE3Context'):
-    if ctx.shoppingsanity != 2: return
 
-    cleared : set[int] = set()
+# Handle Re-checking of Shop Items in Collection Type
+async def handle_collection_shop_item_recheck(ctx: "AE3Context"):
+    if ctx.shoppingsanity != 2:
+        return
+
+    cleared: set[int] = set()
     for category in SHOP_COLLECTION_DIRECTORY.keys():
-        category_item_ids: set[int] = set(ctx.locations_name_to_id[item]
-                                          for item in SHOP_CATEGORIES_COLLECTION_DIRECTORY[category]
-                                          if item not in SHOP_PERSISTENT_MASTER)
+        category_item_ids: set[int] = set(
+            ctx.locations_name_to_id[item]
+            for item in SHOP_CATEGORIES_COLLECTION_DIRECTORY[category]
+            if item not in SHOP_PERSISTENT_MASTER
+        )
 
         amount_checked: int = len(category_item_ids.intersection(ctx.locations_checked))
 
         if amount_checked:
-            cleared.update(ctx.locations_name_to_id[item]
-                           for item in SHOP_COLLECTION_DIRECTORY[category][:amount_checked - 1])
+            cleared.update(
+                ctx.locations_name_to_id[item] for item in SHOP_COLLECTION_DIRECTORY[category][: amount_checked - 1]
+            )
             ctx.locations_checked.difference_update(category_item_ids)
 
     ctx.locations_checked.update(cleared)
@@ -873,7 +944,8 @@ async def handle_collection_shop_item_recheck(ctx: 'AE3Context'):
     if not ctx.is_cache_built:
         ctx.is_cache_built = True
 
-async def check_progression(ctx : 'AE3Context'):
+
+async def check_progression(ctx: "AE3Context"):
     ctx.goal_target.check(ctx)
 
     if ctx.check_pgc():
@@ -882,7 +954,8 @@ async def check_progression(ctx : 'AE3Context'):
             ctx.unlocked_channels = new_unlocked
             ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
-def dispatch_dummy_morph(ctx : 'AE3Context', unlock : bool = False):
+
+def dispatch_dummy_morph(ctx: "AE3Context", unlock: bool = False):
     if not ctx.dummy_morph or ctx.dummy_morph is None or not ctx.dummy_morph_needed:
         return
 
@@ -891,13 +964,14 @@ def dispatch_dummy_morph(ctx : 'AE3Context', unlock : bool = False):
     else:
         ctx.ipc.lock_equipment(ctx.dummy_morph)
 
-def set_freeplay_mode(ctx : 'AE3Context'):
+
+def set_freeplay_mode(ctx: "AE3Context"):
     if not ctx.alt_freeplay or ctx.is_mode_swapped:
         return
 
-    current_mode : int = ctx.ipc.get_activated_game_mode()
+    current_mode: int = ctx.ipc.get_activated_game_mode()
 
-    if current_mode != 0x100:   # Freeplay is represented as 0x001
+    if current_mode != 0x100:  # Freeplay is represented as 0x001
         ctx.ipc.set_game_mode(0x100, False)
         ctx.current_game_mode = 0x4
     else:
@@ -905,20 +979,20 @@ def set_freeplay_mode(ctx : 'AE3Context'):
 
     ctx.is_mode_swapped = True
 
-async def set_last_save_status(ctx : 'AE3Context'):
-    is_last_save_normal : bool = True if ctx.is_last_save_normal is None else ctx.is_last_save_normal
 
-    ds_handler: DataStorageHandler = ctx.protocol.create_datastorage_setter(
-        APHelper.data_save.value,
-        True
-    )
+async def set_last_save_status(ctx: "AE3Context"):
+    is_last_save_normal: bool = True if ctx.is_last_save_normal is None else ctx.is_last_save_normal
+
+    ds_handler: DataStorageHandler = ctx.protocol.create_datastorage_setter(APHelper.data_save.value, True)
     ds_handler.replace(is_last_save_normal)
     ds_handler.end()
 
-async def get_last_save_status(ctx : 'AE3Context'):
+
+async def get_last_save_status(ctx: "AE3Context"):
     ctx.protocol.get_datastorage_key(APHelper.data_save.value)
 
-async def roll_consolation(ctx : 'AE3Context', rate_type: int):
+
+async def roll_consolation(ctx: "AE3Context", rate_type: int):
     rates: dict[str, float] = {}
     for p, r in CONSOLATION_RATES[rate_type].items():
         if p not in ctx.consolation_whitelist:
@@ -934,7 +1008,8 @@ async def roll_consolation(ctx : 'AE3Context', rate_type: int):
     if prize in PRIZES:
         await PRIZES[prize](ctx)
 
-def get_random_location(ctx : 'AE3Context', *excluded_locations):
+
+def get_random_location(ctx: "AE3Context", *excluded_locations):
     candidates: list[str] = [*ctx.active_locations.difference(set(excluded_locations))]
     if not candidates:
         return ""
@@ -942,14 +1017,17 @@ def get_random_location(ctx : 'AE3Context', *excluded_locations):
     return random.choice(candidates)
 
 
-async def hint_random(ctx : 'AE3Context'):
+async def hint_random(ctx: "AE3Context"):
     location: int = ctx.locations_name_to_id[get_random_location(ctx)]
-    if not location: return
+    if not location:
+        return
 
     await request_hint(ctx, location, ctx.slot)
 
-async def hint_progressive(ctx : 'AE3Context'):
-    if 0 not in ctx.pre_hinted: return;
+
+async def hint_progressive(ctx: "AE3Context"):
+    if 0 not in ctx.pre_hinted:
+        return
 
     chosen: dict[str, int] = random.choice(ctx.pre_hinted[0])
 
@@ -958,19 +1036,22 @@ async def hint_progressive(ctx : 'AE3Context'):
 
     await request_hint(ctx, location_id, player)
 
-async def check_random(ctx : 'AE3Context'):
+
+async def check_random(ctx: "AE3Context"):
     location: str = get_random_location(ctx, *ctx.goal_target.locations, *ctx.post_game_condition.locations)
 
-    if not location: return
+    if not location:
+        return
 
     ctx.ipc.mark_location(location)
     await send_locations(ctx, [ctx.locations_name_to_id[location]])
 
-async def check_progressive(ctx : 'AE3Context'):
-    candidates: list[str] = [location["name"] for location in ctx.pre_hinted[0]
-                             if location["player"] == ctx.slot]
 
-    if not candidates: return
+async def check_progressive(ctx: "AE3Context"):
+    candidates: list[str] = [location["name"] for location in ctx.pre_hinted[0] if location["player"] == ctx.slot]
+
+    if not candidates:
+        return
 
     location: str = random.choice(candidates)
 
@@ -978,7 +1059,8 @@ async def check_progressive(ctx : 'AE3Context'):
         ctx.ipc.mark_location(location)
         await send_locations(ctx, [ctx.locations_name_to_id[location]])
 
-async def check_pgc_random(ctx : 'AE3Context'):
+
+async def check_pgc_random(ctx: "AE3Context"):
     candidates: list[str] = []
     for locs in ctx.post_game_condition.locations.values():
         candidates.extend(locs)
@@ -993,7 +1075,8 @@ async def check_pgc_random(ctx : 'AE3Context'):
         ctx.ipc.mark_location(location)
         await send_locations(ctx, [ctx.locations_name_to_id[location]])
 
-async def check_gt_random(ctx : 'AE3Context'):
+
+async def check_gt_random(ctx: "AE3Context"):
     if len(ctx.goal_target.location_ids) < 10:
         await hint_random(ctx)
         return
@@ -1004,42 +1087,52 @@ async def check_gt_random(ctx : 'AE3Context'):
         ctx.ipc.mark_location(location)
         await send_locations(ctx, [ctx.locations_name_to_id[location]])
 
-async def bypass_pgc(ctx : 'AE3Context'):
+
+async def bypass_pgc(ctx: "AE3Context"):
     ctx.ipc.set_pgc_cache()
     ctx.post_game_condition.bypass()
 
-def instant_goal(ctx : 'AE3Context'):
+
+def instant_goal(ctx: "AE3Context"):
     ctx.goal()
 
-async def get_hint_book_hint(ctx : 'AE3Context', hint_book_loc_id: int):
+
+async def get_hint_book_hint(ctx: "AE3Context", hint_book_loc_id: int):
     if not ctx.pre_hinted:
         raise AssertionError("HintGenerationError: A Hint was requested, but there are no locations scouted to hint!")
 
     if hint_book_loc_id not in ctx.pre_hinted:
-        raise AssertionError(f"HintGenerationError: A Hint was not associated with the hint book!")
+        raise AssertionError("HintGenerationError: A Hint was not associated with the hint book!")
 
     location_player: int = ctx.pre_hinted[hint_book_loc_id]["player"]
     location_id: int = ctx.pre_hinted[hint_book_loc_id]["id"]
 
     await request_hint(ctx, location_id, location_player)
 
-async def send_locations(ctx : 'AE3Context', locations: list[int]):
+
+async def send_locations(ctx: "AE3Context", locations: list[int]):
     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": locations}])
 
-async def request_hint(ctx : 'AE3Context', location_id: int, player: int):
-    await ctx.send_msgs([{
-        "cmd": "CreateHints",
-        "locations": [location_id],
-        "player": player,
-    }])
+
+async def request_hint(ctx: "AE3Context", location_id: int, player: int):
+    await ctx.send_msgs(
+        [
+            {
+                "cmd": "CreateHints",
+                "locations": [location_id],
+                "player": player,
+            }
+        ]
+    )
+
 
 PRIZES: dict = {
-    APHelper.hint_filler.value              : hint_random,
-    APHelper.hint_progressive.value         : hint_progressive,
-    APHelper.check_filler.value             : check_random,
-    APHelper.check_progressive.value        : check_progressive,
-    APHelper.check_pgc.value                : check_pgc_random,
-    APHelper.check_gt.value                 : check_gt_random,
-    APHelper.bypass_pgc.value               : bypass_pgc,
-    APHelper.instant_goal.value             : instant_goal,
+    APHelper.hint_filler.value: hint_random,
+    APHelper.hint_progressive.value: hint_progressive,
+    APHelper.check_filler.value: check_random,
+    APHelper.check_progressive.value: check_progressive,
+    APHelper.check_pgc.value: check_pgc_random,
+    APHelper.check_gt.value: check_gt_random,
+    APHelper.bypass_pgc.value: bypass_pgc,
+    APHelper.instant_goal.value: instant_goal,
 }

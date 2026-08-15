@@ -933,6 +933,12 @@ class AE3Context(SuperContext):
             # during this session
             self.has_archipelago_package = True
 
+            self.quick_status_panel.set_display_mode(1)
+            self.quick_status_panel.set_goal_target_status(
+                self.goal_target.name, self.goal_target.get_progress(self), self.goal_target.amount
+            )
+            self.quick_status_panel.update_pgc_status(self.get_formatted_pgc_progress())
+
         elif cmd == APHelper.cmd_rcv.value:
             index = args["index"]
 
@@ -1055,6 +1061,8 @@ class AE3Context(SuperContext):
             self.ipc.subscribe_on_connection_change(self.quick_status_panel.update_game_status)
             self.ipc.subscribe_on_port_change(self.quick_status_panel.update_game_port)
 
+            self.quick_status_panel.set_display_mode(0)
+
     def check_pgc(self) -> bool:
         current: dict = self.post_game_condition.get_progress(self)
         if current != self.last_pgc_status and self.is_cache_built:
@@ -1066,6 +1074,8 @@ class AE3Context(SuperContext):
             ds_handler.end()
 
             self.last_pgc_status = current
+
+            self.quick_status_panel.update_pgc_status(self.get_formatted_pgc_progress())
 
         if self.post_game_condition.passed:
             return True
@@ -1081,6 +1091,19 @@ class AE3Context(SuperContext):
 
         self.protocol.update_status(ClientStatus.CLIENT_GOAL)
         self.game_goaled = True
+
+    def get_formatted_pgc_progress(self) -> list[dict]:
+        formatted_pgc: list[dict] = []
+        for pgc, values in self.post_game_condition.get_progress(self).items():
+            data: dict[str, typing.Any] = {
+                "label_text": pgc,
+                "value_text:": f"{values[0]}/{values[1]}",
+                "indicator_value": math.floor(values[0] / values[1] * 100),
+            }
+
+            formatted_pgc.append(data)
+
+        return formatted_pgc
 
 
 def update_connection_status(ctx: AE3Context, status: bool):
