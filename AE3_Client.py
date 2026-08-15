@@ -1097,7 +1097,7 @@ class AE3Context(SuperContext):
         for pgc, values in self.post_game_condition.get_progress(self).items():
             data: dict[str, typing.Any] = {
                 "label_text": pgc,
-                "value_text:": f"{values[0]}/{values[1]}",
+                "value_text": f"{values[0]}/{values[1]}",
                 "indicator_value": math.floor(values[0] / values[1] * 100),
             }
 
