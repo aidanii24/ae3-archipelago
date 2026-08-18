@@ -5,12 +5,11 @@ from typing import Any
 from kivy.properties import ColorProperty, DictProperty, NumericProperty, ObjectProperty, StringProperty
 from kivy.uix.widget import Widget
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.list.list import MDGridLayout
 from kivymd.uix.recycleview import MDRecycleView
 
 from kvui import Builder
 
-from .AE3_Interface import ConnectionStatus
+from .game_interface import ConnectionStatus
 
 BASE_WIDGETS: str = dedent(
     """\
@@ -153,16 +152,37 @@ QUICK_STATUS_PANEL_KV: str = dedent(
                 text: "Post Game Conditions (Final Channel Set Unlock)"
                 color: self.theme_cls.onSurfaceColor
                 bold: True
-            PGCView:
+            AE3RecycleView:
                 id: PostGameConditionView
                 viewclass: 'IndicatedPairedLabelComplete'
                 size_hint_y: None
                 MDRecycleGridLayout:
                     cols: 3
                     spacing: 20
-                    height: 20
                     default_size: None, dp(40)
                     default_size_hint: 1, None
+        StatusPanel:
+            id: OverviewPanel
+            qsp_modes: [2]
+            size_hint_y: None
+            height: self.minimum_height
+            padding: 20, 20, 20, 0
+            OverviewLayout:
+                id: OverviewLayout
+                title_text: ''
+                MDLabel:
+                    text: self.parent.title_text
+                    color: self.theme_cls.onSurfaceColor
+                    bold: True
+                AE3RecycleView:
+                    id: OverviewView
+                    viewclass: 'IndicatedPairedLabelComplete'
+                    size_hint_y: None
+                    MDRecycleGridLayout:
+                        cols: 3
+                        spacing: 20
+                        default_size: None, dp(40)
+                        default_size_hint: 1, None
     """
 )
 
@@ -303,14 +323,32 @@ class QuickStatusPanel(MDBoxLayout):
         goal_display.set_status_text(f"{current_amount}/{target_amount}")
 
     def update_pgc_status(self, data: list[dict]):
-        pgc_view: PGCView | None = self._get_widget_and_cache("PostGameConditionView")
+        pgc_view: AE3RecycleView | None = self._get_widget_and_cache("PostGameConditionView")
         if not pgc_view:
             return
 
         pgc_view.set_data(data)
 
+    def set_overview(self, text: str, data: list[dict] | None = None):
+        if not data:
+            data = []
 
-class PGCView(MDRecycleView):
+        overview_layout: OverviewLayout | None = self._get_widget_and_cache("OverviewLayout")
+        if not overview_layout:
+            return
+
+        overview_layout.set_title_text(text)
+        self.update_overview_status(data)
+
+    def update_overview_status(self, data: list[dict]):
+        overview_view: AE3RecycleView | None = self._get_widget_and_cache("OverviewView")
+        if not overview_view:
+            return
+
+        overview_view.set_data(data)
+
+
+class AE3RecycleView(MDRecycleView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -320,12 +358,11 @@ class PGCView(MDRecycleView):
         self.data = data
 
 
-class ChannelOverview(MDBoxLayout):
-    pass
+class OverviewLayout(MDBoxLayout):
+    title_text: str = StringProperty()
 
-
-class ShoppingAreaOverview(MDGridLayout):
-    pass
+    def set_title_text(self, text):
+        self.title_text = text
 
 
 class PairedLabel(MDBoxLayout):

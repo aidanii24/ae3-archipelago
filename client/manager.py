@@ -12,10 +12,9 @@ import Utils
 from CommonClient import ClientStatus, handle_url_arg, logger
 from settings import get_settings
 
-from . import AE3Settings, Checker
-from .AE3_Interface import AEPS2Interface, ConnectionStatus
-from .data import Items, Locations
-from .data.Locations import (
+from .. import AE3Settings
+from ..data import Items, Locations
+from ..data.Locations import (
     CAMERAS_MASTER_ORDERED,
     CELLPHONES_MASTER_ORDERED,
     LOCATIONS_INDEX,
@@ -31,10 +30,12 @@ from .data.Locations import (
     SHOP_UNIQUE_MASTER,
     Cellphone_Name_to_ID,
 )
-from .data.Logic import ProgressionMode, ProgressionModeOptions
-from .data.Rules import GoalTarget, GoalTargetOptions, PostGameCondition
-from .data.Stages import LEVELS_BY_ORDER, STAGES_BREAK_ROOMS
-from .data.Strings import APConsole, APHelper, Itm, Meta
+from ..data.Logic import ProgressionMode, ProgressionModeOptions
+from ..data.Rules import GoalTarget, GoalTargetOptions, PostGameCondition
+from ..data.Stages import LEVELS_BY_ORDER, STAGES_BREAK_ROOMS
+from ..data.Strings import APConsole, APHelper, Itm, Meta
+from . import checker
+from .game_interface import AEPS2Interface, ConnectionStatus
 from .protocol import DataStorageHandler, Protocol
 
 # Try importing gui_enabled in Utils first before trying to import them from CommonClient
@@ -1048,14 +1049,14 @@ class AE3Context(SuperContext):
 
     def inject_quick_status_panel(self):
         if "Archipelago" in self.ui.log_panels:
-            from . import gui
+            from . import widgets
 
             screen = self.ui.screens.get_screen("Archipelago")
 
             if not screen:
                 return
 
-            self.quick_status_panel = gui.create_quick_status_panel()
+            self.quick_status_panel = widgets.create_quick_status_panel()
             screen.add_widget(self.quick_status_panel)
 
             self.ipc.subscribe_on_connection_change(self.quick_status_panel.update_game_status)
@@ -1104,6 +1105,16 @@ class AE3Context(SuperContext):
             formatted_pgc.append(data)
 
         return formatted_pgc
+
+    def setup_overview_view(self, title_text: str):
+        data: list[dict] = [{"label_text": APHelper.monkey.value, "value_text": "0/0", "indicator_value": 0}]
+        if self.cellphonesanity:
+            data.append({"label_text": APHelper.cellphone.value, "value_text": "0/0", "indicator_value": 0})
+        if self.camerasanity:
+            data.append({"label_text": APHelper.camera.value, "value_text": "0/0", "indicator_value": 0})
+
+        self.quick_status_panel.set_overview(title_text)
+        self.quick_status_panel.update_overview_status(data)
 
 
 def update_connection_status(ctx: AE3Context, status: bool):
@@ -1172,7 +1183,7 @@ async def main_sync_task(ctx: AE3Context):
 async def check_game(ctx: AE3Context):
     if ctx.server:
         if ctx.pending_last_save_status:
-            await Checker.get_last_save_status(ctx)
+            await checker.get_last_save_status(ctx)
             ctx.pending_last_save_status = False
 
     # Check if Game State is safe for Further Checking
@@ -1190,9 +1201,9 @@ async def check_game(ctx: AE3Context):
 
         # Run maintenance game checks when not in player control
         if not ctx.suppress_progress_correction:
-            await Checker.correct_progress(ctx)
+            await checker.correct_progress(ctx)
 
-        await Checker.check_background_states(ctx)
+        await checker.check_background_states(ctx)
         await asyncio.sleep(1)
 
         return
@@ -1217,7 +1228,7 @@ async def check_game(ctx: AE3Context):
 
         # If there are offline locations to send, do so
         if ctx.offline_locations_checked:
-            await Checker.update_offline_checked(ctx)
+            await checker.update_offline_checked(ctx)
 
         # Get Character
         if ctx.character < 0:
@@ -1239,13 +1250,13 @@ async def check_game(ctx: AE3Context):
 
                 if ctx.current_channel == APHelper.shopping_area.value:
                     ctx.in_shopping_area = True
-                    await Checker.set_persistent_values(ctx)
+                    await checker.set_persistent_values(ctx)
         elif ctx.in_shopping_area:
             if ctx.current_channel != APHelper.shopping_area.value:
                 ctx.in_shopping_area = False
 
                 if ctx.current_channel == APHelper.travel_station.value:
-                    await Checker.reapply_persistent_values(ctx)
+                    await checker.reapply_persistent_values(ctx)
                     ctx.in_travel_station = True
         else:
             if ctx.current_channel == APHelper.travel_station.value:
@@ -1253,40 +1264,40 @@ async def check_game(ctx: AE3Context):
             elif ctx.current_channel == APHelper.shopping_area.value:
                 ctx.in_shopping_area = True
                 ctx.is_using_data_desk = False
-                await Checker.rebuild_persistent_values(ctx)
+                await checker.rebuild_persistent_values(ctx)
             else:
                 ctx.is_using_data_desk = False
 
         if ctx.in_travel_station:
-            await Checker.setup_level_select(ctx)
+            await checker.setup_level_select(ctx)
         elif ctx.in_shopping_area:
-            await Checker.setup_shopping_area(ctx)
+            await checker.setup_shopping_area(ctx)
 
         # Build Checked Location Cache
         if not ctx.is_cache_built and not ctx.is_using_data_desk:
             if ctx.cache_missing:
-                await Checker.build_checked_cache(ctx)
+                await checker.build_checked_cache(ctx)
             else:
                 if ctx.shoppingsanity == 2:
-                    await Checker.handle_collection_shop_item_recheck(ctx)
+                    await checker.handle_collection_shop_item_recheck(ctx)
 
                 ctx.is_cache_built = True
 
-        await Checker.setup_area(ctx)
-        await Checker.check_states(ctx)
+        await checker.setup_area(ctx)
+        await checker.check_states(ctx)
 
         # Check Progression
-        await Checker.receive_items(ctx)
+        await checker.receive_items(ctx)
 
         if not ctx.is_using_data_desk:
             if not ctx.in_travel_station:
-                await Checker.check_locations(ctx)
+                await checker.check_locations(ctx)
             elif ctx.is_cache_built:
-                await Checker.sweep_recheck_locations(ctx)
+                await checker.sweep_recheck_locations(ctx)
 
         # Revoke has just connected (of Game) status once the first checks are done
         if ctx.has_just_connected or ctx.pending_resync:
-            await Checker.resync_important_items(ctx)
+            await checker.resync_important_items(ctx)
             ctx.has_just_connected = False
 
             if ctx.pending_resync:
@@ -1300,7 +1311,7 @@ async def check_game(ctx: AE3Context):
 
             if ctx.load_state_on_connect and (ctx.is_last_save_normal or ctx.is_last_save_normal is None):
                 ctx.is_last_save_normal = False
-                await Checker.set_last_save_status(ctx)
+                await checker.set_last_save_status(ctx)
 
         # Send Pending Packets
         await ctx.protocol.send()

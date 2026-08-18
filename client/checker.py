@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING
 
 from NetUtils import NetworkItem
 
-from .data import Items
-from .data.Addresses import NTSCU
-from .data.Distribution import CONSOLATION_RATES
-from .data.Items import (
+from ..data import Items
+from ..data.Addresses import NTSCU
+from ..data.Distribution import CONSOLATION_RATES
+from ..data.Items import (
     ACCESSORIES,
     AP,
     EQUIPMENT,
@@ -18,7 +18,7 @@ from .data.Items import (
     EquipmentItem,
     UpgradeableItem,
 )
-from .data.Locations import (
+from ..data.Locations import (
     ACTORS_INDEX,
     CAMERAS_STAGE_INDEX,
     CELLPHONES_STAGE_INDEX,
@@ -35,12 +35,12 @@ from .data.Locations import (
     SHOP_PROGRESSION_MORPH,
     Cellphone_Name_to_ID,
 )
-from .data.Stages import PROGRESS_ID_BY_ORDER
-from .data.Strings import APHelper, Game, Itm, Loc, Stage
+from ..data.Stages import PROGRESS_ID_BY_ORDER
+from ..data.Strings import APHelper, Game, Itm, Loc, Stage
 from .protocol import DataStorageHandler
 
 if TYPE_CHECKING:
-    from .AE3_Client import AE3Context
+    from .manager import AE3Context
 
 
 class HintStatus(enum.IntEnum):

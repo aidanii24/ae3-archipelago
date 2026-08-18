@@ -3,12 +3,12 @@ from enum import Enum
 from logging import Logger
 from math import ceil
 
-from .data.Addresses import VersionAddresses, get_version_addresses
-from .data.Items import HUD_OFFSETS
-from .data.Locations import CELLPHONES_ID_DUPLICATES, CELLPHONES_STAGE_DUPLICATES, LOCATIONS_ALTERNATIVE
-from .data.Stages import LEVELS_ID_BY_ORDER
-from .data.Strings import APConsole, APHelper, Game, Itm, Loc, Meta
-from .interface.pine import Pine
+from ..data.Addresses import VersionAddresses, get_version_addresses
+from ..data.Items import HUD_OFFSETS
+from ..data.Locations import CELLPHONES_ID_DUPLICATES, CELLPHONES_STAGE_DUPLICATES, LOCATIONS_ALTERNATIVE
+from ..data.Stages import LEVELS_ID_BY_ORDER
+from ..data.Strings import APConsole, APHelper, Game, Itm, Loc, Meta
+from ..vendor.pypine.pine import Pine
 
 
 ### [< --- HELPERS --- >]
