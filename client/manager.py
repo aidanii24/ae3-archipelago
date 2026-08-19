@@ -467,7 +467,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
 
         if isinstance(self.ctx, AE3Context):
             amount: int = int(unlocks)
-            self.ctx.unlocked_channels = max(min(amount, 28), 0)
+            self.ctx.update_unlocked_channels(max(min(amount, 28), 0))
 
     def _cmd_receive_death(self, count: str = "1"):
         """<!> DEBUG | Simulate receiving a death link"""
@@ -644,6 +644,9 @@ class AE3Context(SuperContext):
 
         self.auto_equip = bool(self.settings.auto_equip)
 
+        self.is_on_warp_gate = False
+        self.current_active_channel_selection: int = -1
+
         self.offline_locations_checked: set[int] = set()
         self.monkeys_index: list[Sequence[str]] = []
 
@@ -732,7 +735,7 @@ class AE3Context(SuperContext):
                 if APHelper.channel_order.value in data and self.progression:
                     self.progression.set_order(data[APHelper.channel_order.value])
 
-                self.unlocked_channels = self.progression.get_progress(0)
+                self.update_unlocked_channels(self.progression.get_progress(0))
 
             ## Check Break Room Monkeys and Password Monkeys options to use with Goal Target
             self.check_break_rooms: bool = self.check_break_rooms or self.post_game_access_rule_option == 0
@@ -935,11 +938,12 @@ class AE3Context(SuperContext):
             # during this session
             self.has_archipelago_package = True
 
-            self.quick_status_panel.set_display_mode(QSPDisplayMode.GENERAL)
+            self.change_qps_display_mode(QSPDisplayMode.GENERAL)
             self.quick_status_panel.set_goal_target_status(
                 self.goal_target.name, self.goal_target.get_progress(self), self.goal_target.amount
             )
             self.quick_status_panel.update_pgc_status(self.get_formatted_pgc_progress())
+            self.set_qsp_channel_labels()
 
         elif cmd == APHelper.cmd_rcv.value:
             index = args["index"]
@@ -966,7 +970,9 @@ class AE3Context(SuperContext):
             ## Get Keys
             if self.unlocked_channels <= 0:
                 self.keys = received_as_id.count(self.items_name_to_id[APHelper.channel_key.value])
-                self.unlocked_channels = self.progression.get_progress(self.keys, self.post_game_condition.check(self))
+                self.update_unlocked_channels(
+                    self.progression.get_progress(self.keys, self.post_game_condition.check(self))
+                )
                 self.ipc.set_unlocked_stages(self.unlocked_channels)
 
                 if self.shoppingsanity == 3:
@@ -1063,7 +1069,7 @@ class AE3Context(SuperContext):
             self.ipc.subscribe_on_connection_change(self.quick_status_panel.update_game_status)
             self.ipc.subscribe_on_port_change(self.quick_status_panel.update_game_port)
 
-            self.quick_status_panel.set_display_mode()
+            self.change_qps_display_mode()
 
     def check_pgc(self) -> bool:
         current: dict = self.post_game_condition.get_progress(self)
@@ -1093,6 +1099,66 @@ class AE3Context(SuperContext):
 
         self.protocol.update_status(ClientStatus.CLIENT_GOAL)
         self.game_goaled = True
+
+    def change_channel(self, new_channel: str):
+        if new_channel == self.current_channel:
+            return
+
+        self.current_channel = new_channel
+
+        if not new_channel:
+            return
+
+        if new_channel == APHelper.travel_station.value:
+            self.in_shopping_area = False
+
+            self.change_qps_display_mode(QSPDisplayMode.GENERAL)
+        else:
+            self.in_shopping_area = new_channel == APHelper.shopping_area.value
+            self.in_travel_station = False
+
+            self.change_qps_display_mode(QSPDisplayMode.CHANNEL_OVERVIEW)
+
+    def change_on_warp_gate_state(self, value: bool):
+        if value == self.is_on_warp_gate:
+            return
+
+        self.is_on_warp_gate = value
+
+        if value:
+            self.change_qps_display_mode(QSPDisplayMode.CHANNEL_SELECT)
+        else:
+            self.change_qps_display_mode(QSPDisplayMode.GENERAL)
+
+    def change_current_active_channel_selection(self, value: int):
+        processed: int = min(max(0, value), self.unlocked_channels)
+        if processed == self.current_active_channel_selection:
+            return
+
+        self.current_active_channel_selection = processed
+
+        self.quick_status_panel.update_active_channel_index(processed)
+
+    def update_unlocked_channels(self, unlocked: int):
+        if self.unlocked_channels == unlocked:
+            return
+
+        self.unlocked_channels = unlocked
+
+        self.set_qsp_channel_labels()
+
+    def change_qps_display_mode(self, mode: QSPDisplayMode | int = 0):
+        if not self.server:
+            self.quick_status_panel.set_display_mode(QSPDisplayMode.MINIMAL)
+            return
+
+        self.quick_status_panel.set_display_mode(mode)
+
+    def set_qsp_channel_labels(self):
+        labels: list[str] = [LEVELS_BY_ORDER[c] for c in self.progression.order[: self.unlocked_channels + 1]]
+
+        self.quick_status_panel.set_channel_select_preview_labels(labels)
+        self.quick_status_panel.update_active_channel_index(self.current_active_channel_selection)
 
     def get_formatted_pgc_progress(self) -> list[dict]:
         formatted_pgc: list[dict] = []

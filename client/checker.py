@@ -57,6 +57,8 @@ async def check_background_states(ctx: "AE3Context"):
     new_channel = ctx.ipc.get_channel()
     ctx.current_stage = ctx.ipc.get_stage()
 
+    ctx.change_channel(new_channel)
+
     # Remove Intro Movie from player from the start so that it can actually be in the Shopping Area pool
     if len(ctx.locations_checked) < 1:
         ctx.ipc.unmark_location(Loc.movie_tape_1.value)
@@ -98,8 +100,6 @@ async def check_background_states(ctx: "AE3Context"):
     else:
         return
 
-    ctx.current_channel = new_channel
-    ctx.in_travel_station = ctx.current_channel == APHelper.travel_station.value
     if not ctx.in_travel_station and ctx.is_channel_swapped:
         ctx.is_channel_swapped = False
 
@@ -152,10 +152,8 @@ async def setup_level_select(ctx: "AE3Context"):
 
     # Force Unlocked Stages to be in sync with the player's chosen option,
     # maxing out at 0x1B as supported by the game
-    if ctx.unlocked_channels is None:
-        ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys, post_game_state)
-    elif post_game_state and ctx.unlocked_channels < sum(ctx.progression.progression[:-1]):
-        ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys, post_game_state)
+    if post_game_state and ctx.unlocked_channels < sum(ctx.progression.progression[:-1]):
+        ctx.update_unlocked_channels(progression.get_progress(ctx.keys, post_game_state))
 
     if ctx.ipc.get_unlocked_channels() != max(0, min(ctx.unlocked_channels, 0x1B)):
         ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
@@ -175,6 +173,8 @@ async def setup_level_select(ctx: "AE3Context"):
     gui_status: int = ctx.ipc.get_gui_status()
     is_monkey_dummy_set: bool = False
 
+    ctx.change_on_warp_gate_state(is_on_warp_gate)
+
     if is_on_warp_gate:
         if ctx.is_using_data_desk:
             ctx.is_using_data_desk = False
@@ -182,6 +182,8 @@ async def setup_level_select(ctx: "AE3Context"):
         if ctx.dummy_morph_monkey_needed:
             ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
             is_monkey_dummy_set = True
+
+        ctx.change_current_active_channel_selection(selected_channel)
 
         # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
         if selected_channel == 0x18 or selected_channel == 0x1A:
@@ -465,7 +467,7 @@ async def setup_area(ctx: "AE3Context"):
                 # and to spawn Break Room loading zones
                 dispatch_dummy_morph(ctx, True)
 
-            ctx.current_channel = ctx.ipc.get_channel()
+            ctx.change_channel(ctx.ipc.get_channel())
             ctx.current_stage = ctx.ipc.get_stage()
             ctx.command_state = 2
 
@@ -556,7 +558,7 @@ async def receive_items(ctx: "AE3Context"):
             ### Add Key Count and unlock levels accordingly
             if item.item_id == AP[APHelper.channel_key.value]:
                 ctx.keys += 1
-                ctx.unlocked_channels = ctx.progression.get_progress(ctx.keys, pgc_checked)
+                ctx.update_unlocked_channels(progression.get_progress(ctx.keys, pgc_checked))
             elif item.item_id == AP[APHelper.shop_stock.value]:
                 ctx.shop_progress += ctx.shop_progression
 
@@ -709,7 +711,7 @@ async def resync_important_items(ctx: "AE3Context"):
     unlocked: int = ctx.progression.get_progress(keys, pgc_checked)
     if ctx.keys != keys or ctx.unlocked_channels != unlocked:
         ctx.keys = keys
-        ctx.unlocked_channels = unlocked
+        ctx.update_unlocked_channels(unlocked)
         ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
     # Resync Shop Availability
@@ -858,7 +860,7 @@ async def check_locations(ctx: "AE3Context"):
             if ctx.check_pgc():
                 new_unlocked: int = ctx.progression.get_progress(ctx.keys, True)
                 if ctx.unlocked_channels < new_unlocked:
-                    ctx.unlocked_channels = new_unlocked
+                    ctx.update_unlocked_channels(new_unlocked)
                     ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
             ctx.quick_status_panel.update_goal_target_status(ctx.goal_target.get_progress(ctx), ctx.goal_target.amount)
@@ -951,7 +953,7 @@ async def check_progression(ctx: "AE3Context"):
     if ctx.check_pgc():
         new_unlocked: int = ctx.progression.get_progress(ctx.keys, True)
         if ctx.unlocked_channels < new_unlocked:
-            ctx.unlocked_channels = new_unlocked
+            ctx.update_unlocked_channels(new_unlocked)
             ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
 
 

@@ -1,10 +1,14 @@
 from textwrap import dedent
 from typing import Any
 
+from kivy.clock import Clock
 from kivy.properties import ColorProperty, DictProperty, NumericProperty, ObjectProperty, StringProperty
 from kivy.uix.widget import Widget
+from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.label import MDLabel
 from kivymd.uix.recycleview import MDRecycleView
+from kivymd.uix.scrollview import ScrollView
 
 from kvui import Builder
 
@@ -133,7 +137,7 @@ QUICK_STATUS_PANEL_KV: str = dedent(
                 value_color: app.theme_cls.onSurfaceColor
         StatusPanel:
             id: GoalPanel
-            qsp_modes: [1]
+            qsp_modes: [10]
             padding: 0
             IndicatedStatusLabelComplete:
                 id: GoalLabel
@@ -143,7 +147,7 @@ QUICK_STATUS_PANEL_KV: str = dedent(
                 value_color: app.theme_cls.onSurfaceColor
         StatusPanel:
             id: PostGameConditionPanel
-            qsp_modes: [1]
+            qsp_modes: [10]
             size_hint_y: None
             height: self.minimum_height
             padding: 20, 20, 20, 0
@@ -162,27 +166,31 @@ QUICK_STATUS_PANEL_KV: str = dedent(
                     default_size: None, dp(40)
                     default_size_hint: 1, None
         StatusPanel:
-            id: OverviewPanel
-            qsp_modes: [2]
-            size_hint_y: None
+            id: ChannelSelectPreviewPanel
+            hint_size_y: None
             height: self.minimum_height
-            padding: 20, 20, 20, 0
-            OverviewLayout:
-                id: OverviewLayout
-                title_text: ''
-                MDLabel:
-                    text: self.parent.title_text
-                    color: self.theme_cls.onSurfaceColor
-                    bold: True
-                AE3RecycleView:
-                    id: OverviewView
-                    viewclass: 'IndicatedPairedLabelComplete'
-                    size_hint_y: None
-                    MDRecycleGridLayout:
-                        cols: 3
-                        spacing: 20
-                        default_size: None, dp(40)
-                        default_size_hint: 1, None
+            qsp_modes: [20, 30]
+            AE3ScrollView:
+                id: ChannelSelectPreviewScroll
+                size_hint_y: None
+                do_scroll_x: True
+                do_scroll_y: False
+                height: dp(40)
+                ChannelSelectPreviewLayout:
+                    id: ChannelSelectPreviewLayout
+                    viewport_size: self.parent.width
+                    orientation: "horizontal"
+                    spacing: 150
+                    adaptive_size: True
+            AE3RecycleView:
+                id: OverviewView
+                viewclass: 'IndicatedPairedLabelComplete'
+                size_hint_y: None
+                MDRecycleGridLayout:
+                    cols: 3
+                    spacing: 20
+                    default_size: None, dp(40)
+                    default_size_hint: 1, None
     """
 )
 
@@ -251,10 +259,16 @@ class QuickStatusPanel(MDBoxLayout):
             self.hidden.remove(wid)
 
     def set_display_mode(self, mode: QSPDisplayMode | int = QSPDisplayMode.MINIMAL):
+        new_mode: QSPDisplayMode = QSPDisplayMode.MINIMAL
         if type(mode) is QSPDisplayMode:
-            self.display_mode = mode
+            new_mode = mode
         else:
-            self.display_mode = QSPDisplayMode(mode)
+            new_mode = QSPDisplayMode(mode)
+
+        if new_mode == self.display_mode:
+            return
+
+        self.display_mode = new_mode
 
     def on_display_mode(self, instance, mode):
         to_show: list[Widget] = []
@@ -322,16 +336,36 @@ class QuickStatusPanel(MDBoxLayout):
 
         pgc_view.set_data(data)
 
-    def set_overview(self, text: str, data: list[dict] | None = None):
+    def set_channel_select_preview_labels(self, channel_names: list[str]):
+        cspl: ChannelSelectPreviewLayout | None = self._get_widget_and_cache("ChannelSelectPreviewLayout")
+        if not cspl:
+            return
+
+        cspl.set_labels(channel_names)
+        cspl.on_viewport_size(cspl, cspl.size)
+
+    def update_active_channel_index(self, index: int = 0, data: list[dict] | None = None):
         if not data:
             data = []
 
-        overview_layout: OverviewLayout | None = self._get_widget_and_cache("OverviewLayout")
-        if not overview_layout:
+        csp: AE3ScrollView | None = self._get_widget_and_cache("ChannelSelectPreviewScroll")
+        if not csp or csp in self.hidden:
             return
 
-        overview_layout.set_title_text(text)
-        self.update_overview_status(data)
+        cspl: ChannelSelectPreviewLayout | None = self._get_widget_and_cache("ChannelSelectPreviewLayout")
+        if not cspl:
+            return
+
+        if index < 0 or index > len(cspl.children):
+            return
+
+        scroll_ratio: float = cspl.get_center_ratio_to_child_index(index)
+
+        def set_focused_item():
+            csp.switch_focused_label(cspl.children[len(cspl.children) - index - 1])
+            csp.scroll_x = scroll_ratio
+
+        Clock.schedule_once(lambda x: set_focused_item())
 
     def update_overview_status(self, data: list[dict]):
         overview_view: AE3RecycleView | None = self._get_widget_and_cache("OverviewView")
@@ -349,6 +383,76 @@ class AE3RecycleView(MDRecycleView):
 
     def set_data(self, data: list[dict[str, Any]]):
         self.data = data
+
+
+class AE3ScrollView(ScrollView):
+    focused_label: MDLabel = ObjectProperty()
+
+    def switch_focused_label(self, new_focus: MDLabel):
+        theme_manager = MDApp.get_running_app().root.theme_cls
+
+        if self.focused_label:
+            self.focused_label.bold = False
+            self.focused_label.text_color = theme_manager.onSurfaceColor
+            self.focused_label.opacity = 0.6
+
+        new_focus.bold = True
+        new_focus.text_color = theme_manager.primaryColor
+        new_focus.opacity = 1.0
+
+        self.focused_label = new_focus
+
+
+class ChannelSelectPreviewLayout(MDBoxLayout):
+    viewport_size: float = NumericProperty()
+    current_focus: int = NumericProperty()
+
+    def set_labels(self, names: list[str]):
+        theme_manager = MDApp.get_running_app().root.theme_cls
+        self.clear_labels()
+
+        for d in names:
+            label = MDLabel(
+                text=d,
+                adaptive_size=True,
+                valign="middle",
+                halign="center",
+                opacity="0.6",
+                text_color=theme_manager.onSurfaceColor,
+            )
+
+            label.font_size = "20sp"
+
+            self.add_widget(label)
+
+    def clear_labels(self):
+        labels: list[Widget] = list(self.children)
+        for label in labels:
+            self.remove_widget(label)
+
+    def get_center_ratio_to_child_index(self, index: int) -> float:
+        reverse_index: int = len(self.children) - index - 1
+        children_to_count: list[MDLabel] = self.children[reverse_index:]
+
+        cum_length: float = 0.0
+        for w in children_to_count[1:]:
+            cum_length += w.width + self.spacing
+
+        target = children_to_count[0]
+        cum_length += target.width / 2
+        cum_length += self.viewport_size * (index / len(self.children)) - self.viewport_size / 2
+
+        return min(max(0, cum_length / self.width), 1.0)
+
+    def on_viewport_size(self, instance, size):
+        if not self.viewport_size or not self.children:
+            return
+
+        first: MDLabel = self.children[0]
+        last: MDLabel = self.children[-1]
+
+        first.padding = [0, 0, self.viewport_size / 2 - first.width / 2, 0]
+        last.padding = [self.viewport_size / 2 - last.width / 2, 0, 0, 0]
 
 
 class OverviewLayout(MDBoxLayout):
