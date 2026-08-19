@@ -37,6 +37,7 @@ from ..data.Strings import APConsole, APHelper, Itm, Meta
 from . import checker
 from .game_interface import AEPS2Interface, ConnectionStatus
 from .protocol import DataStorageHandler, Protocol
+from .state import QSPDisplayMode
 
 # Try importing gui_enabled in Utils first before trying to import them from CommonClient
 # Core AP will be officially moving it to Utils in the future, so this is in accommodation for that
@@ -934,7 +935,7 @@ class AE3Context(SuperContext):
             # during this session
             self.has_archipelago_package = True
 
-            self.quick_status_panel.set_display_mode(1)
+            self.quick_status_panel.set_display_mode(QSPDisplayMode.GENERAL)
             self.quick_status_panel.set_goal_target_status(
                 self.goal_target.name, self.goal_target.get_progress(self), self.goal_target.amount
             )
@@ -1062,7 +1063,7 @@ class AE3Context(SuperContext):
             self.ipc.subscribe_on_connection_change(self.quick_status_panel.update_game_status)
             self.ipc.subscribe_on_port_change(self.quick_status_panel.update_game_port)
 
-            self.quick_status_panel.set_display_mode(0)
+            self.quick_status_panel.set_display_mode()
 
     def check_pgc(self) -> bool:
         current: dict = self.post_game_condition.get_progress(self)

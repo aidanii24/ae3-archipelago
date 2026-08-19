@@ -1,4 +1,3 @@
-import enum
 from textwrap import dedent
 from typing import Any
 
@@ -10,6 +9,7 @@ from kivymd.uix.recycleview import MDRecycleView
 from kvui import Builder
 
 from .game_interface import ConnectionStatus
+from .state import QSPDisplayMode
 
 BASE_WIDGETS: str = dedent(
     """\
@@ -187,13 +187,6 @@ QUICK_STATUS_PANEL_KV: str = dedent(
 )
 
 
-class QSPDisplayMode(enum.IntEnum):
-    MINIMAL = 0
-    GENERAL = 1
-    CHANNEL_SELECT = 2
-    CHANNEL_OVERVIEW = 3
-
-
 class QuickStatusPanel(MDBoxLayout):
     ids: DictProperty
     displays: dict[str, Widget]
@@ -257,11 +250,11 @@ class QuickStatusPanel(MDBoxLayout):
             self.add_widget(widget, index=index)
             self.hidden.remove(wid)
 
-    def set_display_mode(self, mode: QSPDisplayMode | int):
-        if type(int) is int:
-            self.display_mode = QSPDisplayMode(int)
-        else:
+    def set_display_mode(self, mode: QSPDisplayMode | int = QSPDisplayMode.MINIMAL):
+        if type(mode) is QSPDisplayMode:
             self.display_mode = mode
+        else:
+            self.display_mode = QSPDisplayMode(mode)
 
     def on_display_mode(self, instance, mode):
         to_show: list[Widget] = []
