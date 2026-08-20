@@ -109,7 +109,7 @@ BASE_WIDGETS: str = dedent(
             MDLabel:
                 text: self.parent.parent.value_text
                 color: app.theme_cls.onSurfaceColor
-                halign: 'center'
+                halign: 'right'
         MDLinearProgressIndicator:
             indicator_color: self.parent.indicator_color
             size_hint_y: None
@@ -175,7 +175,7 @@ QUICK_STATUS_PANEL_KV: str = dedent(
                 size_hint_y: None
                 do_scroll_x: True
                 do_scroll_y: False
-                height: dp(40)
+                height: dp(30)
                 ChannelSelectPreviewLayout:
                     id: ChannelSelectPreviewLayout
                     viewport_size: self.parent.width
@@ -187,7 +187,7 @@ QUICK_STATUS_PANEL_KV: str = dedent(
                 viewclass: 'IndicatedPairedLabelComplete'
                 size_hint_y: None
                 MDRecycleGridLayout:
-                    cols: 3
+                    cols: min(len(self.parent.data), 3)
                     spacing: 20
                     default_size: None, dp(40)
                     default_size_hint: 1, None
@@ -276,6 +276,9 @@ class QuickStatusPanel(MDBoxLayout):
         to_hide: list[Widget] = []
 
         for i, (wid, widget) in enumerate(self.ids.items()):
+            if not widget:
+                continue
+
             if widget.__class__.__name__ != "StatusPanel":
                 continue
 
@@ -383,6 +386,11 @@ class AE3RecycleView(MDRecycleView):
 
     def set_data(self, data: list[dict[str, Any]]):
         self.data = data
+
+        if not self.data:
+            self.height = 0
+        else:
+            self.height = 70
 
 
 class AE3ScrollView(ScrollView):
