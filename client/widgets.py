@@ -435,7 +435,7 @@ class ChannelSelectPreviewLayout(MDBoxLayout):
                 adaptive_size=True,
                 valign="middle",
                 halign="center",
-                opacity="0.6",
+                opacity=0.6,
                 text_color=theme_manager.onSurfaceColor,
             )
 

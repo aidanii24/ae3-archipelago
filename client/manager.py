@@ -938,12 +938,11 @@ class AE3Context(SuperContext):
             # during this session
             self.has_archipelago_package = True
 
-            self.change_qsp_display_mode(QSPDisplayMode.GENERAL)
+            self.setup_channel()
             self.quick_status_panel.set_goal_target_status(
                 self.goal_target.name, self.goal_target.get_progress(self), self.goal_target.amount
             )
             self.quick_status_panel.update_pgc_status(self.get_formatted_pgc_progress())
-            self.set_qsp_channel_labels()
 
         elif cmd == APHelper.cmd_rcv.value:
             index = args["index"]
@@ -1054,21 +1053,26 @@ class AE3Context(SuperContext):
 
         self.current_channel = new_channel
 
-        if not new_channel:
-            return
+        self.setup_channel()
 
-        if new_channel == APHelper.travel_station.value:
+    def setup_channel(self, channel: str = ""):
+        if not channel:
+            channel = self.current_channel
+
+            if not channel:
+                return
+
+        if channel == APHelper.travel_station.value:
             self.in_shopping_area = False
 
             self.change_qsp_display_mode(QSPDisplayMode.GENERAL)
             self.set_qsp_channel_labels()
         else:
-            self.in_shopping_area = new_channel == APHelper.shopping_area.value
+            self.in_shopping_area = channel == APHelper.shopping_area.value
             self.in_travel_station = False
 
             self.change_qsp_display_mode(QSPDisplayMode.CHANNEL_OVERVIEW)
-            if self.in_shopping_area:
-                self.lock_qsp_channel_label()
+            self.lock_qsp_channel_label()
 
     def change_on_warp_gate_state(self, value: bool):
         if value == self.is_on_warp_gate:
@@ -1077,7 +1081,7 @@ class AE3Context(SuperContext):
         self.is_on_warp_gate = value
 
         if value:
-            self.change_qsp_display_mode(QSPDisplayMode.CHANNEL_SELECT)
+            self.change_qsp_display_mode(QSPDisplayMode.CHANNEL_OVERVIEW)
             self.update_overview()
         else:
             self.change_qsp_display_mode(QSPDisplayMode.GENERAL)
