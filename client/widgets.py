@@ -449,6 +449,9 @@ class ChannelSelectPreviewLayout(MDBoxLayout):
             self.remove_widget(label)
 
     def get_center_ratio_to_child_index(self, index: int) -> float:
+        if not self.width:
+            return 0
+
         reverse_index: int = len(self.children) - index - 1
         children_to_count: list[MDLabel] = self.children[reverse_index:]
 

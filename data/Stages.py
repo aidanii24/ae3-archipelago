@@ -54,6 +54,8 @@ LEVELS_BY_ORDER: Sequence[str] = [
 ]
 
 CHANNEL_ID_TO_NAME: dict[str, str] = {
+    APHelper.travel_station.value: Stage.travel_station_a.value,
+    APHelper.shopping_area.value: Stage.travel_station_b.value,
     APHelper.zero.value: Stage.zero.value,
     APHelper.seaside.value: Stage.channel_seaside.value,
     APHelper.woods.value: Stage.channel_woods.value,

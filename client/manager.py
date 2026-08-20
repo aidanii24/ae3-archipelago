@@ -33,7 +33,7 @@ from ..data.Locations import (
 from ..data.Logic import ProgressionMode, ProgressionModeOptions
 from ..data.Rules import GoalTarget, GoalTargetOptions, PostGameCondition
 from ..data.Stages import CHANNEL_ID_TO_NAME, LEVELS_BY_ORDER, STAGES_BREAK_ROOMS
-from ..data.Strings import APConsole, APHelper, Itm, Meta
+from ..data.Strings import APConsole, APHelper, Itm, Meta, Stage
 from . import checker
 from .game_interface import AEPS2Interface, ConnectionStatus
 from .protocol import DataStorageHandler, Protocol
@@ -1061,11 +1061,14 @@ class AE3Context(SuperContext):
             self.in_shopping_area = False
 
             self.change_qsp_display_mode(QSPDisplayMode.GENERAL)
+            self.set_qsp_channel_labels()
         else:
             self.in_shopping_area = new_channel == APHelper.shopping_area.value
             self.in_travel_station = False
 
             self.change_qsp_display_mode(QSPDisplayMode.CHANNEL_OVERVIEW)
+            if self.in_shopping_area:
+                self.lock_qsp_channel_label()
 
     def change_on_warp_gate_state(self, value: bool):
         if value == self.is_on_warp_gate:
@@ -1153,12 +1156,17 @@ class AE3Context(SuperContext):
 
             self.change_qsp_display_mode()
 
-    def generate_qsp_overview_data(self) -> list[dict[str, typing.Any]]:
-        if self.shoppingsanity and self.current_channel == APHelper.shopping_area.value:
+    def generate_qsp_overview_data(self, channel_name: str = "") -> list[dict[str, typing.Any]]:
+        if not channel_name:
+            channel_name = CHANNEL_ID_TO_NAME.get(self.current_channel, "")
+
+            if not channel_name:
+                return []
+
+        if self.shoppingsanity and channel_name == Stage.travel_station_b.value:
             return self.generate_qsp_shoppingsanity_overview_data()
 
-        channel_name: str = ""
-        if self.current_channel == APHelper.travel_station.value:
+        if channel_name == Stage.travel_station_a.value:
             if self.is_on_warp_gate:
                 channel_name = LEVELS_BY_ORDER[self.progression.order[self.current_active_channel_selection]]
             else:
@@ -1279,10 +1287,27 @@ class AE3Context(SuperContext):
         self.quick_status_panel.set_display_mode(mode)
 
     def set_qsp_channel_labels(self):
+        if not hasattr(self, "progression"):
+            return
+
         labels: list[str] = [LEVELS_BY_ORDER[c] for c in self.progression.order[: self.unlocked_channels + 1]]
 
         self.quick_status_panel.set_channel_select_preview_labels(labels)
         self.quick_status_panel.update_active_channel_index(self.current_active_channel_selection)
+
+    def lock_qsp_channel_label(self, channel_name: str = ""):
+        if not channel_name:
+            channel_name = CHANNEL_ID_TO_NAME.get(self.current_channel, "")
+
+            if not channel_name:
+                return
+
+        self.quick_status_panel.set_channel_select_preview_labels([channel_name])
+
+        data = self.generate_qsp_overview_data(channel_name)
+        self.quick_status_panel.update_overview_status(data)
+
+        self.quick_status_panel.update_active_channel_index(0)
 
     def update_overview(self):
         data: list[dict[str, typing.Any]] = self.generate_qsp_overview_data()
@@ -1422,23 +1447,34 @@ async def check_game(ctx: AE3Context):
             if ctx.current_channel != APHelper.travel_station.value:
                 ctx.in_travel_station = False
                 ctx.is_using_data_desk = False
+                ctx.change_qsp_display_mode(QSPDisplayMode.CHANNEL_OVERVIEW)
 
                 if ctx.current_channel == APHelper.shopping_area.value:
                     ctx.in_shopping_area = True
                     await checker.set_persistent_values(ctx)
+
+                    ctx.lock_qsp_channel_label(Stage.travel_station_b.value)
+            elif ctx.is_on_warp_gate:
+                ctx.change_qsp_display_mode(QSPDisplayMode.CHANNEL_OVERVIEW)
         elif ctx.in_shopping_area:
             if ctx.current_channel != APHelper.shopping_area.value:
                 ctx.in_shopping_area = False
 
+                await checker.reapply_persistent_values(ctx)
+
                 if ctx.current_channel == APHelper.travel_station.value:
-                    await checker.reapply_persistent_values(ctx)
                     ctx.in_travel_station = True
+                    ctx.change_qsp_display_mode(QSPDisplayMode.GENERAL)
+                else:
+                    ctx.lock_qsp_channel_label()
         else:
             if ctx.current_channel == APHelper.travel_station.value:
                 ctx.in_travel_station = True
+                ctx.change_qsp_display_mode(QSPDisplayMode.GENERAL)
             elif ctx.current_channel == APHelper.shopping_area.value:
                 ctx.in_shopping_area = True
                 ctx.is_using_data_desk = False
+
                 await checker.rebuild_persistent_values(ctx)
             else:
                 ctx.is_using_data_desk = False

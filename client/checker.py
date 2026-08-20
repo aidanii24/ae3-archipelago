@@ -35,7 +35,7 @@ from ..data.Locations import (
     SHOP_PROGRESSION_MORPH,
     Cellphone_Name_to_ID,
 )
-from ..data.Stages import PROGRESS_ID_BY_ORDER
+from ..data.Stages import LEVELS_BY_ORDER, PROGRESS_ID_BY_ORDER
 from ..data.Strings import APHelper, Game, Itm, Loc, Stage
 from .protocol import DataStorageHandler
 
@@ -203,6 +203,8 @@ async def setup_level_select(ctx: "AE3Context"):
 
         if not is_a_level_confirmed:
             ctx.change_current_active_channel_selection(selected_channel)
+        else:
+            ctx.lock_qsp_channel_label(LEVELS_BY_ORDER[ctx.progression.order[ctx.current_active_channel_selection]])
 
         # Reset Game Mode Swap state and Set Game Mode value to an unexpected value
         # as sign that the game has not yet set it
