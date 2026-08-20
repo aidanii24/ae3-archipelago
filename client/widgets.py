@@ -518,7 +518,7 @@ class IndicatedLabel(MDBoxLayout):
         elif value < 100:
             self.indicator_color = self.theme_cls.secondaryColor
         else:
-            self.indicator_color = self.theme_cls.inversePrimaryColor
+            self.indicator_color = self.theme_cls.primaryColor
 
 
 class IndicatedPairedLabel(PairedLabel, IndicatedLabel):
