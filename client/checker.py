@@ -183,8 +183,6 @@ async def setup_level_select(ctx: "AE3Context"):
             ctx.ipc.unlock_equipment(Itm.morph_monkey.value)
             is_monkey_dummy_set = True
 
-        ctx.change_current_active_channel_selection(selected_channel)
-
         # Change Progress temporarily for certain levels to be playable. Change back to round2 otherwise.
         if selected_channel == 0x18 or selected_channel == 0x1A:
             target_progress: str = APHelper.pr_boss6.value if selected_channel == 0x18 else APHelper.pr_specter1.value
@@ -205,7 +203,7 @@ async def setup_level_select(ctx: "AE3Context"):
 
         # Reset Game Mode Swap state and Set Game Mode value to an unexpected value
         # as sign that the game has not yet set it
-        if ctx.alt_freeplay and not ctx.ipc.is_a_level_confirmed() and ctx.is_mode_swapped:
+        if ctx.alt_freeplay and not is_a_level_confirmed and ctx.is_mode_swapped:
             ctx.is_mode_swapped = False
             ctx.ipc.set_game_mode(0xFFFF, False)
     else:
