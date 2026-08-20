@@ -99,14 +99,19 @@ BASE_WIDGETS: str = dedent(
         indicator_value: 0
         indicator_color: app.theme_cls.primaryColor
         orientation: 'vertical'
+        padding: 10, 10, 10, 5
+        spacing: 10
+        adaptive_height: True
         MDBoxLayout:
-            padding: 20, 10, 20, 5
             orientation: 'horizontal'
             MDLabel:
                 text: self.parent.parent.label_text
                 color: app.theme_cls.onSurfaceColor
                 bold: True
+                shorten: True
+                shorten_from: 'right'
             MDLabel:
+                adaptive_width: True
                 text: self.parent.parent.value_text
                 color: app.theme_cls.onSurfaceColor
                 halign: 'right'
@@ -173,7 +178,7 @@ QUICK_STATUS_PANEL_KV: str = dedent(
             height: self.minimum_height
             qsp_modes: [20, 30]
             padding: 20, 10, 20, 0
-            spacing: 20
+            spacing: 10
             AE3ScrollView:
                 id: ChannelSelectPreviewScroll
                 size_hint_y: None
@@ -183,14 +188,21 @@ QUICK_STATUS_PANEL_KV: str = dedent(
                 ChannelSelectPreviewLayout:
                     id: ChannelSelectPreviewLayout
                     viewport_size: self.parent.width
-                    orientation: "horizontal"
+                    orientation: 'horizontal'
                     spacing: 150
                     adaptive_size: True
+            MDBoxLayout:
+                id: ChannelSelectPreviewProgress
+                adaptive_height: True
+                IndicatedPairedLabelComplete:
+                    label_text: 'Total'
+                    value_text: ''
+                    indicator_value: 0
             AE3RecycleView:
                 id: OverviewView
                 viewclass: 'IndicatedPairedLabelComplete'
                 size_hint_y: None
-                height: math.ceil(len(self.data) / 3) * dp(60)
+                height: math.ceil(len(self.data) / 3) * dp(50)
                 MDRecycleGridLayout:
                     cols: min(len(self.parent.data), 3)
                     spacing: 20
