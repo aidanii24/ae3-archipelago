@@ -283,10 +283,13 @@ class QuickStatusPanel(MDBoxLayout):
                 continue
 
             if mode in widget.qsp_modes:
+                if wid not in self.hidden:
+                    continue
+
                 to_show.append(wid)
                 index: int = getattr(widget, "qsp_index_hint", len(self.children) + i)
                 to_show_indexes.append(index)
-            else:
+            elif wid not in self.hidden:
                 to_hide.append(wid)
 
         self._hide_children(*to_hide)
