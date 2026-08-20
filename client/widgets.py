@@ -120,6 +120,7 @@ BASE_WIDGETS: str = dedent(
 
 QUICK_STATUS_PANEL_KV: str = dedent(
     """\
+    #:import math math
     QuickStatusPanel:
         id: QuickStatusPanel
         size_hint_y: None
@@ -160,6 +161,7 @@ QUICK_STATUS_PANEL_KV: str = dedent(
                 id: PostGameConditionView
                 viewclass: 'IndicatedPairedLabelComplete'
                 size_hint_y: None
+                height: math.ceil(len(self.data) / 3) * dp(60)
                 MDRecycleGridLayout:
                     cols: 3
                     spacing: 20
@@ -170,6 +172,8 @@ QUICK_STATUS_PANEL_KV: str = dedent(
             hint_size_y: None
             height: self.minimum_height
             qsp_modes: [20, 30]
+            padding: 20, 10, 20, 0
+            spacing: 20
             AE3ScrollView:
                 id: ChannelSelectPreviewScroll
                 size_hint_y: None
@@ -186,6 +190,7 @@ QUICK_STATUS_PANEL_KV: str = dedent(
                 id: OverviewView
                 viewclass: 'IndicatedPairedLabelComplete'
                 size_hint_y: None
+                height: math.ceil(len(self.data) / 3) * dp(60)
                 MDRecycleGridLayout:
                     cols: min(len(self.parent.data), 3)
                     spacing: 20
@@ -208,11 +213,13 @@ class QuickStatusPanel(MDBoxLayout):
         self.hidden = set()
         self.displays = {}
 
+    def on_kv_post(self, widget: Widget):
+        for id, widget in self.ids.items():
+            self.displays[id] = widget
+
     def _get_widget_and_cache(self, wid: str) -> Widget | None:
         if wid not in self.displays:
             widget: Widget = self.ids.get(wid, None)
-            if not widget:
-                return None
 
             self.displays[wid] = widget
             return widget
@@ -275,7 +282,8 @@ class QuickStatusPanel(MDBoxLayout):
         to_show_indexes: list[int] = []
         to_hide: list[Widget] = []
 
-        for i, (wid, widget) in enumerate(self.ids.items()):
+        for i, (wid, widget) in enumerate(self.displays.items()):
+            print(wid, widget)
             if not widget:
                 continue
 
@@ -386,11 +394,6 @@ class AE3RecycleView(MDRecycleView):
 
     def set_data(self, data: list[dict[str, Any]]):
         self.data = data
-
-        if not self.data:
-            self.height = 0
-        else:
-            self.height = 70
 
 
 class AE3ScrollView(ScrollView):
