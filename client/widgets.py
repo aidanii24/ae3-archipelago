@@ -1,7 +1,7 @@
 from textwrap import dedent
 from typing import Any
 
-from kivy.clock import Clock
+from kivy.animation import Animation, AnimationTransition
 from kivy.properties import ColorProperty, DictProperty, NumericProperty, ObjectProperty, StringProperty
 from kivy.uix.widget import Widget
 from kivymd.app import MDApp
@@ -361,11 +361,8 @@ class QuickStatusPanel(MDBoxLayout):
 
         scroll_ratio: float = cspl.get_center_ratio_to_child_index(index)
 
-        def set_focused_item():
-            csp.switch_focused_label(cspl.children[len(cspl.children) - index - 1])
-            csp.scroll_x = scroll_ratio
-
-        Clock.schedule_once(lambda x: set_focused_item())
+        csp.switch_focused_label(cspl.children[len(cspl.children) - index - 1])
+        csp.scroll_to_x(scroll_ratio)
 
     def update_overview_status(self, data: list[dict]):
         overview_view: AE3RecycleView | None = self._get_widget_and_cache("OverviewView")
@@ -387,6 +384,24 @@ class AE3RecycleView(MDRecycleView):
 
 class AE3ScrollView(ScrollView):
     focused_label: MDLabel = ObjectProperty()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.animation = Animation()
+        self.is_animating: bool = False
+
+    def _set_is_animating(self, value: bool):
+        self.is_animating = value
+
+    def scroll_to_x(self, x: float = 0.0, duration: float = 0.15):
+        if self.is_animating:
+            self.animation.stop(self)
+
+        self.animation = Animation(scroll_x=x, duration=duration, transition=AnimationTransition.in_out_quad)
+        self.animation.bind(on_complete=lambda anim, widget: self._set_is_animating(False))
+
+        self.animation.start(self)
 
     def switch_focused_label(self, new_focus: MDLabel):
         theme_manager = MDApp.get_running_app().root.theme_cls
