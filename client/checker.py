@@ -561,7 +561,7 @@ async def receive_items(ctx: "AE3Context"):
             ### Add Key Count and unlock levels accordingly
             if item.item_id == AP[APHelper.channel_key.value]:
                 ctx.keys += 1
-                ctx.update_unlocked_channels(progression.get_progress(ctx.keys, pgc_checked))
+                ctx.update_unlocked_channels(ctx.progression.get_progress(ctx.keys, pgc_checked))
             elif item.item_id == AP[APHelper.shop_stock.value]:
                 ctx.shop_progress += ctx.shop_progression
 
