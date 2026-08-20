@@ -32,7 +32,7 @@ from ..data.Locations import (
 )
 from ..data.Logic import ProgressionMode, ProgressionModeOptions
 from ..data.Rules import GoalTarget, GoalTargetOptions, PostGameCondition
-from ..data.Stages import LEVELS_BY_ORDER, STAGES_BREAK_ROOMS
+from ..data.Stages import CHANNEL_ID_TO_NAME, LEVELS_BY_ORDER, STAGES_BREAK_ROOMS
 from ..data.Strings import APConsole, APHelper, Itm, Meta
 from . import checker
 from .game_interface import AEPS2Interface, ConnectionStatus
@@ -938,7 +938,7 @@ class AE3Context(SuperContext):
             # during this session
             self.has_archipelago_package = True
 
-            self.change_qps_display_mode(QSPDisplayMode.GENERAL)
+            self.change_qsp_display_mode(QSPDisplayMode.GENERAL)
             self.quick_status_panel.set_goal_target_status(
                 self.goal_target.name, self.goal_target.get_progress(self), self.goal_target.amount
             )
@@ -1069,7 +1069,124 @@ class AE3Context(SuperContext):
             self.ipc.subscribe_on_connection_change(self.quick_status_panel.update_game_status)
             self.ipc.subscribe_on_port_change(self.quick_status_panel.update_game_port)
 
-            self.change_qps_display_mode()
+            self.change_qsp_display_mode()
+
+    def update_locations_checked(self, locations: set):
+        self.locations_checked.update(locations)
+
+        self.update_overview()
+
+    def update_overview(self):
+        data: list[dict[str, typing.Any]] = self.generate_qsp_overview_data()
+        if not data:
+            return
+
+        self.quick_status_panel.update_overview_status(data)
+
+    def generate_qsp_overview_data(self) -> list[dict[str, typing.Any]]:
+        if self.shoppingsanity and self.current_channel == APHelper.shopping_area.value:
+            return self.generate_qsp_shoppingsanity_overview_data()
+
+        channel_name: str = ""
+        if self.current_channel == APHelper.travel_station.value:
+            if self.is_on_warp_gate:
+                channel_name = LEVELS_BY_ORDER[self.progression.order[self.current_active_channel_selection]]
+            else:
+                return []
+
+        return self.generate_qsp_channel_overview_data(channel_name)
+
+    def generate_qsp_shoppingsanity_overview_data(self) -> list[dict[str, typing.Any]]:
+        raw: dict[str, tuple] = dict.fromkeys(Locations.SHOP_CATEGORIES_DIRECTORY.keys(), ())
+
+        for category, items in Locations.SHOP_CATEGORIES_DIRECTORY.items():
+            locations: set = set().intersection(Locations.SHOP_PERSISTENT_MASTER, items)
+
+            if self.shoppingsanity == 2:
+                locations.update(Locations.SHOP_CATEGORIES_COLLECTION_DIRECTORY.get(category, []))
+            else:
+                locations.update(items)
+
+            locations_ids: set = {self.locations_name_to_id[name] for name in locations}
+
+            raw[category] = (len(locations_ids.intersection(self.locations_checked)), len(locations_ids))
+
+        data: list[dict] = [
+            {
+                "label_text": category,
+                "value_text": f"{values[0]}/{values[1]}",
+                "indidcator_value": math.floor(values[0] / values[1] * 100),
+            }
+            for category, values in raw.items()
+        ]
+
+        return data
+
+    def generate_qsp_channel_overview_data(self, channel_name: str = "") -> list[dict[str, typing.Any]]:
+        data: list[dict] = []
+
+        channel_id: str = ""
+
+        if not channel_name:
+            channel_id = self.current_channel
+            channel_name = CHANNEL_ID_TO_NAME.get(channel_id, "")
+        else:
+            channel_id = [*CHANNEL_ID_TO_NAME.keys()][[*CHANNEL_ID_TO_NAME.values()].index(channel_name)]
+
+        if channel_id in Locations.MONKEYS_DIRECTORY:
+            monkeys: set[str] = set(Locations.MONKEYS_DIRECTORY.get(channel_id, []))
+            monkeys.difference_update(Locations.MONKEYS_PASSWORDS)
+            if self.check_break_rooms:
+                monkeys.difference_update(Locations.MONKEYS_BREAK_ROOMS)
+
+            total: list = [self.locations_name_to_id[m] for m in monkeys]
+            cleared_monkeys: set = self.locations_checked.intersection(total)
+            data.append(
+                {
+                    "label_text": "Pipo Monkeys",
+                    "value_text": f"{len(cleared_monkeys)}/{len(total)}",
+                    "indicator_value": math.floor(len(cleared_monkeys) / len(total) * 100),
+                }
+            )
+        elif channel_id.startswith("b_") and channel_id[-1].isdigit():
+            boss_index: int = int(channel_id[-1])
+
+            if 0 < boss_index < len(Locations.MONKEYS_BOSSES):
+                target: int = self.locations_name_to_id.get(Locations.MONKEYS_BOSSES[boss_index], 0)
+                is_cleared: bool = target in self.locations_checked
+                data.append(
+                    {
+                        "label_text": "Boss",
+                        "value_text": f"{int(is_cleared)}/1",
+                        "indicator_value": math.floor(int(is_cleared) / 1 * 100),
+                    }
+                )
+
+        if self.camerasanity and channel_name in Locations.CAMERAS_DIRECTORY:
+            target: int = self.locations_name_to_id.get(Locations.CAMERAS_DIRECTORY[channel_name], 0)
+            is_cleared: bool = target in self.locations_checkeced
+            data.append(
+                {
+                    "label_text": "Boss",
+                    "value_text": f"{int(is_cleared)}/1",
+                    "indicator_value": math.floor(int(is_cleared) / 1 * 100),
+                }
+            )
+
+        if self.cellphonesanity and channel_name in Locations.CELLPHONES_DIRECTORY:
+            phones: set[int] = {
+                self.locations_name_to_id[Cellphone_Name_to_ID[p]] for p in Locations.CELLPHONES_DIRECTORY[channel_name]
+            }
+            cleared_phones: set[int] = self.locations_checked.intersection(phones)
+            data.append(
+                {
+                    "label_text": "Boss",
+                    "value_text": f"{len(cleared_phones)}/{len(phones)}",
+                    "indicator_value": math.floor(len(cleared_phones) / len(phones) * 100),
+                }
+            )
+
+        return data
 
     def check_pgc(self) -> bool:
         current: dict = self.post_game_condition.get_progress(self)
@@ -1112,12 +1229,12 @@ class AE3Context(SuperContext):
         if new_channel == APHelper.travel_station.value:
             self.in_shopping_area = False
 
-            self.change_qps_display_mode(QSPDisplayMode.GENERAL)
+            self.change_qsp_display_mode(QSPDisplayMode.GENERAL)
         else:
             self.in_shopping_area = new_channel == APHelper.shopping_area.value
             self.in_travel_station = False
 
-            self.change_qps_display_mode(QSPDisplayMode.CHANNEL_OVERVIEW)
+            self.change_qsp_display_mode(QSPDisplayMode.CHANNEL_OVERVIEW)
 
     def change_on_warp_gate_state(self, value: bool):
         if value == self.is_on_warp_gate:
@@ -1126,9 +1243,10 @@ class AE3Context(SuperContext):
         self.is_on_warp_gate = value
 
         if value:
-            self.change_qps_display_mode(QSPDisplayMode.CHANNEL_SELECT)
+            self.change_qsp_display_mode(QSPDisplayMode.CHANNEL_SELECT)
+            self.update_overview()
         else:
-            self.change_qps_display_mode(QSPDisplayMode.GENERAL)
+            self.change_qsp_display_mode(QSPDisplayMode.GENERAL)
 
     def change_current_active_channel_selection(self, value: int):
         processed: int = min(max(0, value), self.unlocked_channels)
@@ -1147,7 +1265,7 @@ class AE3Context(SuperContext):
 
         self.set_qsp_channel_labels()
 
-    def change_qps_display_mode(self, mode: QSPDisplayMode | int = 0):
+    def change_qsp_display_mode(self, mode: QSPDisplayMode | int = 0):
         if not self.server:
             self.quick_status_panel.set_display_mode(QSPDisplayMode.MINIMAL)
             return
@@ -1172,16 +1290,6 @@ class AE3Context(SuperContext):
             formatted_pgc.append(data)
 
         return formatted_pgc
-
-    def setup_overview_view(self, title_text: str):
-        data: list[dict] = [{"label_text": APHelper.monkey.value, "value_text": "0/0", "indicator_value": 0}]
-        if self.cellphonesanity:
-            data.append({"label_text": APHelper.cellphone.value, "value_text": "0/0", "indicator_value": 0})
-        if self.camerasanity:
-            data.append({"label_text": APHelper.camera.value, "value_text": "0/0", "indicator_value": 0})
-
-        self.quick_status_panel.set_overview(title_text)
-        self.quick_status_panel.update_overview_status(data)
 
 
 def update_connection_status(ctx: AE3Context, status: bool):

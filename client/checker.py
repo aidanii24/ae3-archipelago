@@ -844,12 +844,16 @@ async def check_locations(ctx: "AE3Context"):
                     ctx.locations_name_to_id[item] for item in SHOP_COLLECTION_DIRECTORY[category][:category_count]
                 )
 
+    # Check for cleared locations that haven't been recorded to local state
+    if cleared.difference(ctx.locations_checked):
+        ctx.update_locations_checked(cleared)
+
     # Get newly checked locations
     cleared = cleared.difference(ctx.checked_locations)
 
     # Send newly checked locations to server
     if cleared:
-        ctx.locations_checked.update(cleared)
+        ctx.update_locations_checked(cleared)
 
         if ctx.save_state_on_location_check:
             ctx.pending_auto_save = True
@@ -905,7 +909,7 @@ async def sweep_locations(ctx: "AE3Context", batch: list[str]):
         if ctx.ipc.is_location_checked(location):
             cleared.add(ctx.locations_name_to_id[name])
 
-    ctx.locations_checked.update(cleared)
+    ctx.update_locations_checked(cleared)
 
     # Update Server for Locations checked that it did not know is checked
     cleared = cleared.difference(ctx.checked_locations)
@@ -921,11 +925,11 @@ async def handle_collection_shop_item_recheck(ctx: "AE3Context"):
 
     cleared: set[int] = set()
     for category in SHOP_COLLECTION_DIRECTORY.keys():
-        category_item_ids: set[int] = set(
+        category_item_ids: set[int] = {
             ctx.locations_name_to_id[item]
             for item in SHOP_CATEGORIES_COLLECTION_DIRECTORY[category]
             if item not in SHOP_PERSISTENT_MASTER
-        )
+        }
 
         amount_checked: int = len(category_item_ids.intersection(ctx.locations_checked))
 
@@ -935,7 +939,7 @@ async def handle_collection_shop_item_recheck(ctx: "AE3Context"):
             )
             ctx.locations_checked.difference_update(category_item_ids)
 
-    ctx.locations_checked.update(cleared)
+    ctx.update_locations_checked(cleared)
 
     if cleared and ctx.server:
         await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
