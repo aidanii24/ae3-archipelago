@@ -507,7 +507,7 @@ class AE3Context(SuperContext):
     # Server Properties and Cache
     next_item_slot: int = -1
     pending_auto_save: bool = False
-    is_last_save_normal: bool = False
+    is_last_save_normal: bool = True
     pending_last_save_status: bool = False
     has_saved_on_transition: bool = True
     has_attempted_auto_load: bool = False
@@ -623,6 +623,7 @@ class AE3Context(SuperContext):
 
         self.tags: set[str] = {"AP"}
         self.location_groups: list[list[str]] = [[*locations] for locations in LOCATIONS_INDEX.values()]
+        self.locations_checked = set()
         self.cache_missing = self.location_groups.copy()
 
         self.ipc = AEPS2Interface(logger)
@@ -825,15 +826,15 @@ class AE3Context(SuperContext):
                 self.shuffle_channel = data[APHelper.shuffle_channel.value]
 
             ## Camerasanity
-            if self.camerasanity is None and APHelper.camerasanity.value in data:
+            if APHelper.camerasanity.value in data:
                 self.camerasanity = data[APHelper.camerasanity.value]
 
             ## Cellphonesanity
-            if self.cellphonesanity is None and APHelper.cellphonesanity.value in data:
+            if APHelper.cellphonesanity.value in data:
                 self.cellphonesanity = data[APHelper.cellphonesanity.value]
 
             ## Shoppingsanity
-            if self.shoppingsanity is None and APHelper.shoppingsanity.value in data:
+            if APHelper.shoppingsanity.value in data:
                 self.shoppingsanity = data[APHelper.shoppingsanity.value]
 
                 if self.shoppingsanity >= 3 and APHelper.shop_progression.value in data:
@@ -1197,7 +1198,7 @@ class AE3Context(SuperContext):
             {
                 "label_text": category,
                 "value_text": f"{values[0]}/{values[1]}",
-                "indidcator_value": math.floor(values[0] / values[1] * 100),
+                "indicator_value": math.floor(values[0] / values[1] * 100),
             }
             for category, values in raw.items()
         ]
@@ -1246,10 +1247,10 @@ class AE3Context(SuperContext):
 
         if self.camerasanity and channel_name in Locations.CAMERAS_DIRECTORY:
             target: int = self.locations_name_to_id.get(Locations.CAMERAS_DIRECTORY[channel_name], 0)
-            is_cleared: bool = target in self.locations_checkeced
+            is_cleared: bool = target in self.locations_checked
             data.append(
                 {
-                    "label_text": "Boss",
+                    "label_text": "Pipo Camera",
                     "value_text": f"{int(is_cleared)}/1",
                     "indicator_value": math.floor(int(is_cleared) / 1 * 100),
                 }
@@ -1262,7 +1263,7 @@ class AE3Context(SuperContext):
             cleared_phones: set[int] = self.locations_checked.intersection(phones)
             data.append(
                 {
-                    "label_text": "Boss",
+                    "label_text": "Cellphones",
                     "value_text": f"{len(cleared_phones)}/{len(phones)}",
                     "indicator_value": math.floor(len(cleared_phones) / len(phones) * 100),
                 }
@@ -1397,7 +1398,6 @@ async def check_game(ctx: AE3Context):
             if ctx.is_last_save_normal is not None and not ctx.is_last_save_normal:
                 ctx.ipc.load_state(ctx.state_slot)
 
-            if ctx.is_last_save_normal is not None:
                 ctx.has_attempted_auto_load = True
 
         if ctx.ipc.is_in_control():
