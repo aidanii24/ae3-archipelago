@@ -283,7 +283,6 @@ class QuickStatusPanel(MDBoxLayout):
         to_hide: list[Widget] = []
 
         for i, (wid, widget) in enumerate(self.displays.items()):
-            print(wid, widget)
             if not widget:
                 continue
 
