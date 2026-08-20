@@ -1075,6 +1075,9 @@ class AE3Context(SuperContext):
             self.change_qsp_display_mode(QSPDisplayMode.CHANNEL_OVERVIEW)
             self.lock_qsp_channel_label()
 
+            if self.in_shopping_area:
+                checker.set_persistent_values(self)
+
     def change_on_warp_gate_state(self, value: bool):
         if value == self.is_on_warp_gate:
             return
@@ -1455,7 +1458,7 @@ async def check_game(ctx: AE3Context):
 
                 if ctx.current_channel == APHelper.shopping_area.value:
                     ctx.in_shopping_area = True
-                    await checker.set_persistent_values(ctx)
+                    checker.set_persistent_values(ctx)
 
                     ctx.lock_qsp_channel_label(Stage.travel_station_b.value)
             elif ctx.is_on_warp_gate:
@@ -1479,7 +1482,7 @@ async def check_game(ctx: AE3Context):
                 ctx.in_shopping_area = True
                 ctx.is_using_data_desk = False
 
-                await checker.rebuild_persistent_values(ctx)
+                checker.set_persistent_values(ctx)
             else:
                 ctx.is_using_data_desk = False
 

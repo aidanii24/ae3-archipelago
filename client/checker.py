@@ -332,7 +332,7 @@ async def setup_shopping_area(ctx: "AE3Context"):
         ctx.current_coins = ctx.ipc.get_coins()
 
 
-async def set_persistent_values(ctx: "AE3Context"):
+def set_persistent_values(ctx: "AE3Context"):
     stocks: int = ctx.ipc.get_morph_stock()
     ctx.ipc.set_persistent_morph_stock_value(stocks)
 
