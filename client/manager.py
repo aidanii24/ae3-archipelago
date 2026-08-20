@@ -9,7 +9,7 @@ from argparse import ArgumentParser, Namespace
 from collections.abc import Sequence
 
 import Utils
-from CommonClient import ClientStatus, handle_url_arg, logger
+from CommonClient import handle_url_arg, logger
 from settings import get_settings
 
 from .. import AE3Settings
@@ -1043,6 +1043,88 @@ class AE3Context(SuperContext):
 
         self.pending_deathlinks += 1
 
+    def update_locations_checked(self, locations: set):
+        self.locations_checked.update(locations)
+
+        self.update_overview()
+
+    def change_channel(self, new_channel: str):
+        if new_channel == self.current_channel:
+            return
+
+        self.current_channel = new_channel
+
+        if not new_channel:
+            return
+
+        if new_channel == APHelper.travel_station.value:
+            self.in_shopping_area = False
+
+            self.change_qsp_display_mode(QSPDisplayMode.GENERAL)
+        else:
+            self.in_shopping_area = new_channel == APHelper.shopping_area.value
+            self.in_travel_station = False
+
+            self.change_qsp_display_mode(QSPDisplayMode.CHANNEL_OVERVIEW)
+
+    def change_on_warp_gate_state(self, value: bool):
+        if value == self.is_on_warp_gate:
+            return
+
+        self.is_on_warp_gate = value
+
+        if value:
+            self.change_qsp_display_mode(QSPDisplayMode.CHANNEL_SELECT)
+            self.update_overview()
+        else:
+            self.change_qsp_display_mode(QSPDisplayMode.GENERAL)
+
+    def change_current_active_channel_selection(self, value: int):
+        processed: int = min(max(0, value), self.unlocked_channels)
+        if processed == self.current_active_channel_selection:
+            return
+
+        self.current_active_channel_selection = processed
+
+        self.quick_status_panel.update_active_channel_index(processed)
+
+    def update_unlocked_channels(self, unlocked: int):
+        if self.unlocked_channels == unlocked:
+            return
+
+        self.unlocked_channels = unlocked
+
+        self.set_qsp_channel_labels()
+
+    def check_pgc(self) -> bool:
+        current: dict = self.post_game_condition.get_progress(self)
+        if current != self.last_pgc_status and self.is_cache_built:
+            ds_handler: DataStorageHandler = self.protocol.create_datastorage_setter(
+                APHelper.data_pgc.value,
+                {},
+            )
+            ds_handler.update(current)
+            ds_handler.end()
+
+            self.last_pgc_status = current
+
+            self.quick_status_panel.update_pgc_status(self.get_formatted_pgc_progress())
+
+        if self.post_game_condition.passed:
+            return True
+        if self.post_game_condition.check(self):
+            self.ipc.set_pgc_cache()
+            return True
+
+        return False
+
+    def goal(self):
+        if self.game_goaled:
+            return
+
+        self.protocol.update_status(ClientStatus.CLIENT_GOAL)
+        self.game_goaled = True
+
     # Client Command GUI
     def make_gui(self):
         ui = super().make_gui()
@@ -1070,18 +1152,6 @@ class AE3Context(SuperContext):
             self.ipc.subscribe_on_port_change(self.quick_status_panel.update_game_port)
 
             self.change_qsp_display_mode()
-
-    def update_locations_checked(self, locations: set):
-        self.locations_checked.update(locations)
-
-        self.update_overview()
-
-    def update_overview(self):
-        data: list[dict[str, typing.Any]] = self.generate_qsp_overview_data()
-        if not data:
-            return
-
-        self.quick_status_panel.update_overview_status(data)
 
     def generate_qsp_overview_data(self) -> list[dict[str, typing.Any]]:
         if self.shoppingsanity and self.current_channel == APHelper.shopping_area.value:
@@ -1188,82 +1258,18 @@ class AE3Context(SuperContext):
 
         return data
 
-    def check_pgc(self) -> bool:
-        current: dict = self.post_game_condition.get_progress(self)
-        if current != self.last_pgc_status and self.is_cache_built:
-            ds_handler: DataStorageHandler = self.protocol.create_datastorage_setter(
-                APHelper.data_pgc.value,
-                {},
-            )
-            ds_handler.update(current)
-            ds_handler.end()
+    def get_formatted_pgc_progress(self) -> list[dict]:
+        formatted_pgc: list[dict] = []
+        for pgc, values in self.post_game_condition.get_progress(self).items():
+            data: dict[str, typing.Any] = {
+                "label_text": pgc,
+                "value_text": f"{values[0]}/{values[1]}",
+                "indicator_value": math.floor(values[0] / values[1] * 100),
+            }
 
-            self.last_pgc_status = current
+            formatted_pgc.append(data)
 
-            self.quick_status_panel.update_pgc_status(self.get_formatted_pgc_progress())
-
-        if self.post_game_condition.passed:
-            return True
-        if self.post_game_condition.check(self):
-            self.ipc.set_pgc_cache()
-            return True
-
-        return False
-
-    def goal(self):
-        if self.game_goaled:
-            return
-
-        self.protocol.update_status(ClientStatus.CLIENT_GOAL)
-        self.game_goaled = True
-
-    def change_channel(self, new_channel: str):
-        if new_channel == self.current_channel:
-            return
-
-        self.current_channel = new_channel
-
-        if not new_channel:
-            return
-
-        if new_channel == APHelper.travel_station.value:
-            self.in_shopping_area = False
-
-            self.change_qsp_display_mode(QSPDisplayMode.GENERAL)
-        else:
-            self.in_shopping_area = new_channel == APHelper.shopping_area.value
-            self.in_travel_station = False
-
-            self.change_qsp_display_mode(QSPDisplayMode.CHANNEL_OVERVIEW)
-
-    def change_on_warp_gate_state(self, value: bool):
-        if value == self.is_on_warp_gate:
-            return
-
-        self.is_on_warp_gate = value
-
-        if value:
-            self.change_qsp_display_mode(QSPDisplayMode.CHANNEL_SELECT)
-            self.update_overview()
-        else:
-            self.change_qsp_display_mode(QSPDisplayMode.GENERAL)
-
-    def change_current_active_channel_selection(self, value: int):
-        processed: int = min(max(0, value), self.unlocked_channels)
-        if processed == self.current_active_channel_selection:
-            return
-
-        self.current_active_channel_selection = processed
-
-        self.quick_status_panel.update_active_channel_index(processed)
-
-    def update_unlocked_channels(self, unlocked: int):
-        if self.unlocked_channels == unlocked:
-            return
-
-        self.unlocked_channels = unlocked
-
-        self.set_qsp_channel_labels()
+        return formatted_pgc
 
     def change_qsp_display_mode(self, mode: QSPDisplayMode | int = 0):
         if not self.server:
@@ -1278,18 +1284,12 @@ class AE3Context(SuperContext):
         self.quick_status_panel.set_channel_select_preview_labels(labels)
         self.quick_status_panel.update_active_channel_index(self.current_active_channel_selection)
 
-    def get_formatted_pgc_progress(self) -> list[dict]:
-        formatted_pgc: list[dict] = []
-        for pgc, values in self.post_game_condition.get_progress(self).items():
-            data: dict[str, typing.Any] = {
-                "label_text": pgc,
-                "value_text": f"{values[0]}/{values[1]}",
-                "indicator_value": math.floor(values[0] / values[1] * 100),
-            }
+    def update_overview(self):
+        data: list[dict[str, typing.Any]] = self.generate_qsp_overview_data()
+        if not data:
+            return
 
-            formatted_pgc.append(data)
-
-        return formatted_pgc
+        self.quick_status_panel.update_overview_status(data)
 
 
 def update_connection_status(ctx: AE3Context, status: bool):
