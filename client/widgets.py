@@ -163,7 +163,7 @@ QUICK_STATUS_PANEL_KV: str = dedent(
                 size_hint_y: None
                 height: math.ceil(len(self.data) / 3) * dp(60)
                 MDRecycleGridLayout:
-                    cols: 3
+                    cols: min(len(self.parent.data), 3)
                     spacing: 20
                     default_size: None, dp(40)
                     default_size_hint: 1, None
