@@ -1274,6 +1274,52 @@ class AE3Context(SuperContext):
 
         return data
 
+    def generate_qsp_shoppingsanity_overview_availability_data(self) -> dict[str, typing.Any]:
+        data: dict = {"label_text": "Shop Availability"}
+
+        if self.shoppingsanity == 3:
+            is_pgc_complete: bool = self.check_pgc()
+
+            value: int = self.keys + 1 + int(is_pgc_complete)
+
+            initial: int = self.shop_progression - 1
+            progress: int = self.keys * self.shop_progression + initial
+            if progress >= 27 and not self.check_pgc():
+                progress = math.floor((28 - self.shop_progression) / self.shop_progression) * self.shop_progression - 1
+            percent: float = min(progress, 27) / 27 * 100
+
+            data["value_text"] = f"Channel Sets: {value}/{len(self.progression.progression) - 1}"
+
+            data["indicator_value"] = percent
+        elif self.shoppingsanity == 4:
+            progress: int = self.ctx.shop_progress
+            stocks: int = int((progress + 1) / self.shop_progression) - 1
+            target: int = math.ceil(28 / self.shop_progression) - 1
+            data["value_text"] = f"Shop Stocks: {stocks}/{target}"
+            if self.extra_shop_stocks:
+                all_stocks: int = self.restock_progression + self.extra_shop_stocks
+                data["value_text"] += f" + {self.extra_shop_stocks} ({all_stocks})"
+
+            data["indicator_value"] = math.floor(stocks / target * 100)
+        else:
+            data["value_text"] = "Complete"
+            data["indicator_value"] = 100
+
+        return data
+
+    def get_qsp_channel_overview_total(self, ov_data: list[dict]) -> dict[str, typing.Any]:
+        data: dict = {"label_text": "Total Progress"}
+
+        progress: float = 0.0
+        for d in ov_data:
+            progress += d.get("indicator_value", 0)
+        progress /= len(ov_data)
+
+        data["value_text"] = f"{progress}%"
+        data["indicator_value"] = progress
+
+        return data
+
     def get_formatted_pgc_progress(self) -> list[dict]:
         formatted_pgc: list[dict] = []
         for pgc, values in self.post_game_condition.get_progress(self).items():
@@ -1313,7 +1359,13 @@ class AE3Context(SuperContext):
         self.quick_status_panel.set_channel_select_preview_labels([channel_name])
 
         data = self.generate_qsp_overview_data(channel_name)
-        self.quick_status_panel.update_overview_status(data)
+        progress: dict[str, typing.Any] = {}
+        if channel_name == Stage.travel_station_b.value:
+            progress = self.generate_qsp_shoppingsanity_overview_availability_data()
+        else:
+            progress = self.get_qsp_channel_overview_total(data)
+
+        self.quick_status_panel.update_overview_status(data, progress)
 
         self.quick_status_panel.update_active_channel_index(0)
 
@@ -1322,7 +1374,13 @@ class AE3Context(SuperContext):
         if not data:
             return
 
-        self.quick_status_panel.update_overview_status(data)
+        progress: dict[str, typing.Any] = {}
+        if CHANNEL_ID_TO_NAME.get(self.current_channel, "") == Stage.travel_station_b.value:
+            progress = self.generate_qsp_shoppingsanity_overview_availability_data()
+        else:
+            progress = self.get_qsp_channel_overview_total(data)
+
+        self.quick_status_panel.update_overview_status(data, progress)
 
 
 def update_connection_status(ctx: AE3Context, status: bool):

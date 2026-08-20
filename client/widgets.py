@@ -192,9 +192,9 @@ QUICK_STATUS_PANEL_KV: str = dedent(
                     spacing: 150
                     adaptive_size: True
             MDBoxLayout:
-                id: ChannelSelectPreviewProgress
                 adaptive_height: True
                 IndicatedPairedLabelComplete:
+                    id: ChannelSelectPreviewProgress
                     label_text: 'Total'
                     value_text: ''
                     indicator_value: 0
@@ -389,12 +389,22 @@ class QuickStatusPanel(MDBoxLayout):
         csp.switch_focused_label(cspl.children[len(cspl.children) - index - 1])
         csp.scroll_to_x(scroll_ratio)
 
-    def update_overview_status(self, data: list[dict]):
+    def update_overview_status(self, data: list[dict], total: dict | None = None):
         overview_view: AE3RecycleView | None = self._get_widget_and_cache("OverviewView")
         if not overview_view:
             return
 
         overview_view.set_data(data)
+        if not total:
+            return
+
+        cspp: IndicatedPairedLabel = self._get_widget_and_cache("ChannelSelectPreviewProgress")
+        if not cspp:
+            return
+
+        cspp.set_label_text(total.get("label_text", ""))
+        cspp.set_value_text(total.get("value_text", ""))
+        cspp.set_indicator_value(total.get("indicator_value", 50))
 
 
 class AE3RecycleView(MDRecycleView):
@@ -533,7 +543,7 @@ class IndicatedLabel(MDBoxLayout):
     indicator_color: str = ColorProperty(0.0)
 
     def set_indicator_value(self, progress: float):
-        self.indicator_progress = max(min(progress, 100.0), 0.0)
+        self.indicator_value = max(min(progress, 100.0), 0.0)
 
     def on_indicator_value(self, instance, value):
         if value < 20:
