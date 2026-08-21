@@ -1290,9 +1290,9 @@ class AE3Context(SuperContext):
 
             data["value_text"] = f"Channel Sets: {value}/{len(self.progression.progression) - 1}"
 
-            data["indicator_value"] = percent
+            data["indicator_value"] = f"{percent:.2f}"
         elif self.shoppingsanity == 4:
-            progress: int = self.ctx.shop_progress
+            progress: int = self.shop_progress
             stocks: int = int((progress + 1) / self.shop_progression) - 1
             target: int = math.ceil(28 / self.shop_progression) - 1
             data["value_text"] = f"Shop Stocks: {stocks}/{target}"
@@ -1315,7 +1315,7 @@ class AE3Context(SuperContext):
             progress += d.get("indicator_value", 0)
         progress /= len(ov_data)
 
-        data["value_text"] = f"{progress}%"
+        data["value_text"] = f"{progress:.2f}%"
         data["indicator_value"] = progress
 
         return data
