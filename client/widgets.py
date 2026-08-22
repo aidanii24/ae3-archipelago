@@ -86,7 +86,6 @@ BASE_WIDGETS: str = dedent(
         orientation: 'vertical'
         adaptive_height: True
         MDBoxLayout:
-            padding: 20, 10, 20, 5
             orientation: 'horizontal'
             adaptive_height: True
             MDLabel:
