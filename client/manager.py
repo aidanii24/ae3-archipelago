@@ -1044,9 +1044,12 @@ class AE3Context(SuperContext):
         self.pending_deathlinks += 1
 
     def update_locations_checked(self, locations: set):
+        count = len(self.locations_checked)
+
         self.locations_checked.update(locations)
 
-        self.update_overview()
+        if count != len(self.locations_checked):
+            self.update_overview()
 
     def change_channel(self, new_channel: str):
         if new_channel == self.current_channel:
@@ -1098,6 +1101,7 @@ class AE3Context(SuperContext):
         self.current_active_channel_selection = processed
 
         self.quick_status_panel.update_active_channel_index(processed)
+        self.update_overview()
 
     def update_unlocked_channels(self, unlocked: int):
         if self.unlocked_channels == unlocked:

@@ -846,22 +846,18 @@ async def check_locations(ctx: "AE3Context"):
                     ctx.locations_name_to_id[item] for item in SHOP_COLLECTION_DIRECTORY[category][:category_count]
                 )
 
-    # Check for cleared locations that haven't been recorded to local state
-    if cleared.difference(ctx.locations_checked):
-        ctx.update_locations_checked(cleared)
-
     # Get newly checked locations
-    cleared = cleared.difference(ctx.checked_locations)
+    new_cleared = cleared.difference(ctx.checked_locations)
 
     # Send newly checked locations to server
-    if cleared:
-        ctx.update_locations_checked(cleared)
+    if new_cleared:
+        ctx.update_locations_checked(new_cleared)
 
         if ctx.save_state_on_location_check:
             ctx.pending_auto_save = True
 
         if ctx.server:
-            await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared}])
+            await ctx.send_msgs([{"cmd": "LocationChecks", "locations": new_cleared}])
             ctx.goal_target.check(ctx)
 
             if ctx.check_pgc():
@@ -872,7 +868,10 @@ async def check_locations(ctx: "AE3Context"):
 
             ctx.quick_status_panel.update_goal_target_status(ctx.goal_target.get_progress(ctx), ctx.goal_target.amount)
         else:
-            ctx.offline_locations_checked.update(cleared)
+            ctx.offline_locations_checked.update(new_cleared)
+    elif cleared.difference(ctx.locations_checked):
+        # Check for cleared locations that haven't been recorded to local state
+        ctx.update_locations_checked(cleared)
 
 
 async def update_offline_checked(ctx: "AE3Context"):
