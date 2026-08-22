@@ -147,8 +147,9 @@ QUICK_STATUS_PANEL_KV: str = dedent(
         size_hint_y: None
         height: self.minimum_height
         pos_hint: {'top': 1}
-        spacing: 7
+        spacing: 5
         orientation: 'vertical'
+        md_bg_color: (*self.theme_cls.surfaceContainerLowColor[:3], 0.9)
         StatusPanel:
             id: StatusPanel
             StatusLabelComplete:
