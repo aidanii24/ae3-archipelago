@@ -1290,7 +1290,7 @@ class AE3Context(SuperContext):
 
             data["value_text"] = f"Channel Sets: {value}/{len(self.progression.progression) - 1}"
 
-            data["indicator_value"] = f"{percent:.2f}"
+            data["indicator_value"] = percent
         elif self.shoppingsanity == 4:
             progress: int = self.shop_progress
             stocks: int = int((progress + 1) / self.shop_progression) - 1
