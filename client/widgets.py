@@ -3,7 +3,6 @@ from typing import Any
 
 from kivy.animation import Animation, AnimationTransition
 from kivy.properties import (
-    BooleanProperty,
     ColorProperty,
     DictProperty,
     ListProperty,
@@ -221,26 +220,25 @@ QUICK_STATUS_PANEL_KV: str = dedent(
                     spacing: 20
                     default_size: None, dp(40)
                     default_size_hint: 1, None
+        MDBoxLayout:
+            id: WidgetStash
+            size_hint: None, None
+            size: 0, 0
+            opacity: 0.0
+            disabled: True
     """
 )
 
 
 class QuickStatusPanel(MDBoxLayout):
     ids: DictProperty
-    displays: dict[str, Widget]
-    hidden: set[str]
+
+    widget_stash: MDBoxLayout
 
     display_mode: QSPDisplayMode = ObjectProperty()
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.hidden = set()
-        self.displays = {}
-
     def on_kv_post(self, widget: Widget):
-        for id, widget in self.ids.items():
-            self.displays[id] = widget
+        self.widget_stash = self.ids.get("WidgetStash")
 
     def set_display_mode(self, mode: QSPDisplayMode | int = QSPDisplayMode.MINIMAL):
         new_mode: QSPDisplayMode = QSPDisplayMode.MINIMAL
@@ -255,14 +253,30 @@ class QuickStatusPanel(MDBoxLayout):
         self.display_mode = new_mode
 
     def on_display_mode(self, instance, mode):
+        to_show: list[StatusPanelBase] = []
+        to_hide: list[StatusPanelBase] = []
+
         for widget in self.children:
             if not isinstance(widget, StatusPanelBase):
                 continue
 
+            if widget.qsp_modes and mode not in widget.qsp_modes:
+                to_hide.append(widget)
+
+        for widget in self.widget_stash.children:
+            if not isinstance(widget, StatusPanelBase):
+                continue
+
             if not widget.qsp_modes or mode in widget.qsp_modes:
-                widget.is_hidden = False
-            else:
-                widget.is_hidden = True
+                to_show.append(widget)
+
+        for panel in to_hide:
+            self.remove_widget(panel)
+            self.widget_stash.add_widget(panel)
+
+        for panel in to_show:
+            self.widget_stash.remove_widget(panel)
+            self.add_widget(panel, 1)
 
     def update_game_port(self, port: int):
         status_display: StatusLabel | None = self.ids.get("StatusLabel", None)
@@ -321,7 +335,7 @@ class QuickStatusPanel(MDBoxLayout):
             data = []
 
         csp: AE3ScrollView | None = self.ids.get("ChannelSelectPreviewScroll", None)
-        if not csp or csp in self.hidden:
+        if not csp:
             return
 
         cspl: ChannelSelectPreviewLayout | None = self.ids.get("ChannelSelectPreviewLayout", None)
@@ -356,11 +370,6 @@ class QuickStatusPanel(MDBoxLayout):
 
 class StatusPanelBase(MDBoxLayout):
     qsp_modes: ListProperty
-    is_hidden = BooleanProperty(False)
-
-    def on_is_hidden(self, instance, is_hidden):
-        instance.height = 0 if is_hidden else instance.minimum_height
-        instance.opacity = 0 if is_hidden else 1.0
 
 
 class AE3RecycleView(MDRecycleView):
