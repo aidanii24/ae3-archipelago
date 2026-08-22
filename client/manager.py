@@ -1105,7 +1105,8 @@ class AE3Context(SuperContext):
 
         self.unlocked_channels = unlocked
 
-        self.set_qsp_channel_labels()
+        if self.in_travel_station:
+            self.set_qsp_channel_labels()
 
     def check_pgc(self) -> bool:
         current: dict = self.post_game_condition.get_progress(self)
