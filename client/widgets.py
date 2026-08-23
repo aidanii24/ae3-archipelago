@@ -404,7 +404,7 @@ class AE3ScrollView(ScrollView):
         self.animation.start(self)
 
     def switch_focused_label(self, new_focus: MDLabel):
-        theme_manager = MDApp.get_running_app().root.theme_cls
+        theme_manager = MDApp.get_running_app().theme_cls
 
         if self.focused_label:
             self.focused_label.bold = False
@@ -423,7 +423,7 @@ class ChannelSelectPreviewLayout(MDBoxLayout):
     current_focus: int = NumericProperty()
 
     def set_labels(self, names: list[str]):
-        theme_manager = MDApp.get_running_app().root.theme_cls
+        theme_manager = MDApp.get_running_app().theme_cls
         self.clear_labels()
 
         for d in names:
@@ -433,6 +433,7 @@ class ChannelSelectPreviewLayout(MDBoxLayout):
                 valign="middle",
                 halign="center",
                 opacity=0.6,
+                theme_text_color="Custom",
                 text_color=theme_manager.onSurfaceColor,
             )
 
