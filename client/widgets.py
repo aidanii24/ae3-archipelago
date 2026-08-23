@@ -105,6 +105,7 @@ BASE_WIDGETS: str = dedent(
                 halign: 'right'
         MDLinearProgressIndicator:
             indicator_color: self.parent.indicator_color
+            track_color: (*app.theme_cls.primaryContainerColor[:3], 0.50)
             size_hint_y: None
             height: 5
             value: self.parent.indicator_value
@@ -133,6 +134,7 @@ BASE_WIDGETS: str = dedent(
                 halign: 'right'
         MDLinearProgressIndicator:
             indicator_color: self.parent.indicator_color
+            track_color: (*app.theme_cls.primaryContainerColor[:3], 0.50)
             size_hint_y: None
             height: 5
             value: self.parent.indicator_value
