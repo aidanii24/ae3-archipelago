@@ -1230,7 +1230,7 @@ class AE3Context(SuperContext):
         if channel_id in Locations.MONKEYS_DIRECTORY:
             monkeys: set[str] = set(Locations.MONKEYS_DIRECTORY.get(channel_id, []))
             monkeys.difference_update(Locations.MONKEYS_PASSWORDS)
-            if self.check_break_rooms:
+            if not self.check_break_rooms:
                 monkeys.difference_update(Locations.MONKEYS_BREAK_ROOMS)
 
             total: list = [self.locations_name_to_id[m] for m in monkeys]
