@@ -63,9 +63,6 @@ class AEPS2Interface:
 
         # Check for Game running in PCSX2
         try:
-            if self.status is ConnectionStatus.CONNECTED:
-                self.logger.info(APConsole.Info.p_init_g.value)
-
             game_id: str = self.pine.get_game_id()
 
             self.loaded_game = None
