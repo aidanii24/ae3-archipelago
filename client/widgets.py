@@ -3,6 +3,7 @@ from typing import Any
 
 from kivy.animation import Animation, AnimationTransition
 from kivy.properties import (
+    BooleanProperty,
     ColorProperty,
     DictProperty,
     ListProperty,
@@ -203,6 +204,8 @@ QUICK_STATUS_PANEL_KV: str = dedent(
                     id: ChannelSelectPreviewLayout
                     viewport_size: self.parent.width
                     orientation: 'horizontal'
+                    focused_color: app.theme_cls.primaryColor
+                    unfocused_color: app.theme_cls.onSurfaceColor
                     spacing: 150
                     adaptive_size: True
             MDBoxLayout:
@@ -384,8 +387,30 @@ class AE3RecycleView(MDRecycleView):
         self.data = data
 
 
+class BigFocusLabel(MDLabel):
+    is_focused = BooleanProperty(False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        theme_manager = MDApp.get_running_app().theme_cls
+        theme_manager.bind(onSurfaceColor=lambda i, v: self.set_text_color())
+
+        self.on_is_focused(self, self.is_focused)
+
+    def on_is_focused(self, instance, is_focused):
+        instance.bold = is_focused
+        instance.opacity = 1.0 if is_focused else 0.6
+
+        instance.set_text_color()
+
+    def set_text_color(self):
+        theme_manager = MDApp.get_running_app().theme_cls
+        self.text_color = theme_manager.primaryColor if self.is_focused else theme_manager.onSurfaceColor
+
+
 class AE3ScrollView(ScrollView):
-    focused_label: MDLabel = ObjectProperty()
+    focused_label: BigFocusLabel = ObjectProperty()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -405,17 +430,11 @@ class AE3ScrollView(ScrollView):
 
         self.animation.start(self)
 
-    def switch_focused_label(self, new_focus: MDLabel):
-        theme_manager = MDApp.get_running_app().theme_cls
-
+    def switch_focused_label(self, new_focus: BigFocusLabel):
         if self.focused_label:
-            self.focused_label.bold = False
-            self.focused_label.text_color = theme_manager.onSurfaceColor
-            self.focused_label.opacity = 0.6
+            self.focused_label.is_focused = False
 
-        new_focus.bold = True
-        new_focus.text_color = theme_manager.primaryColor
-        new_focus.opacity = 1.0
+        new_focus.is_focused = True
 
         self.focused_label = new_focus
 
@@ -429,14 +448,13 @@ class ChannelSelectPreviewLayout(MDBoxLayout):
         self.clear_labels()
 
         for d in names:
-            label = MDLabel(
+            label = BigFocusLabel(
                 text=d,
                 adaptive_size=True,
                 valign="middle",
                 halign="center",
-                opacity=0.6,
                 theme_text_color="Custom",
-                text_color=theme_manager.onSurfaceColor,
+                is_focused=False,
             )
 
             label.font_size = "20sp"
