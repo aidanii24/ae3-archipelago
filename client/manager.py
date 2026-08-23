@@ -88,40 +88,43 @@ class AE3CommandProcessor(ClientCommandProcessor):
                 logger.info(" [-v-] Universal Tracker Integrated")
 
             logger.info(" [-o-] Game")
-            logger.info(f"         > Slot/Port: {self.ctx.ipc.active_slot}")
+            logger.info(f"{'':8}> Slot/Port: {self.ctx.ipc.active_slot}")
             if platform.system() == "Linux":
                 is_auto = self.ctx.pine_linux_platform == "auto"
-                logger.info(f"        > Platform: {self.ctx.ipc.active_platform} {'(auto)' if is_auto else ''}")
+                logger.info(f"{'':<8}> Platform: {self.ctx.ipc.active_platform} {'(auto)' if is_auto else ''}")
 
             if self.ctx.server:
                 game_status: int = self.ctx.ipc.status.value
                 pgc_complete: bool = False
                 if game_status < 0:
-                    logger.info(f"{'         Connected but playing a different game'}")
+                    logger.info(f"{'':<9}Connected to PCSX2. Playing a different game or unsupported version.")
+                    return
+                if game_status == 1:
+                    logger.info(f"{'':<9}Connected to PCSX2. No Game is running.")
                     return
                 if game_status == 0:
-                    logger.info(f"{'         Not Connected to PCSX2'}")
+                    logger.info(f"{'':<9}Not Connected to PCSX2'")
                     return
-                logger.info(f"{'         Playing Ape Escape 3'}")
+                logger.info(f"{'':<9}Playing Ape Escape 3")
 
-                logger.info(f"\n         Goal Target is {self.ctx.goal_target}")
+                logger.info(f"\n{'':<9}Goal Target is {self.ctx.goal_target}")
 
                 if game_status > 0:
                     logger.info(
-                        f"         > Progress: "
+                        f"{'':<9}> Progress: "
                         f"{self.ctx.goal_target.get_progress(self.ctx)!s} / "
                         f"{self.ctx.goal_target.amount}"
                     )
 
                 # Display required Channel Keys to unlock the End Game for Open Progression
                 if self.ctx.progression.name == "Open":
-                    logger.info("\n        Open Progression requires Channel Keys")
+                    logger.info("\n{'':<8}Open Progression requires Channel Keys")
                     open_requirements_met: bool = self.ctx.keys >= len(self.ctx.progression.progression[1:-2])
                     logger.info(
-                        f"        > Progress: "
+                        f"{'':<8}> Progress: "
                         f"{self.ctx.keys} / "
                         f"{len(self.ctx.progression.progression[1:-2])}"
-                        f"{'    [ COMPLETED! ]' if open_requirements_met else ''}"
+                        f"{'[ COMPLETED! ]' if open_requirements_met else '':>4}"
                     )
 
                 if self.ctx.post_game_condition.amounts:
@@ -134,24 +137,24 @@ class AE3CommandProcessor(ClientCommandProcessor):
                         elif i != len(self.ctx.post_game_condition.amounts.keys()) - 1:
                             post_game_conditions += ","
 
-                    logger.info(f"\n         Post-Game requires{post_game_conditions}")
+                    logger.info(f"\n{'':<9}Post-Game requires{post_game_conditions}")
 
                     if game_status > 0:
-                        logger.info("         > Progress: ")
+                        logger.info(f"{'':<9}> Progress: ")
 
                         pgc_progress: dict[str, list[int]] = self.ctx.post_game_condition.get_progress(self.ctx)
 
                         if all(v[0] >= v[1] for v in [*pgc_progress.values()]):
                             pgc_complete = True
-                            logger.info("         Post-Game Condition(s) are Complete! ")
+                            logger.info("{'':<9}Post-Game Condition(s) are Complete! ")
 
                         if pgc_progress:
                             for key, value in pgc_progress.items():
                                 prog: str = f"{value[0]} / {value[1]}"
                                 if value[0] >= value[1]:
-                                    prog += "    [ COMPLETE! ]"
+                                    prog += f"{'':>4}[ COMPLETE! ]"
 
-                                logger.info(f"                > {key}: {prog}")
+                                logger.info(f"{'':<16}> {key}: {prog}")
 
                 if game_status > 0:
                     required_keys: int = len(self.ctx.progression.progression) - 3
@@ -159,9 +162,9 @@ class AE3CommandProcessor(ClientCommandProcessor):
                         required_keys += self.ctx.post_game_condition.amounts[APHelper.keys.value]
                     all_keys: int = required_keys + self.ctx.extra_keys
 
-                    logger.info(f"\n         Progression: {self.ctx.progression}")
+                    logger.info(f"\n{'':<9}Progression: {self.ctx.progression}")
                     logger.info(
-                        f"         Channel Keys: {self.ctx.keys} / {required_keys} "
+                        f"{'':<9}Channel Keys: {self.ctx.keys} / {required_keys} "
                         f"{f'+ {self.ctx.extra_keys} ({all_keys})' if self.ctx.extra_keys else ''}"
                     )
 
@@ -177,14 +180,14 @@ class AE3CommandProcessor(ClientCommandProcessor):
                                 )
 
                             percent: float = min(progress, 27) / 27 * 100
-                            logger.info(f"         Shop Availability: {percent:.2f}%")
+                            logger.info(f"{'':<9}Shop Availability: {percent:.2f}%")
                         elif self.ctx.shoppingsanity == 4:
                             progress: int = self.ctx.shop_progress
                             stocks: int = int((progress + 1) / self.ctx.shop_progression) - 1
                             target: int = math.ceil(28 / self.ctx.shop_progression) - 1
                             all_stocks: int = self.ctx.restock_progression + self.ctx.extra_shop_stocks
                             logger.info(
-                                f"         Shop Stocks: {stocks} / {target} "
+                                f"{'':<9}Shop Stocks: {stocks} / {target} "
                                 f"""{
                                     f" ({self.ctx.restock_progression})"
                                     if self.ctx.restock_progression - 1 == stocks
@@ -197,7 +200,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
                                 }"""
                             )
                             logger.info(
-                                f"         Shop Stocks: {stocks} / {target} "
+                                f"{'':<9}Shop Stocks: {stocks} / {target} "
                                 f"""{
                                     f" ({self.ctx.restock_progression})"
                                     if self.ctx.restock_progression - 1 == stocks
@@ -211,22 +214,22 @@ class AE3CommandProcessor(ClientCommandProcessor):
                             )
 
                     logger.info(
-                        f"         Available Channels: {self.ctx.unlocked_channels + 1} / "
+                        f"{'':<9}Available Channels: {self.ctx.unlocked_channels + 1} / "
                         f"{sum(self.ctx.progression.progression[:-1]) + 1}"
                     )
 
             else:
-                logger.info("         Disconnected from Server")
+                logger.info("{'':<9}Disconnected from Server")
 
             logger.info("\n [-=-] Settings")
-            logger.info(f"         Auto-Equip is {'ENABLED' if self.ctx.auto_equip else 'DISABLED'}")
+            logger.info(f"{'':<9}Auto-Equip is {'ENABLED' if self.ctx.auto_equip else 'DISABLED'}")
 
             if self.ctx.early_free_play:
-                logger.info(f"         Freeplay Toggle is {'ENABLED' if self.ctx.alt_freeplay else 'DISABLED'}")
+                logger.info(f"{'':<9}Freeplay Toggle is {'ENABLED' if self.ctx.alt_freeplay else 'DISABLED'}")
             else:
-                logger.info("         Early Freeplay is DISABLED and Freeplay Toggle cannot be toggled.")
+                logger.info("{'':<9}Early Freeplay is DISABLED and Freeplay Toggle cannot be toggled.")
 
-            logger.info(f"         DeathLink is {'ENABLED' if self.ctx.death_link else 'DISABLED'}")
+            logger.info(f"{'':<9}DeathLink is {'ENABLED' if self.ctx.death_link else 'DISABLED'}")
 
     def _cmd_channels(self):
         """List the true order of the channels"""
@@ -259,7 +262,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
                 continue
 
             if i and i < len(group_set) - 2:
-                logger.info(f"         - < {i} > -----")
+                logger.info(f"{'':<9}- < {i} > -----")
             elif i and i == len(group_set) - 1:
                 break
             elif i:
@@ -273,13 +276,13 @@ class AE3CommandProcessor(ClientCommandProcessor):
                 if not_key_condition:
                     tag += "!"
 
-                logger.info(f"         - < {tag} > -----")
+                logger.info(f"{'':<9}- < {tag} > -----")
 
             if count > self.ctx.unlocked_channels:
                 break
 
             for channels in sets:
-                logger.info(f"         [{count + 1}] {LEVELS_BY_ORDER[channels]}")
+                logger.info(f"{'':<9}[{count + 1}] {LEVELS_BY_ORDER[channels]}")
                 count += 1
 
     def _cmd_remaining(self):
@@ -304,7 +307,7 @@ class AE3CommandProcessor(ClientCommandProcessor):
         remaining: list[str] = self.ctx.goal_target.get_remaining(self.ctx)
 
         for location in remaining:
-            logger.info(f"         > {location}")
+            logger.info(f"{'':<9}> {location}")
 
     def _cmd_remaining_post_game(self):
         """List remaining locations to check to unlock Post-Game."""
@@ -328,22 +331,22 @@ class AE3CommandProcessor(ClientCommandProcessor):
         logger.info(" [->-] Post Game Condition Progress: ")
 
         if all(v[0] >= v[1] for v in [*progress.values()]):
-            logger.info("         Post-Game Condition(s) are Complete! ")
+            logger.info(f"{'':<9}Post-Game Condition(s) are Complete! ")
 
         if progress:
             for key, value in progress.items():
                 prog: str = f"{value[0]} / {value[1]}"
                 if value[0] >= value[1]:
-                    prog += "    [ COMPLETE! ]"
+                    prog += f"{'':>4}[ COMPLETE! ]"
 
-                logger.info(f"                > {key}: {prog}")
+                logger.info(f"{'':<16}> {key}: {prog}")
 
         logger.info("\n Remaining Potential Post Game Condition Locations:")
 
         for category, remains in remaining.items():
-            logger.info(f"         [-/-] {category}")
+            logger.info(f"{'':<9}[-/-] {category}")
             for location in remains:
-                logger.info(f"                  > {location}")
+                logger.info(f"{'':<18}> {location}")
 
     def _cmd_auto_equip(self):
         """Toggle if Gadgets should automatically be assigned to a free face button when received."""
@@ -1408,8 +1411,10 @@ def update_connection_status(ctx: AE3Context, status: bool):
 async def main_sync_task(ctx: AE3Context):
     # Greetings
     logger.info(APConsole.Info.decor.value)
-    logger.info("    " + APConsole.Info.greet.value)
-    logger.info("    World v" + APConsole.Info.world_ver.value + "    Client v" + APConsole.Info.client_ver.value)
+    logger.info(f"{APConsole.Info.greet.value:<4}")
+    logger.info(
+        f"{'World v':<4}" + APConsole.Info.world_ver.value + f"{'Client v':<4}" + APConsole.Info.client_ver.value
+    )
     logger.info(APConsole.Info.decor.value)
     logger.info("\n")
 
