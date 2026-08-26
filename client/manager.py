@@ -1411,10 +1411,8 @@ def update_connection_status(ctx: AE3Context, status: bool):
 async def main_sync_task(ctx: AE3Context):
     # Greetings
     logger.info(APConsole.Info.decor.value)
-    logger.info(f"{APConsole.Info.greet.value:<4}")
-    logger.info(
-        f"{'World v':<4}" + APConsole.Info.world_ver.value + f"{'Client v':<4}" + APConsole.Info.client_ver.value
-    )
+    logger.info(f"{'':>4}{APConsole.Info.greet.value}")
+    logger.info(f"{'':>4}World v{APConsole.Info.world_ver.value}{'':>4}Client v{APConsole.Info.client_ver.value}")
     logger.info(APConsole.Info.decor.value)
     logger.info("\n")
 
