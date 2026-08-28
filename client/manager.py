@@ -1228,7 +1228,20 @@ class AE3Context(SuperContext):
             channel_id = [*CHANNEL_ID_TO_NAME.keys()][[*CHANNEL_ID_TO_NAME.values()].index(channel_name)]
 
         print(channel_id, channel_name)
-        if channel_id in Locations.MONKEYS_DIRECTORY:
+        if channel_id.startswith("b_") and channel_id[-1].isdigit():
+            boss_index: int = int(channel_id[-1])
+
+            if 0 < boss_index < len(Locations.MONKEYS_BOSSES):
+                target: int = self.locations_name_to_id.get(Locations.MONKEYS_BOSSES[boss_index - 1], 0)
+                is_cleared: bool = target in self.locations_checked
+                data.append(
+                    {
+                        "label_text": "Boss",
+                        "value_text": f"{int(is_cleared)}/1",
+                        "indicator_value": math.floor(int(is_cleared) / 1 * 100),
+                    }
+                )
+        elif channel_id in Locations.MONKEYS_DIRECTORY:
             monkeys: set[str] = set(Locations.MONKEYS_DIRECTORY.get(channel_id, []))
             monkeys.difference_update(Locations.MONKEYS_PASSWORDS)
             if not self.check_break_rooms:
@@ -1243,19 +1256,6 @@ class AE3Context(SuperContext):
                     "indicator_value": math.floor(len(cleared_monkeys) / len(total) * 100),
                 }
             )
-        elif channel_id.startswith("b_") and channel_id[-1].isdigit():
-            boss_index: int = int(channel_id[-1])
-
-            if 0 < boss_index < len(Locations.MONKEYS_BOSSES):
-                target: int = self.locations_name_to_id.get(Locations.MONKEYS_BOSSES[boss_index - 1], 0)
-                is_cleared: bool = target in self.locations_checked
-                data.append(
-                    {
-                        "label_text": "Boss",
-                        "value_text": f"{int(is_cleared)}/1",
-                        "indicator_value": math.floor(int(is_cleared) / 1 * 100),
-                    }
-                )
 
         if self.camerasanity and channel_name in Locations.CAMERAS_DIRECTORY:
             target: int = self.locations_name_to_id.get(Locations.CAMERAS_DIRECTORY[channel_name], 0)
