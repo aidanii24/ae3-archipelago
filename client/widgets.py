@@ -303,7 +303,7 @@ class QuickStatusPanel(MDBoxLayout):
         if not status_display:
             return
 
-        status_display.set_status_text(f"Port: {port}")
+        status_display.set_status_text(f"Slot: {port}")
 
     def update_game_status(self, status: ConnectionStatus):
         status_display: StatusLabel | None = self.ids.get("StatusLabel", None)
