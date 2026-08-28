@@ -234,7 +234,7 @@ QUICK_STATUS_PANEL_KV: str = dedent(
                     id: OverviewView
                     viewclass: 'IndicatedPairedLabelComplete'
                     size_hint_y: None
-                    height: math.ceil(len(self.data) / 3) * dp(50)
+                    height: math.ceil(len(self.data) / 3) * dp(60)
                     MDRecycleGridLayout:
                         cols: min(len(self.parent.data), 3)
                         spacing: 20
