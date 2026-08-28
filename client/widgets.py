@@ -14,6 +14,7 @@ from kivy.properties import (
 from kivy.uix.widget import Widget
 from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
 from kivymd.uix.recycleview import MDRecycleView
 from kivymd.uix.scrollview import ScrollView
@@ -29,7 +30,6 @@ BASE_WIDGETS: str = dedent(
         qsp_index_hint: 0
         qsp_modes: []
         orientation: 'vertical'
-        size_hint_x: 0.98
         adaptive_height: True
         pos_hint: {'center_x': 0.5}
         padding: 20, 10
@@ -150,81 +150,96 @@ QUICK_STATUS_PANEL_KV: str = dedent(
         size_hint_y: None
         height: self.minimum_height
         pos_hint: {'top': 1}
-        spacing: 5
+        spacing: dp(5)
+        padding: dp(12), dp(5)
         orientation: 'vertical'
         md_bg_color: (*self.theme_cls.surfaceContainerLowColor[:3], 0.9)
         StatusPanel:
             id: StatusPanel
-            StatusLabelComplete:
-                id: StatusLabel
-                label_text: 'Game Status'
-                value_text: 'Waiting for PCSX2'
-                status_text: 'Port: 28011'
-                value_color: app.theme_cls.onSurfaceColor
-        StatusPanel:
-            id: GoalPanel
-            qsp_modes: [10]
-            IndicatedStatusLabelComplete:
-                id: GoalLabel
-                label_text: 'Goal Target'
-                value_text: 'Goal Unknown'
-                status_text: '0/0'
-                value_color: app.theme_cls.onSurfaceColor
-        StatusPanel:
-            id: PostGameConditionPanel
-            qsp_modes: [10]
-            padding: 20, 20, 20, 0
-            spacing: 20
-            MDLabel:
-                text: "Post Game Conditions (Final Channel Set Unlock)"
-                color: self.theme_cls.onSurfaceColor
-                bold: True
-            AE3RecycleView:
-                id: PostGameConditionView
-                viewclass: 'IndicatedPairedLabelComplete'
-                size_hint_y: None
-                height: math.ceil(len(self.data) / 3) * dp(60)
-                MDRecycleGridLayout:
-                    cols: min(len(self.parent.data), 3)
-                    spacing: 20
-                    default_size: None, dp(40)
-                    default_size_hint: 1, None
-        StatusPanel:
-            id: ChannelSelectPreviewPanel
-            qsp_modes: [20, 30]
-            padding: 20, 10, 20, 0
-            spacing: 10
-            AE3ScrollView:
-                id: ChannelSelectPreviewScroll
-                size_hint_y: None
-                do_scroll_x: True
-                do_scroll_y: False
-                height: dp(30)
-                ChannelSelectPreviewLayout:
-                    id: ChannelSelectPreviewLayout
-                    viewport_size: self.parent.width
-                    orientation: 'horizontal'
-                    focused_color: app.theme_cls.primaryColor
-                    unfocused_color: app.theme_cls.onSurfaceColor
-                    spacing: 150
-                    adaptive_size: True
+            style: "elevated"
             MDBoxLayout:
                 adaptive_height: True
-                IndicatedPairedLabelComplete:
-                    id: ChannelSelectPreviewProgress
-                    label_text: 'Total'
-                    value_text: ''
-                    indicator_value: 0
-            AE3RecycleView:
-                id: OverviewView
-                viewclass: 'IndicatedPairedLabelComplete'
-                size_hint_y: None
-                height: math.ceil(len(self.data) / 3) * dp(50)
-                MDRecycleGridLayout:
-                    cols: min(len(self.parent.data), 3)
-                    spacing: 20
-                    default_size: None, dp(40)
-                    default_size_hint: 1, None
+                StatusLabelComplete:
+                    id: StatusLabel
+                    label_text: 'Game Status'
+                    value_text: 'Waiting for PCSX2'
+                    status_text: 'Port: 28011'
+                    value_color: app.theme_cls.onSurfaceColor
+        StatusPanel:
+            qsp_modes: [10]
+            style: "elevated"
+            MDBoxLayout:
+                id: GoalPanel
+                adaptive_height: True
+                IndicatedStatusLabelComplete:
+                    id: GoalLabel
+                    label_text: 'Goal Target'
+                    value_text: 'Goal Unknown'
+                    status_text: '0/0'
+                    value_color: app.theme_cls.onSurfaceColor
+        StatusPanel:
+            qsp_modes: [10]
+            style: "elevated"
+            padding: dp(20), dp(20), dp(20), 0
+            MDBoxLayout:
+                orientation: "vertical"
+                id: PostGameConditionPanel
+                adaptive_height: True
+                spacing: dp(20)
+                MDLabel:
+                    text: "Post Game Conditions (Final Channel Set Unlock)"
+                    color: self.theme_cls.onSurfaceColor
+                    bold: True
+                AE3RecycleView:
+                    id: PostGameConditionView
+                    viewclass: 'IndicatedPairedLabelComplete'
+                    size_hint_y: None
+                    height: math.ceil(len(self.data) / 3) * dp(60)
+                    MDRecycleGridLayout:
+                        cols: min(len(self.parent.data), 3)
+                        spacing: 20
+                        default_size: None, dp(40)
+                        default_size_hint: 1, None
+        StatusPanel:
+            qsp_modes: [20, 30]
+            style: "elevated"
+            padding: dp(20), dp(10), dp(20), 0
+            MDBoxLayout:
+                id: ChannelSelectPreviewPanel
+                orientation: "vertical"
+                adaptive_height: True
+                spacing: dp(10)
+                AE3ScrollView:
+                    id: ChannelSelectPreviewScroll
+                    size_hint_y: None
+                    do_scroll_x: True
+                    do_scroll_y: False
+                    height: dp(30)
+                    ChannelSelectPreviewLayout:
+                        id: ChannelSelectPreviewLayout
+                        viewport_size: self.parent.width
+                        orientation: 'horizontal'
+                        focused_color: app.theme_cls.primaryColor
+                        unfocused_color: app.theme_cls.onSurfaceColor
+                        spacing: dp(150)
+                        adaptive_size: True
+                MDBoxLayout:
+                    adaptive_height: True
+                    IndicatedPairedLabelComplete:
+                        id: ChannelSelectPreviewProgress
+                        label_text: 'Total'
+                        value_text: ''
+                        indicator_value: 0
+                AE3RecycleView:
+                    id: OverviewView
+                    viewclass: 'IndicatedPairedLabelComplete'
+                    size_hint_y: None
+                    height: math.ceil(len(self.data) / 3) * dp(50)
+                    MDRecycleGridLayout:
+                        cols: min(len(self.parent.data), 3)
+                        spacing: 20
+                        default_size: None, dp(40)
+                        default_size_hint: 1, None
         MDBoxLayout:
             id: WidgetStash
             size_hint: None, None
@@ -373,7 +388,7 @@ class QuickStatusPanel(MDBoxLayout):
         cspp.set_indicator_value(total.get("indicator_value", 50))
 
 
-class StatusPanelBase(MDBoxLayout):
+class StatusPanelBase(MDCard):
     qsp_modes: ListProperty
 
 
@@ -487,10 +502,12 @@ class ChannelSelectPreviewLayout(MDBoxLayout):
         if not self.viewport_size or not self.children:
             return
 
+        viewport_size = self.parent.width - self.parent.parent.padding[0] - self.parent.parent.padding[2]
+
         first: MDLabel = self.children[0]
         last: MDLabel = self.children[-1]
 
-        first.padding = [0, 0, self.viewport_size / 2 - first.width / 2, 0]
+        first.padding = [0, 0, viewport_size / 2 - first.width, 0]
         last.padding = [self.viewport_size / 2 - last.width / 2, 0, 0, 0]
 
 
