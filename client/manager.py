@@ -1233,10 +1233,10 @@ class AE3Context(SuperContext):
             channel_id = [*CHANNEL_ID_TO_NAME.keys()][[*CHANNEL_ID_TO_NAME.values()].index(channel_name)]
 
         if channel_id.startswith("b_") and channel_id[-1].isdigit():
-            boss_index: int = int(channel_id[-1])
+            boss_index: int = int(channel_id[-1]) - 1
 
-            if 0 < boss_index < len(Locations.MONKEYS_BOSSES):
-                target: int = self.locations_name_to_id.get(Locations.MONKEYS_BOSSES[boss_index - 1], 0)
+            if -1 < boss_index < len(Locations.MONKEYS_BOSSES):
+                target: int = self.locations_name_to_id.get(Locations.MONKEYS_BOSSES[boss_index], 0)
                 is_cleared: bool = target in self.locations_checked
                 data.append(
                     {
