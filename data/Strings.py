@@ -738,7 +738,7 @@ class Loc(BaseEnum):
     cell_022sf = 'Red Cellphone "Tank Tutorial" - Winterville'
     cell_022pl = 'Blue Cellphone "Tank Tutorial - Redux" - Airplane Squadron'
     cell_023 = 'Red Cellphone "Miracle Ninja Reminder" - The Emperor\'s Castle'
-    cell_024 = 'Blue Cellphone"What does the Insignia mean?" - The Emperor\'s Castle'
+    cell_024 = 'Blue Cellphone "What does the Insignia mean?" - The Emperor\'s Castle'
     cell_025 = 'Blue Cellphone "Walking on Tightropes" - The Emperor\'s Castle'
     cell_026 = 'Blue Cellphone "Tiptoe Tutorial" - The Emperor\'s Castle'
     cell_028 = 'Red Cellphone "Sky Flyer Reminder" - Mount Amazing'
