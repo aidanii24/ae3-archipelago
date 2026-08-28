@@ -10,6 +10,7 @@ from collections.abc import Sequence
 
 import Utils
 from CommonClient import handle_url_arg, logger
+from NetUtils import ClientStatus
 from settings import get_settings
 
 from .. import AE3Settings

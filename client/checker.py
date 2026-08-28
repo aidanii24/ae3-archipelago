@@ -138,7 +138,7 @@ async def setup_level_select(ctx: "AE3Context"):
     # Force Unlocked Stages to be in sync with the player's chosen option,
     # maxing out at 0x1B as supported by the game
     if post_game_state and ctx.unlocked_channels < sum(ctx.progression.progression[:-1]):
-        ctx.update_unlocked_channels(progression.get_progress(ctx.keys, post_game_state))
+        ctx.update_unlocked_channels(ctx.progression.get_progress(ctx.keys, post_game_state))
 
     if ctx.ipc.get_unlocked_channels() != max(0, min(ctx.unlocked_channels, 0x1B)):
         ctx.ipc.set_unlocked_stages(ctx.unlocked_channels)
