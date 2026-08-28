@@ -18,6 +18,7 @@ from ..data.Locations import (
     CAMERAS_MASTER_ORDERED,
     CELLPHONES_MASTER_ORDERED,
     LOCATIONS_INDEX,
+    MONKEYS_BOSSES,
     MONKEYS_BREAK_ROOMS,
     MONKEYS_DIRECTORY,
     MONKEYS_MASTER,
@@ -1083,6 +1084,10 @@ class AE3Context(SuperContext):
 
             if self.in_shopping_area:
                 checker.set_persistent_values(self)
+            elif "b" in channel:
+                self.monkeys_checklist = MONKEYS_BOSSES
+            elif channel in MONKEYS_DIRECTORY:
+                self.monkeys_checklist = MONKEYS_DIRECTORY[channel]
 
     def change_on_warp_gate_state(self, value: bool):
         if value == self.is_on_warp_gate:
@@ -1227,7 +1232,6 @@ class AE3Context(SuperContext):
         else:
             channel_id = [*CHANNEL_ID_TO_NAME.keys()][[*CHANNEL_ID_TO_NAME.values()].index(channel_name)]
 
-        print(channel_id, channel_name)
         if channel_id.startswith("b_") and channel_id[-1].isdigit():
             boss_index: int = int(channel_id[-1])
 

@@ -25,7 +25,6 @@ from ..data.Locations import (
     LOCATIONS_INDEX,
     MONKEYS_BOSSES,
     MONKEYS_BREAK_ROOMS,
-    MONKEYS_DIRECTORY,
     MONKEYS_PASSWORDS,
     SHOP_BONUS_RC_CARS,
     SHOP_CATEGORIES_COLLECTION_DIRECTORY,
@@ -83,22 +82,8 @@ async def check_background_states(ctx: "AE3Context"):
             ctx.ipc.set_morph_duration(ctx.character, ctx.morph_duration, dummy)
 
     # Get which Monkey Group to actively check at the moment based on the stage
-    if not new_channel or (new_channel is None and not ctx.current_channel):
-        # Special Check for Monkey Pink as her boss stage does not provide a Stage ID
-        if ctx.ipc.is_in_pink_boss():
-            ctx.monkeys_checklist = MONKEYS_BOSSES
-            ctx.current_channel = APHelper.boss4.value
-        # Recheck locations by a number of location groups while loading
-        elif ctx.current_stage:
-            await sweep_recheck_locations(ctx)
-
-    elif new_channel != ctx.current_channel:
-        if new_channel in MONKEYS_DIRECTORY:
-            ctx.monkeys_checklist = MONKEYS_DIRECTORY[new_channel]
-        elif "b" in new_channel:
-            ctx.monkeys_checklist = MONKEYS_BOSSES
-    else:
-        return
+    if (not new_channel or (new_channel is None and not ctx.current_channel)) and ctx.current_stage:
+        await sweep_recheck_locations(ctx)
 
     if not ctx.in_travel_station and ctx.is_channel_swapped:
         ctx.is_channel_swapped = False
