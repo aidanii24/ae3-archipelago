@@ -285,11 +285,12 @@ class PostGameCondition:
         highest_scale: float = 0.0
 
         if APHelper.monkey.value in self.amounts:
-            highest_scale = max(
-                highest_scale, (self.amounts[APHelper.monkey.value] / len(self.location_ids[APHelper.monkey.value]))
+            count: int = sum(
+                [state.can_reach_location(monkey, player) for monkey in self.locations[APHelper.monkey.value]]
             )
-            if break_rooms >= 2 and self.amounts[APHelper.monkey.value] > 354:
-                rules.add(AccessRule.MONKEY)
+
+            if count < self.amounts[APHelper.monkey.value]:
+                return False
 
         if APHelper.camera.value in self.amounts:
             count: int = sum(
