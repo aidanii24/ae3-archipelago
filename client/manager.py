@@ -32,7 +32,7 @@ from ..data.Locations import (
     SHOP_UNIQUE_MASTER,
     Cellphone_Name_to_ID,
 )
-from ..data.Logic import ProgressionMode, ProgressionModeOptions
+from ..data.Logic import Open, ProgressionMode, ProgressionModeOptions
 from ..data.Rules import GoalTarget, GoalTargetOptions, PostGameCondition
 from ..data.Stages import CHANNEL_ID_TO_NAME, LEVELS_BY_ORDER, STAGES_BREAK_ROOMS
 from ..data.Strings import APConsole, APHelper, Itm, Meta, Stage
@@ -945,6 +945,7 @@ class AE3Context(SuperContext):
             self.has_archipelago_package = True
 
             self.setup_channel()
+            self.set_qsp_channel_labels()
             self.quick_status_panel.set_goal_target_status(
                 self.goal_target.name, self.goal_target.get_progress(self), self.goal_target.amount
             )
@@ -1075,7 +1076,7 @@ class AE3Context(SuperContext):
             self.in_shopping_area = False
 
             self.change_qsp_display_mode(QSPDisplayMode.GENERAL)
-            self.set_qsp_channel_labels()
+            self.quick_status_panel.unlock_channel_preview()
         else:
             self.in_shopping_area = channel == APHelper.shopping_area.value
             self.in_travel_station = False
@@ -1109,7 +1110,7 @@ class AE3Context(SuperContext):
 
         self.current_active_channel_selection = processed
 
-        self.quick_status_panel.update_active_channel_index(processed)
+        self.quick_status_panel.update_active_channel_label(LEVELS_BY_ORDER[self.progression.order[processed]])
         self.update_overview()
 
     def update_unlocked_channels(self, unlocked: int):
@@ -1358,10 +1359,34 @@ class AE3Context(SuperContext):
         if not hasattr(self, "progression"):
             return
 
-        labels: list[str] = [LEVELS_BY_ORDER[c] for c in self.progression.order[: self.unlocked_channels + 1]]
+        next_unlock_tip: str = ""
+        unlock_amount: int = 0
+        if self.keys < len(self.progression.progression) - 3:
+            if isinstance(self.progression, Open):
+                required_next: int = len(self.progression.progression[1:-3])
+                unlock_amount = len(self.progression.progression[:-3])
+
+                plurality: str = "Channel Key" + "s" if self.key < required_next else ""
+
+                if self.keys < required_next:
+                    next_unlock_tip = f"[ {required_next - self.keys} {plurality} left to Unlock ]"
+            else:
+                unlock_amount = self.progression.progression[self.keys + 1]
+                next_unlock_tip = "[ 1 Channel Key left to Unlock ]"
+        elif not self.check_pgc():
+            unlock_amount = self.progression.progression[-2]
+            next_unlock_tip = "[ Complete Post Game Condition to Unlock ]"
+
+        labels: list[str] = [
+            Stage.travel_station_b.value,
+            *[LEVELS_BY_ORDER[c] for c in self.progression.order[: self.unlocked_channels + 1]],
+            *[next_unlock_tip for _ in range(unlock_amount)],
+        ]
+
+        channel_name: str = LEVELS_BY_ORDER[self.progression.order[self.current_active_channel_selection]]
 
         self.quick_status_panel.set_channel_select_preview_labels(labels)
-        self.quick_status_panel.update_active_channel_index(self.current_active_channel_selection)
+        self.quick_status_panel.update_active_channel_label(channel_name)
 
     def lock_qsp_channel_label(self, channel_name: str = ""):
         if not channel_name:
@@ -1369,8 +1394,6 @@ class AE3Context(SuperContext):
 
             if not channel_name:
                 return
-
-        self.quick_status_panel.set_channel_select_preview_labels([channel_name])
 
         data = self.generate_qsp_overview_data(channel_name)
         progress: dict[str, typing.Any] = {}
@@ -1381,7 +1404,8 @@ class AE3Context(SuperContext):
 
         self.quick_status_panel.update_overview_status(data, progress)
 
-        self.quick_status_panel.update_active_channel_index(0)
+        self.quick_status_panel.update_active_channel_label(channel_name)
+        self.quick_status_panel.lock_channel_preview()
 
     def update_overview(self):
         data: list[dict[str, typing.Any]] = self.generate_qsp_overview_data()

@@ -1,9 +1,8 @@
+import typing
 from textwrap import dedent
 from typing import Any
 
-from kivy.animation import Animation, AnimationTransition
 from kivy.properties import (
-    BooleanProperty,
     ColorProperty,
     DictProperty,
     ListProperty,
@@ -11,13 +10,13 @@ from kivy.properties import (
     ObjectProperty,
     StringProperty,
 )
+from kivy.uix.carousel import Carousel
 from kivy.uix.widget import Widget
 from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card import MDCard
-from kivymd.uix.label import MDLabel
 from kivymd.uix.recycleview import MDRecycleView
-from kivymd.uix.scrollview import ScrollView
+from kivymd.uix.tooltip.tooltip import MDLabel
 
 from kvui import Builder
 
@@ -209,20 +208,14 @@ QUICK_STATUS_PANEL_KV: str = dedent(
                 orientation: "vertical"
                 adaptive_height: True
                 spacing: dp(10)
-                AE3ScrollView:
-                    id: ChannelSelectPreviewScroll
+                ChannelSelectPreviewCarousel:
+                    id: ChannelSelectPreviewCarousel
+                    anim_move_duration: 0.15
+                    pos_hint: {'x': 0.0}
                     size_hint_y: None
+                    height: dp(30)
                     do_scroll_x: True
                     do_scroll_y: False
-                    height: dp(30)
-                    ChannelSelectPreviewLayout:
-                        id: ChannelSelectPreviewLayout
-                        viewport_size: self.parent.width
-                        orientation: 'horizontal'
-                        focused_color: app.theme_cls.primaryColor
-                        unfocused_color: app.theme_cls.onSurfaceColor
-                        spacing: dp(150)
-                        adaptive_size: True
                 MDBoxLayout:
                     adaptive_height: True
                     IndicatedPairedLabelComplete:
@@ -345,32 +338,35 @@ class QuickStatusPanel(MDBoxLayout):
         pgc_view.set_data(data)
 
     def set_channel_select_preview_labels(self, channel_names: list[str]):
-        cspl: ChannelSelectPreviewLayout | None = self.ids.get("ChannelSelectPreviewLayout", None)
-        if not cspl:
-            return
-
-        cspl.set_labels(channel_names)
-        cspl.on_viewport_size(cspl, cspl.size)
-
-    def update_active_channel_index(self, index: int = 0, data: list[dict] | None = None):
-        if not data:
-            data = []
-
-        csp: AE3ScrollView | None = self.ids.get("ChannelSelectPreviewScroll", None)
+        csp: ChannelSelectPreviewCarousel | None = self.ids.get("ChannelSelectPreviewCarousel", None)
         if not csp:
             return
 
-        cspl: ChannelSelectPreviewLayout | None = self.ids.get("ChannelSelectPreviewLayout", None)
-        if not cspl:
+        csp.set_labels(channel_names)
+
+    def update_active_channel_label(self, channel_name: str, data: list[dict] | None = None):
+        if not data:
+            data = []
+
+        csp: ChannelSelectPreviewCarousel | None = self.ids.get("ChannelSelectPreviewCarousel", None)
+        if not csp:
             return
 
-        if index < 0 or index > len(cspl.children):
+        csp.scroll_to_label(channel_name)
+
+    def lock_channel_preview(self):
+        csp: ChannelSelectPreviewCarousel | None = self.ids.get("ChannelSelectPreviewCarousel", None)
+        if not csp:
             return
 
-        scroll_ratio: float = cspl.get_center_ratio_to_child_index(index)
+        csp.lock()
 
-        csp.switch_focused_label(cspl.children[len(cspl.children) - index - 1])
-        csp.scroll_to_x(scroll_ratio)
+    def unlock_channel_preview(self):
+        csp: ChannelSelectPreviewCarousel | None = self.ids.get("ChannelSelectPreviewCarousel", None)
+        if not csp:
+            return
+
+        csp.unlock()
 
     def update_overview_status(self, data: list[dict], total: dict | None = None):
         overview_view: AE3RecycleView | None = self.ids.get("OverviewView", None)
@@ -404,113 +400,65 @@ class AE3RecycleView(MDRecycleView):
         self.data = data
 
 
-class BigFocusLabel(MDLabel):
-    is_focused = BooleanProperty(False)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        theme_manager = MDApp.get_running_app().theme_cls
-        theme_manager.bind(onSurfaceColor=lambda i, v: self.set_text_color())
-
-        self.on_is_focused(self, self.is_focused)
-
-    def on_is_focused(self, instance, is_focused):
-        instance.bold = is_focused
-        instance.opacity = 1.0 if is_focused else 0.6
-
-        instance.set_text_color()
-
-    def set_text_color(self):
-        theme_manager = MDApp.get_running_app().theme_cls
-        self.text_color = theme_manager.primaryColor if self.is_focused else theme_manager.onSurfaceColor
-
-
-class AE3ScrollView(ScrollView):
-    focused_label: BigFocusLabel = ObjectProperty()
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-        self.animation = Animation()
-        self.is_animating: bool = False
-
-    def _set_is_animating(self, value: bool):
-        self.is_animating = value
-
-    def scroll_to_x(self, x: float = 0.0, duration: float = 0.15):
-        if self.is_animating:
-            self.animation.stop(self)
-
-        self.animation = Animation(scroll_x=x, duration=duration, transition=AnimationTransition.in_out_quad)
-        self.animation.bind(on_complete=lambda anim, widget: self._set_is_animating(False))
-
-        self.animation.start(self)
-
-    def switch_focused_label(self, new_focus: BigFocusLabel):
-        if self.focused_label:
-            self.focused_label.is_focused = False
-
-        new_focus.is_focused = True
-
-        self.focused_label = new_focus
-
-
 class ChannelSelectPreviewLayout(MDBoxLayout):
     viewport_size: float = NumericProperty()
     current_focus: int = NumericProperty()
-
-    def set_labels(self, names: list[str]):
-        theme_manager = MDApp.get_running_app().theme_cls
-        self.clear_labels()
-
-        for d in names:
-            label = BigFocusLabel(
-                text=d,
-                adaptive_size=True,
-                valign="middle",
-                halign="center",
-                theme_text_color="Custom",
-                is_focused=False,
-            )
-
-            label.font_size = "20sp"
-
-            self.add_widget(label)
 
     def clear_labels(self):
         labels: list[Widget] = list(self.children)
         for label in labels:
             self.remove_widget(label)
 
-    def get_center_ratio_to_child_index(self, index: int) -> float:
-        if not self.width:
-            return 0
 
-        reverse_index: int = len(self.children) - index - 1
-        children_to_count: list[MDLabel] = self.children[reverse_index:]
+class ChannelSelectPreviewCarousel(Carousel):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
-        cum_length: float = 0.0
-        for w in children_to_count[1:]:
-            cum_length += w.width + self.spacing
+        self.labels: dict[str, MDLabel] = {}
+        self.is_locked: bool = False
 
-        target = children_to_count[0]
-        cum_length += target.width / 2
-        cum_length += self.viewport_size * (index / len(self.children)) - self.viewport_size / 2
+        theme_manager = MDApp.get_running_app().theme_cls
+        theme_manager.bind(primaryColor=lambda i, v: self.set_label_color())
 
-        return min(max(0, cum_length / self.width), 1.0)
+    def set_labels(self, labels: typing.Iterable[str]):
+        for label in labels:
+            w = MDLabel(theme_text_color="Custom", text=label, bold=True, valign="middle", halign="center")
+            w.font_size = "20sp"
+            self.labels[label] = w
+            self.add_widget(w)
 
-    def on_viewport_size(self, instance, size):
-        if not self.viewport_size or not self.children:
+    def scroll_to_label(self, label_name: str):
+        if self.is_locked:
             return
 
-        viewport_size = self.parent.width - self.parent.parent.padding[0] - self.parent.parent.padding[2]
+        if label_name not in self.labels:
+            return
 
-        first: MDLabel = self.children[0]
-        last: MDLabel = self.children[-1]
+        if self.current_slide == self.labels[label_name]:
+            return
 
-        first.padding = [0, 0, viewport_size / 2 - first.width, 0]
-        last.padding = [self.viewport_size / 2 - last.width / 2, 0, 0, 0]
+        self.load_slide(self.labels[label_name])
+
+    def lock_to_label(self, label_name: str):
+        if self.is_locked:
+            return
+
+        self.scroll_to_label(label_name)
+        self.lock()
+
+    def lock(self):
+        self.is_locked = True
+        self.scroll_timeout = 0
+
+    def unlock(self):
+        self.is_locked = False
+        self.scroll_timeout = 200
+
+    def set_label_color(self):
+        theme_manager = MDApp().get_running_instance().theme_cls
+
+        for label in self.labels.values():
+            label.color = theme_manager.primaryColor
 
 
 class OverviewLayout(MDBoxLayout):
