@@ -1381,6 +1381,7 @@ class AE3Context(SuperContext):
             next_unlock_tip = "[ Complete Post Game Condition to Unlock ]"
 
         labels: list[str] = [
+            Stage.zero.value,
             Stage.travel_station_b.value,
             *[LEVELS_BY_ORDER[c] for c in self.progression.order[: self.unlocked_channels + 1]],
             *[next_unlock_tip for _ in range(unlock_amount)],
@@ -1411,12 +1412,15 @@ class AE3Context(SuperContext):
         self.quick_status_panel.lock_channel_preview()
 
     def update_overview(self, channel_name: str = ""):
+        if not channel_name:
+            channel_name = CHANNEL_ID_TO_NAME.get(channel_name, "")
+
         data: list[dict[str, typing.Any]] = self.generate_qsp_overview_data(channel_name)
         if not data:
             return
 
         progress: dict[str, typing.Any] = {}
-        if CHANNEL_ID_TO_NAME.get(self.current_channel, "") == Stage.travel_station_b.value:
+        if channel_name == Stage.travel_station_b.value:
             progress = self.generate_qsp_shoppingsanity_overview_availability_data()
         else:
             progress = self.get_qsp_channel_overview_total(data)
@@ -1435,14 +1439,8 @@ class AE3Context(SuperContext):
                 self.ipc.set_selected_channel(channel_index)
 
                 self.qsp_channel_preview_current_label = channel_name
-        elif channel_name == Stage.travel_station_b.value:
-            self.update_overview(Stage.travel_station_b.value)
-
-            data = self.generate_qsp_overview_data(channel_name)
-            progress: dict[str, typing.Any] = self.generate_qsp_shoppingsanity_overview_availability_data()
-
-            self.quick_status_panel.update_overview_status(data, progress)
-
+        elif channel_name in [Stage.travel_station_b.value, Stage.zero.value]:
+            self.update_overview(channel_name)
             self.qsp_channel_preview_current_label = channel_name
 
 
