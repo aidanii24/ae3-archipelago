@@ -2,13 +2,36 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import Entrance, Location, Region
 
-from .data.Stages import STAGES_BREAK_ROOMS, STAGES_DIRECTORY, STAGES_MASTER, ENTRANCES_MASTER, STAGES_DIRECTORY_LABEL, \
-    STAGES_SHOP_PROGRESSION, STAGES_FARMABLE, AE3EntranceMeta, STAGES_FARMABLE_SNEAKY_BORG
-from .data.Locations import CAMERAS_INDEX, CELLPHONES_INDEX, MONKEYS_PASSWORDS, MONKEYS_INDEX, EVENTS_INDEX, \
-    SHOP_PROGRESSION_MASTER, SHOP_PROGRESSION_MORPH, SHOP_COLLECTION_INDEX, CameraLocation, CellphoneLocation, \
-    EventMeta, MonkeyLocation, ShopItemLocation, SHOP_PROGRESSION_DIRECTORY, SHOP_EVENT_ACCESS_DIRECTORY, \
-    SHOP_PROGRESSION_75COMPLETION
+from .data.Locations import (
+    CAMERAS_INDEX,
+    CELLPHONES_INDEX,
+    EVENTS_INDEX,
+    MONKEYS_INDEX,
+    MONKEYS_PASSWORDS,
+    SHOP_COLLECTION_INDEX,
+    SHOP_EVENT_ACCESS_DIRECTORY,
+    SHOP_PROGRESSION_75COMPLETION,
+    SHOP_PROGRESSION_DIRECTORY,
+    SHOP_PROGRESSION_MASTER,
+    SHOP_PROGRESSION_MORPH,
+    CameraLocation,
+    CellphoneLocation,
+    EventMeta,
+    MonkeyLocation,
+    ShopItemLocation,
+)
 from .data.Logic import Rulesets
+from .data.Stages import (
+    ENTRANCES_MASTER,
+    STAGES_BREAK_ROOMS,
+    STAGES_DIRECTORY,
+    STAGES_DIRECTORY_LABEL,
+    STAGES_FARMABLE,
+    STAGES_FARMABLE_SNEAKY_BORG,
+    STAGES_MASTER,
+    STAGES_SHOP_PROGRESSION,
+    AE3EntranceMeta,
+)
 from .data.Strings import Stage
 
 if TYPE_CHECKING:
@@ -16,10 +39,9 @@ if TYPE_CHECKING:
 
 
 ### [< --- HELPERS --- >]
-def establish_entrance(player : int, name : str, parent_region : Region, destination : Region,
-                       ruleset : Rulesets = None):
+def establish_entrance(player: int, name: str, parent_region: Region, destination: Region, ruleset: Rulesets = None):
     """Connects the parent region to its destinations and assigns access rules where present."""
-    entrance : Entrance = Entrance(player, name, parent_region)
+    entrance: Entrance = Entrance(player, name, parent_region)
 
     if ruleset is not None and ruleset:
         entrance.access_rule = ruleset.condense(player)
@@ -27,32 +49,42 @@ def establish_entrance(player : int, name : str, parent_region : Region, destina
     parent_region.exits.append(entrance)
     entrance.connect(destination)
 
-def create_regions(world : "AE3World"):
-    entrance_rules : dict[str, Rulesets] = {**world.logic_preference.entrance_rules,
-                                            **world.shop_rules.entrance_rules,
-                                            **world.progression.generate_rules(world),}
+
+def create_regions(world: "AE3World"):
+    entrance_rules: dict[str, Rulesets] = {
+        **world.logic_preference.entrance_rules,
+        **world.shop_rules.entrance_rules,
+        **world.progression.generate_rules(world),
+    }
     # world.logic_preference.entrance_rules.update(world.progression.generate_rules(world))
 
-    add_cameras : bool = bool(world.options.camerasanity)
-    add_cellphones : bool = bool(world.options.cellphonesanity.value)
-    add_break_rooms : bool = bool(world.options.monkeysanity_break_rooms.value)
+    add_cameras: bool = bool(world.options.camerasanity)
+    add_cellphones: bool = bool(world.options.cellphonesanity.value)
+    add_break_rooms: bool = bool(world.options.monkeysanity_break_rooms.value)
 
     # Initialize Regions
-    stages : dict[str, Region] = {name : Region(name, world.player, world.multiworld) for name in STAGES_MASTER
-                                  if name not in world.shop_rules.blacklisted_stages}
-    entrances : list[AE3EntranceMeta] = [*ENTRANCES_MASTER,
-                                  *world.shop_rules.entrances,
-                                  *world.progression.level_select_entrances]
-    blacklisted_entrances : list[Entrance] = [*world.logic_preference.blacklisted_entrances,
-                                              *world.shop_rules.blacklisted_entrances]
+    stages: dict[str, Region] = {
+        name: Region(name, world.player, world.multiworld)
+        for name in STAGES_MASTER
+        if name not in world.shop_rules.blacklisted_stages
+    }
+    entrances: list[AE3EntranceMeta] = [
+        *ENTRANCES_MASTER,
+        *world.shop_rules.entrances,
+        *world.progression.level_select_entrances,
+    ]
+    blacklisted_entrances: list[Entrance] = [
+        *world.logic_preference.blacklisted_entrances,
+        *world.shop_rules.blacklisted_entrances,
+    ]
 
     # Connect Regions, building a name->Entrance lookup for indirect condition registration
-    entrance_objects : dict[str, Entrance] = {}
+    entrance_objects: dict[str, Entrance] = {}
     for entrance in entrances:
         if entrance.name in blacklisted_entrances:
             continue
 
-        ruleset : Rulesets = Rulesets()
+        ruleset: Rulesets = Rulesets()
 
         if entrance.parent in stages:
             parent = stages[entrance.parent]
@@ -71,8 +103,8 @@ def create_regions(world : "AE3World"):
         entrance_objects[entrance.name] = destination.entrances[-1]
 
     # Register Indirect Connections
-    farm_entrances : set[str] = set()
-    pgc_entrances : set[str] = set()
+    farm_entrances: set[str] = set()
+    pgc_entrances: set[str] = set()
 
     if world.options.shoppingsanity.value >= 1:
         farm_entrances.add(Stage.entrance_shop_expensive.value)
@@ -88,7 +120,7 @@ def create_regions(world : "AE3World"):
                 pgc_entrances.add(Stage.entrance_travel_ab.value)
 
     if farm_entrances:
-        farmable_stages : list[str] = [*STAGES_FARMABLE]
+        farmable_stages: list[str] = [*STAGES_FARMABLE]
         if world.options.farm_logic_sneaky_borgs.value:
             farmable_stages.extend(STAGES_FARMABLE_SNEAKY_BORG)
         farmable_regions = [region for name, region in stages.items() if name in farmable_stages]
@@ -105,9 +137,12 @@ def create_regions(world : "AE3World"):
                     world.multiworld.register_indirect_condition(region, entrance_objects[ent_name])
 
     # Define Regions
-    blacklist : list[str] = [stage for channel in world.options.blacklist_channel.value
-                             for stage in STAGES_DIRECTORY_LABEL[channel]
-                             if channel in STAGES_DIRECTORY_LABEL]
+    blacklist: list[str] = [
+        stage
+        for channel in world.options.blacklist_channel.value
+        for stage in STAGES_DIRECTORY_LABEL[channel]
+        if channel in STAGES_DIRECTORY_LABEL
+    ]
 
     for stage in stages.values():
         # Skip Blacklisted Stages
@@ -126,11 +161,11 @@ def create_regions(world : "AE3World"):
                 if not world.options.monkeysanity_passwords and monkeys in MONKEYS_PASSWORDS:
                     continue
 
-                meta : MonkeyLocation = MonkeyLocation(monkeys)
-                loc : Location = meta.to_location(world.player, stage)
+                meta: MonkeyLocation = MonkeyLocation(monkeys)
+                loc: Location = meta.to_location(world.player, stage)
 
                 # Initialize Ruleset for Location
-                ruleset : Rulesets = Rulesets()
+                ruleset: Rulesets = Rulesets()
                 if monkeys in world.logic_preference.monkey_rules.keys():
                     ruleset = world.logic_preference.monkey_rules[monkeys]
 
@@ -142,18 +177,18 @@ def create_regions(world : "AE3World"):
 
         ## Cameras
         if add_cameras and stage.name in CAMERAS_INDEX:
-            camera : str = CAMERAS_INDEX[stage.name]
-            meta : CameraLocation = CameraLocation(camera)
-            loc : Location = meta.to_location(world.player, stage)
+            camera: str = CAMERAS_INDEX[stage.name]
+            meta: CameraLocation = CameraLocation(camera)
+            loc: Location = meta.to_location(world.player, stage)
 
             # Add Access Rule for completing the stage to ensure maximum accessibility,
             # if the player chooses to require the monkey actors for the Cameras,
             # and they did not choose to have early Freeplay
             if world.options.camerasanity == 1 and not world.options.early_free_play:
-                ruleset : Rulesets = Rulesets()
+                ruleset: Rulesets = Rulesets()
                 camera_channel: str = ""
                 for channel, regions in STAGES_DIRECTORY.items():
-                    if not stage.name in regions:
+                    if stage.name not in regions:
                         continue
 
                     camera_channel = channel
@@ -170,25 +205,27 @@ def create_regions(world : "AE3World"):
         if add_cellphones:
             if stage.name in CELLPHONES_INDEX:
                 for cellphone in CELLPHONES_INDEX[stage.name]:
-                    meta : CellphoneLocation = CellphoneLocation(cellphone)
-                    loc : Location = meta.to_location(world.player, stage)
+                    meta: CellphoneLocation = CellphoneLocation(cellphone)
+                    loc: Location = meta.to_location(world.player, stage)
 
                     stage.locations.append(loc)
 
         ## Events
         if stage.name in EVENTS_INDEX:
             for event in EVENTS_INDEX[stage.name]:
-                meta : EventMeta = EventMeta(event)
-                loc : Location = meta.to_event_location(world.player, stage)
+                meta: EventMeta = EventMeta(event)
+                loc: Location = meta.to_event_location(world.player, stage)
 
                 if event in world.logic_preference.event_rules:
                     loc.access_rule = world.logic_preference.event_rules[event].condense(world.player)
 
                 stage.locations.append(loc)
 
+    world.progression.register_pgc_indirect_connections(world)
+
     # Handle Shop Regions
     shopping_area: Region = stages[Stage.travel_station_b.value]
-    expensive_area : Region = stages[Stage.region_shop_expensive.value]
+    expensive_area: Region = stages[Stage.region_shop_expensive.value]
 
     if world.options.shoppingsanity != 0:
         ## Handle Shop Items that require specific events
@@ -216,11 +253,11 @@ def create_regions(world : "AE3World"):
 
         ## Handle Morph Stocks
         if world.options.shoppingsanity != 2:
-            stocks_region : Region = stages[Stage.region_shop_morph.value]
+            stocks_region: Region = stages[Stage.region_shop_morph.value]
 
             for i, item in enumerate(SHOP_PROGRESSION_MORPH):
-                meta : ShopItemLocation = ShopItemLocation(item, 1, i)
-                loc : Location = meta.to_location(world.player, stocks_region)
+                meta: ShopItemLocation = ShopItemLocation(item, 1, i)
+                loc: Location = meta.to_location(world.player, stocks_region)
 
                 if item in world.shop_rules.item_rules:
                     loc.access_rule = world.shop_rules.item_rules[item].condense(world.player)
@@ -229,24 +266,23 @@ def create_regions(world : "AE3World"):
 
     ## Handle Shoppingsanity options Enabled/Collection
     if 0 < world.options.shoppingsanity.value < 3:
-        shop_locations_meta : list[ShopItemLocation] = []
+        shop_locations_meta: list[ShopItemLocation] = []
 
         if world.options.shoppingsanity.value == 1:
             for item in [*SHOP_PROGRESSION_MASTER]:
-
-                meta : ShopItemLocation = ShopItemLocation(item)
+                meta: ShopItemLocation = ShopItemLocation(item)
                 shop_locations_meta.append(meta)
         else:
             for category_index, category in enumerate(SHOP_COLLECTION_INDEX):
                 for offset, item in enumerate(category):
-                    meta : ShopItemLocation = ShopItemLocation(item, category_index, offset)
+                    meta: ShopItemLocation = ShopItemLocation(item, category_index, offset)
                     shop_locations_meta.append(meta)
 
         if shop_locations_meta:
             for item in shop_locations_meta:
                 parent = shopping_area if item.name in world.shop_rules.cheap_early_items else expensive_area
 
-                loc : Location = item.to_location(world.player, parent)
+                loc: Location = item.to_location(world.player, parent)
 
                 if item.name in world.shop_rules.item_rules:
                     loc.access_rule = world.shop_rules.item_rules[item.name].condense(world.player)
@@ -255,13 +291,14 @@ def create_regions(world : "AE3World"):
 
     ## Handle Shoppingsanity Options Progressive/Restock
     elif 2 < world.options.shoppingsanity.value < 5:
-        shop_progression_regions : list[Region] = [region for name, region in stages.items()
-                                                   if name in STAGES_SHOP_PROGRESSION]
+        shop_progression_regions: list[Region] = [
+            region for name, region in stages.items() if name in STAGES_SHOP_PROGRESSION
+        ]
 
         for region in shop_progression_regions:
             for location in SHOP_PROGRESSION_DIRECTORY[region.name]:
-                meta : ShopItemLocation = ShopItemLocation(location)
-                loc : Location = meta.to_location(world.player, region)
+                meta: ShopItemLocation = ShopItemLocation(location)
+                loc: Location = meta.to_location(world.player, region)
 
                 if location in world.shop_rules.item_rules:
                     loc.access_rule = world.shop_rules.item_rules[location].condense(world.player)
