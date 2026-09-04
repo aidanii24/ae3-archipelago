@@ -480,7 +480,7 @@ class ChannelSelectPreviewCarousel(Carousel):
         self.on_index_subscriptions.append(callback)
 
     def set_label_color(self):
-        theme_manager = MDApp().get_running_instance().theme_cls
+        theme_manager = MDApp.get_running_app().theme_cls
 
         for label in self.labels.values():
             label.color = theme_manager.primaryColor
