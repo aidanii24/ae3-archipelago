@@ -11,15 +11,16 @@ script at each frame in the core of the emulator we opt instead to keep the enti
 the emulator to make it more easily extensible, more portable, require less code and be more
 performant.
 """
+
 import os
+import socket
 import struct
 from enum import IntEnum
 from platform import system
-import socket
 
 
 class Pine:
-    """ Exposes PS2 memory within a running instance of the PCSX2 emulator using the Pine IPC Protocol. """
+    """Exposes PS2 memory within a running instance of the PCSX2 emulator using the Pine IPC Protocol."""
 
     """ Maximum memory used by an IPC message request. Equivalent to 50,000 Write64 requests. """
     MAX_IPC_SIZE: int = 650000
@@ -31,36 +32,37 @@ class Pine:
     MAX_BATCH_REPLY_COUNT: int = 50000
 
     class IPCResult(IntEnum):
-        """ IPC result codes. A list of possible result codes the IPC can send back. Each one of them is what we call an
+        """IPC result codes. A list of possible result codes the IPC can send back. Each one of them is what we call an
         "opcode" or "tag" and is the first byte sent by the IPC to differentiate between results.
         """
-        IPC_OK = 0,  # IPC command successfully completed.
+
+        IPC_OK = (0,)  # IPC command successfully completed.
         IPC_FAIL = 0xFF  # IPC command failed to complete.
 
     class IPCCommand(IntEnum):
-        READ8 = 0,
-        READ16 = 1,
-        READ32 = 2,
-        READ64 = 3,
-        WRITE8 = 4,
-        WRITE16 = 5,
-        WRITE32 = 6,
-        WRITE64 = 7,
-        VERSION = 8,
-        SAVE_STATE = 9,
-        LOAD_STATE = 0xA,
-        TITLE = 0xB,
-        ID = 0xC,
-        UUID = 0xD,
-        GAME_VERSION = 0xE,
-        STATUS = 0xF,
-        UNIMPLEMENTED = 0xFF,
+        READ8 = (0,)
+        READ16 = (1,)
+        READ32 = (2,)
+        READ64 = (3,)
+        WRITE8 = (4,)
+        WRITE16 = (5,)
+        WRITE32 = (6,)
+        WRITE64 = (7,)
+        VERSION = (8,)
+        SAVE_STATE = (9,)
+        LOAD_STATE = (0xA,)
+        TITLE = (0xB,)
+        ID = (0xC,)
+        UUID = (0xD,)
+        GAME_VERSION = (0xE,)
+        STATUS = (0xF,)
+        UNIMPLEMENTED = (0xFF,)
 
     class DataSize(IntEnum):
-        INT8 = 1,
-        INT16 = 2,
-        INT32 = 4,
-        INT64 = 8,
+        INT8 = (1,)
+        INT16 = (2,)
+        INT32 = (4,)
+        INT64 = (8,)
 
     def __init__(self, slot: int = 28011, linux_platform: str = "auto"):
         if not 0 < slot <= 65536:
@@ -107,7 +109,8 @@ class Pine:
             active_platform = "Darwin"
         else:
             socket_family = socket.AF_UNIX
-            socket_name = "/tmp/pcsx2.sock"
+            socket_path = os.environ.get("XDG_RUNTIME_DIR", "/tmp")
+            socket_name = os.path.join(socket_path, "pcsx2.sock")
 
             active_platform = "Unknown"
 
@@ -122,7 +125,7 @@ class Pine:
             self.active_slot = None
             self.active_platform = None
             return
-        except socket.error:
+        except OSError:
             self._sock.close()
             self._sock_state = False
 
@@ -135,7 +138,9 @@ class Pine:
         self.active_slot = self._slot
         self.active_platform = active_platform
 
-    def connect(self,) -> None:
+    def connect(
+        self,
+    ) -> None:
         if not self._sock_state:
             self._init_socket()
 
@@ -174,7 +179,7 @@ class Pine:
 
     def read_bytes(self, address: int, length: int) -> bytes:
         """Careful! This can be quite slow for large reads"""
-        data = b''
+        data = b""
         while len(data) < length:
             if length - len(data) >= 8:
                 data += self._send_request(Pine._create_request(Pine.IPCCommand.READ64, address + len(data), 9))[-8:]
@@ -217,23 +222,29 @@ class Pine:
         bytes_written = 0
         while bytes_written < len(data):
             if len(data) - bytes_written >= 8:
-                request = self._create_request(Pine.IPCCommand.WRITE64, address + bytes_written, 9 + Pine.DataSize.INT64)
-                request += data[bytes_written:bytes_written + 8]
+                request = self._create_request(
+                    Pine.IPCCommand.WRITE64, address + bytes_written, 9 + Pine.DataSize.INT64
+                )
+                request += data[bytes_written : bytes_written + 8]
                 self._send_request(request)
                 bytes_written += 8
             elif len(data) - bytes_written >= 4:
-                request = self._create_request(Pine.IPCCommand.WRITE32, address + bytes_written, 9 + Pine.DataSize.INT32)
-                request += data[bytes_written:bytes_written + 4]
+                request = self._create_request(
+                    Pine.IPCCommand.WRITE32, address + bytes_written, 9 + Pine.DataSize.INT32
+                )
+                request += data[bytes_written : bytes_written + 4]
                 self._send_request(request)
                 bytes_written += 4
             elif len(data) - bytes_written >= 2:
-                request = self._create_request(Pine.IPCCommand.WRITE16, address + bytes_written, 9 + Pine.DataSize.INT16)
-                request += data[bytes_written:bytes_written + 2]
+                request = self._create_request(
+                    Pine.IPCCommand.WRITE16, address + bytes_written, 9 + Pine.DataSize.INT16
+                )
+                request += data[bytes_written : bytes_written + 2]
                 self._send_request(request)
                 bytes_written += 2
             elif len(data) - bytes_written >= 1:
                 request = self._create_request(Pine.IPCCommand.WRITE8, address + bytes_written, 9 + Pine.DataSize.INT8)
-                request += data[bytes_written:bytes_written + 1]
+                request += data[bytes_written : bytes_written + 1]
                 self._send_request(request)
                 bytes_written += 1
 
@@ -258,22 +269,23 @@ class Pine:
 
         try:
             self._sock.sendall(request)
-        except socket.error:
+        except OSError:
             self._sock.close()
             self._sock_state = False
             raise ConnectionError("Lost connection to PCSX2.")
 
         end_length = 4
-        result: bytes = b''
+        result: bytes = b""
         while len(result) < end_length:
             try:
                 response = self._sock.recv(4096)
             except TimeoutError:
-                raise TimeoutError("Response timed out. "
-                                   "This might be caused by having two PINE connections open on the same slot")
+                raise TimeoutError(
+                    "Response timed out. This might be caused by having two PINE connections open on the same slot"
+                )
 
             if len(response) <= 0:
-                result = b''
+                result = b""
                 break
 
             result += response
@@ -281,7 +293,7 @@ class Pine:
             if end_length == 4 and len(response) >= 4:
                 end_length = Pine.from_bytes(result[0:4])
                 if end_length > Pine.MAX_IPC_SIZE:
-                    result = b''
+                    result = b""
                     break
 
         if len(result) == 0:
