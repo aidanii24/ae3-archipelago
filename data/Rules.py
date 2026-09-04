@@ -1974,6 +1974,8 @@ class ShopItemRules:
 
                 self.entrance_rules[Stage.entrance_travel_ab.value].update(Rulesets(cheap_items_rule))
             else:
+                self.post_game_entrances.add(Stage.entrance_travel_ab.value)
+
                 if world.options.shoppingsanity.value != 2:
                     self.post_game_items.update(SHOP_CHEAP_MASTER)
                 else:
@@ -2048,16 +2050,11 @@ class ShopItemRules:
 
         self.item_rules[Loc.shop_ultim_ape_fighter.value] = Rulesets(post_game_condition_rule)
 
-        if world.options.cheap_items_minimum_requirement.value >= 100:
-            self.entrance_rules.setdefault(Stage.entrance_travel_ab.value, Rulesets()).update(
-                Rulesets(post_game_condition_rule)
-            )
-
         for item in self.post_game_items:
             self.item_rules[item] = Rulesets(post_game_condition_rule)
 
         for entrance in self.post_game_entrances:
-            self.entrance_rules[entrance] = Rulesets(post_game_condition_rule)
+            self.entrance_rules.setdefault(entrance, Rulesets()).update(Rulesets(post_game_condition_rule))
 
     @staticmethod
     def are_farmables_available(world: "AE3World") -> bool:

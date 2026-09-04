@@ -3,7 +3,7 @@ from collections.abc import Callable, Sequence
 from copy import deepcopy
 from typing import TYPE_CHECKING
 
-from BaseClasses import CollectionState, Item
+from BaseClasses import CollectionState, Entrance, Item, Region
 from worlds.ape_escape_3.data.Locations import (
     CAMERAS_DIRECTORY,
     CELLPHONES_DIRECTORY,
@@ -19,6 +19,7 @@ from .Stages import (
     STAGES_DIRECTORY_LABEL,
     STAGES_FARMABLE,
     STAGES_FARMABLE_SNEAKY_BORG,
+    STAGES_SHOP_PROGRESSION,
     AE3EntranceMeta,
 )
 from .Strings import APHelper, Itm, Stage
@@ -609,12 +610,17 @@ class ProgressionMode:
 
     def register_pgc_indirect_connections(self, world: "AE3World"):
         main_channels_count: int = sum(self.progression[:-2]) + 1
-        post_game_entrances: list[str] = [
-            entrance.name
+        post_game_entrances: list[Entrance] = [
+            world.get_entrance(entrance.name)
             for entrance in self.level_select_entrances[
                 main_channels_count : main_channels_count + self.progression[-2]
             ]
         ]
+
+        if world.options.shoppingsanity.value:
+            post_game_entrances.extend(
+                [world.get_entrance(entrance) for entrance in world.shop_rules.post_game_entrances]
+            )
         for channel in self.order[:main_channels_count]:
             channel_name: str = LEVELS_BY_ORDER[channel]
             valid_regions: set[str] = set()
@@ -637,7 +643,24 @@ class ProgressionMode:
 
             for region in valid_regions:
                 for entrance in post_game_entrances:
-                    world.multiworld.register_indirect_condition(world.get_region(region), world.get_entrance(entrance))
+                    world.multiworld.register_indirect_condition(world.get_region(region), entrance)
+
+        shop_regions: list[Region] = []
+        if 0 < world.options.post_game_condition_shop.value < 3:
+            shop_regions.append(Stage.region_shop_expensive.value)
+        elif 3 < world.options.post_game_condition_shop < 6:
+            regions: list[Region] = [world.get_region(region) for region in STAGES_SHOP_PROGRESSION]
+            shop_regions.extend(
+                [
+                    region
+                    for region in regions
+                    if not set(region.entrances).intersection(world.shop_rules.post_game_entrances)
+                ]
+            )
+
+        for region in shop_regions:
+            for entrance in post_game_entrances:
+                world.multiworld.register_indirect_condition(region, entrance)
 
     def generate_keys(self, world: "AE3World") -> list[Item]:
         # The first set of levels and blacklisted set of levels will not cost keys.
