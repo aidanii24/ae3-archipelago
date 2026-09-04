@@ -280,9 +280,6 @@ class PostGameCondition:
             return False
 
         rules: set[Callable] = set()
-        if any(category in self.amounts for category in self.location_categories[:3]):
-            rules.update({AccessRule.CATCH, AccessRule.FLY, AccessRule.DASH, AccessRule.SHOOT})
-        highest_scale: float = 0.0
 
         if APHelper.monkey.value in self.amounts:
             count: int = sum(
@@ -301,17 +298,15 @@ class PostGameCondition:
                 return False
 
         if APHelper.cellphone.value in self.amounts:
-            highest_scale = max(highest_scale, len(self.location_ids[APHelper.cellphone.value]) / 20)
+            count: int = sum(
+                [state.can_reach_location(cellphone, player) for cellphone in self.locations[APHelper.cellphone.value]]
+            )
+
+            if count < self.amounts[APHelper.cellphone.value]:
+                return False
 
         if APHelper.keys.value in self.amounts:
             rules.add(has_keys(min_keys + self.amounts[APHelper.keys.value]))
-
-        # Check Rules that only yields small progress if required amount is high enough
-        highest_scale *= 100
-        if highest_scale > 50:
-            rules.update({AccessRule.MAGICIAN, AccessRule.KUNGFU, AccessRule.SWIM})
-        if highest_scale > 80:
-            rules.update({AccessRule.RCC, AccessRule.SLING})
 
         # Check Rules
         if rules:
