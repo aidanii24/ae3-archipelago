@@ -16,7 +16,6 @@ from .Stages import (
     ENTRANCES_STAGE_SELECT,
     LEVELS_BY_ORDER,
     STAGES_BOSSES,
-    STAGES_BREAK_ROOMS,
     STAGES_DIRECTORY_LABEL,
     STAGES_FARMABLE,
     STAGES_FARMABLE_SNEAKY_BORG,
@@ -609,7 +608,7 @@ class ProgressionMode:
         return channel_rules
 
     def register_pgc_indirect_connections(self, world: "AE3World"):
-        main_channels_count: int = sum(self.progression[:-2])
+        main_channels_count: int = sum(self.progression[:-2]) + 1
         post_game_entrances: list[str] = [
             entrance.name
             for entrance in self.level_select_entrances[
@@ -625,7 +624,7 @@ class ProgressionMode:
                         region
                         for region in STAGES_DIRECTORY_LABEL[channel_name]
                         if region in MONKEYS_INDEX
-                        and world.options.monkeysanity_break_rooms > 0 == region in STAGES_BREAK_ROOMS
+                        and (world.options.monkeysanity_break_rooms.value > 0) == (region in MONKEYS_INDEX)
                     ]
                 )
             else:

@@ -1,3 +1,4 @@
+import os
 from typing import TYPE_CHECKING
 
 from BaseClasses import Entrance, Location, Region
@@ -221,8 +222,6 @@ def create_regions(world: "AE3World"):
 
                 stage.locations.append(loc)
 
-    world.progression.register_pgc_indirect_connections(world)
-
     # Handle Shop Regions
     shopping_area: Region = stages[Stage.travel_station_b.value]
     expensive_area: Region = stages[Stage.region_shop_expensive.value]
@@ -308,7 +307,10 @@ def create_regions(world: "AE3World"):
     # Send Regions to Archipelago
     world.multiworld.regions.extend(list(stages.values()))
 
-    # # <!> DEBUG
-    # # Connection Diagrams
-    # from Utils import visualize_regions
-    # visualize_regions(world.multiworld.get_region("Menu", world.player), "_region_diagram.puml")
+    # Register other Indirect Connection Conditions
+    world.progression.register_pgc_indirect_connections(world)
+
+    if os.environ.get("VISUALIZE_REGIONS", 0):
+        from Utils import visualize_regions
+
+        visualize_regions(world.multiworld.get_region("Menu", world.player), "_region_diagram.puml")
