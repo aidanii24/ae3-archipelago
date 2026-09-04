@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import CollectionState, Entrance, Item, Region
 from worlds.ape_escape_3.data.Locations import (
-    CAMERAS_DIRECTORY,
-    CELLPHONES_DIRECTORY,
+    CAMERAS_INDEX,
+    CELLPHONES_INDEX,
     MONKEYS_INDEX,
 )
 
@@ -635,9 +635,13 @@ class ProgressionMode:
                 )
             else:
                 if world.options.post_game_condition_cameras:
-                    valid_regions.update(CELLPHONES_DIRECTORY[channel_name])
+                    valid_regions.update(
+                        [region for region in CELLPHONES_INDEX if region in STAGES_DIRECTORY_LABEL[channel_name]]
+                    )
                 if world.options.post_game_condition_cameras:
-                    valid_regions.update(CAMERAS_DIRECTORY[channel_name])
+                    valid_regions.update(
+                        [region for region in CAMERAS_INDEX if region in STAGES_DIRECTORY_LABEL[channel_name]]
+                    )
                 if world.options.post_game_condition_bosses:
                     valid_regions.update(STAGES_BOSSES)
 
@@ -645,22 +649,23 @@ class ProgressionMode:
                 for entrance in post_game_entrances:
                     world.multiworld.register_indirect_condition(world.get_region(region), entrance)
 
-        shop_regions: list[Region] = []
-        if 0 < world.options.post_game_condition_shop.value < 3:
-            shop_regions.append(Stage.region_shop_expensive.value)
-        elif 3 < world.options.post_game_condition_shop < 6:
-            regions: list[Region] = [world.get_region(region) for region in STAGES_SHOP_PROGRESSION]
-            shop_regions.extend(
-                [
-                    region
-                    for region in regions
-                    if not set(region.entrances).intersection(world.shop_rules.post_game_entrances)
-                ]
-            )
+        if world.options.post_game_condition_shop.value:
+            shop_regions: list[Region] = []
+            if 0 < world.options.shoppingsanity.value < 3:
+                shop_regions.append(Stage.region_shop_expensive.value)
+            elif 2 < world.options.shoppingsanity.value < 5:
+                regions: list[Region] = [world.get_region(region) for region in STAGES_SHOP_PROGRESSION]
+                shop_regions.extend(
+                    [
+                        region
+                        for region in regions
+                        if not set(region.entrances).intersection(world.shop_rules.post_game_entrances)
+                    ]
+                )
 
-        for region in shop_regions:
-            for entrance in post_game_entrances:
-                world.multiworld.register_indirect_condition(region, entrance)
+            for region in shop_regions:
+                for entrance in post_game_entrances:
+                    world.multiworld.register_indirect_condition(region, entrance)
 
     def generate_keys(self, world: "AE3World") -> list[Item]:
         # The first set of levels and blacklisted set of levels will not cost keys.
