@@ -368,6 +368,13 @@ class QuickStatusPanel(MDBoxLayout):
 
         csp.unlock()
 
+    def subscribe_on_channel_select_preview_change(self, callback: typing.Callable):
+        csp: ChannelSelectPreviewCarousel | None = self.ids.get("ChannelSelectPreviewCarousel", None)
+        if not csp:
+            return
+
+        csp.subscribe_on_index(callback)
+
     def update_overview_status(self, data: list[dict], total: dict | None = None):
         overview_view: AE3RecycleView | None = self.ids.get("OverviewView", None)
         if not overview_view:
@@ -416,9 +423,12 @@ class ChannelSelectPreviewCarousel(Carousel):
 
         self.labels: dict[str, MDLabel] = {}
         self.is_locked: bool = False
+        self.ignore_event: bool = False
 
         theme_manager = MDApp.get_running_app().theme_cls
         theme_manager.bind(primaryColor=lambda i, v: self.set_label_color())
+
+        self.on_index_subscriptions: list[typing.Callable] = []
 
     def set_labels(self, labels: typing.Iterable[str]):
         for label in labels:
@@ -439,6 +449,8 @@ class ChannelSelectPreviewCarousel(Carousel):
 
         self.load_slide(self.labels[label_name])
 
+        self.ignore_event = True
+
     def lock_to_label(self, label_name: str):
         if self.is_locked:
             return
@@ -448,11 +460,24 @@ class ChannelSelectPreviewCarousel(Carousel):
 
     def lock(self):
         self.is_locked = True
+        self.ignore_event = True
         self.scroll_timeout = 0
 
     def unlock(self):
         self.is_locked = False
+        self.ignore_event = False
         self.scroll_timeout = 200
+
+    def on_current_slide(self, instance, slide):
+        if self.ignore_event:
+            self.ignore_event = False
+            return
+
+        for callback in self.on_index_subscriptions:
+            callback(slide.text)
+
+    def subscribe_on_index(self, callback: typing.Callable):
+        self.on_index_subscriptions.append(callback)
 
     def set_label_color(self):
         theme_manager = MDApp().get_running_instance().theme_cls

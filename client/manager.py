@@ -1172,10 +1172,13 @@ class AE3Context(SuperContext):
                 return
 
             self.quick_status_panel = widgets.create_quick_status_panel()
+            self.qsp_channel_preview_current_label = ""
             screen.add_widget(self.quick_status_panel)
 
             self.ipc.subscribe_on_connection_change(self.quick_status_panel.update_game_status)
             self.ipc.subscribe_on_port_change(self.quick_status_panel.update_game_port)
+
+            self.quick_status_panel.subscribe_on_channel_select_preview_change(self.qsp_change_channel)
 
             self.change_qsp_display_mode()
 
@@ -1407,8 +1410,8 @@ class AE3Context(SuperContext):
         self.quick_status_panel.update_active_channel_label(channel_name)
         self.quick_status_panel.lock_channel_preview()
 
-    def update_overview(self):
-        data: list[dict[str, typing.Any]] = self.generate_qsp_overview_data()
+    def update_overview(self, channel_name: str = ""):
+        data: list[dict[str, typing.Any]] = self.generate_qsp_overview_data(channel_name)
         if not data:
             return
 
@@ -1419,6 +1422,28 @@ class AE3Context(SuperContext):
             progress = self.get_qsp_channel_overview_total(data)
 
         self.quick_status_panel.update_overview_status(data, progress)
+
+    def qsp_change_channel(self, channel_name: str):
+        if channel_name in LEVELS_BY_ORDER:
+            channel_index: int = self.progression.order.index(LEVELS_BY_ORDER.index(channel_name))
+            if self.qsp_channel_preview_current_label not in LEVELS_BY_ORDER:
+                self.update_overview(channel_name)
+
+                self.qsp_channel_preview_current_label = channel_name
+            elif channel_index != self.current_active_channel_selection:
+                self.change_current_active_channel_selection(channel_index)
+                self.ipc.set_selected_channel(channel_index)
+
+                self.qsp_channel_preview_current_label = channel_name
+        elif channel_name == Stage.travel_station_b.value:
+            self.update_overview(Stage.travel_station_b.value)
+
+            data = self.generate_qsp_overview_data(channel_name)
+            progress: dict[str, typing.Any] = self.generate_qsp_shoppingsanity_overview_availability_data()
+
+            self.quick_status_panel.update_overview_status(data, progress)
+
+            self.qsp_channel_preview_current_label = channel_name
 
 
 def update_connection_status(ctx: AE3Context, status: bool):
