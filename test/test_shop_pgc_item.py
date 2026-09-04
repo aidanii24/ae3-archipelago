@@ -51,8 +51,11 @@ class TestShopPGCItem(AE3TestBase):
         self.assertFalse(loc_shop_ultimape_fighter.can_reach(self.multiworld.state))
         self.assertFalse(loc_specter.can_reach(self.multiworld.state))
 
-        # Collecting Super Monkey should make the game beatable
+        # Collecting Super Monkey should satisfy PGC, making Ultim-ape Fighter and Goal Specter accessible
         self.collect_by_name(Itm.morph_monkey.value)
+
+        self.assertTrue(loc_shop_ultimape_fighter.can_reach(self.multiworld.state))
+        self.assertTrue(loc_specter.can_reach(self.multiworld.state))
 
         # Getting Super Monkey should make the world beatable
         self.assertBeatable(beatable=True)
