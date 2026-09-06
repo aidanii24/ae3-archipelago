@@ -1222,6 +1222,7 @@ class AE3Context(SuperContext):
                 "indicator_value": math.floor(values[0] / values[1] * 100),
             }
             for category, values in raw.items()
+            if values[1] > 0
         ]
 
         return data
@@ -1341,6 +1342,9 @@ class AE3Context(SuperContext):
     def get_formatted_pgc_progress(self) -> list[dict]:
         formatted_pgc: list[dict] = []
         for pgc, values in self.post_game_condition.get_progress(self).items():
+            if values[1] <= 0:
+                continue
+
             data: dict[str, typing.Any] = {
                 "label_text": pgc,
                 "value_text": f"{values[0]}/{values[1]}",
