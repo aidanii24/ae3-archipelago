@@ -1373,7 +1373,7 @@ class AE3Context(SuperContext):
                 required_next: int = len(self.progression.progression[1:-3])
                 unlock_amount = len(self.progression.progression[:-3])
 
-                plurality: str = "Channel Key" + "s" if self.key < required_next else ""
+                plurality: str = "Channel Key" + "s" if self.keys < required_next else ""
 
                 if self.keys < required_next:
                     next_unlock_tip = f"[ {required_next - self.keys} {plurality} left to Unlock ]"
